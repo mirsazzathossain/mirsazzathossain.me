@@ -1,5 +1,11 @@
 {
+  "author": {
+    "name": "Mir Sazzat Hossain",
+    "email": "mirsazzathossain@gmail.com",
+    "url": "https://github.com/mirsazzathossain"
+  },
   "name": "portfolio-blog",
+  "license": "MIT",
   "version": "0.1.0",
   "private": true,
   "scripts": {
