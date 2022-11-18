@@ -1,7 +1,11 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
+const { withContentlayer } = require('next-contentlayer')
+
+module.exports = withContentlayer({
   reactStrictMode: true,
   swcMinify: true,
-}
-
-module.exports = nextConfig
+  images: {
+    domains: ['images.unsplash.com', 'media-exp1.licdn.com', 'images.pexels.com'],
+    dangerouslyAllowSVG: true,
+  },
+})

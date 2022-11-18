@@ -1,0 +1,39 @@
+---
+title: Authentication and DB access with Next, Prisma
+publishedAt: '2022-03-12'
+description: A sample description of this application.
+seoDescription: This is the seoDescription for this markdown file.
+categories: ['Authentication']
+tags: ['Next', 'Prisma']
+covers: ['https://images.unsplash.com/photo-1654863075380-5fce8cae1851?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHx0b3BpYy1mZWVkfDMyfGJvOGpRS1RhRTBZfHxlbnwwfHx8fA%3D%3D&auto=format&fit=crop&w=500&q=60']
+author: 'authors/mirsazzathossain.mdx'
+---
+
+## Vellem tandem
+At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et
+### Code Example
+```javascript
+// sample code with prism syntax highlighting
+const Article = defineDocumentType(() => ({
+  name: 'Article',
+  filePathPattern: 'articles/*.mdx',
+  contentType: 'mdx',
+  fields: {
+    title: { type: 'string', required: true },
+    publishedAt: { type: 'string', required: true },
+    description: { type: 'string', required: true },
+    seoDescription: { type: 'string', required: true },
+    category: { type: 'string', required: true },
+    author: {
+      type: 'nested',
+      of: Author,
+    },
+    image: { type: 'string', required: true },
+  },
+  computedFields,
+}));
+```
+Longis caput exspatiantur virgo spissa vidisti et quis! Haec vulneribus Echecli
+ullus ore: praeside et arma ingratum, imitata. Illa cohaeserat ignis. Dumque
+somno magna templum: per credere atque nec superos? Iste Myscelus deus propius
+venturis silvis; in fore paventque super, proculcat cum **cum habet**.

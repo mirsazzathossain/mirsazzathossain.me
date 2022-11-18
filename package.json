@@ -1,9 +1,5 @@
 {
-  "author": {
-    "name": "Mir Sazzat Hossain",
-    "email": "mirsazzathossain@gmail.com",
-    "url": "https://github.com/mirsazzathossain"
-  },
+  "author": "Mir Sazzat Hossain <mirsazzathossain@gmail.com> (https://github.com/mirsazzathossain)",
   "name": "portfolio-blog",
   "license": "MIT",
   "version": "0.1.0",
@@ -15,9 +11,19 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/react": "^11.10.4",
+    "@emotion/styled": "^11.10.4",
+    "@material-tailwind/react": "^1.2.3",
+    "@mui/icons-material": "^5.10.3",
+    "@mui/material": "^5.10.3",
+    "contentlayer": "^0.2.7",
+    "flowbite": "^1.5.3",
+    "flowbite-react": "^0.1.10",
     "next": "12.2.5",
+    "next-contentlayer": "^0.2.7",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "reading-time": "^1.5.0"
   },
   "devDependencies": {
     "@types/node": "18.7.14",
@@ -29,5 +35,7 @@
     "postcss": "^8.4.16",
     "tailwindcss": "^3.1.8",
     "typescript": "4.8.2"
-  }
+  },
+  "main": "index.js",
+  "repository": "git@github.com:mirsazzathossain/portfolio-blog.git"
 }
