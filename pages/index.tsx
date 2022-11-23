@@ -1,3 +1,4 @@
+import MobileNavigation from "components/MobileNavigation";
 import Navigation from "components/Navigation";
 
 const navigations = [
@@ -22,6 +23,7 @@ export default function Home() {
   return (
     <div className="container">
       <Navigation links={navigations} />
+      <MobileNavigation links={navigations} />
     </div>
   );
 }
