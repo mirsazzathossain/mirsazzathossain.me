@@ -1,5 +1,6 @@
 import MobileNavigation from "components/MobileNavigation";
 import Navigation from "components/Navigation";
+import ThemeSelector from "components/ThemeSelector";
 
 const navigations = [
   {
@@ -24,6 +25,7 @@ export default function Home() {
     <div className="container">
       <Navigation links={navigations} />
       <MobileNavigation links={navigations} />
+      <ThemeSelector />
     </div>
   );
 }
