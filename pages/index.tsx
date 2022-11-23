@@ -1,7 +1,27 @@
+import Navigation from "components/Navigation";
+
+const navigations = [
+  {
+    id: "1",
+    title: "Home",
+    href: "/home",
+  },
+  {
+    id: "2",
+    title: "About",
+    href: "/about",
+  },
+  {
+    id: "3",
+    title: "Contact",
+    href: "/contact",
+  },
+];
+
 export default function Home() {
   return (
     <div className="container">
-      <h1>Home</h1>
+      <Navigation links={navigations} />
     </div>
   );
 }
