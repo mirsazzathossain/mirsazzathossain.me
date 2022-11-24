@@ -1,3 +1,4 @@
+import HeaderAvatar from "components/Avatar";
 import MobileNavigation from "components/MobileNavigation";
 import Navigation from "components/Navigation";
 import ThemeSelector from "components/ThemeSelector";
@@ -20,9 +21,32 @@ const navigations = [
   },
 ];
 
+const authorImage = {
+  src: "/images/user.png",
+  alt: "Author image",
+  height: 512,
+  width: 512,
+  sizes: "2.25rem",
+  priority: true,
+};
+
+const homeLink = {
+  href: "/",
+  title: "Home",
+};
+
+const headerClass = {
+  image: "h-9 w-9",
+};
+
 export default function Home() {
   return (
-    <div className="container">
+    <div className="container h-[200vh]">
+      <HeaderAvatar
+        image={authorImage}
+        link={homeLink}
+        classNames={headerClass}
+      />
       <Navigation links={navigations} />
       <MobileNavigation links={navigations} />
       <ThemeSelector />
