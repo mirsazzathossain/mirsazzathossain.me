@@ -9,7 +9,7 @@ function NavItem({
 }: {
   href: UrlObject | string;
   children: React.ReactNode;
-}) {
+}): JSX.Element {
   let isActive = useRouter().pathname === href;
 
   return (
