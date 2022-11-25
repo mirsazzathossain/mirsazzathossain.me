@@ -38,7 +38,7 @@ export default function ThemeSelector(): JSX.Element {
     }, 0);
   }
 
-  function toggleTheme() {
+  function toggleTheme(): void {
     disableTransitionsTemporarily();
 
     let darkModeMediaQuery = window.matchMedia("(prefers-color-scheme: dark)");

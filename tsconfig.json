@@ -23,7 +23,13 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".contentlayer/generated"
+    ".contentlayer/generated",
+    "components/Avatar.tsx",
+    "components/Container.tsx",
+    "components/DesktopNavigation.tsx",
+    "components/Header.tsx",
+    "components/MobileNavigation.tsx",
+    "components/ThemeSelector.tsx"
   ],
   "exclude": ["node_modules"]
 }

@@ -2,17 +2,14 @@ import clsx from "clsx";
 import Image from "next/image";
 import Link from "next/link";
 
-import avatarImage from "@/images/user.jpg";
+import avatarImage from "../public/images/user.png";
 
-export default function Avatar({
-  large = false,
-  className,
-  ...props
-}: {
+type Props = {
   large?: boolean;
   className?: string;
-  props?: any;
-}) {
+  [key: string]: any;
+};
+export default function Avatar({ large = false, className, ...props }: Props) {
   return (
     <Link
       href="/"
