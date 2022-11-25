@@ -1,82 +1,35 @@
 import clsx from "clsx";
-import Image from "next/legacy/image";
+import Image from "next/image";
 import Link from "next/link";
 
-function Avatar({
-  image,
-  link,
-  classNames,
+import avatarImage from "@/images/user.jpg";
+
+export default function Avatar({
+  large = false,
+  className,
+  ...props
 }: {
-  image: {
-    src: string;
-    alt: string;
-    height: number;
-    width: number;
-    sizes: string;
-    priority?: boolean;
-  };
-  link: {
-    href: string;
-    title?: string;
-  };
-  classNames?: {
-    link?: string;
-    image?: string;
-  };
-}): JSX.Element {
+  large?: boolean;
+  className?: string;
+  props?: any;
+}) {
   return (
     <Link
-      className={clsx(classNames?.link, "pointer-events-auto")}
-      href={link.href}
+      href="/"
+      aria-label="Home"
+      className={clsx(className, "pointer-events-auto")}
+      {...props}
     >
       <Image
-        src={image.src}
-        alt={image.alt}
-        height={image.height}
-        width={image.width}
-        sizes={image.sizes}
+        src={avatarImage}
+        alt=""
+        sizes={large ? "4rem" : "2.25rem"}
         className={clsx(
           "rounded-full bg-zinc-100 object-cover dark:bg-zinc-800",
-          classNames?.image
+          large ? "h-16 w-16" : "h-9 w-9"
         )}
-        decoding="async"
-        priority={image.priority}
+        priority
       />
     </Link>
-  );
-}
-
-export default function HeaderAvatar({
-  image,
-  link,
-  classNames,
-}: {
-  image: {
-    src: string;
-    alt: string;
-    height: number;
-    width: number;
-    sizes: string;
-    priority: boolean;
-  };
-  link: {
-    href: string;
-    title?: string;
-  };
-  classNames?: {
-    container?: string;
-    image?: string;
-    link?: string;
-  };
-}): JSX.Element {
-  return (
-    <div
-      className={clsx(
-        classNames?.container,
-        "h-10 w-10 rounded-full bg-white/90 p-0.5 shadow-lg shadow-zinc-800/5 ring-1 ring-zinc-900/5 backdrop-blur dark:bg-zinc-800/90 dark:ring-white/10"
-      )}
-    >
-      <Avatar image={image} link={link} classNames={classNames} />
-    </div>
   );
 }
