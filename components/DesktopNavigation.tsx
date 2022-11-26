@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import Link from "next/link";
-import { useRouter } from "next/router";
+import { usePathname, useRouter } from "next/navigation";
 
 function NavItem({
   href,
@@ -9,7 +9,7 @@ function NavItem({
   href: string;
   children: React.ReactNode;
 }) {
-  let isActive = useRouter().pathname === href;
+  let isActive = usePathname() === href;
 
   return (
     <li>

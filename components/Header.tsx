@@ -1,5 +1,7 @@
+"use client";
+
 import clsx from "clsx";
-import { useRouter } from "next/router";
+import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
 import Avatar from "./Avatar";
 import { Container } from "./Container";
@@ -9,8 +11,11 @@ import ThemeSelector from "./ThemeSelector";
 
 const navigations = [
   { href: "/about", label: "About" },
-  { href: "/blog", label: "Blog" },
-  { href: "/contact", label: "Contact" },
+  { href: "/articles", label: "Articles" },
+  { href: "/snippets", label: "Snippets" },
+  { href: "/resources", label: "Resources" },
+  { href: "/guestbook", label: "Guestbook" },
+  { href: "/projects", label: "Projects" },
 ];
 
 function clamp(value: number, a: number, b: number): number {
@@ -38,7 +43,7 @@ function AvatarContainer({
 }
 
 export default function Header(): JSX.Element {
-  let isHomePage = useRouter().pathname === "/";
+  let isHomePage = usePathname() === "/";
 
   let headerRef = useRef();
   let avatarRef = useRef();

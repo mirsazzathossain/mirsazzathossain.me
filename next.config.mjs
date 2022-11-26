@@ -9,5 +9,6 @@ export default withContentlayer({
         images: {
             allowFutureImage: true,
         },
+        appDir: true,
     },
 })
