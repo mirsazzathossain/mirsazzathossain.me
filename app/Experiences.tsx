@@ -3,64 +3,6 @@ import { Container } from "components/Container";
 import ExperienceCard from "components/ExperienceCard";
 import { useRef, useState } from "react";
 
-const experiences = [
-  {
-    title: "Research Assistant",
-    company: "Center for Computational & Data Sciences",
-    companyURL: "http://ccds.ai/",
-    companyLogo: "/images/ccds.png",
-    location:
-      "Plot 16, Aftabuddin Ahmed Road, Block B, Bashnudhara RA, Dhaka 1229, Bangladesh.",
-    type: "Full-time",
-    date: "Feb 2022 - Present",
-    description:
-      "I am currently employed as a Research Assistant at IUB's Center for Computational and Data Sciences (CCDS). My main role is to conduct research on computer vision, group theory, manifold learning, and geometric machine learning.",
-    skills: [
-      "Artificial Intelligence (AI)",
-      "Machine Learning",
-      "Artificial Neural Networks",
-      "Data Science",
-      "Image Processing",
-      "Computer Vision",
-      "Deep Learning",
-    ],
-  },
-
-  {
-    title: "Teaching Assistant",
-    company: "Independent University, Bangladesh",
-    companyURL: "https://iub.edu.bd/",
-    companyLogo: "/images/iub.png",
-    location:
-      "Plot 16, Aftabuddin Ahmed Road, Block B, Bashnudhara RA, Dhaka 1229, Bangladesh.",
-    type: "Part-time",
-    date: "Sep 2021 - Jan 2022",
-    description:
-      "I have worked as a Teaching Assistant at IUB's Department of Computer Science and Engineering (CSE). My main role was to assist the course instructor in teaching the undergraduate course on Numerical Methods.",
-    skills: [
-      "Numerical Methods",
-      "Numpy",
-      "Teaching",
-      "Management",
-      "Leadership",
-    ],
-  },
-
-  {
-    title: "Undergraduate Research Assistant",
-    company: "Independent University, Bangladesh",
-    companyURL: "https://iub.edu.bd/",
-    companyLogo: "/images/iub.png",
-    location:
-      "Plot 16, Aftabuddin Ahmed Road, Block B, Bashnudhara RA, Dhaka 1229, Bangladesh.",
-    type: "Part-time",
-    date: "Jan 2021 - Present",
-    description:
-      "I have worked as an Undergraduate Research Assistant at IUB's Department of Computer Science and Engineering (CSE). My main role was to assist the course instructor in teaching the undergraduate course on Numerical Methods.",
-    skills: ["Numerical Methods", "Numpy", "Teaching", "Management"],
-  },
-];
-
 function ChevronDownIcon(props: React.SVGProps<SVGSVGElement>): JSX.Element {
   return (
     <svg viewBox="0 0 8 6" aria-hidden="true" {...props}>
@@ -89,7 +31,11 @@ function ChevronUpIcon(props: React.SVGProps<SVGSVGElement>): JSX.Element {
   );
 }
 
-export default function Experiences() {
+export default function Experiences({
+  experiences,
+}: {
+  experiences: Experience[];
+}): JSX.Element {
   let [isExpanded, setIsExpanded] = useState(false);
   const parentRef = useRef();
 
