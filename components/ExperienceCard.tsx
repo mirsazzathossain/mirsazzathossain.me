@@ -16,7 +16,7 @@ export default function ExperienceCard({
         classNames
       )}
     >
-      <Link href="https://ccds.ai/" target={"_blank"}>
+      <Link href={props.companyURL} target={"_blank"}>
         <div className="flex items-start dark:bg-zinc-800/90 dark:border-zinc-700/40 rounded p-4 relative">
           <div className="mt-2">
             <Image
@@ -28,7 +28,7 @@ export default function ExperienceCard({
             />
           </div>
           <div>
-            <h4 className="text-lg font-bold tracking-tight text-zinc-600 dark:text-zinc-400">
+            <h4 className="text-lg font-bold tracking-tight text-zinc-800 dark:text-zinc-100">
               {props.title}
             </h4>
             <p className="text-xs text-zinc-400 dark:text-zinc-500 leading-5">
