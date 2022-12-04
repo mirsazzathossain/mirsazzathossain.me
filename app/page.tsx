@@ -1,3 +1,5 @@
+import { BibtexParser } from "bibtex-js-parser";
+import { promises as fs } from "fs";
 import About from "./About";
 import Educations from "./Educations";
 import Experiences from "./Experiences";
@@ -91,14 +93,22 @@ const photos = [
   "/images/photos/image-5.jpg",
 ];
 
-export default function Home() {
+async function getPublications() {
+  const bibtex = await fs.readFile("content/publications.bib", "utf-8");
+  const publications = BibtexParser.parseToJSON(bibtex);
+
+  return publications;
+}
+
+export default async function Home(): Promise<JSX.Element> {
+  const publications = await getPublications();
   return (
     <>
       <About />
       {/* <Photos images={photos} /> */}
       {educations.length > 0 && <Educations educations={educations} />}
       {experiences.length > 0 && <Experiences experiences={experiences} />}
-      <Publications />
+      {publications.length > 0 && <Publications publications={publications} />}
     </>
   );
 }
