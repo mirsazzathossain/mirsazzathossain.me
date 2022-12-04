@@ -1,33 +1,16 @@
+"use client";
 import { Container } from "components/Container";
+import { ChevronDownIcon, ChevronUpIcon } from "components/Icons";
 import PublicationCard from "components/PublicationCard";
+import { useRef, useState } from "react";
 
-const publications = [
-  {
-    title:
-      "A new approach to the analysis of the effects of the COVID-19 pandemic on the economy",
-    date: "September 20, 2021",
-    description: (
-      <>
-        <p>
-          <b>Mir Sazzat Hossain*</b>, Sugandha Roy, KMB Asad, A K M Mahbubur
-          Rahman, M Ashraful Amin, Amin Ahsan Ali and Arshad Momen, in
-          proceedings of the{" "}
-          <i>
-            <b>
-              {" "}
-              2021 IEEE International Conference on Big Data (Big Data 2021)
-            </b>
-          </i>
-          , 2021.
-        </p>
-      </>
-    ),
-    codeURL: "#",
-    paperURL: "https://ieeexplore.ieee.org/document/9509059",
-  },
-];
-
-export default function Publications() {
+export default function Publications({
+  publications,
+}: {
+  publications: any;
+}): JSX.Element {
+  let [isExpanded, setIsExpanded] = useState(false);
+  const parentRef = useRef();
   return (
     <Container className="mt-9">
       <div className="max-w-3xl">
@@ -35,9 +18,45 @@ export default function Publications() {
           Publications
         </h3>
 
-        {publications.map((publication) => (
-          <PublicationCard key={publication.title} publication={publication} />
+        {publications.slice(0, 2).map((publication: any, index: any) => (
+          <PublicationCard key={index} publication={publication} />
         ))}
+
+        {publications.slice(2).map((publication: any, index: any) => (
+          <div
+            key={index}
+            className={
+              "h-0 overflow-hidden transition-height ease-in-out duration-[400ms] "
+            }
+            ref={parentRef as any}
+            style={{
+              height: isExpanded ? (parentRef.current as any).scrollHeight : 0,
+            }}
+          >
+            <PublicationCard key={index} publication={publication} />
+          </div>
+        ))}
+
+        {publications.length > 2 && (
+          <div className="flex justify-center">
+            <button
+              className="group flex items-center rounded-full bg-white/90 px-4 py-2 text-sm font-medium text-zinc-800 shadow-lg shadow-zinc-800/5 ring-1 ring-zinc-900/5 backdrop-blur dark:bg-zinc-800/90 dark:text-zinc-200 dark:ring-white/10 dark:hover:ring-white/20"
+              onClick={() => setIsExpanded(!isExpanded)}
+            >
+              {isExpanded ? (
+                <>
+                  Show less
+                  <ChevronUpIcon className="ml-3 h-auto w-[10px] stroke-zinc-500 group-hover:stroke-zinc-700 dark:group-hover:stroke-zinc-400" />
+                </>
+              ) : (
+                <>
+                  Show more
+                  <ChevronDownIcon className="ml-3 h-auto w-[10px] stroke-zinc-500 group-hover:stroke-zinc-700 dark:group-hover:stroke-zinc-400" />
+                </>
+              )}
+            </button>
+          </div>
+        )}
       </div>
     </Container>
   );

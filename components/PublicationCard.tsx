@@ -1,42 +1,28 @@
-import { SVGProps } from "react";
-
-function ChevronRightIcon(
-  props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>
-): JSX.Element {
-  return (
-    <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" {...props}>
-      <path
-        d="M6.75 5.75 9.25 8l-2.5 2.25"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
+import Link from "next/link";
 
 export default function PublicationCard({
   publication,
 }: {
-  publication: {
-    title: string;
-    date: string;
-    description: React.ReactNode;
-    codeURL: string;
-    paperURL: string;
-  };
+  publication: any;
 }): JSX.Element {
   return (
-    <article className="group relative flex flex-col items-start">
-      <div className="absolute -inset-y-6 -inset-x-4 z-0 scale-95 bg-zinc-50 opacity-0 transition group-hover:scale-100 group-hover:opacity-100 dark:bg-zinc-800/50 sm:-inset-x-6 sm:rounded-2xl"></div>
+    <div className="group relative flex flex-col items-start rounded-2xl border border-zinc-100 p-6 dark:border-zinc-700/40 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 mb-4">
       <h2 className="relative z-10 text-base font-semibold tracking-tight text-zinc-800 dark:text-zinc-100">
-        <a href="/articles/crafting-a-design-system-for-a-multiplanetary-future">
-          Crafting a design system for a multiplanetary future
-        </a>
+        <Link href={publication.url ? publication.url : "#"}>
+          {publication.title}
+        </Link>
       </h2>
       <time
-        className="relative z-10 order-first mb-3 flex items-center text-sm text-zinc-400 dark:text-zinc-500 pl-3.5"
-        dateTime="2022-09-05"
+        className="relative z-10 order-first mb-2 flex items-center text-sm text-zinc-400 dark:text-zinc-500 pl-3.5"
+        dateTime={new Date(
+          publication.year,
+          publication.month ? publication.month - 1 : 0,
+          publication.day ? publication.day : 1
+        ).toLocaleString("en-US", {
+          month: "long",
+          year: "numeric",
+          day: "numeric",
+        })}
       >
         <span
           className="absolute inset-y-0 left-0 flex items-center"
@@ -44,22 +30,144 @@ export default function PublicationCard({
         >
           <span className="h-4 w-0.5 rounded-full bg-zinc-200 dark:bg-zinc-500"></span>
         </span>
-        September 5, 2022
+        {new Date(
+          publication.year,
+          publication.month ? publication.month - 1 : 0,
+          publication.day ? publication.day : 1
+        ).toLocaleString("en-US", {
+          month: "long",
+          year: "numeric",
+          day: "numeric",
+        })}
       </time>
 
-      <p className="relative z-10 mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-        Most companies try to stay ahead of the curve when it comes to visual
-        design, but for Planetaria we needed to create a brand that would still
-        inspire us 100 years from now when humanity has spread across our entire
-        solar system.
+      <p className="text-xs text-zinc-400 dark:text-zinc-500 leading-5">
+        {publication.author?.split("and").map((author: any, index: any) => (
+          <span key={index}>
+            {author
+              .trim()
+              .split(",")
+              .reverse()
+              .map((name: any, authorIndex: number) => (
+                <span key={name}>
+                  {name.trim()}
+                  {authorIndex !== author.trim().split(",").length - 1 && " "}
+                </span>
+              ))}
+            {index !== publication.author?.split("and").length - 1 && (
+              <span>, </span>
+            )}
+          </span>
+        ))}
       </p>
+
+      <p className="relative z-10 mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+        {publication.type === "article" && (
+          <span>
+            <span className="font-semibold italic">{publication.journal}</span>
+            {publication.volume && (
+              <span>
+                ,{" "}
+                <span className="font-semibold">
+                  Volume {publication.volume}
+                </span>
+              </span>
+            )}
+            {publication.issue && <span>Issue {publication.issue}</span>}
+            {publication.year && (
+              <span>
+                ,{" "}
+                {new Date(
+                  publication.year,
+                  publication.month ? publication.month - 1 : 0
+                ).toLocaleString("en-US", { year: "numeric", month: "long" })}
+              </span>
+            )}
+            {publication.pages && <span>, Pages {publication.pages}</span>}
+
+            {publication.doi && (
+              <span>
+                ,{" "}
+                <Link
+                  href={`https://doi.org/${publication.doi}`}
+                  target="_blank"
+                >
+                  DOI: <span className="text-teal-500">{publication.doi}</span>
+                </Link>
+              </span>
+            )}
+          </span>
+        )}
+        {publication.type === "inproceedings" && (
+          <span>
+            <span className="font-semibold italic">
+              {publication.booktitle}
+            </span>
+            {publication.year && (
+              <span>
+                ,{" "}
+                {new Date(
+                  publication.year,
+                  publication.month ? publication.month - 1 : 0
+                ).toLocaleString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                })}
+              </span>
+            )}
+            {publication.pages && <span>, Pages {publication.pages}</span>}
+            {publication.doi && (
+              <span>
+                ,{" "}
+                <Link
+                  href={`https://doi.org/${publication.doi}`}
+                  target="_blank"
+                >
+                  DOI: <span className="text-teal-500">{publication.doi}</span>
+                </Link>
+              </span>
+            )}
+          </span>
+        )}
+      </p>
+
       <div
         aria-hidden="true"
-        className="relative z-10 mt-4 flex items-center text-sm font-medium text-teal-500"
+        className="relative z-10 mt-2 flex space-x-4 text-sm font-medium text-teal-500"
       >
-        Read article
-        <ChevronRightIcon className="ml-1 h-4 w-4 stroke-current" />
+        <Link href={publication.url ? publication.url : "#"} target="_blank">
+          [ Paper ]
+        </Link>
+        {publication.supplement && (
+          <Link href={publication.supplement} target="_blank">
+            [ Supplement ]
+          </Link>
+        )}
+        {publication.code && (
+          <Link
+            href={publication.code ? publication.code : "#"}
+            target="_blank"
+          >
+            [ Code ]
+          </Link>
+        )}
+        {publication.slides && (
+          <Link
+            href={publication.slides ? publication.slides : "#"}
+            target="_blank"
+          >
+            [ Slides ]
+          </Link>
+        )}
+        {publication.video && (
+          <Link
+            href={publication.video ? publication.video : "#"}
+            target="_blank"
+          >
+            [ Video ]
+          </Link>
+        )}
       </div>
-    </article>
+    </div>
   );
 }
