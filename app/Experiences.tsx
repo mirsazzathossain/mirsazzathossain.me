@@ -1,35 +1,8 @@
 "use client";
 import { Container } from "components/Container";
 import ExperienceCard from "components/ExperienceCard";
+import { ChevronDownIcon, ChevronUpIcon } from "components/Icons";
 import { useRef, useState } from "react";
-
-function ChevronDownIcon(props: React.SVGProps<SVGSVGElement>): JSX.Element {
-  return (
-    <svg viewBox="0 0 8 6" aria-hidden="true" {...props}>
-      <path
-        d="M1.75 1.75 4 4.25l2.25-2.5"
-        fill="none"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
-function ChevronUpIcon(props: React.SVGProps<SVGSVGElement>): JSX.Element {
-  return (
-    <svg viewBox="0 0 8 6" aria-hidden="true" {...props}>
-      <path
-        d="M1.75 4.25 4 1.75l2.25 2.5"
-        fill="none"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
 
 export default function Experiences({
   experiences,
