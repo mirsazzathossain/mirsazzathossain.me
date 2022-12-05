@@ -1,4 +1,6 @@
+"use client";
 import { Container } from "components/Container";
+import { DownloadFileIcon } from "components/Icons";
 import {
   GitHubIcon,
   GoogleScholarIcon,
@@ -6,6 +8,8 @@ import {
   TwitterIcon,
 } from "components/SocialIcons";
 import Link from "next/link";
+import useSWR from "swr";
+import fetcher from "utils/fetcher";
 
 function SocialLink({
   icon: Icon,
@@ -21,55 +25,63 @@ function SocialLink({
 }
 
 export default function About() {
+  const { data, error } = useSWR("/api/about", fetcher);
+  if (error) return <div>failed to load</div>;
+  if (!data) return <div>loading...</div>;
+  const about = data;
   return (
     <Container className="mt-9">
       <div className="max-w-3xl">
         <h1 className="text-3xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-5xl">
-          Mir Sazzat Hossain
+          {about.name}
         </h1>
         <h2 className="text-gray-600 dark:text-gray-400 tracking-tighter mb-4">
-          Research Assistant at{" "}
+          {about.designation} at{" "}
           <Link
             className="font-semibold"
-            href="http://ccds.ai/"
+            href={about.company.url}
             target={"_blank"}
           >
-            Center for Computational & Data Sciences
+            {about.company.name}
           </Link>
         </h2>
         <p className="mt-6 text-base text-zinc-600 dark:text-zinc-400">
-          I'm a recent college graduate with a solid foundation in computer
-          science as well as competence in exploratory data analysis, machine
-          learning, computer vision, and statistics. I am currently employed as
-          a Research Assistant at IUB's Center for Computational and Data
-          Sciences (CCDS).
-          <br />
-          Aspects of my research include computer vision, group theory, manifold
-          learning, and geometric machine learning. Due to my enthusiasm for
-          learning new data science topics, data visualization, and conducting
-          research, I value making significant contributions and having an
-          impact that aids in others' learning.
+          {about.description}
         </p>
         <div className="mt-6 flex gap-6">
+          {about.socialLinks.map((socialLink: any, index: any) => (
+            <SocialLink
+              key={index}
+              href={socialLink.url}
+              icon={
+                socialLink.name === "github"
+                  ? GitHubIcon
+                  : socialLink.name === "linkedin"
+                  ? LinkedInIcon
+                  : socialLink.name === "twitter"
+                  ? TwitterIcon
+                  : socialLink.name === "google-scholar"
+                  ? GoogleScholarIcon
+                  : null
+              }
+              title={
+                socialLink.name === "github"
+                  ? "GitHub Profile"
+                  : socialLink.name === "linkedin"
+                  ? "LinkedIn Profile"
+                  : socialLink.name === "twitter"
+                  ? "Twitter Profile"
+                  : socialLink.name === "google-scholar"
+                  ? "Google Scholar Profile"
+                  : null
+              }
+            />
+          ))}
           <SocialLink
-            href="https://twitter.com/mir_sazzat"
-            aria-label="Follow on Twitter"
-            icon={TwitterIcon}
-          />
-          <SocialLink
-            href="https://scholar.google.com/"
-            aria-label="Follow on Google Scholar"
-            icon={GoogleScholarIcon}
-          />
-          <SocialLink
-            href="https://github.com/mirsazzathossain"
-            aria-label="Follow on GitHub"
-            icon={GitHubIcon}
-          />
-          <SocialLink
-            href="https://linkedin.com/in/mirsazzathossain"
-            aria-label="Follow on LinkedIn"
-            icon={LinkedInIcon}
+            href={about.resume}
+            title="Download Resume"
+            icon={DownloadFileIcon}
+            download
           />
         </div>
       </div>
