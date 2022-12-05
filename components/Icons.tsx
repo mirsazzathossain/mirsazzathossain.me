@@ -1,3 +1,5 @@
+import { SVGProps } from "react";
+
 export function ChevronDownIcon(
   props: React.SVGProps<SVGSVGElement>
 ): JSX.Element {
@@ -88,6 +90,24 @@ export function MoonIcon(props: React.SVGProps<SVGSVGElement>): JSX.Element {
         strokeLinecap="round"
         strokeLinejoin="round"
       />
+    </svg>
+  );
+}
+
+export function DownloadFileIcon(
+  props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>
+): JSX.Element {
+  return (
+    <svg
+      stroke="currentColor"
+      fill="currentColor"
+      stroke-width="0"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <path fill="none" d="M0 0h24v24H0z"></path>
+      <path d="M12 2C6.49 2 2 6.49 2 12s4.49 10 10 10 10-4.49 10-10S17.51 2 12 2zm-1 8V6h2v4h3l-4 4-4-4h3zm6 7H7v-2h10v2z"></path>
     </svg>
   );
 }
