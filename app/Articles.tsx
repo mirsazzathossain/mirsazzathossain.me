@@ -17,15 +17,17 @@ export default function Articles({ articles }: { articles: any }) {
           ))}
         </div>
 
-        <div className="flex justify-center mt-10">
-          <Link
-            href="/articles"
-            className="group flex items-center rounded-full bg-white/90 px-4 py-2 text-sm font-medium text-zinc-800 shadow-lg shadow-zinc-800/5 ring-1 ring-zinc-900/5 backdrop-blur dark:bg-zinc-800/90 dark:text-zinc-200 dark:ring-white/10 dark:hover:ring-white/20"
-          >
-            Show more
-            <ChevronDownIcon className="ml-3 h-auto w-[10px] stroke-zinc-500 group-hover:stroke-zinc-700 dark:group-hover:stroke-zinc-400" />
-          </Link>
-        </div>
+        {articles.length > 4 && (
+          <div className="flex justify-center mt-10">
+            <Link
+              href="/articles"
+              className="group flex items-center text-sm font-medium text-zinc-800 dark:text-zinc-200 hover:text-teal-500 dark:hover:text-teal-500"
+            >
+              Show more
+              <ChevronDownIcon className="ml-3 h-auto w-[10px] stroke-zinc-500 group-hover:stroke-teal-500 dark:group-hover:stroke-teal-500" />
+            </Link>
+          </div>
+        )}
       </div>
     </Container>
   );

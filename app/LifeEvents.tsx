@@ -1,7 +1,7 @@
 "use client";
 import { Container } from "components/Container";
 import Event from "components/Event";
-import { ChevronDownIcon } from "components/Icons";
+import { ChevronDownIcon, ChevronUpIcon } from "components/Icons";
 import { useRef, useState } from "react";
 import useSWR from "swr";
 import fetcher from "utils/fetcher";
@@ -58,13 +58,22 @@ export default function LifeEvents() {
               ))}
 
             {Object.keys(lifeEvents).length > 3 && !isExpanded && (
-              <div className="flex justify-center mt-4">
+              <div className="flex justify-center">
                 <button
-                  className="group flex items-center rounded-full bg-white/90 px-4 py-2 text-sm font-medium text-zinc-800 shadow-lg shadow-zinc-800/5 ring-1 ring-zinc-900/5 backdrop-blur dark:bg-zinc-800/90 dark:text-zinc-200 dark:ring-white/10 dark:hover:ring-white/20"
+                  className="group flex items-center text-sm font-medium text-zinc-800 dark:text-zinc-200 hover:text-teal-500 dark:hover:text-teal-500"
                   onClick={() => setIsExpanded(!isExpanded)}
                 >
-                  Show more
-                  <ChevronDownIcon className="ml-3 h-auto w-[10px] stroke-zinc-500 group-hover:stroke-zinc-700 dark:group-hover:stroke-zinc-400" />
+                  {isExpanded ? (
+                    <>
+                      Show less
+                      <ChevronUpIcon className="ml-3 h-auto w-[10px] stroke-zinc-500 group-hover:stroke-teal-500 dark:group-hover:stroke-teal-500" />
+                    </>
+                  ) : (
+                    <>
+                      Show more
+                      <ChevronDownIcon className="ml-3 h-auto w-[10px] stroke-zinc-500 group-hover:stroke-teal-500 dark:group-hover:stroke-teal-500" />
+                    </>
+                  )}
                 </button>
               </div>
             )}
