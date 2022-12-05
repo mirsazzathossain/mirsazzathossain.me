@@ -1,0 +1,19 @@
+[
+  {
+    "school": "Independent University, Bangladesh",
+    "schoolURL": "https://iub.edu.bd/",
+    "schoolLogo": "/images/iub.png",
+    "schoolLocation": "Plot 16, Aftabuddin Ahmed Road, Block B, Bashnudhara RA, Dhaka 1229, Bangladesh.",
+    "degree": "Bachelor of Science - BS",
+    "major": "Computer Science and Engineering",
+    "minor": "Engineering Mathematics",
+    "date": "2017 - 2021",
+    "description": "Independent University, Bangladesh (IUB) is one of Bangladesh's top-ranked private universities. I have completed my Bachelor of Science (B.Sc.) in Computer Science and Engineering (CSE) from IUB. I studied Engineering Mathematics as a minor while majoring in Computer Science and Engineering.",
+    "activitiesandsocieties": [
+      "Competitive Programming",
+      "JUKTI - Club of CSE IUB",
+      "IUB ACM Student Chapter",
+      "IEEE Computer Society IUB Student Branch Chapter"
+    ]
+  }
+]

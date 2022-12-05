@@ -1,0 +1,28 @@
+{
+  "name": "Mir Sazzat Hossain",
+  "designation": "Research Assistant",
+  "company": {
+    "name": "Center for Computational & Data Sciences",
+    "url": "https://ccds.ai/"
+  },
+  "description": "I'm a recent college graduate with a solid foundation in computer science as well as competence in exploratory data analysis, machine learning, computer vision, and statistics. I am currently employed as a Research Assistant at IUB's Center for Computational and Data Sciences (CCDS). \nAspects of my research include computer vision, group theory, manifold learning, and geometric machine learning. Due to my enthusiasm for learning new data science topics, data visualization, and conducting research, I value making significant contributions and having an impact that aids in others' learning.",
+  "socialLinks": [
+    {
+      "name": "twitter",
+      "url": "https://twitter.com/mir_sazzat"
+    },
+    {
+      "name": "google-scholar",
+      "url": "https://scholar.google.com/"
+    },
+    {
+      "name": "github",
+      "url": "https://github.com/mirsazzathossain"
+    },
+    {
+      "name": "linkedin",
+      "url": "https://linkedin.com/in/mirsazzathossain"
+    }
+  ],
+  "resume": "files/mirsazzathossain-cv.pdf"
+}
