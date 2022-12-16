@@ -10,11 +10,11 @@ import MobileNavigation from "./MobileNavigation";
 import ThemeSelector from "./ThemeSelector";
 
 const navigations = [
-  { href: "/about", label: "About" },
+  { href: "/", label: "Home" },
   { href: "/articles", label: "Articles" },
   { href: "/snippets", label: "Snippets" },
   { href: "/resources", label: "Resources" },
-  { href: "/guestbook", label: "Guestbook" },
+  { href: "/courses", label: "Courses" },
   { href: "/projects", label: "Projects" },
 ];
 
