@@ -2,6 +2,8 @@
 import { Container } from "components/Container";
 import EducationCard from "components/EducationCard";
 import { ChevronDownIcon, ChevronUpIcon } from "components/Icons";
+import EducationsPlaceholder from "components/skeleton/EducationsPlaceholder";
+import ErrorSection from "components/skeleton/ErrorSection";
 import { useRef, useState } from "react";
 import useSWR from "swr";
 import fetcher from "utils/fetcher";
@@ -11,8 +13,8 @@ export default function Experiences(): JSX.Element {
   const parentRef = useRef();
 
   const { data, error } = useSWR("/api/educations", fetcher);
-  if (error) return <div>Failed to load</div>;
-  if (!data) return <div>Loading...</div>;
+  if (error) return <ErrorSection />;
+  if (!data) return <EducationsPlaceholder />;
   const educations = data;
 
   return (

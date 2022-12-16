@@ -2,6 +2,8 @@
 import { Container } from "components/Container";
 import Event from "components/Event";
 import { ChevronDownIcon, ChevronUpIcon } from "components/Icons";
+import ErrorSection from "components/skeleton/ErrorSection";
+import LifeEventsPlaceholder from "components/skeleton/LifeEventsPlaceholder";
 import { useRef, useState } from "react";
 import useSWR from "swr";
 import fetcher from "utils/fetcher";
@@ -17,8 +19,8 @@ export default function LifeEvents() {
   const parentRef = useRef();
 
   const { data, error } = useSWR("/api/life-events", fetcher);
-  if (error) return <div>Failed to load</div>;
-  if (!data) return <div>Loading...</div>;
+  if (error) return <ErrorSection />;
+  if (!data) return <LifeEventsPlaceholder />;
   const lifeEvents = data;
   return (
     <>

@@ -1,6 +1,9 @@
 "use client";
 import { Container } from "components/Container";
 import { DownloadFileIcon } from "components/Icons";
+import AboutPlaceholder from "components/skeleton/AboutPlaceholder";
+import ErrorSection from "components/skeleton/ErrorSection";
+
 import {
   GitHubIcon,
   GoogleScholarIcon,
@@ -26,8 +29,8 @@ function SocialLink({
 
 export default function About() {
   const { data, error } = useSWR("/api/about", fetcher);
-  if (error) return <div>failed to load</div>;
-  if (!data) return <div>loading...</div>;
+  if (error) return <ErrorSection />;
+  if (!data) return <AboutPlaceholder />;
   const about = data;
   return (
     <Container className="mt-9">
@@ -45,7 +48,10 @@ export default function About() {
             {about.company.name}
           </Link>
         </h2>
-        <p className="mt-6 text-base text-zinc-600 dark:text-zinc-400">
+        <p
+          className="mt-6 text-base text-zinc-600 dark:text-zinc-400"
+          style={{ whiteSpace: "pre-line" }}
+        >
           {about.description}
         </p>
         <div className="mt-6 flex gap-6">
