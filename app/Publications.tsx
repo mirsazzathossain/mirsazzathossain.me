@@ -2,20 +2,15 @@
 import { Container } from "components/Container";
 import { ChevronDownIcon, ChevronUpIcon } from "components/Icons";
 import PublicationCard from "components/PublicationCard";
-import ErrorSection from "components/skeleton/ErrorSection";
-import PublicationsPlaceholder from "components/skeleton/PublicationsPlaceholder";
 import { useRef, useState } from "react";
-import useSWR from "swr";
-import fetcher from "utils/fetcher";
 
-export default function Publications(): JSX.Element {
+export default function Publications({
+  publications,
+}: {
+  publications: any;
+}): JSX.Element {
   let [isExpanded, setIsExpanded] = useState(false);
   const parentRef = useRef();
-
-  const { data, error } = useSWR("/api/publications", fetcher);
-  if (error) return <ErrorSection />;
-  if (!data) return <PublicationsPlaceholder />;
-  const publications = data;
 
   return (
     <>

@@ -2,20 +2,15 @@
 import { Container } from "components/Container";
 import ExperienceCard from "components/ExperienceCard";
 import { ChevronDownIcon, ChevronUpIcon } from "components/Icons";
-import ErrorSection from "components/skeleton/ErrorSection";
-import ExperiencesPlaceholder from "components/skeleton/ExperiencesPlaceholder";
 import { useRef, useState } from "react";
-import useSWR from "swr";
-import fetcher from "utils/fetcher";
 
-export default function Experiences(): JSX.Element {
+export default function Experiences({
+  experiences,
+}: {
+  experiences: any;
+}): JSX.Element {
   let [isExpanded, setIsExpanded] = useState(false);
   const parentRef = useRef();
-
-  const { data, error } = useSWR("/api/experiences", fetcher);
-  if (error) return <ErrorSection />;
-  if (!data) return <ExperiencesPlaceholder />;
-  const experiences = data;
 
   return (
     <>

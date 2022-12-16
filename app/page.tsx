@@ -1,27 +1,45 @@
+import AboutPlaceholder from "components/skeleton/AboutPlaceholder";
+import EducationsPlaceholder from "components/skeleton/EducationsPlaceholder";
+import ExperiencesPlaceholder from "components/skeleton/ExperiencesPlaceholder";
+import LifeEventsPlaceholder from "components/skeleton/LifeEventsPlaceholder";
+import PublicationsPlaceholder from "components/skeleton/PublicationsPlaceholder";
+import { Suspense } from "react";
 import About from "./About";
-import Articles from "./Articles";
-import { default as Educations, default as Experiences } from "./Educations";
-import LifeEvents from "./LifeEvents";
-import Publications from "./Publications";
-
-const photos = [
-  "/images/photos/image-1.jpg",
-  "/images/photos/image-2.jpg",
-  "/images/photos/image-3.jpg",
-  "/images/photos/image-4.jpg",
-  "/images/photos/image-5.jpg",
-];
+import Server from "./Server";
 
 export default async function Home(): Promise<JSX.Element> {
   return (
     <>
-      <About />
+      <Suspense fallback={<AboutPlaceholder />}>
+        {/* @ts-expect-error Server Component */}
+        <About />
+      </Suspense>
+
       {/* <Photos images={photos} /> */}
-      <Educations />
-      <Experiences />
-      <Publications />
-      <Articles />
-      <LifeEvents />
+
+      <Suspense fallback={<EducationsPlaceholder />}>
+        {/* @ts-expect-error Server Component */}
+        <Server component="Educations" />
+      </Suspense>
+
+      <Suspense fallback={<ExperiencesPlaceholder />}>
+        {/* @ts-expect-error Server Component */}
+        <Server component="Experiences" />
+      </Suspense>
+
+      <Suspense fallback={<PublicationsPlaceholder />}>
+        {/* @ts-expect-error Server Component */}
+        <Server component="Publications" />
+      </Suspense>
+
+      {/* <Suspense fallback={<ArticlesPlaceholder />}> */}
+      {/* <Server component="Articles" />
+      </Suspense> */}
+
+      <Suspense fallback={<LifeEventsPlaceholder />}>
+        {/* @ts-expect-error Server Component */}
+        <Server component="LifeEvents" />
+      </Suspense>
     </>
   );
 }

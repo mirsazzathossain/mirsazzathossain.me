@@ -1,8 +1,5 @@
-"use client";
 import { Container } from "components/Container";
 import { DownloadFileIcon } from "components/Icons";
-import AboutPlaceholder from "components/skeleton/AboutPlaceholder";
-import ErrorSection from "components/skeleton/ErrorSection";
 
 import {
   GitHubIcon,
@@ -11,7 +8,6 @@ import {
   TwitterIcon,
 } from "components/SocialIcons";
 import Link from "next/link";
-import useSWR from "swr";
 import fetcher from "utils/fetcher";
 
 function SocialLink({
@@ -27,11 +23,8 @@ function SocialLink({
   );
 }
 
-export default function About() {
-  const { data, error } = useSWR("/api/about", fetcher);
-  if (error) return <ErrorSection />;
-  if (!data) return <AboutPlaceholder />;
-  const about = data;
+export default async function About() {
+  const about = await fetcher("http://localhost:3000/api/about");
   return (
     <Container className="mt-9">
       <div className="max-w-3xl">

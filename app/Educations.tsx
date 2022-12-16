@@ -2,20 +2,11 @@
 import { Container } from "components/Container";
 import EducationCard from "components/EducationCard";
 import { ChevronDownIcon, ChevronUpIcon } from "components/Icons";
-import EducationsPlaceholder from "components/skeleton/EducationsPlaceholder";
-import ErrorSection from "components/skeleton/ErrorSection";
 import { useRef, useState } from "react";
-import useSWR from "swr";
-import fetcher from "utils/fetcher";
 
-export default function Experiences(): JSX.Element {
+export default function Educations({ educations }: any): JSX.Element {
   let [isExpanded, setIsExpanded] = useState(false);
   const parentRef = useRef();
-
-  const { data, error } = useSWR("/api/educations", fetcher);
-  if (error) return <ErrorSection />;
-  if (!data) return <EducationsPlaceholder />;
-  const educations = data;
 
   return (
     <>

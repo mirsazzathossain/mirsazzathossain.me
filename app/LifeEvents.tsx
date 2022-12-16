@@ -2,11 +2,7 @@
 import { Container } from "components/Container";
 import Event from "components/Event";
 import { ChevronDownIcon, ChevronUpIcon } from "components/Icons";
-import ErrorSection from "components/skeleton/ErrorSection";
-import LifeEventsPlaceholder from "components/skeleton/LifeEventsPlaceholder";
 import { useRef, useState } from "react";
-import useSWR from "swr";
-import fetcher from "utils/fetcher";
 
 const Divider = () => {
   return (
@@ -14,14 +10,10 @@ const Divider = () => {
   );
 };
 
-export default function LifeEvents() {
+export default function LifeEvents({ lifeEvents }: { lifeEvents: any }) {
   let [isExpanded, setIsExpanded] = useState(false);
   const parentRef = useRef();
 
-  const { data, error } = useSWR("/api/life-events", fetcher);
-  if (error) return <ErrorSection />;
-  if (!data) return <LifeEventsPlaceholder />;
-  const lifeEvents = data;
   return (
     <>
       {Object.keys(lifeEvents).length > 0 && (
@@ -35,10 +27,10 @@ export default function LifeEvents() {
               .reverse()
               .slice(0, 3)
               .map((year: string, index: number) => (
-                <>
+                <div key={index}>
                   <Event key={index} year={year} events={lifeEvents[year]} />
                   {/* {index !== Object.keys(lifeEvents).length - 1 && <Divider />} */}
-                </>
+                </div>
               ))}
 
             {Object.keys(lifeEvents)
