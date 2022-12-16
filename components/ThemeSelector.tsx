@@ -1,6 +1,16 @@
+"use client";
+import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 import { MoonIcon, SunIcon } from "./Icons";
 
 export default function ThemeSelector(): JSX.Element {
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => setMounted(true), []);
+
+  const currtentTheme = theme === "dark" ? "dark" : "light";
+
   function disableTransitionsTemporarily() {
     document.documentElement.classList.add("[&_*]:!transition-none");
     window.setTimeout(() => {
@@ -11,14 +21,10 @@ export default function ThemeSelector(): JSX.Element {
   function toggleTheme(): void {
     disableTransitionsTemporarily();
 
-    let darkModeMediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-    let isSystemDarkMode = darkModeMediaQuery.matches;
-    let isDarkMode = document.documentElement.classList.toggle("dark");
-
-    if (isDarkMode === isSystemDarkMode) {
-      delete window.localStorage.isDarkMode;
+    if (currtentTheme === "dark") {
+      setTheme("light");
     } else {
-      window.localStorage.isDarkMode = isDarkMode;
+      setTheme("dark");
     }
   }
 
