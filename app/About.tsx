@@ -8,7 +8,6 @@ import {
   TwitterIcon,
 } from "components/SocialIcons";
 import Link from "next/link";
-import fetcher from "utils/fetcher";
 
 function SocialLink({
   icon: Icon,
@@ -24,7 +23,9 @@ function SocialLink({
 }
 
 export default async function About() {
-  const about = await fetcher("http://localhost:3000/api/about");
+  const about = await fetch("http://localhost:3000/api/about").then((res) =>
+    res.json()
+  );
   return (
     <Container className="mt-9">
       <div className="max-w-3xl">
