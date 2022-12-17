@@ -7,6 +7,7 @@ import {
   LinkedInIcon,
   TwitterIcon,
 } from "components/SocialIcons";
+import { server } from "config";
 import Link from "next/link";
 
 function SocialLink({
@@ -23,9 +24,7 @@ function SocialLink({
 }
 
 export default async function About() {
-  const about = await fetch("http://localhost:3000/api/about").then((res) =>
-    res.json()
-  );
+  const about = await fetch(`${server}/api/about`).then((res) => res.json());
   return (
     <Container className="mt-9">
       <div className="max-w-3xl">
