@@ -1,6 +1,7 @@
+import { Article } from "contentlayer/generated";
 import { Card } from "./Card";
 
-export default function ArticleCard({ article }: { article: any }) {
+export default function ArticleCard({ article }: { article: Article }) {
   return (
     <article className="md:grid md:grid-cols-4 md:items-baseline">
       <Card className="md:col-span-3">
@@ -9,21 +10,43 @@ export default function ArticleCard({ article }: { article: any }) {
         </Card.Title>
         <Card.Eyebrow
           as="time"
-          dateTime={article.date}
+          dateTime={new Date(article.publishedAt as string).toLocaleString(
+            "en-US",
+            {
+              month: "long",
+              year: "numeric",
+              day: "numeric",
+            }
+          )}
           className="md:hidden"
           decorate
         >
-          {article.date}
+          {new Date(article.publishedAt as string).toLocaleString("en-US", {
+            month: "long",
+            year: "numeric",
+            day: "numeric",
+          })}
         </Card.Eyebrow>
         <Card.Description>{article.description}</Card.Description>
         <Card.Cta>Read article</Card.Cta>
       </Card>
       <Card.Eyebrow
         as="time"
-        dateTime={article.date}
+        dateTime={new Date(article.publishedAt as string).toLocaleString(
+          "en-US",
+          {
+            month: "long",
+            year: "numeric",
+            day: "numeric",
+          }
+        )}
         className="mt-1 hidden md:block"
       >
-        {article.date}
+        {new Date(article.publishedAt as string).toLocaleString("en-US", {
+          month: "long",
+          year: "numeric",
+          day: "numeric",
+        })}
       </Card.Eyebrow>
     </article>
   );

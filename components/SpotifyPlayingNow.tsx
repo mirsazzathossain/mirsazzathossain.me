@@ -2,14 +2,13 @@
 import Link from "next/link";
 import useSWR from "swr";
 import fetcher from "utils/fetcher";
-import { Container } from "./Container";
 import { SpotifyIcon } from "./SocialIcons";
 
 export default function SpotifyPlayingNow() {
   const { data, error } = useSWR("/api/spotify-playing-now", fetcher);
 
   return (
-    <Container className="mb-4">
+    <div className="mb-8">
       <div className="max-w-3xl inline-flex">
         <div>
           <SpotifyIcon className="h-4 w-4 mt-1 mr-2" />
@@ -46,6 +45,6 @@ export default function SpotifyPlayingNow() {
           )}
         </div>
       </div>
-    </Container>
+    </div>
   );
 }
