@@ -1,6 +1,6 @@
 import { allArticles, Article } from "contentlayer/generated";
 
-async function getAllArticles(): Promise<Article[]> {
+async function getAllArticles(): Promise<any> {
   const articles = await allArticles;
   const publishedArticles = articles.filter(
     (article: Article) => article.status === "published"
@@ -16,7 +16,7 @@ async function getAllArticles(): Promise<Article[]> {
 }
 
 // eslint-disable-next-line import/no-anonymous-default-export
-export default async (req: any, res: any): Promise<Article[]> => {
+export default async (req: any, res: any): Promise<any> => {
   const articles = await getAllArticles();
   res.setHeader(
     "Cache-Control",

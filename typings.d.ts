@@ -23,3 +23,23 @@ declare type Education = {
   description: string;
   activitiesandsocieties: string[];
 };
+
+declare type Resource = {
+  title: string;
+  url: string;
+  description: string;
+  category: string;
+};
+
+declare type Project = {
+  title: string;
+  description: string;
+  link: {
+    href: string;
+    label: string;
+  };
+  logo: {
+    src: string;
+    alt: string;
+  };
+};

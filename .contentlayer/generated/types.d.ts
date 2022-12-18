@@ -39,6 +39,23 @@ export type Article = {
   wordCount: number
   /** The slug of the post */
   slug: string
+}
+
+export type Snippet = {
+  /** File path relative to `contentDirPath` */
+  _id: string
+  _raw: Local.RawDocumentData
+  type: 'Snippet'
+  /** The title of the snippet */
+  title: string
+  /** The description of the snippet */
+  description: string
+  /** The logo of the snippet */
+  logo: Image
+  /** MDX file body */
+  body: MDX
+  /** The slug of the snippet */
+  slug: string
 }  
 
 /** Nested types */
@@ -107,8 +124,8 @@ export type Tag = {
 export type AllTypes = DocumentTypes | NestedTypes
 export type AllTypeNames = DocumentTypeNames | NestedTypeNames
 
-export type DocumentTypes = Article
-export type DocumentTypeNames = 'Article'
+export type DocumentTypes = Article | Snippet
+export type DocumentTypeNames = 'Article' | 'Snippet'
 
 export type NestedTypes = Author | Category | Image | Series | Tag
 export type NestedTypeNames = 'Author' | 'Category' | 'Image' | 'Series' | 'Tag'
@@ -130,6 +147,7 @@ declare global {
 
 export type DocumentTypeMap = {
   Article: Article
+  Snippet: Snippet
 }
 
 export type NestedTypeMap = {

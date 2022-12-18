@@ -4,10 +4,11 @@ import rehypePrettyCode from "rehype-pretty-code";
 import rehypeSlug from "rehype-slug";
 import remarkGfm from "remark-gfm";
 import { Article } from "./content/definitions/Article";
+import { Snippets } from "./content/definitions/Snippet";
 
 export default makeSource({
   contentDirPath: "content",
-  documentTypes: [Article],
+  documentTypes: [Article, Snippets],
   mdx: {
     esbuildOptions(options) {
       options.target = "esnext";

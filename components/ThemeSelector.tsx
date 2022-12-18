@@ -4,12 +4,12 @@ import { useEffect, useState } from "react";
 import { MoonIcon, SunIcon } from "./Icons";
 
 export default function ThemeSelector(): JSX.Element {
-  const { theme, setTheme } = useTheme();
+  const { systemTheme, theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => setMounted(true), []);
 
-  const currtentTheme = theme === "dark" ? "dark" : "light";
+  const currtentTheme = theme === "system" ? systemTheme : theme;
 
   function disableTransitionsTemporarily() {
     document.documentElement.classList.add("[&_*]:!transition-none");

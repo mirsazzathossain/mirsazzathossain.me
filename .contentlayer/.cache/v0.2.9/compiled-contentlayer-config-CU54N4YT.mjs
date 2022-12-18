@@ -1,4 +1,6 @@
 // contentlayer.config.ts
+import { Article } from "content/definitions/Article";
+import { Snippets } from "content/definitions/Snippets";
 import { makeSource } from "contentlayer/source-files";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypePrettyCode from "rehype-pretty-code";
@@ -6,7 +8,7 @@ import rehypeSlug from "rehype-slug";
 import remarkGfm from "remark-gfm";
 var contentlayer_config_default = makeSource({
   contentDirPath: "content",
-  documentTypes: [Post],
+  documentTypes: [Article, Snippets],
   mdx: {
     esbuildOptions(options) {
       options.target = "esnext";
@@ -31,4 +33,4 @@ var contentlayer_config_default = makeSource({
 export {
   contentlayer_config_default as default
 };
-//# sourceMappingURL=compiled-contentlayer-config-LKR7RHXI.mjs.map
+//# sourceMappingURL=compiled-contentlayer-config-CU54N4YT.mjs.map

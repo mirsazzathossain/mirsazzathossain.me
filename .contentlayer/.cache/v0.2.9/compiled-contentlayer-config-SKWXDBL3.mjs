@@ -181,10 +181,44 @@ var Article = defineDocumentType(() => ({
   }
 }));
 
+// content/definitions/Snippets.ts
+import { defineDocumentType as defineDocumentType2 } from "contentlayer/source-files";
+var Snippets = defineDocumentType2(() => ({
+  name: "Snippets",
+  filePathPattern: "snippets/*.mdx",
+  contentType: "mdx",
+  fields: {
+    title: {
+      type: "string",
+      description: "The title of the snippet",
+      required: true
+    },
+    description: {
+      type: "string",
+      description: "The description of the snippet",
+      required: true
+    },
+    logo: {
+      type: "nested",
+      of: Image,
+      description: "The logo of the snippet",
+      required: true
+    }
+  },
+  computedFields: {
+    slug: {
+      type: "string",
+      description: "The slug of the snippet",
+      required: true,
+      resolve: (doc) => doc._raw.sourceFileName.replace(/\.mdx$/, "")
+    }
+  }
+}));
+
 // contentlayer.config.ts
 var contentlayer_config_default = makeSource({
   contentDirPath: "content",
-  documentTypes: [Article],
+  documentTypes: [Article, Snippets],
   mdx: {
     esbuildOptions(options) {
       options.target = "esnext";
@@ -209,4 +243,4 @@ var contentlayer_config_default = makeSource({
 export {
   contentlayer_config_default as default
 };
-//# sourceMappingURL=compiled-contentlayer-config-XAY7KNPP.mjs.map
+//# sourceMappingURL=compiled-contentlayer-config-SKWXDBL3.mjs.map

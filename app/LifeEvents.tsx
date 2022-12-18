@@ -28,8 +28,9 @@ export default function LifeEvents({ lifeEvents }: { lifeEvents: any }) {
               .slice(0, 3)
               .map((year: string, index: number) => (
                 <div key={index}>
+                  {index !== Object.keys(lifeEvents).length - 1 &&
+                    index !== 0 && <Divider />}
                   <Event key={index} year={year} events={lifeEvents[year]} />
-                  {/* {index !== Object.keys(lifeEvents).length - 1 && <Divider />} */}
                 </div>
               ))}
 
@@ -47,6 +48,7 @@ export default function LifeEvents({ lifeEvents }: { lifeEvents: any }) {
                       : 0,
                   }}
                 >
+                  {index !== Object.keys(lifeEvents).length - 1 && <Divider />}
                   <Event year={year} events={lifeEvents[year]} />
                 </div>
               ))}

@@ -1,0 +1,62 @@
+[
+  {
+    "title": "Planetaria",
+    "description": "Creating technology to empower civilians to explore space on their own terms.",
+    "link": {
+      "href": "http://planetaria.tech",
+      "label": "planetaria.tech"
+    },
+    "logo": {
+      "src": "logos/planetaria.svg",
+      "alt": "Planetaria"
+    }
+  },
+  {
+    "title": "Animaginary",
+    "description": "High performance web animation library, hand-written in optimized WASM.",
+    "link": {
+      "href": "#",
+      "label": "github.com"
+    },
+    "logo": {
+      "src": "logos/animaginary.svg",
+      "alt": "Animaginary"
+    }
+  },
+  {
+    "title": "HelioStream",
+    "description": "Real-time video streaming library, optimized for interstellar transmission.",
+    "link": {
+      "href": "#",
+      "label": "github.com"
+    },
+    "logo": {
+      "src": "logos/helio-stream.svg",
+      "alt": "HelioStream"
+    }
+  },
+  {
+    "title": "cosmOS",
+    "description": "The operating system that powers our Planetaria space shuttles.",
+    "link": {
+      "href": "#",
+      "label": "github.com"
+    },
+    "logo": {
+      "src": "logos/cosmos.svg",
+      "alt": "cosmOS"
+    }
+  },
+  {
+    "title": "OpenShuttle",
+    "description": "The schematics for the first rocket I designed that successfully made it to orbit.",
+    "link": {
+      "href": "#",
+      "label": "github.com"
+    },
+    "logo": {
+      "src": "logos/open-shuttle.svg",
+      "alt": "OpenShuttle"
+    }
+  }
+]

@@ -1,11 +1,4 @@
-// contentlayer.config.ts
-import { makeSource } from "contentlayer/source-files";
-import rehypeAutolinkHeadings from "rehype-autolink-headings";
-import rehypePrettyCode from "rehype-pretty-code";
-import rehypeSlug from "rehype-slug";
-import remarkGfm from "remark-gfm";
-
-// content/definitions/Post.ts
+// content/definitions/Article.ts
 import { defineDocumentType } from "contentlayer/source-files";
 import readingTime from "reading-time";
 
@@ -104,10 +97,10 @@ var Tag = defineNestedType5(() => ({
   }
 }));
 
-// content/definitions/Post.ts
-var Post = defineDocumentType(() => ({
-  name: "Post",
-  filePathPattern: "posts/*.mdx",
+// content/definitions/Article.ts
+var Article = defineDocumentType(() => ({
+  name: "Article",
+  filePathPattern: "articles/*.mdx",
   contentType: "mdx",
   fields: {
     title: {
@@ -182,9 +175,15 @@ var Post = defineDocumentType(() => ({
 }));
 
 // contentlayer.config.ts
+import { Snippets } from "content/definitions/Snippets";
+import { makeSource } from "contentlayer/source-files";
+import rehypeAutolinkHeadings from "rehype-autolink-headings";
+import rehypePrettyCode from "rehype-pretty-code";
+import rehypeSlug from "rehype-slug";
+import remarkGfm from "remark-gfm";
 var contentlayer_config_default = makeSource({
   contentDirPath: "content",
-  documentTypes: [Post],
+  documentTypes: [Article, Snippets],
   mdx: {
     esbuildOptions(options) {
       options.target = "esnext";
@@ -209,4 +208,4 @@ var contentlayer_config_default = makeSource({
 export {
   contentlayer_config_default as default
 };
-//# sourceMappingURL=compiled-contentlayer-config-KRMHB34M.mjs.map
+//# sourceMappingURL=compiled-contentlayer-config-AWOZYWC6.mjs.map
