@@ -13,6 +13,8 @@ export default function SnippetsPlaceholder() {
             <div className="h-3 w-1/2 bg-gray-300 dark:bg-gray-600 rounded mt-4"></div>
             <div className="h-2 w-full bg-gray-200 dark:bg-gray-700 rounded mt-3"></div>
             <div className="h-2 w-1/2 bg-gray-200 dark:bg-gray-700 rounded mt-2"></div>
+
+            <div className="h-6 w-1/3 bg-gray-300 dark:bg-gray-600 rounded-full mt-8 mb-2"></div>
           </div>
         </div>
       ))}

@@ -1,4 +1,4 @@
-import SnipeetCard from "components/SnipeetCard";
+import SnipeetCard from "components/SnippetCard";
 import { server } from "config";
 import { Snippet } from "contentlayer/generated";
 

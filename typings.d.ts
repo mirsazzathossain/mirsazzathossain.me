@@ -43,3 +43,19 @@ declare type Project = {
     alt: string;
   };
 };
+
+declare type Course = {
+  title: string;
+  author: string;
+  description: string;
+  link: {
+    href: string;
+    label: string;
+  };
+  logo: {
+    src: string;
+    alt: string;
+  };
+  publishedDate: string;
+  totalDuration: string;
+};

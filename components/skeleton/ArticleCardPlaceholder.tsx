@@ -8,14 +8,14 @@ export default function ArticleCardPlaceholder() {
 
         <div className="space-y-4">
           <div className="flex items-center space-x-2 w-full">
-            <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 w-[200px]"></div>
-            <div className="h-2 bg-gray-300 rounded-full dark:bg-gray-600 w-[250px]"></div>
+            <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 w-1/2"></div>
+            <div className="h-2 bg-gray-300 rounded-full dark:bg-gray-600 w-full"></div>
             <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-600 w-full"></div>
           </div>
           <div className="flex items-center w-full space-x-2">
             <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 w-full"></div>
             <div className="h-2 bg-gray-300 rounded-full dark:bg-gray-600 w-full"></div>
-            <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-600 w-[240px]"></div>
+            <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-600 w-1/2"></div>
           </div>
           <div className="flex items-center w-1/2 space-x-2">
             <div className="h-2 bg-gray-300 rounded-full dark:bg-gray-700 w-1/3"></div>

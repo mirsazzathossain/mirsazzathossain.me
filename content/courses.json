@@ -1,0 +1,32 @@
+[
+  {
+    "title": "Intorduction to programming with Python (Tutorial)",
+    "author": "Mir Sazzat Hossain",
+    "description": "An introduction to programming with Python. This tutorial is designed for beginners who want to learn Python programming language. It is a step by step guide to learn Python programming language.",
+    "link": {
+      "href": "https://github.com/mirsazzathossain/CSC101-Introduction-to-Programming",
+      "label": "Github Repository Link"
+    },
+    "logo": {
+      "src": "logos/python.png",
+      "alt": "Python Logo"
+    },
+    "publishedDate": "2022-07-24",
+    "totalDuration": "Approx. 12 weeks"
+  },
+  {
+    "title": "Numerical Methods (Lab)",
+    "author": "Mir Sazzat Hossain",
+    "description": "This course is designed to introduce the students to the basic concepts of numerical methods and to provide them with the necessary skills to solve numerical problems using the methods covered in the course.",
+    "link": {
+      "href": "https://github.com/mirsazzathossain/CSE317-Lab-Numerical-Methods",
+      "label": "Github Repository Link"
+    },
+    "logo": {
+      "src": "logos/python.png",
+      "alt": "Python Logo"
+    },
+    "publishedDate": "2022-07-20",
+    "totalDuration": "Approx. 12 weeks"
+  }
+]

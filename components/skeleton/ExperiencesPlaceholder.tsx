@@ -22,26 +22,24 @@ export default function ExperiencesPlaceholder() {
 
                 <div className="space-y-3 mt-5">
                   <div className="flex items-center space-x-2 w-full">
-                    <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 w-[200px]"></div>
-                    <div className="h-2 bg-gray-300 rounded-full dark:bg-gray-600 w-[250px]"></div>
+                    <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 w-1/3"></div>
+                    <div className="h-2 bg-gray-300 rounded-full dark:bg-gray-600 w-full"></div>
                     <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-600 w-full"></div>
                   </div>
                   <div className="flex items-center w-full space-x-2">
                     <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 w-full"></div>
                     <div className="h-2 bg-gray-300 rounded-full dark:bg-gray-600 w-full"></div>
-                    <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-600 w-[240px]"></div>
+                    <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-600 w-1/2"></div>
                   </div>
                   <div className="flex items-center w-1/2 space-x-2">
                     <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-600 w-full"></div>
-                    <div className="h-2 bg-gray-300 rounded-full dark:bg-gray-700 w-[300px]"></div>
-                    <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-600 w-full"></div>
+                    <div className="h-2 bg-gray-300 rounded-full dark:bg-gray-700 w-full"></div>
                   </div>
                 </div>
 
                 <div className="space-y-3 mt-5">
                   <div className="flex items-center w-full space-x-4">
                     <div className="h-2.5 bg-gray-200 rounded-full dark:bg-gray-600 w-1/3"></div>
-                    <div className="h-2.5 bg-gray-300 rounded-full dark:bg-gray-700 w-2/3"></div>
                     <div className="h-2.5 bg-gray-200 rounded-full dark:bg-gray-600 w-full"></div>
                     <div className="h-2.5 bg-gray-300 rounded-full dark:bg-gray-600 w-1/3"></div>
                   </div>

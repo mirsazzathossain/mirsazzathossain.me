@@ -50,6 +50,8 @@ export type Snippet = {
   title: string
   /** The description of the snippet */
   description: string
+  /** The language of the snippet */
+  language: string
   /** The logo of the snippet */
   logo: Image
   /** MDX file body */

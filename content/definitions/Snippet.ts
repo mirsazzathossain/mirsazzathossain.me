@@ -16,6 +16,11 @@ export const Snippets = defineDocumentType(() => ({
       description: "The description of the snippet",
       required: true,
     },
+    language: {
+      type: "string",
+      description: "The language of the snippet",
+      required: true,
+    },
     logo: {
       type: "nested",
       of: Image,
