@@ -1,5 +1,4 @@
 import { server } from "config";
-import { Article } from "contentlayer/generated";
 import { Feed } from "feed";
 import fs from "fs";
 
@@ -34,7 +33,7 @@ const generateRss = async () => {
   };
   const feed = new Feed(feedOptions);
 
-  allArticles.forEach((article: Article) => {
+  allArticles.forEach((article) => {
     feed.addItem({
       title: article.title,
       id: `${site_url}/articles/${article.slug}`,
