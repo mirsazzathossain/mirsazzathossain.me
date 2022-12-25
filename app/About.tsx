@@ -7,8 +7,14 @@ import {
   LinkedInIcon,
   TwitterIcon,
 } from "components/SocialIcons";
-import { server } from "config";
+import { promises as fs } from "fs";
 import Link from "next/link";
+
+// get about from local file
+async function getAbout(): Promise<any> {
+  const about = await fs.readFile("content/about.json", "utf-8");
+  return JSON.parse(about);
+}
 
 function SocialLink({
   icon: Icon,
@@ -24,7 +30,7 @@ function SocialLink({
 }
 
 export default async function About() {
-  const about = await fetch(`${server}/api/about`).then((res) => res.json());
+  const about = await getAbout();
   return (
     <Container className="mt-9">
       <div className="max-w-3xl">

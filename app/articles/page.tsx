@@ -1,6 +1,24 @@
 import SimpleLayout from "components/SimpleLayout";
-import { server } from "config";
+import { allArticles, Article } from "contentlayer/generated";
 import SearchArticles from "./SearchArticles";
+
+// Get sorted articles from the contentlayer
+async function getSortedArticles(): Promise<Article[]> {
+  let articles = await allArticles;
+
+  articles = articles.filter(
+    (article: Article) => article.status === "published"
+  );
+
+  return articles.sort((a: Article, b: Article) => {
+    if (a.publishedAt && b.publishedAt) {
+      return (
+        new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+      );
+    }
+    return 0;
+  });
+}
 
 export default async function Articles({
   params,
@@ -9,9 +27,7 @@ export default async function Articles({
   params?: any;
   searchParams?: { [key: string]: string | string[] | undefined };
 }): Promise<JSX.Element> {
-  const articles = await fetch(`${server}/api/articles`).then((res) =>
-    res.json()
-  );
+  const articles = await getSortedArticles();
   const page = searchParams?.page ? parseInt(searchParams.page as string) : 1;
 
   return (

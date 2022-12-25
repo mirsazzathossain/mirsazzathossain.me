@@ -1,15 +1,33 @@
-import { Article, Snippet } from "contentlayer/generated";
+import {
+  allArticles,
+  allSnippets,
+  Article,
+  Snippet,
+} from "contentlayer/generated";
 import { GetServerSideProps } from "next";
-import { getServerSideSitemap } from "next-sitemap";
+import { getServerSideSitemap, ISitemapField } from "next-sitemap";
+
+// get sorted articles and snippets from contentlayer
+async function getSortedArticlesAndSnippets() {
+  let articles = await allArticles;
+  articles = articles.filter((article) => article.status === "published");
+
+  articles.sort((a: Article, b: Article) => {
+    if (a.publishedAt && b.publishedAt) {
+      return (
+        new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+      );
+    }
+    return 0;
+  });
+
+  const snippets = await allSnippets;
+
+  return { articles, snippets };
+}
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const articles = await fetch("https://mirsazzathossain.me/api/articles").then(
-    (res) => res.json()
-  );
-
-  const snippets = await fetch("https://mirsazzathossain.me/api/snippets").then(
-    (res) => res.json()
-  );
+  const { articles, snippets } = await getSortedArticlesAndSnippets();
 
   const fields = [
     ...articles.map((article: Article) => ({
@@ -26,7 +44,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     })),
   ];
 
-  return getServerSideSitemap(ctx, fields);
+  return getServerSideSitemap(ctx, fields as ISitemapField[]);
 };
 
 // Default export to prevent next.js errors

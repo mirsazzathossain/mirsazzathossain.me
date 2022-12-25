@@ -1,15 +1,11 @@
 import { Container } from "components/Container";
-import { server } from "config";
-import { Snippet } from "contentlayer/generated";
+import { allSnippets, Snippet } from "contentlayer/generated";
 import { notFound } from "next/navigation";
 import SnippetPage from "./Snippet";
 
-export async function generateStaticParams(): Promise<any> {
-  const snippets = await fetch(`${server}/api/snippets`).then((res) =>
-    res.json()
-  );
-
-  return snippets.map((snippet: Snippet) => ({ slug: snippet.slug }));
+// get snippets from the contentlayer
+async function getAllSnippets(): Promise<Snippet[]> {
+  return await allSnippets;
 }
 
 export default async function Page({
@@ -18,9 +14,9 @@ export default async function Page({
   params: { slug: string };
 }): Promise<JSX.Element> {
   const { slug } = params;
-  let snippet = await fetch(`${server}/api/snippets/${slug}`, {
-    next: { revalidate: 60 },
-  }).then((res) => res.json());
+  let snippet = await getAllSnippets().then((snippets) =>
+    snippets.find((snippet) => snippet.slug === slug)
+  );
 
   if (!snippet) return notFound();
 

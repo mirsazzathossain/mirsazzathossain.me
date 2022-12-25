@@ -1,12 +1,17 @@
 import { Card } from "components/Card";
 import { LinkIcon } from "components/Icons";
-import { server } from "config";
+import { promises as fs } from "fs";
 import Image from "next/image";
 
+// get projects from local file
+async function getListProjects(): Promise<Project[]> {
+  const res = await fs.readFile("content/projects.json", "utf-8");
+  const projects: Project[] = JSON.parse(res);
+  return projects;
+}
+
 export default async function ListProjects(): Promise<JSX.Element> {
-  const projects: Project[] = await fetch(`${server}/api/projects`).then(
-    (res) => res.json()
-  );
+  const projects: Project[] = await getListProjects();
   return (
     <ul
       role="list"

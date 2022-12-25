@@ -1,12 +1,27 @@
 import { Container } from "components/Container";
-import { server } from "config";
-import { Article, Category } from "contentlayer/generated";
+import { allArticles, Article, Category } from "contentlayer/generated";
 import Link from "next/link";
 
-export default async function Tags(): Promise<JSX.Element> {
-  const articles = await fetch(`${server}/api/articles`).then((res) =>
-    res.json()
+// Get sorted articles from the contentlayer
+async function getSortedArticles(): Promise<Article[]> {
+  let articles = await allArticles;
+
+  articles = articles.filter(
+    (article: Article) => article.status === "published"
   );
+
+  return articles.sort((a: Article, b: Article) => {
+    if (a.publishedAt && b.publishedAt) {
+      return (
+        new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+      );
+    }
+    return 0;
+  });
+}
+
+export default async function Tags(): Promise<JSX.Element> {
+  const articles = await getSortedArticles();
 
   // Categories with number of articles
   const categories = articles.reduce((acc: any, article: Article) => {

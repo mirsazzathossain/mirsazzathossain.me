@@ -1,4 +1,10 @@
 import { server } from "config";
+import { allSnippets, Snippet } from "contentlayer/generated";
+
+// get snippets from the contentlayer
+async function getSortedSnippets(): Promise<Snippet[]> {
+  return await allSnippets;
+}
 
 export default async function Head({
   params,
@@ -6,9 +12,9 @@ export default async function Head({
   params: { slug: string };
 }): Promise<JSX.Element> {
   const { slug } = params;
-  let snippet = await fetch(`${server}/api/snippets/${slug}`, {
-    next: { revalidate: 60 },
-  }).then((res) => res.json());
+  let snippet = await getSortedSnippets().then((snippets) =>
+    snippets.find((snippet) => snippet.slug === slug)
+  );
 
   if (!snippet)
     return (

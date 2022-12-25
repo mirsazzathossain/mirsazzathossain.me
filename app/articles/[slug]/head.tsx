@@ -1,4 +1,28 @@
 import { server } from "config";
+import { allArticles, Article } from "contentlayer/generated";
+
+// Get the article data for the given slug
+function getArticle(slug: string, articles: Article[]): Article | undefined {
+  return articles.find((a: Article) => a.slug === slug);
+}
+
+// Get sorted articles from the contentlayer
+async function getSortedArticles(): Promise<Article[]> {
+  let articles = await allArticles;
+
+  articles = articles.filter(
+    (article: Article) => article.status === "published"
+  );
+
+  return articles.sort((a: Article, b: Article) => {
+    if (a.publishedAt && b.publishedAt) {
+      return (
+        new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+      );
+    }
+    return 0;
+  });
+}
 
 export default async function Head({
   params,
@@ -6,10 +30,8 @@ export default async function Head({
   params: { slug: string };
 }): Promise<JSX.Element> {
   const { slug } = params;
-  let article = await fetch(`${server}/api/articles/${slug}`, {
-    next: { revalidate: 60 },
-  }).then((res) => res.json());
-
+  const articles = await getSortedArticles();
+  const article = getArticle(slug, articles);
   if (!article)
     return (
       <>
