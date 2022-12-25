@@ -4,7 +4,7 @@ import useSWR from "swr";
 import fetcher from "utils/fetcher";
 import { SpotifyIcon } from "./SocialIcons";
 
-export default function SpotifyPlayingNow() {
+export default function SpotifyPlayingNow(): JSX.Element {
   const { data, error } = useSWR("/api/spotify-playing-now", fetcher);
 
   return (

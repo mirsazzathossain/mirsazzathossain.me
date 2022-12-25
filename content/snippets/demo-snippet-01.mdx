@@ -1,0 +1,72 @@
+---
+title: "Demo Snippet"
+description: "This is a demo snippet"
+language: "Javascript"
+logo:
+  url: "react-logo.png"
+  alt: "React Logo"
+---
+
+## Demo Snippet
+
+```js showLineNumbers title="pages/blog/[slug].tsx" {5-7,12,20}
+import { GetStaticPaths, GetStaticProps } from "next";
+import { useRouter } from "next/router";
+import { getAllPosts, getPostBySlug } from "../../lib/api";
+import { Post } from "../../lib/types";
+import { MDXRemote } from "next-mdx-remote";
+import { serialize } from "next-mdx-remote/serialize";
+import { components } from "../../components/MDXComponents";
+import { motion } from "framer-motion";
+import { fadeInUp, stagger } from "../../lib/animations";
+import Head from "next/head";
+import Image from "next/image";
+
+type Props = {
+  post: Post,
+};
+
+export default function Blog({ post }: Props) {
+  const router = useRouter();
+
+  if (router.isFallback) {
+    return <h1>Loading...</h1>;
+  }
+
+  return (
+    <motion.div
+      className="flex flex-col justify-center items-start max-w-2xl mx-auto mb-16 w-full"
+      initial="initial"
+      animate="animate"
+      exit={{ opacity: 0 }}
+    >
+      <Head>
+        <title>{post.title} - Blog</title>
+      </Head>
+      <motion.div variants={stagger} initial="initial" animate="animate">
+        <motion.h1
+          variants={fadeInUp}
+          className="font-bold text-3xl md:text-5xl tracking-tight mb-4 text-black dark:text-white"
+        >
+          {post.title}
+        </motion.h1>
+        <motion.div
+          variants={fadeInUp}
+          className="flex items-center mb-8 text-gray-600 dark:text-gray-400"
+        >
+          <Image
+            src={post.author.picture.url}
+            alt={post.author.name}
+            width={24}
+            height={24}
+            className="rounded-full"
+          />
+          <p className="ml-2">{post.author.name}</p>
+          <p className="mx-1">•</p>
+          <p>{post.date}</p>
+        </motion.div>
+      </motion.div>
+    </motion.div>
+  );
+}
+```

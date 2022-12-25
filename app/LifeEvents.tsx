@@ -10,7 +10,7 @@ const Divider = () => {
   );
 };
 
-export default function LifeEvents({ lifeEvents }: { lifeEvents: any }) {
+export default function LifeEvents({ lifeEvents }: { lifeEvents: any }): JSX.Element {
   let [isExpanded, setIsExpanded] = useState(false);
   const parentRef = useRef();
 

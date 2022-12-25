@@ -1,7 +1,7 @@
 import ResourceCard from "components/ResourceCard";
 import { server } from "config";
 
-export default async function ListResources() {
+export default async function ListResources(): Promise<JSX.Element> {
   const resources: Resource[] = await fetch(`${server}/api/resources`).then(
     (res) => res.json()
   );

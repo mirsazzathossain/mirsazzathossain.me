@@ -6,7 +6,7 @@ export default function Pagination({
   totalArticles,
 }: {
   totalArticles: number;
-}) {
+}): JSX.Element {
   const router = useRouter();
   const pathName = usePathname();
   const searchParams = useSearchParams();

@@ -42,7 +42,7 @@
     "components/MobileNavigation.tsx",
     "components/ThemeSelector.tsx",
     ".next/types/**/*.ts"
-  ],
+, "utils/generate-rss.mts", "next-sitemap.config.js"  ],
   "exclude": [
     "node_modules"
   ]

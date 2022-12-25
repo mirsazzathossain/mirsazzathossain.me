@@ -1,7 +1,11 @@
 import Link from "next/link";
 import { AnchorIcon } from "./Icons";
 
-export default function ResourceCard({ resource }: { resource: Resource }) {
+export default function ResourceCard({
+  resource,
+}: {
+  resource: Resource;
+}): JSX.Element {
   return (
     <Link
       href={resource.url}

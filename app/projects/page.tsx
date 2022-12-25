@@ -3,7 +3,7 @@ import ProjectsPlaceholder from "components/skeleton/ProjectsPlaceholder";
 import { Suspense } from "react";
 import ListProjects from "./ListProjects";
 
-export default function Projects() {
+export default function Projects(): JSX.Element {
   return (
     <SimpleLayout
       title="Things I’ve made trying to put my dent in the universe."

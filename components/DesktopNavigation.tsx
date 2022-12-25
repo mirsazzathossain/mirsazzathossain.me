@@ -8,7 +8,7 @@ function NavItem({
 }: {
   href: string;
   children: React.ReactNode;
-}) {
+}): JSX.Element {
   let isActive = usePathname() === href;
 
   return (
@@ -36,7 +36,10 @@ type Props = {
   className?: string;
 };
 
-export default function DesktopNavigation({ links, className }: Props) {
+export default function DesktopNavigation({
+  links,
+  className,
+}: Props): JSX.Element {
   let router = useRouter();
   return (
     <nav className={className}>

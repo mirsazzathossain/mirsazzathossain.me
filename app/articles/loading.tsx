@@ -2,7 +2,7 @@ import { MagnifyingGlassIcon } from "components/Icons";
 import SimpleLayout from "components/SimpleLayout";
 import ArticleCardPlaceholder from "components/skeleton/ArticleCardPlaceholder";
 
-export default function loading() {
+export default function loading(): JSX.Element {
   return (
     <SimpleLayout
       title="Writing on Machine Learning, Advance Math, and Programming"

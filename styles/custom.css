@@ -1,0 +1,48 @@
+div[data-rehype-pretty-code-title] {
+  /* stylistic preferences */
+  @apply text-sm font-mono text-zinc-500 dark:text-zinc-100 bg-zinc-200/50 dark:bg-zinc-700 px-4 py-2 no-underline hover:underline w-full leading-6;
+}
+
+div[data-rehype-pretty-code-fragment] {
+  @apply overflow-hidden border-zinc-100 dark:border-zinc-700 border-2 rounded-md;
+}
+
+div[data-rehype-pretty-code-fragment] pre {
+  @apply thin-scrollbar overflow-x-auto py-4 text-sm font-medium leading-6 bg-[#F9FAFB] dark:bg-[#111827];
+}
+
+div[data-rehype-pretty-code-fragment] .line {
+  @apply pl-2 pr-3 border-l-4 border-transparent;
+}
+div[data-rehype-pretty-code-fragment] .highlighted {
+  @apply border-l-teal-500 bg-teal-200/20;
+}
+div[data-rehype-pretty-code-fragment] code {
+  @apply grid;
+}
+code[data-line-numbers] {
+  counter-reset: lineNumber;
+}
+
+code[data-line-numbers] .line::before {
+  counter-increment: lineNumber;
+  content: counter(lineNumber);
+  @apply text-zinc-500 dark:text-zinc-100 mr-3 w-4 text-right inline-block;
+}
+
+div[data-theme="light"] {
+  @apply dark:hidden;
+}
+
+div[data-theme="dark"] {
+  @apply hidden dark:block;
+}
+
+.step > h2,
+.step > h3,
+.step > h4,
+.step > h5,
+.step > h6 {
+  @apply my-0;
+}
+

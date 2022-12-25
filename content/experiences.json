@@ -18,7 +18,6 @@
       "Deep Learning"
     ]
   },
-
   {
     "title": "Teaching Assistant",
     "company": "Independent University, Bangladesh",
@@ -36,16 +35,21 @@
       "Leadership"
     ]
   },
-
   {
-    "title": "Undergraduate Research Assistant",
+    "title": "Undergraduate Teaching Assistant",
     "company": "Independent University, Bangladesh",
     "companyURL": "https://iub.edu.bd/",
     "companyLogo": "/images/iub.png",
     "location": "Plot 16, Aftabuddin Ahmed Road, Block B, Bashnudhara RA, Dhaka 1229, Bangladesh.",
     "type": "Part-time",
-    "date": "Jan 2021 - Present",
-    "description": "I have worked as an Undergraduate Research Assistant at IUB's Department of Computer Science and Engineering (CSE). My main role was to assist the course instructor in teaching the undergraduate course on Numerical Methods.",
-    "skills": ["Numerical Methods", "Numpy", "Teaching", "Management"]
+    "date": "Oct 2019 - Dec 2019",
+    "description": "During my undergraduate studies, I worked as a Teaching Assistant in the Department of Physical Sciences at IUB. My primary task was to assist students with various mathematical challenges who came to the 'Mathematics Tutorial Center' for assistance.",
+    "skills": [
+      "Linear Algebra",
+      "Statistics",
+      "Differential Equations",
+      "Vector Calculus",
+      "Mathematical Modeling"
+    ]
   }
 ]

@@ -1,26 +1,8 @@
 [
   {
-    "title": "Checkboxes Inspiration",
-    "url": "https://getcssscan.com/css-checkboxes-examples",
-    "description": "Click to copy checkbox styles",
+    "title": "Demo Resource",
+    "url": "https://github.com/mirsazzathossain",
+    "description": "This is a demo resource",
     "category": "Utilities"
-  },
-  {
-    "title": "CSS Checkbox",
-    "url": "https://css-tricks.com/the-checkbox-hack/",
-    "description": "The Checkbox Hack",
-    "category": "Utilities"
-  },
-  {
-    "title": "Tailwind Checkbox",
-    "url": "https://tailwindcomponents.com/component/tailwindcss-checkbox",
-    "description": "Tailwind Checkbox",
-    "category": "User Interface"
-  },
-  {
-    "title": "Tailwind flexbox",
-    "url": "https://tailwindcomponents.com/component/tailwindcss-flexbox",
-    "description": "Tailwind flexbox",
-    "category": "User Interface"
   }
 ]

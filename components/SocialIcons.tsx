@@ -74,7 +74,7 @@ export function GoogleScholarIcon(
   );
 }
 
-export function SpotifyIcon(props: React.SVGProps<SVGSVGElement>) {
+export function SpotifyIcon(props: React.SVGProps<SVGSVGElement>): JSX.Element {
   return (
     <svg viewBox="0 0 168 168" {...props}>
       <path

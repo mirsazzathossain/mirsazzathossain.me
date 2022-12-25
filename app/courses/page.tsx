@@ -3,11 +3,11 @@ import CoursesPlaceholder from "components/skeleton/CoursesPlaceholder";
 import { Suspense } from "react";
 import ListCourses from "./ListCourses";
 
-export default function Courses() {
+export default function Courses(): JSX.Element {
   return (
     <SimpleLayout
-      title="Snippets of Code I Find Useful"
-      intro="I've been writing code for a long time. Here are some of the snippets I've found useful and reusable."
+      title="Courses that I've instructed as a RA or TA at IUB"
+      intro="During my time at IUB, I've worked as a teaching assistant and research assistant for a few different courses. These are the courses I've instructed."
     >
       <div className="mt-16 sm:mt-20">
         <Suspense fallback={<CoursesPlaceholder />}>

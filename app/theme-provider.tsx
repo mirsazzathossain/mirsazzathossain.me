@@ -6,7 +6,7 @@ export default function ClientThemeProvider({
   children: children,
 }: {
   children: React.ReactNode;
-}) {
+}): JSX.Element {
   return (
     <ThemeProvider enableSystem={true} attribute="class">
       {children}

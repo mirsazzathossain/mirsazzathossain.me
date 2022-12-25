@@ -9,7 +9,11 @@ type Props = {
   className?: string;
   [key: string]: any;
 };
-export default function Avatar({ large = false, className, ...props }: Props) {
+export default function Avatar({
+  large = false,
+  className,
+  ...props
+}: Props): JSX.Element {
   return (
     <Link
       href="/"

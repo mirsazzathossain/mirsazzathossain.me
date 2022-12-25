@@ -22,7 +22,13 @@ const Step = ({ title, children }: { title: string; children: any }) => {
   );
 };
 
-export default function Event({ year, events }: { year: string; events: any }) {
+export default function Event({
+  year,
+  events,
+}: {
+  year: string;
+  events: any;
+}): JSX.Element {
   return (
     <>
       <Year>{year}</Year>

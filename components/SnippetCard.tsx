@@ -2,7 +2,11 @@ import { Snippet } from "contentlayer/generated";
 import Image from "next/image";
 import Link from "next/link";
 
-export default function SnipeetCard({ snippet }: { snippet: Snippet }) {
+export default function SnipeetCard({
+  snippet,
+}: {
+  snippet: Snippet;
+}): JSX.Element {
   return (
     <Link
       className="animate-background bg-gradient-to-r from-green-300 via-blue-500 to-purple-600 bg-[length:400%_400%] shadow-lg transition [animation-duration:_6s] hover:shadow-sm rounded-xl p-0.5 w-full relative"

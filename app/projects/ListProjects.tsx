@@ -3,7 +3,7 @@ import { LinkIcon } from "components/Icons";
 import { server } from "config";
 import Image from "next/image";
 
-export default async function ListProjects() {
+export default async function ListProjects(): Promise<JSX.Element> {
   const projects: Project[] = await fetch(`${server}/api/projects`).then(
     (res) => res.json()
   );

@@ -8,7 +8,7 @@ export default async function Articles({
 }: {
   params?: any;
   searchParams?: { [key: string]: string | string[] | undefined };
-}) {
+}): Promise<JSX.Element> {
   const articles = await fetch(`${server}/api/articles`).then((res) =>
     res.json()
   );

@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import Image from "next/image";
 
-export default function Photos({ images }: { images: string[] }) {
+export default function Photos({ images }: { images: string[] }): JSX.Element {
   let rotations = [
     "rotate-2",
     "-rotate-2",

@@ -1,7 +1,7 @@
 import { getNowPlaying, getRecentTrack } from "utils/spotify";
 
 // eslint-disable-next-line import/no-anonymous-default-export
-export default async (_: any, res: any) => {
+export default async (_: any, res: any): Promise<any> => {
   let response = await getNowPlaying();
 
   let song = null;

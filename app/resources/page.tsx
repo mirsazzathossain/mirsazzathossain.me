@@ -6,8 +6,8 @@ import ListResources from "./ListResources";
 export default function Resources(): JSX.Element {
   return (
     <SimpleLayout
-      title="Snippets of Code I Find Useful"
-      intro="I've been writing code for a long time. Here are some of the snippets I've found useful and reusable."
+      title="Some excellent resources worth sharing"
+      intro="These materials have been tremendously beneficial to me in my learning path. I hope you find these helpful as well!"
     >
       <div className="mt-16 sm:mt-20">
         <Suspense fallback={<ResourcesPlaceholder />}>

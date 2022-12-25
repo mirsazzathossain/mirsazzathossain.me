@@ -27,7 +27,7 @@ function NavLink({
   );
 }
 
-export default function Footer() {
+export default function Footer(): JSX.Element {
   return (
     <footer className="mt-32">
       <Container.Outer>

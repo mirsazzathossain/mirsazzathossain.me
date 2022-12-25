@@ -1,10 +1,34 @@
+import withToc from "@stefanprobst/rehype-extract-toc";
+import withTocExport from "@stefanprobst/rehype-extract-toc/mdx";
 import { makeSource } from "contentlayer/source-files";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
-import rehypePrettyCode from "rehype-pretty-code";
+import rehypePrettyCode, { type Options } from "rehype-pretty-code";
 import rehypeSlug from "rehype-slug";
 import remarkGfm from "remark-gfm";
 import { Article } from "./content/definitions/Article";
 import { Snippets } from "./content/definitions/Snippet";
+
+// Rehype Pretty Code Configuration
+const PrettyCodeOptions: Partial<Options> = {
+  theme: {
+    dark: "github-dark",
+    light: "github-light",
+  },
+  onVisitLine(node: any) {
+    // Prevent lines from collapsing in `display: grid` mode, and
+    // allow empty lines to be copy/pasted
+    if (node.children.length === 0) {
+      node.children = [{ type: "text", value: " " }];
+    }
+  },
+  onVisitHighlightedLine(node: any) {
+    node.properties.className.push("highlighted");
+  },
+
+  onVisitHighlightedWord(node: any) {
+    node.properties.className = ["word"];
+  },
+};
 
 export default makeSource({
   contentDirPath: "content",
@@ -17,11 +41,13 @@ export default makeSource({
     remarkPlugins: [[remarkGfm]],
     rehypePlugins: [
       [rehypeSlug],
-      [rehypePrettyCode],
+      [rehypePrettyCode, PrettyCodeOptions],
+      [withToc],
+      [withTocExport, { name: "toc" }],
       [
         rehypeAutolinkHeadings,
         {
-          behavior: "wrap",
+          behavior: "prepend",
           properties: {
             className: ["anchor"],
           },

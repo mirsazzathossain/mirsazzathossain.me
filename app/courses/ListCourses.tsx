@@ -1,7 +1,7 @@
 import CourseCard from "components/CourseCard";
 import { server } from "config";
 
-export default async function ListCourses() {
+export default async function ListCourses(): Promise<JSX.Element> {
   const courses: Course[] = await fetch(`${server}/api/courses`).then((res) =>
     res.json()
   );

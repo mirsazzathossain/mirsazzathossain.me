@@ -1,7 +1,11 @@
 import { Article } from "contentlayer/generated";
 import { Card } from "./Card";
 
-export default function ArticleCard({ article }: { article: Article }) {
+export default function ArticleCard({
+  article,
+}: {
+  article: Article;
+}): JSX.Element {
   return (
     <article className="md:grid md:grid-cols-4 md:items-baseline">
       <Card className="md:col-span-3">

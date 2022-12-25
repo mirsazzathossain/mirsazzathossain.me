@@ -1,40 +1,24 @@
 {
-  "2022": [
-    {
-      "title": "Graduation",
-      "description": "Got my degree 🎓 from the University of Michigan. I'm now a proud Wolverine! 🐾 🏈 Monthly Notices of the Royal Astronomical Society, Volume 518"
-    }
-  ],
   "2021": [
     {
-      "title": "Started working at Google",
-      "description": "I started working at Google as a Software Engineer"
+      "title": "Started working at Center for Computational and Data Sciences",
+      "description": "I have started 💼 working at CCDS as a Research Assistant. I am currently working on a project called 'Radio Galaxy Classification' with AKMM Rahman and KMB Asad."
     },
     {
-      "title": "Started working at Google",
-      "description": "I started working at Google as a Software Engineer"
+      "title": "Graduation",
+      "description": "Got my degree 🎓 from the Independent University, Bangladesh. I was a Computer Science and Engineering student."
     }
   ],
   "2020": [
     {
-      "title": "Started working at Facebook 💼",
-      "description": "I started working at Facebook as a Software Engineer"
+      "title": "Started working at Independent University, Bangladesh",
+      "description": "I have started working at IUB as a 👨‍🏫 Teaching Assistant. My main responsibility is to teach the students of Numerical Methods course."
     }
   ],
-  "2019": [
+  "2017": [
     {
-      "title": "Started working at Facebook 💼",
-      "description": "I started working at Facebook as a Software Engineer"
-    },
-    {
-      "title": "Started working at Facebook 💼",
-      "description": "I started working at Facebook as a Software Engineer"
-    }
-  ],
-  "2018": [
-    {
-      "title": "Started working at Facebook 💼",
-      "description": "I started working at Facebook as a Software Engineer"
+      "title": "Got admitted to 🏛️ Independent University, Bangladesh",
+      "description": "I got admitted to IUB as a 💻 Computer Science and Engineering student in spring 2017."
     }
   ]
 }

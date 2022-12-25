@@ -53,11 +53,6 @@ module.exports = {
           '--tw-prose-hr': 'var(--tw-prose-invert-hr)',
           '--tw-prose-quote-borders': 'var(--tw-prose-invert-quote-borders)',
           '--tw-prose-captions': 'var(--tw-prose-invert-captions)',
-          '--tw-prose-code': 'var(--tw-prose-invert-code)',
-          '--tw-prose-code-bg': 'var(--tw-prose-invert-code-bg)',
-          '--tw-prose-pre-code': 'var(--tw-prose-invert-pre-code)',
-          '--tw-prose-pre-bg': 'var(--tw-prose-invert-pre-bg)',
-          '--tw-prose-pre-border': 'var(--tw-prose-invert-pre-border)',
           '--tw-prose-th-borders': 'var(--tw-prose-invert-th-borders)',
           '--tw-prose-td-borders': 'var(--tw-prose-invert-td-borders)',
         },
@@ -76,11 +71,6 @@ module.exports = {
           '--tw-prose-hr': theme('colors.zinc.100'),
           '--tw-prose-quote-borders': theme('colors.zinc.200'),
           '--tw-prose-captions': theme('colors.zinc.400'),
-          '--tw-prose-code': theme('colors.zinc.700'),
-          '--tw-prose-code-bg': theme('colors.zinc.300 / 0.2'),
-          '--tw-prose-pre-code': theme('colors.zinc.100'),
-          '--tw-prose-pre-bg': theme('colors.zinc.900'),
-          '--tw-prose-pre-border': 'transparent',
           '--tw-prose-th-borders': theme('colors.zinc.200'),
           '--tw-prose-td-borders': theme('colors.zinc.100'),
 
@@ -96,24 +86,19 @@ module.exports = {
           '--tw-prose-invert-hr': theme('colors.zinc.700 / 0.4'),
           '--tw-prose-invert-quote-borders': theme('colors.zinc.500'),
           '--tw-prose-invert-captions': theme('colors.zinc.500'),
-          '--tw-prose-invert-code': theme('colors.zinc.300'),
-          '--tw-prose-invert-code-bg': theme('colors.zinc.200 / 0.05'),
-          '--tw-prose-invert-pre-code': theme('colors.zinc.100'),
-          '--tw-prose-invert-pre-bg': 'rgb(0 0 0 / 0.4)',
-          '--tw-prose-invert-pre-border': theme('colors.zinc.200 / 0.1'),
           '--tw-prose-invert-th-borders': theme('colors.zinc.700'),
           '--tw-prose-invert-td-borders': theme('colors.zinc.800'),
 
           // Base
           color: 'var(--tw-prose-body)',
           lineHeight: theme('lineHeight.7'),
-          '> *': {
-            marginTop: theme('spacing.10'),
-            marginBottom: theme('spacing.10'),
-          },
+        //   '> *': {
+        //     marginTop: theme('spacing.10'),
+        //     marginBottom: theme('spacing.10'),
+        //   },
           p: {
-            marginTop: theme('spacing.7'),
-            marginBottom: theme('spacing.7'),
+            marginTop: theme('spacing.5'),
+            marginBottom: theme('spacing.5'),
           },
 
           // Headings
@@ -160,22 +145,6 @@ module.exports = {
             color: 'var(--tw-prose-bold)',
             fontWeight: theme('fontWeight.semibold'),
           },
-          code: {
-            display: 'inline-block',
-            color: 'var(--tw-prose-code)',
-            fontSize: theme('fontSize.sm')[0],
-            fontWeight: theme('fontWeight.semibold'),
-            backgroundColor: 'var(--tw-prose-code-bg)',
-            borderRadius: theme('borderRadius.lg'),
-            paddingLeft: theme('spacing.1'),
-            paddingRight: theme('spacing.1'),
-          },
-          'a code': {
-            color: 'inherit',
-          },
-          ':is(h2, h3) code': {
-            fontWeight: theme('fontWeight.bold'),
-          },
 
           // Quotes
           blockquote: {
@@ -204,11 +173,11 @@ module.exports = {
             listStyleType: 'decimal',
           },
           'ul, ol': {
-            paddingLeft: theme('spacing.6'),
+            marginTop: theme('spacing.5'),
+            marginBottom: theme('spacing.5'),
+            paddingLeft: theme('spacing.5'),
           },
           li: {
-            marginTop: theme('spacing.6'),
-            marginBottom: theme('spacing.6'),
             paddingLeft: theme('spacing[3.5]'),
           },
           'li::marker': {
@@ -230,32 +199,10 @@ module.exports = {
             marginBottom: theme('spacing.3'),
           },
 
-          // Code blocks
-          pre: {
-            color: 'var(--tw-prose-pre-code)',
-            fontSize: theme('fontSize.sm')[0],
-            fontWeight: theme('fontWeight.medium'),
-            backgroundColor: 'var(--tw-prose-pre-bg)',
-            borderRadius: theme('borderRadius.3xl'),
-            padding: theme('spacing.8'),
-            overflowX: 'auto',
-            border: '1px solid',
-            borderColor: 'var(--tw-prose-pre-border)',
-          },
-          'pre code': {
-            display: 'inline',
-            color: 'inherit',
-            fontSize: 'inherit',
-            fontWeight: 'inherit',
-            backgroundColor: 'transparent',
-            borderRadius: 0,
-            padding: 0,
-          },
-
           // Horizontal rules
           hr: {
-            marginTop: theme('spacing.20'),
-            marginBottom: theme('spacing.20'),
+            marginTop: theme('spacing.10'),
+            marginBottom: theme('spacing.10'),
             borderTopWidth: '1px',
             borderColor: 'var(--tw-prose-hr)',
             '@screen lg': {
@@ -266,6 +213,8 @@ module.exports = {
 
           // Tables
           table: {
+            marginTop: theme('spacing.5'),
+            marginBottom: theme('spacing.5'),
             width: '100%',
             tableLayout: 'auto',
             textAlign: 'left',
