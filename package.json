@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "generate:rss": "node generate-rss.mts",
+    "generate:rss": "node generate-rss.mjs",
     "prebuild": "yarn run generate:rss",
     "dev": "next dev",
     "build": "next build",
