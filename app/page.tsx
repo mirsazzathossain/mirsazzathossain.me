@@ -5,10 +5,12 @@ import ExperiencesPlaceholder from "components/skeleton/ExperiencesPlaceholder";
 import LifeEventsPlaceholder from "components/skeleton/LifeEventsPlaceholder";
 import PublicationsPlaceholder from "components/skeleton/PublicationsPlaceholder";
 import { Suspense } from "react";
+import generateRss from "utils/generate-rss";
 import About from "./About";
 import Server from "./Server";
 
 export default async function Home(): Promise<JSX.Element> {
+  await generateRss();
   return (
     <>
       <Suspense fallback={<AboutPlaceholder />}>

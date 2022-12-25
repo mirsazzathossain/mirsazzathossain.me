@@ -1,11 +1,16 @@
+import { allArticles } from "contentlayer/generated";
 import { Feed } from "feed";
 import fs from "fs";
 
-const generateRss = async () => {
+export default async function generateRss(): Promise<void> {
   const site_url = `${process.env.SITE_URL || "https://mirsazzathossain.me"}`;
 
-  const allArticles = await fetch(`${site_url}/api/articles`).then((res) =>
-    res.json()
+  const articles = await allArticles;
+
+  const sortedArticles = articles.sort(
+    (a, b) =>
+      Number(new Date(b.publishedAt as string)) -
+      Number(new Date(a.publishedAt as string))
   );
 
   const author = {
@@ -24,15 +29,15 @@ const generateRss = async () => {
     copyright: `All rights reserved ${new Date().getFullYear()}, Ibas`,
     generator: "Sazzat's Arena",
     feedLinks: {
-      rss2: `${server}/rss.xml`,
-      json: `${server}/rss.json`,
-      atom: `${server}/atom.xml`,
+      rss2: `${site_url}/rss.xml`,
+      json: `${site_url}/rss.json`,
+      atom: `${site_url}/atom.xml`,
     },
     author,
   };
   const feed = new Feed(feedOptions);
 
-  allArticles.forEach((article) => {
+  sortedArticles.forEach((article) => {
     feed.addItem({
       title: article.title,
       id: `${site_url}/articles/${article.slug}`,
@@ -48,6 +53,4 @@ const generateRss = async () => {
   fs.writeFileSync("./public/rss.xml", feed.rss2());
   fs.writeFileSync("./public/atom.xml", feed.atom1());
   fs.writeFileSync("./public/rss.json", feed.json1());
-};
-
-generateRss();
+}
