@@ -1,10 +1,9 @@
-import { server } from "config";
 import { Article } from "contentlayer/generated";
 import { Feed } from "feed";
 import fs from "fs";
 
 const generateRss = async () => {
-  const site_url = `${server}`;
+  const site_url = `${process.env.SITE_URL || "https://mirsazzathossain.me"}`;
 
   const allArticles = await fetch(`${site_url}/api/articles`).then((res) =>
     res.json()
