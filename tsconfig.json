@@ -38,6 +38,6 @@
     ".next/types/**/*.ts",
     "utils/generate-rss.mts",
     "next-sitemap.config.js"
-  ],
+, "generate-rss.js"  ],
   "exclude": ["node_modules"]
 }
