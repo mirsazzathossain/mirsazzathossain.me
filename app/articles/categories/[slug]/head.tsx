@@ -11,6 +11,8 @@ export default function Head({
       </title>
       <meta content="width=device-width, initial-scale=1" name="viewport" />
       <link rel="icon" href="/favicon.ico" />
+      <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+      <link rel="manifest" href="/site.webmanifest" />
       <meta
         name="description"
         content={`This page contains all the articles ${

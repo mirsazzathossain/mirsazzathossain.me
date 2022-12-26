@@ -26,8 +26,40 @@ async function getSortedArticlesAndSnippets() {
   return { articles, snippets };
 }
 
+// get all tags and categories from articles
+function getTagsAndCategories(articles: Article[]) {
+  const tags = new Set<string>();
+  const categories = new Set<string>();
+
+  articles.forEach((article) => {
+    article.tags?.forEach((tag: any) =>
+      tags.add(
+        tag.title
+          .toLowerCase()
+          .trim()
+          .replace(/[^\w\s-]/g, "")
+          .replace(/[\s_-]+/g, "-")
+          .replace(/^-+|-+$/g, "") || ""
+      )
+    );
+    article.categories?.forEach((category: any) =>
+      categories.add(
+        category.title
+          .toLowerCase()
+          .trim()
+          .replace(/[^\w\s-]/g, "")
+          .replace(/[\s_-]+/g, "-")
+          .replace(/^-+|-+$/g, "") || ""
+      )
+    );
+  });
+
+  return { tags, categories };
+}
+
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { articles, snippets } = await getSortedArticlesAndSnippets();
+  const { tags, categories } = getTagsAndCategories(articles);
 
   const fields = [
     ...articles.map((article: Article) => ({
@@ -38,6 +70,30 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     })),
     ...snippets.map((snippet: Snippet) => ({
       loc: `https://mirsazzathossain.me/snippets/${snippet.slug}`,
+      lastmod: new Date().toISOString(),
+      changefreq: "daily",
+      priority: 0.7,
+    })),
+    {
+      loc: "https://mirsazzathossain.me/articles/categories",
+      lastmod: new Date().toISOString(),
+      changefreq: "daily",
+      priority: 0.7,
+    },
+    {
+      loc: "https://mirsazzathossain.me/articles/tags",
+      lastmod: new Date().toISOString(),
+      changefreq: "daily",
+      priority: 0.7,
+    },
+    ...Array.from(tags).map((tag) => ({
+      loc: `https://mirsazzathossain.me/articles/tags/${tag}`,
+      lastmod: new Date().toISOString(),
+      changefreq: "daily",
+      priority: 0.7,
+    })),
+    ...Array.from(categories).map((category) => ({
+      loc: `https://mirsazzathossain.me/articles/categories/${category}`,
       lastmod: new Date().toISOString(),
       changefreq: "daily",
       priority: 0.7,

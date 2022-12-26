@@ -4,7 +4,8 @@ export default function Head(): JSX.Element {
       <title>Sazzat&apos;s Arena - Code Snippets</title>
       <meta content="width=device-width, initial-scale=1" name="viewport" />
       <link rel="icon" href="/favicon.ico" />
-
+      <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+      <link rel="manifest" href="/site.webmanifest" />
       <meta
         name="description"
         content="I've been writing code for a long time. Here are some of the snippets I've found useful and reusable."

@@ -51,6 +51,8 @@ export default async function Head({
       <link rel="canonical" href={`${server}/snippets/${slug}`} />
       <link rel="alternate" type="application/rss+xml" href="/feed.xml" />
       <link rel="icon" href="/favicon.ico" />
+      <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+      <link rel="manifest" href="/site.webmanifest" />
     </>
   );
 }
