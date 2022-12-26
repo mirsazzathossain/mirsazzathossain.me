@@ -1,6 +1,6 @@
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/mirsazzathossain/mirsazzathossain.me)
 
-## mirsazzathossain.io
+## mirsazzathossain.me
 
 This is the source code for my personal website. I have used the following technologies to build this website.
 
@@ -8,14 +8,14 @@ This is the source code for my personal website. I have used the following techn
 - Styling: [Tailwind CSS](https://tailwindcss.com/)
 - Icons: [Heroicons](https://heroicons.com/)
 - Content: [Markdown](https://www.markdownguide.org/)
-- Content Management: [Contentlayer](https://contentlayer.io/)
+- Content Management: [Contentlayer](https://www.contentlayer.dev/)
 - Deployment: [Vercel](https://vercel.com/)
 
 ## Overview
 
 - `app/*`: I have used next.js new `app` directory structure. This directory contains the main app.
 - `components/*`: All custom components are stored in this directory.
-- `content/*`: This directory contains all the content of the website. I have used [Contentlayer](https://contentlayer.io/) to manage the content.
+- `content/*`: This directory contains all the content of the website. I have used [Contentlayer](https://contentlayer.dev/) to manage the content.
 - `pages/*`: All API routes of the website are stored in this directory.
 - `public/*`: This directory contains all the static assets of the website.
 - `styles/*`: I have used Tailwind CSS for styling. This directory contains the Tailwind CSS global styles and some custom styles for the website.
