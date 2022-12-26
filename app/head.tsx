@@ -16,11 +16,11 @@ export default function Head(): JSX.Element {
         name="og:description"
         content="Mir Sazzat Hossain is a recent college graduate with a solid foundation in computer science as well as competence in exploratory data analysis, machine learning, computer vision, and statistics. He is currently working as a Research Assistant at the Independent University, Bangladesh's Center for Computational and Data Sciences."
       />
-      <meta property="og:url" content="https://mirsaazzathossain.me" />
+      <meta property="og:url" content="https://mirsazzathossain.me" />
       <meta property="og:site_name" content="Sazzat's Arena" />
       <meta
         property="og:image"
-        content="https://mirsaazzathossain.me/images/og-image.png"
+        content="https://mirsazzathossain.me/images/og-image.png"
       />
       <meta property="og:image:alt" content="Sazzat's Arena" />
       <meta property="og:image:width" content="1200" />
@@ -35,12 +35,12 @@ export default function Head(): JSX.Element {
       />
       <meta
         name="twitter:image"
-        content="https://mirsaazzathossain.me/images/og-image.png"
+        content="https://mirsazzathossain.me/images/og-image.png"
       />
       <meta name="twitter:image:alt" content="Sazzat's Arena" />
       <meta name="twitter:image:width" content="1200" />
       <meta name="twitter:image:height" content="630" />
-      <link rel="canonical" href="https://mirsaazzathossain.me" />
+      <link rel="canonical" href="https://mirsazzathossain.me" />
       <link rel="alternate" type="application/rss+xml" href="/feed.xml" />
     </>
   );
