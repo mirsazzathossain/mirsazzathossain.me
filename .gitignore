@@ -38,3 +38,6 @@ next-env.d.ts
 .env
 .vscode
 .contentlayer
+
+public/*.xml
+public/*.json
