@@ -20,14 +20,14 @@ export default async function generateRss(): Promise<void> {
   };
 
   const feedOptions = {
-    title: "Sazzat's Arena - RSS Feed",
+    title: "RSS Feed - Mir Sazzat Hossain",
     description: "Mir Sazzat Hossain's personal blog",
     id: site_url,
     link: site_url,
     image: `${site_url}/images/og-image.png`,
     favicon: `${site_url}/favicon.ico`,
     copyright: `All rights reserved ${new Date().getFullYear()}, Ibas`,
-    generator: "Sazzat's Arena",
+    generator: "Feed for Node.js",
     feedLinks: {
       rss2: `${site_url}/rss.xml`,
       json: `${site_url}/rss.json`,
