@@ -34,9 +34,9 @@ export default async function Head({
       <meta property="og:title" content={snippet.title} />
       <meta property="og:description" content={snippet.description} />
       <meta property="og:url" content={`${server}/snippets/${slug}`} />
-      <meta property="og:site_name" content="Sazzat's Arena" />
+      <meta property="og:site_name" content="Mir Sazzat Hossain" />
       <meta property="og:image" content={`${server}/images/og-image.png`} />
-      <meta property="og:image:alt" content="Sazzat's Arena" />
+      <meta property="og:image:alt" content="Mir Sazzat Hossain" />
       <meta property="og:image:width" content="1200" />
       <meta property="og:image:height" content="630" />
       <meta name="twitter:card" content="summary_large_image" />
@@ -45,7 +45,7 @@ export default async function Head({
       <meta name="twitter:title" content={snippet.title} />
       <meta name="twitter:description" content={snippet.description} />
       <meta name="twitter:image" content={`${server}/images/og-image.png`} />
-      <meta name="twitter:image:alt" content="Sazzat's Arena" />
+      <meta name="twitter:image:alt" content="Mir Sazzat Hossain" />
       <meta name="twitter:image:width" content="1200" />
       <meta name="twitter:image:height" content="630" />
       <link rel="canonical" href={`${server}/snippets/${slug}`} />

@@ -6,8 +6,7 @@ export default function Head({
   return (
     <>
       <title>
-        Sazzat&apos;s Arena - Articles{" "}
-        {params?.slug ? `categorized as ${params.slug}` : ""}
+        Articles {params?.slug ? `categorized as ${params.slug}` : ""}
       </title>
       <meta content="width=device-width, initial-scale=1" name="viewport" />
       <link rel="icon" href="/favicon.ico" />
@@ -17,12 +16,12 @@ export default function Head({
         name="description"
         content={`This page contains all the articles ${
           params?.slug ? `categorized as ${params.slug}` : ""
-        } available on Sazzat's Arena.`}
+        } available on this website.`}
       />
 
       <meta
         property="og:title"
-        content={`Sazzat's Arena - Articles ${
+        content={`Articles ${
           params?.slug ? `categorized as ${params.slug}` : ""
         }`}
       />
@@ -30,7 +29,7 @@ export default function Head({
         property="og:description"
         content={`This page contains all the articles ${
           params?.slug ? `categorized as ${params.slug}` : ""
-        } available on Sazzat's Arena.`}
+        } available on this website.`}
       />
       <meta
         property="og:url"
@@ -39,14 +38,34 @@ export default function Head({
         }`}
       />
       <meta property="og:type" content="website" />
-      <meta property="og:site_name" content="Sazzat's Arena" />
+      <meta property="og:site_name" content="Mir Sazzat Hossain" />
       <meta
         property="og:image"
         content="https://mirsazzathossain.me/images/og-image.png"
       />
-      <meta property="og:image:alt" content="Sazzat's Arena" />
+      <meta property="og:image:alt" content="Mir Sazzat Hossain" />
       <meta property="og:image:width" content="1200" />
       <meta property="og:image:height" content="630" />
+
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:site" content="@mirsazzathossain" />
+      <meta name="twitter:creator" content="@mirsazzathossain" />
+      <meta
+        name="twitter:title"
+        content={`Articles ${
+          params?.slug ? `categorized as ${params.slug}` : ""
+        }`}
+      />
+      <meta
+        name="twitter:description"
+        content={`This page contains all the articles ${
+          params?.slug ? `categorized as ${params.slug}` : ""
+        } available on this website.`}
+      />
+      <meta
+        name="twitter:image"
+        content="https://mirsazzathossain.me/images/og-image.png"
+      />
     </>
   );
 }

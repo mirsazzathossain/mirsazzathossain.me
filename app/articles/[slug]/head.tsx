@@ -49,7 +49,7 @@ export default async function Head({
       <meta property="og:title" content={article.title} />
       <meta property="og:description" content={article.description} />
       <meta property="og:url" content={`${server}/articles/${slug}`} />
-      <meta property="og:site_name" content="Sazzat's Arena" />
+      <meta property="og:site_name" content="Mir Sazzat Hossain" />
       <meta property="og:image" content={article.covers[0].url} />
       <meta property="og:image:alt" content={article.covers[0].alt} />
       <meta property="og:image:width" content="1200" />
