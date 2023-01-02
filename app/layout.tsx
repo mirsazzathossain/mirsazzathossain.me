@@ -1,3 +1,4 @@
+import AnalyticsWrapper from "components/analytics";
 import Header from "components/Header";
 import Footer from "../components/Footer";
 import "../styles/globals.css";
@@ -21,6 +22,7 @@ export default function RootLayout({
           <div className="relative">
             <Header />
             <main>{children}</main>
+            <AnalyticsWrapper />
             <Footer />
           </div>
         </ClientThemeProvider>
