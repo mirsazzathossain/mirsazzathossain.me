@@ -48,7 +48,6 @@ export default function Head(): JSX.Element {
       <meta name="twitter:image:alt" content="Mir Sazzat Hossain" />
       <meta name="twitter:image:width" content="1200" />
       <meta name="twitter:image:height" content="630" />
-      <link rel="canonical" href="https://mirsazzathossain.me" />
       <link rel="alternate" type="application/rss+xml" href="/feed.xml" />
     </>
   );
