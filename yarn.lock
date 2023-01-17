@@ -4215,10 +4215,10 @@ rehype-autolink-headings@^6.1.1:
     unified "^10.0.0"
     unist-util-visit "^4.0.0"
 
-rehype-pretty-code@^0.7.0:
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/rehype-pretty-code/-/rehype-pretty-code-0.7.0.tgz#3d800b30f4aef7c959559a9a61279e0f7fad93b2"
-  integrity sha512-dWdNYALc6ApIx6Qlyk+13JVrEdZiy73rIjRkZgNG05d2iHzfIWMMZ6NM/WsuS0KEAPq9vgulqRah98b9HFpPlw==
+rehype-pretty-code@^0.9.2:
+  version "0.9.2"
+  resolved "https://registry.yarnpkg.com/rehype-pretty-code/-/rehype-pretty-code-0.9.2.tgz#c73fd7051eb59a9d1fdba845d356cd1d99f5455b"
+  integrity sha512-l369pvBK6ihBEuy2+VDpHU+zbbY8I+Z4LiyIOunHAt3xyw6selaOFKc/DnX94jI5OJb3+NgjbOxXx2yaAypjZw==
   dependencies:
     hash-obj "^4.0.0"
     nanoid "^4.0.0"
