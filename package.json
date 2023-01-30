@@ -21,7 +21,7 @@
     "@vercel/analytics": "^0.1.8",
     "bibtex-js-parser": "^1.1.6",
     "clsx": "^1.2.1",
-    "contentlayer": "^0.2.9",
+    "contentlayer": "^0.3.0",
     "eslint": "8.33.0",
     "eslint-config-next": "13.1.2",
     "feed": "^4.2.2",
