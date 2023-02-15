@@ -2,9 +2,11 @@ import withToc from "@stefanprobst/rehype-extract-toc";
 import withTocExport from "@stefanprobst/rehype-extract-toc/mdx";
 import { makeSource } from "contentlayer/source-files";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
+import rehypeKatex from "rehype-katex";
 import rehypePrettyCode, { type Options } from "rehype-pretty-code";
 import rehypeSlug from "rehype-slug";
 import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
 import { Article } from "./content/definitions/Article";
 import { Snippets } from "./content/definitions/Snippet";
 
@@ -38,8 +40,9 @@ export default makeSource({
       options.target = "esnext";
       return options;
     },
-    remarkPlugins: [[remarkGfm]],
+    remarkPlugins: [[remarkGfm], [remarkMath]],
     rehypePlugins: [
+      [rehypeKatex],
       [rehypeSlug],
       [rehypePrettyCode, PrettyCodeOptions],
       [withToc],
