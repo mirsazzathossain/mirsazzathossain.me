@@ -4104,10 +4104,10 @@ popper.js@^1.11.1:
   resolved "https://registry.yarnpkg.com/popper.js/-/popper.js-1.16.1.tgz#2a223cb3dc7b6213d740e40372be40de43e65b1b"
   integrity sha512-Wb4p1J4zyFTbM+u6WuO4XstYx4Ky9Cewe4DWrel7B0w6VVICvPwdOpotjzcf6eD8TsckVnIMNONQyPIUFOUbCQ==
 
-postcss-focus-visible@^8.0.1:
-  version "8.0.1"
-  resolved "https://registry.yarnpkg.com/postcss-focus-visible/-/postcss-focus-visible-8.0.1.tgz#30533353a52f74d2d0f294624d2dbf7758249c53"
-  integrity sha512-azd1NMrLBe5bfKyomui9AMcgIR2zzlqXCTnKjshNDSClmmSO5MauTyflJUqmIwjIhD16+FbPyGV8Nxsly87BjA==
+postcss-focus-visible@^8.0.2:
+  version "8.0.2"
+  resolved "https://registry.yarnpkg.com/postcss-focus-visible/-/postcss-focus-visible-8.0.2.tgz#a7ac26ffe3e9c2bd17d7200d75e2d79ee8110891"
+  integrity sha512-f/Vd+EC/GaKElknU59esVcRYr/Y3t1ZAQyL4u2xSOgkDy4bMCmG7VP5cGvj3+BTLNE9ETfEuz2nnt4qkZwTTeA==
   dependencies:
     postcss-selector-parser "^6.0.10"
 
