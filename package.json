@@ -16,7 +16,7 @@
     "@stefanprobst/rehype-extract-toc": "^2.2.0",
     "@tailwindcss/typography": "^0.5.9",
     "@types/node": "18.11.18",
-    "@types/react": "18.0.27",
+    "@types/react": "18.0.28",
     "@types/react-dom": "18.0.10",
     "@vercel/analytics": "^0.1.8",
     "bibtex-js-parser": "^1.1.6",
