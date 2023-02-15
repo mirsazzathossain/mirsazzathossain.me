@@ -1,5 +1,6 @@
 import { Article } from "contentlayer/generated";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function AuthorCard({
   article,
@@ -24,14 +25,15 @@ export default function AuthorCard({
         <div>
           <div className="mb-3">
             <h4 className="text-lg font-medium text-zinc-800 dark:text-zinc-100">
-              About {article.author.name}
+              About{" "}
+              <Link href={article.author.url || ""}>{article.author.name}</Link>
             </h4>
           </div>
           <div>
             <p>
-              Mir Sazzat Hossain is a Research Assistant at the Independent
-              University of Bangladesh's Center for Computation and Data Science
-              (CCDS).
+              <Link href={article.author.url || ""}> Mir Sazzat Hossain</Link>{" "}
+              is a Research Assistant at the Independent University of
+              Bangladesh's Center for Computation and Data Science (CCDS).
             </p>
           </div>
         </div>

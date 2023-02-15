@@ -6,6 +6,7 @@ import { Article } from "contentlayer/generated";
 import { useMDXComponent } from "next-contentlayer/hooks";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import "../../../styles/katex.css";
 import AuthorCard from "./AuthorCard";
 import RelatedArticles from "./RelatedArticles";
 
@@ -86,7 +87,7 @@ export default function ArticlePage({
 
         <article>
           <header className="flex flex-col">
-            <h1 className="mt-6 text-4xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-5xl">
+            <h1 className="mt-6 text-3xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-4xl">
               {article.title}
             </h1>
 
@@ -95,7 +96,7 @@ export default function ArticlePage({
               className="order-first flex items-center text-base text-zinc-400 dark:text-zinc-500"
             >
               <span className="h-4 w-0.5 rounded-full bg-zinc-200 dark:bg-zinc-500" />
-              <span className="ml-3">
+              <span className="ml-3 truncate">
                 {toLocaleDateString(article.publishedAt as string)}
                 {` • `}
                 {article.readingTime.text}
@@ -106,7 +107,8 @@ export default function ArticlePage({
                     key={category.title}
                     className="text-teal-500 hover:text-teal-600 dark:text-teal-400 dark:hover:text-teal-300 font-medium"
                   >
-                    {category.title}{" "}
+                    {category.title}
+                    {index < article.categories.length - 1 ? `, ` : ``}
                   </Link>
                 ))}
               </span>
@@ -117,13 +119,13 @@ export default function ArticlePage({
             <Component components={mdxComponents as any} />
           </div>
 
-          <div className="grid grid-cols-2 gap-4 mt-8">
-            <div className="flex items-center">
-              {article.tags?.map((tag, index) => (
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-8">
+            <div className="flex items-center md:col-span-2">
+              {article.tags?.slice(0, 3).map((tag) => (
                 <Link
                   href={`/articles/tags/${slugify(tag.title)}`}
                   key={tag.title}
-                  className="inline-block py-1.5 px-3 mr-2 mb-2 rounded-md bg-gray-100 hover:bg-gray-200 text-sm text-gray-600 dark:bg-zinc-800 dark:hover:bg-zinc-700 dark:text-zinc-100"
+                  className="inline-block py-1.5 px-3 mr-2 mb-2 rounded-md bg-gray-100 hover:bg-gray-200 text-sm text-gray-600 dark:bg-zinc-800 dark:hover:bg-zinc-700 dark:text-zinc-100 truncate"
                 >
                   {tag.title}
                 </Link>
