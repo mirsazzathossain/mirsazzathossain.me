@@ -30,11 +30,13 @@ code[data-line-numbers] .line::before {
   @apply text-zinc-500 dark:text-zinc-100 mr-3 w-4 text-right inline-block;
 }
 
-div[data-theme="light"] {
+div[data-theme="light"],
+code[data-theme="light"] {
   @apply dark:hidden;
 }
 
-div[data-theme="dark"] {
+div[data-theme="dark"],
+code[data-theme="dark"] {
   @apply hidden dark:block;
 }
 
@@ -45,4 +47,3 @@ div[data-theme="dark"] {
 .step > h6 {
   @apply my-0;
 }
-
