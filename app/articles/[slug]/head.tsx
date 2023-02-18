@@ -78,7 +78,7 @@ export default async function Head({
       <link rel="alternate" type="application/rss+xml" href="/feed.xml" />
       <link rel="icon" href="/favicon.ico" />
       <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-      <link rel="manifest" href="/manifest.json" />
+      <link rel="manifest" href="/site.webmanifest" />
     </>
   );
 }
