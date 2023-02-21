@@ -101,13 +101,13 @@ export default function SearchArticles({
             onPageChange={(data) => {
               const selected = data.selected;
               const path = window.location.pathname;
-              const cleanPath = path.replace(/\/page\/\d+/, "");
+              const cleanPath = path.replace(/\?.*$/, "");
               const newUrl =
                 window.location.protocol +
                 "//" +
                 window.location.host +
                 cleanPath +
-                "/page/" +
+                "?page=" +
                 (selected + 1);
               window.history.pushState({ path: newUrl }, "", newUrl);
             }}
