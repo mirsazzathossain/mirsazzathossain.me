@@ -100,7 +100,6 @@ export default function SearchArticles({
             disabledLinkClassName={
               "cursor-not-allowed opacity-50 pointer-events-none"
             }
-            initialPage={page - 1}
             pageCount={Math.ceil(totalArticles / articlesPerPage)}
             marginPagesDisplayed={2}
             pageRangeDisplayed={5}
