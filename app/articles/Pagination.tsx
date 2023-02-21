@@ -1,5 +1,6 @@
 "use client";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/router";
+
 import ReactPaginate from "react-paginate";
 
 export default function Pagination({
@@ -8,11 +9,11 @@ export default function Pagination({
   totalArticles: number;
 }): JSX.Element {
   const router = useRouter();
-  const pathName = usePathname();
-  const searchParams = useSearchParams();
+  const pathName = router.pathname;
+  const searchParams = router.query;
 
   const totalPages = Math.ceil(totalArticles / 5);
-  const page = searchParams.get("page") || "1";
+  const page = searchParams?.page ? parseInt(searchParams.page as string) : 1;
 
   return (
     <ReactPaginate
@@ -38,7 +39,7 @@ export default function Pagination({
       disabledLinkClassName={
         "cursor-not-allowed opacity-50 pointer-events-none"
       }
-      initialPage={parseInt(page) - 1}
+      initialPage={page - 1}
       pageCount={totalPages}
       marginPagesDisplayed={2}
       pageRangeDisplayed={5}

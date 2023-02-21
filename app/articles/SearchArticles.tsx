@@ -3,6 +3,7 @@ import ArticleCard from "components/ArticleCard";
 import { MagnifyingGlassIcon, NotFoundIcon } from "components/Icons";
 import { Article } from "contentlayer/generated";
 import { useState } from "react";
+import Pagination from "./Pagination";
 
 export default function SearchArticles({
   articles,
@@ -71,7 +72,7 @@ export default function SearchArticles({
       )}
       {totalArticles !== 0 && (
         <div className="mt-16 grid justify-items-center max-w-3xl">
-          {/* <Pagination totalArticles={totalArticles} /> */}
+          <Pagination totalArticles={totalArticles} />
         </div>
       )}
     </>
