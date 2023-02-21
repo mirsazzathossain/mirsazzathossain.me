@@ -1,0 +1,340 @@
+---
+title: "Dockerize Your Data Science Workflow: A Step-by-Step Guide to Setting Up Jupyter Lab on Your Private Linux Machine"
+tags:
+  - title: Docker
+  - title: Jupyter
+  - title: Jupyter Lab
+  - title: Data Science
+  - title: Linux
+  - title: Server
+categories:
+  - title: Data Science
+  - title: DevOps
+  - title: Linux
+author:
+  name: Mir Sazzat Hossain
+  designation: Research Assistant
+  url: https://mirsazzathossain.me
+  avatar:
+    url: user.png
+    alt: Mir Sazzat Hossain
+description: "Learn how to set up and deploy a Dockerized Jupyter Lab on a private Linux server, providing a secure environment for data science work. This step-by-step guide covers the installation and configuration of Docker, creation of a Jupyter Lab container, and tips for managing conda environments and accessing the Jupyter Lab interface."
+seoDescription: "Dockerizing Jupyter Lab: A Step-by-Step Guide to Hosting a Private Jupyter Server on Linux. Learn how to create a dockerized Jupyter server on your private Linux server to keep your notebooks secure and accessible only to you. This guide covers step-by-step instructions on how to set up the server, create and activate conda environments, and more."
+covers:
+  - url: content/dockerizing-jupyter-notebook/dockerize-jupyter.jpg
+    alt: Exploring Gaussian Distribution Cover
+status: published
+publishedAt: 2023-02-21
+---
+
+<img
+  src="/images/content/dockerizing-jupyter-notebook/dockerize-jupyter.jpg"
+  alt="Dockerize Jupyter Notebook"
+  sizes="100vw"
+  width="100%"
+  height="auto"
+/>
+
+Jupyter notebook is a powerful tool for data scientists and machine learning engineers to develop and share their code and research. However, running a Jupyter server on your local machine can be challenging, especially if you're working with large datasets or complex models that require significant computing power. One solution is to run a Jupyter server in a private Linux server for better performance, increased security, and the ability to collaborate with other team members.
+
+In this tutorial, we'll show you how to create a Dockerized Jupyter server on a private Linux server. From installing Docker to running the Jupyter server and accessing it from your local machine, we'll cover everything. By the end of this tutorial, you'll have a Jupyter Lab instance running in a Docker container on your private Linux server, and you'll be able to access it from any web browser on your local machine. So, if you're a data scientist or machine learning engineer looking to scale your Jupyter server, let's get started!
+
+## Prerequisites
+
+Before we dive into the tutorial, let's make sure you have the right tools and knowledge to follow along. Here are the prerequisites for this tutorial:
+
+- A Linux server with a public IP address
+- Basic knowledge of the Linux command line
+- A web browser (preferably Google Chrome) installed on your local machine
+
+If you don't have a Linux server set up, you can create one using a cloud provider like AWS or DigitalOcean. For this tutorial, we'll assume you have a server up and running.
+
+## Step 1: Connect to Your Linux Server
+
+To get started, the first thing you need to do is connect to your private Linux server via SSH. To connect to your server, you will need the server's IP address and the login credentials (username and password). If you don't have this information, contact your server administrator.
+
+Once you have the necessary information, open a terminal or command prompt on your local machine and type the following command, replacing `username{:bash}` and `server_ip{:bash}` with your actual login credentials and server IP address, respectively:
+
+```bash
+ssh username@server_ip
+```
+
+You will be prompted to enter your password. After entering your password, you will be logged into your Linux server.
+
+## Step 2: Install Docker
+
+To install Docker on your Linux server, you can follow the official Docker installation guide. However, we'll show you how to install Docker on Ubuntu 20.04 in this tutorial. If you're using a different Linux distribution, you can find the installation instructions for your distribution on the official Docker website.
+
+To install Docker on Ubuntu 20.04, first, update the package index and install the required packages:
+
+```bash
+sudo apt-get update
+sudo apt-get install \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    gnupg \
+    lsb-release
+```
+
+Next, add the Docker's official GPG key:
+
+```bash
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+```
+
+Then, add the Docker repository to the APT sources list:
+
+```bash
+echo \
+  "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+```
+
+Finally, update the package index and install Docker:
+
+```bash
+sudo apt-get update
+sudo apt-get install docker-ce docker-ce-cli containerd.io
+```
+
+To verify that Docker is installed correctly, run the following command:
+
+```bash
+docker --version
+```
+
+You should see the docker version number in the output. If you see an error message, make sure you followed the steps correctly.
+
+## Step 3: Create a Folder for Your Jupyter Server
+
+Now that you have Docker installed, the next step is to create a folder for your Jupyter server. All the files and folders related to your Jupyter server will be stored in this folder. To create a folder, run the following command:
+
+```bash
+mkdir ~/jupyter-server
+```
+
+Navigate to the newly created folder using the `cd{:bash}` command:
+
+```bash
+cd ~/jupyter-server
+```
+
+## Step 4: Create a `docker-compose.yml{:bash}` File
+
+The next step is to create a `docker-compose.yml{:bash}` file in the `jupyter-server{:bash}` folder. This file will contain the configuration for your Jupyter server. To create the file, run the following command:
+
+```bash
+touch docker-compose.yml
+```
+
+Open the file using your favorite text editor. For this tutorial, we'll use the `nano{:bash}` editor:
+
+```bash
+nano docker-compose.yml
+```
+
+Add the following configuration to the file (we will explain each line in the next section):
+
+```yaml title="docker-compose.yml" Show
+version: "3"
+
+services:
+  jupyter:
+    image: jupyter/minimal-notebook
+    hostname: jupyter
+    container_name: jupyter
+    restart: unless-stopped
+    environment:
+      - CHOWN_EXTRA=/home/${NOTEBOOK_USER}/work
+      - CHOWN_EXTRA_OPTS=-R
+      - NB_UID=1000
+      - NB_GID=100
+      - NB_USER=${NOTEBOOK_USER}
+      - NB_GROUP=users
+      - JUPYTER_ENABLE_LAB=yes
+      - CHOWN_HOME=yes
+      - CHOWN_HOME_OPTS=-R
+      - JUPYTER_TOKEN=${JUPYTER_TOKEN}
+      - PASSWORD_HASH=${PASSWORD_HASH}
+      - NVIDIA_VISIBLE_DEVICES=all
+    runtime: nvidia
+    ports:
+      - "8888:8888"
+    volumes:
+      - ${PWD}/work:/home/${NOTEBOOK_USER}/work
+      - ${PWD}/work/environments:/home/${NOTEBOOK_USER}/work/environments
+    working_dir: /home/${NOTEBOOK_USER}/work
+    command:
+      /bin/bash -c "if ls /home/${NOTEBOOK_USER}/work/environments/*.yml >/dev/null 2>&1; then \
+      for f in /home/${NOTEBOOK_USER}/work/environments/*.yml; do \
+      env_name=$$(basename $${f%.yml}); \
+      echo \"Creating environment $${env_name}...\"; \
+      conda env create --quiet --name $${env_name} --file $${f}; \
+      done; \
+      else \
+      echo \"No environment files found. Creating default environment...\"; \
+      conda install --quiet --yes numpy; \
+      fi && \
+      conda clean --all -f -y && \
+      fix-permissions \"/opt/conda\" && \
+      fix-permissions \"/home/${NOTEBOOK_USER}\" && \
+      start-notebook.sh --NotebookApp.token='${JUPYTER_TOKEN}' --NotebookApp.allow_password_change=True --NotebookApp.password='${PASSWORD_HASH}'"
+    user: root
+    env_file:
+      - .env
+```
+
+Let's go over each line of the configuration file and explain what it does.
+
+- `version: "3"{:yaml}`: This line specifies the version of the `docker-compose.yml{:bash}` file. We are using version 3 in this tutorial.
+- `services:{:yaml}` This line specifies the services that will be running in the Docker container. In this case, we are only running one service, which is the Jupyter server.
+- `jupyter:{:yaml}` This line specifies the name of the service. We are calling it `jupyter{:yaml}`.
+- `image: jupyter/minimal-notebook{:yaml}`: This line specifies the Docker image that will be used to run the Jupyter server. We are using the `jupyter/minimal-notebook{:yaml}` image in this tutorial. You can find more information about this image on the official [Docker Hub page](https://hub.docker.com/r/jupyter/minimal-notebook).
+- `hostname: jupyter{:yaml}`: This line specifies the hostname of the Jupyter server. We are calling it `jupyter{:yaml}`, but you can change it to whatever you want.
+- `container_name: jupyter{:yaml}`: This line specifies the name of the Docker container. We are calling it `jupyter{:yaml}`.
+- `restart: unless-stopped{:yaml}`: This line specifies the restart policy for the Docker container. If the container is stopped, it will be restarted unless it is explicitly stopped. There are other restart policies that you can use. You can find more information about restart policies on the official [Docker documentation](https://docs.docker.com/config/containers/start-containers-automatically/).
+- `environment:{:yaml}` This line specifies the environment variables that will be used by the Jupyter server. We will go over each environment variables.
+- `CHOWN_EXTRA: /home/${NOTEBOOK_USER}/work{:yaml}`: This environment variable specifies the folder that will be owned by the `NOTEBOOK_USER{:yaml}` user. We are setting it to `/home/${NOTEBOOK_USER}/work{:yaml}`.
+- `CHOWN_EXTRA_OPTS: -R{:yaml}`: This environment variable specifies the options that will be used when changing the ownership of the folder specified in the `CHOWN_EXTRA{:yaml}` environment variable. We are setting it to `-R{:yaml}` to recursively change the ownership of all the files and folders in the specified folder.
+- `NB_UID: 1000{:yaml}`: This environment variable specifies the user ID of the `NOTEBOOK_USER{:yaml}` user. We are setting it to `1000{:yaml}` by default.
+- `NB_GID: 100{:yaml}`: This environment variable specifies the group ID of the `NOTEBOOK_USER{:yaml}` user. We are setting it to `100{:yaml}` by default.
+- `NB_USER: ${NOTEBOOK_USER}{:yaml}`: This environment variable specifies the username of the `NOTEBOOK_USER{:yaml}` user. We are setting it to `${NOTEBOOK_USER}{:yaml}`, we will explain how this variable is set in the next section.
+- `NB_GROUP: users{:yaml}`: This environment variable specifies the group of the `NOTEBOOK_USER{:yaml}` user. We are setting it to `users{:yaml}`, as the `users{:yaml}` group is the default group for the `NOTEBOOK_USER{:yaml}` user.
+- `JUPYTER_ENABLE_LAB: yes{:yaml}`: This environment variable specifies whether JupyterLab will be enabled. We are setting it to `yes{:yaml}` to enable JupyterLab.
+- `CHOWN_HOME: yes{:yaml}`: This environment variable specifies whether the home folder of the `NOTEBOOK_USER{:yaml}` user will be owned by the `NOTEBOOK_USER{:yaml}` user. We are setting it to `yes{:yaml}` to change the ownership of the home folder.
+- `CHOWN_HOME_OPTS: -R{:yaml}`: This environment variable specifies the options that will be used when changing the ownership of the home folder of the `NOTEBOOK_USER{:yaml}` user. We are setting it to `-R{:yaml}` to recursively change the ownership of all the files and folders in the home folder.
+- `JUPYTER_TOKEN: ${JUPYTER_TOKEN}{:yaml}`: This environment variable specifies the token that will be used to access the Jupyter server. We are setting it to `${JUPYTER_TOKEN}{:yaml}`, we will explain how this variable is set in the next section.
+- `PASSWORD_HASH: ${PASSWORD_HASH}{:yaml}`: This environment variable specifies the password hash that will be used to access the Jupyter server. We are setting it to `${PASSWORD_HASH}{:yaml}`, we will explain how this variable is set in the next section.
+- `NVIDIA_VISIBLE_DEVICES: all{:yaml}`: This environment variable specifies the GPUs that will be visible to the Jupyter server. We are setting it to `all{:yaml}` to make all the GPUs visible to the Jupyter server.
+- `runtime: nvidia{:yaml}`: This line specifies the runtime that will be used to run the Docker container. We are using the `nvidia{:yaml}` runtime in this tutorial. You can find more information about the `nvidia{:yaml}` runtime on the official [Docker documentation](https://docs.docker.com/config/containers/resource_constraints/#gpu).
+- `ports:{:yaml}` This line specifies the ports that will be exposed by the Docker container. We are exposing the port `8888{:yaml}` in this tutorial, which is the default port used by the Jupyter server.
+- `volumes:{:yaml}` This line specifies the volumes that will be mounted in the Docker container.
+- `./work:/home/${NOTEBOOK_USER}/work{:yaml}`: This volume specifies the folder that will be mounted in the Docker container. We are mounting the `./work{:yaml}` folder in the host machine in the `/home/${NOTEBOOK_USER}/work{:yaml}` folder in the Docker container. Everything that is saved in the `/home/${NOTEBOOK_USER}/work{:yaml}` folder in the Docker container will be saved in the `./work{:yaml}` folder in the host machine.
+- `./work/environments:/home/${NOTEBOOK_USER}/work/environments{:yaml}`: Similarly to the previous volume, this volume specifies the folder that will be mounted in the Docker container. We are mounting the `./work/environments{:yaml}` folder in the host machine in the `/home/${NOTEBOOK_USER}/work/environments{:yaml}` folder in the Docker container. We will use this folder to store the environment files that will be used to save the Conda environments.
+- `working_dir: /home/${NOTEBOOK_USER}/work{:yaml}`: This line specifies the working directory of the Docker container. We are setting it to `/home/${NOTEBOOK_USER}/work{:yaml}`.
+- `command{:yaml}`: This line specifies the command that will be executed when the container starts. It first checks if any environment files exist in the environments directory, creates a Conda environment for each one if it does, and installs a default environment if it does not. It then cleans up the Conda environment and starts the Jupyter server.
+- `user: root{:yaml}`: This line specifies the user that will be used to run the Docker container. We are setting it to `root{:yaml}` to run the Docker container as the root user.
+- `env_file:{:yaml}` This line specifies the environment file that will be used by the Docker container. We are using the `.env{:yaml}` file in this tutorial to set the environment variables. We will go over the environment variables in the next section.
+
+## Step 5: Set the Environment Variables
+
+The environment variables that we used in the `docker-compose.yml{:bash}` file are set in the `.env{:bash}` file. It is a good practice to set the environment variables in a separate file instead of setting them directly in the `docker-compose.yml{:bash}` file. This way, you can easily change the environment variables without having to change the `docker-compose.yml{:bash}` file. Also your passwords and tokens will not be exposed in the `docker-compose.yml{:bash}` file.
+
+Create a new file called `.env{:bash}` in the same directory as the `docker-compose.yml{:bash}` file. Use the following command to create the `.env{:bash}` file:
+
+```bash
+touch .env
+```
+
+Open the `.env{:bash}` file in your favorite text editor and add the following environment variables:
+
+```bash
+JUPYTER_TOKEN=your_jupyter_token
+PASSWORD_HASH=your_password_hash
+NOTEBOOK_USER=your_notebook_user
+```
+
+Replace `your_jupyter_token{:bash}` with a random string of your choice to use as your Jupyter token. This will be used to authenticate yourself to the notebook server.
+
+To create a hashed password, you can use the `passwd(){:bash}` function from the `notebook.auth{:bash}` module in a Python shell or Jupyter notebook. This will output a hashed version of your password that you can copy and paste into your `.env{:bash}` file as the value of the `PASSWORD_HASH{:bash}` environment variable.
+
+For example, if you wanted to use the password "mysecretpassword", you would enter the following in the Python shell:
+
+```bash
+python -c 'from notebook.auth import passwd; print(passwd(passphrase="mysecretpassword", algorithm="sha1"))'
+```
+
+This will output a hashed version of your password like the following:
+
+```bash
+sha1:143bfff689ac:37498bc69b8314a00dd31f6041e4f88b64dae038
+```
+
+Copy and paste the hashed version of your password into the `.env{:bash}` file as the value of the `PASSWORD_HASH{:bash}` environment variable.
+
+Replace `your_notebook_user{:bash}` with the name of the user that you want to use to access the Jupyter server. This user will be created inside the Docker container and will be used to run the Jupyter server.
+
+## Step 6: Build and Run the Docker Container
+
+Now that we have created the `docker-compose.yml{:bash}` file and the `.env{:bash}` file, we can build and run the Docker container. To build and run the Docker container, use the following command:
+
+```bash
+docker-compose up -d
+```
+
+This command will build the Docker container and run it in the background. You can check the status of the Docker container using the following command:
+
+```bash
+docker-compose ps
+```
+
+This command will output the status of the Docker container. You should see the following output:
+
+```bash
+Name                Command               State           Ports
+----------------------------------------------------------------
+jupyter   /bin/bash /home/jupyter/ ...   Up
+```
+
+Now that the Docker container is running, you can access the Jupyter server by going to `http://<your_server_ip>:8888{:bash}` in your browser. You should see the Jupyter login page. Enter the Jupyter token that you set in the `.env{:bash}` file as the password to access the Jupyter server.
+
+## Step 7: Activate Conda base Environment and create a new Environment
+
+Now that you have access to the Jupyter server, you can create a new Conda environment and install the packages that you need. Open a new terminal in the Jupyter server and activate the Conda base environment using the following command:
+
+```bash
+source activate base
+```
+
+Now that you are in the Conda base environment, you can create a new Conda environment using the following command:
+
+```bash
+conda create -n myenv python=3.10
+```
+
+This command will create a new Conda environment called `myenv{:bash}` with Python version 3.10. You can activate the new Conda environment using the following command:
+
+```bash
+conda activate myenv
+```
+
+Now that you are in the new Conda environment, you can install the packages that you need using the `conda install{:bash}` command. For example, if you wanted to install the `numpy{:bash}` package, you would use the following command:
+
+```bash
+conda install numpy
+```
+
+## Step 8: Use the new Environment in a Jupyter Notebook
+
+Now that you have created a new Conda environment and installed the packages that you need, you can use the new Conda environment in a Jupyter notebook. To use the new Conda environment in a Jupyter notebook, you need to install the `ipykernel{:bash}` package in the new Conda environment. You can install the `ipykernel{:bash}` package using the following command:
+
+```bash
+conda install ipykernel
+```
+
+Now that you have installed the `ipykernel{:bash}` package, you can use the new Conda environment in a Jupyter notebook. To use the new Conda environment in a Jupyter notebook, you need to create a new kernel for the new Conda environment. You can create a new kernel for the new Conda environment using the following command:
+
+```bash
+python -m ipykernel install --user --name myenv --display-name "Python (myenv)"
+```
+
+This command will create a new kernel for the new Conda environment called `Python (myenv){:bash}`. You can now use the new Conda environment in a Jupyter notebook. To use the new Conda environment in a Jupyter notebook, you need to select the `Python (myenv){:bash}` kernel from the kernel menu in the Jupyter notebook.
+
+## Step 9: Save the new Environment to a YAML file
+
+Now that you have created a new Conda environment and installed the packages that you need, you can save the new Conda environment to a YAML file. To save the new Conda environment to a YAML file, you need to export the new Conda environment to a YAML file. You can export the new Conda environment to a YAML file using the following command:
+
+```bash
+conda env export > environments/myenv.yml
+```
+
+The above command exports the newly created Conda environment to a YAML file named `myenv.yml{:bash}` within the `environments{:bash}` directory. This step is crucial because if the docker container is stopped or deleted, the exported YAML file can be used to restore all the packages installed in the Conda environment during the next start of the docker container. As the `docker-compose.yml{:bash}` file automatically restores the packages, you only need to ensure that you export and save the Conda environment to a YAML file after any modifications.
+
+## Conclusion
+
+That's it! We've covered a lot of ground in this blog post! We started with the basics of Jupyter Notebook, and then explored how to set up a secure Jupyter Notebook server on a remote machine. By the end of this post, you should have a Jupyter Notebook server that is accessible over the internet, and secured with a password and token-based authentication.
+
+Remember, it's important to keep your Jupyter Notebook server secure, especially if you're working with sensitive data. By following the steps outlined in this post, you can set up a secure Jupyter Notebook server and use it to share your work with others.
+
+I hope you found this post helpful! If you have any questions or comments, please feel free to leave them below. Happy coding!
