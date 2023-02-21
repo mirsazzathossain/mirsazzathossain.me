@@ -44,9 +44,6 @@ export default function Pagination({
       activeClassName={
         "text-zinc-800 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:bg-gray-700 dark:text-white"
       }
-      pageClassName={
-        "text-zinc-800 bg-white/90 hover:bg-gray-100 hover:text-gray-700 dark:bg-zinc-800/90 dark:text-zinc-200 dark:hover:bg-gray-700 dark:hover:text-white"
-      }
       initialPage={page - 1}
       pageCount={totalPages}
       marginPagesDisplayed={2}
