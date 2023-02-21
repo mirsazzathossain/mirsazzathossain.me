@@ -2,6 +2,7 @@
 import ArticleCard from "components/ArticleCard";
 import { MagnifyingGlassIcon, NotFoundIcon } from "components/Icons";
 import { Article } from "contentlayer/generated";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import ReactPaginate from "react-paginate";
 
@@ -13,6 +14,9 @@ export default function SearchArticles({
   page?: any;
 }): JSX.Element {
   const [searchValue, setSearchValue] = useState("");
+
+  const router = useRouter();
+  const pathname = usePathname();
 
   const filteredArticles = articles.filter((article: any) => {
     const title = article.title.toLowerCase();
@@ -95,23 +99,16 @@ export default function SearchArticles({
             disabledLinkClassName={
               "cursor-not-allowed opacity-50 pointer-events-none"
             }
+            initialPage={page - 1}
             pageCount={Math.ceil(totalArticles / articlesPerPage)}
             marginPagesDisplayed={2}
             pageRangeDisplayed={5}
             onPageChange={(data) => {
               const selected = data.selected;
-              const path = window.location.pathname;
-              const cleanPath = path.replace(/\?.*$/, "");
-              const newUrl =
-                window.location.protocol +
-                "//" +
-                window.location.host +
-                cleanPath +
-                "?page=" +
-                (selected + 1);
-              window.history.pushState({ path: newUrl }, "", newUrl);
+              const page = selected + 1;
+              const url = `${pathname}?page=${page}`;
+              router.push(url);
             }}
-            forcePage={page - 1}
           />
         </div>
       )}
