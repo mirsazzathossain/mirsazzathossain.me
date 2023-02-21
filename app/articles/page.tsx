@@ -1,5 +1,6 @@
 import SimpleLayout from "components/SimpleLayout";
 import { allArticles, Article } from "contentlayer/generated";
+import SearchArticles from "./SearchArticles";
 
 // Get sorted articles from the contentlayer
 async function getSortedArticles(): Promise<Article[]> {
@@ -34,7 +35,7 @@ export default async function Articles({
       title="Writing on Machine Learning, Advance Math, and Programming"
       intro="All my articles are written with the goal of helping you learn something new. I hope you enjoy them!"
     >
-      {/* <SearchArticles articles={articles} page={page} /> */}
+      <SearchArticles articles={articles} page={page} />
     </SimpleLayout>
   );
 }
