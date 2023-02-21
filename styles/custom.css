@@ -37,7 +37,7 @@ code[data-theme="light"] {
 
 div[data-theme="dark"],
 code[data-theme="dark"] {
-  @apply hidden dark:block;
+  @apply hidden dark:inline-block;
 }
 
 .step > h2,
