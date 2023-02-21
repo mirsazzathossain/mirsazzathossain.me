@@ -109,6 +109,8 @@ export default function SearchArticles({
               const url = `${pathname}?page=${page}`;
               router.push(url);
             }}
+            forcePage={page - 1}
+            disableInitialCallback={true}
           />
         </div>
       )}
