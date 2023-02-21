@@ -47,8 +47,7 @@ export default function Pagination({
         const selected = data.selected;
         const page = selected + 1;
         const href = `${pathName}?page=${page}`;
-        // router.push(href, { shallow: true });
-        router.replace(href);
+        router.push(href);
       }}
     />
   );

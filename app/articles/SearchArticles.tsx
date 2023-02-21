@@ -3,7 +3,7 @@ import ArticleCard from "components/ArticleCard";
 import { MagnifyingGlassIcon, NotFoundIcon } from "components/Icons";
 import { Article } from "contentlayer/generated";
 import { useState } from "react";
-import Pagination from "./Pagination";
+import ReactPaginate from "react-paginate";
 
 export default function SearchArticles({
   articles,
@@ -72,7 +72,47 @@ export default function SearchArticles({
       )}
       {totalArticles !== 0 && (
         <div className="mt-16 grid justify-items-center max-w-3xl">
-          <Pagination totalArticles={totalArticles} />
+          <ReactPaginate
+            containerClassName={"inline-flex -space-x-px"}
+            previousLabel={"Previous"}
+            nextLabel={"Next"}
+            breakLabel={"..."}
+            breakLinkClassName={
+              "px-3 py-2 ml-0 leading-tight text-zinc-800 bg-white/90 border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-zinc-800/90 dark:border-gray-700 dark:text-zinc-200 dark:hover:bg-gray-700 dark:hover:text-white"
+            }
+            activeLinkClassName={
+              "px-3 py-2 text-zinc-800 border border-gray-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white"
+            }
+            pageLinkClassName={
+              "px-3 py-2 ml-0 leading-tight text-zinc-800 bg-white/90 border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-zinc-800/90 dark:border-gray-700 dark:text-zinc-200 dark:hover:bg-gray-700 dark:hover:text-white"
+            }
+            previousLinkClassName={
+              "px-3 py-2 ml-0 leading-tight text-zinc-800 bg-white/90 border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-zinc-800/90 dark:border-gray-700 dark:text-zinc-200 dark:hover:bg-gray-700 dark:hover:text-white"
+            }
+            nextLinkClassName={
+              "px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-zinc-800/90 dark:border-gray-700 dark:text-zinc-200 dark:hover:bg-gray-700 dark:hover:text-white"
+            }
+            disabledLinkClassName={
+              "cursor-not-allowed opacity-50 pointer-events-none"
+            }
+            pageCount={Math.ceil(totalArticles / articlesPerPage)}
+            marginPagesDisplayed={2}
+            pageRangeDisplayed={5}
+            onPageChange={(data) => {
+              const selected = data.selected;
+              const path = window.location.pathname;
+              const cleanPath = path.replace(/\/page\/\d+/, "");
+              const newUrl =
+                window.location.protocol +
+                "//" +
+                window.location.host +
+                cleanPath +
+                "/page/" +
+                (selected + 1);
+              window.history.pushState({ path: newUrl }, "", newUrl);
+            }}
+            forcePage={page - 1}
+          />
         </div>
       )}
     </>
