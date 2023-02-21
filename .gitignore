@@ -41,3 +41,4 @@ next-env.d.ts
 
 public/*.xml
 public/*.json
+public/*.txt
