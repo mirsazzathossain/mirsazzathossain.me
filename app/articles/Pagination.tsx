@@ -9,11 +9,13 @@ export default function Pagination({
   totalArticles: number;
 }): JSX.Element {
   const router = useRouter();
-  const pathName = usePathname();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
 
   const totalPages = Math.ceil(totalArticles / 5);
-  const page = searchParams.get("page") || "1";
+  const page = searchParams.get("page")
+    ? parseInt(searchParams.get("page"))
+    : 1;
 
   return (
     <ReactPaginate
@@ -39,16 +41,17 @@ export default function Pagination({
       disabledLinkClassName={
         "cursor-not-allowed opacity-50 pointer-events-none"
       }
-      initialPage={parseInt(page) - 1}
       pageCount={totalPages}
       marginPagesDisplayed={2}
       pageRangeDisplayed={5}
       onPageChange={(data) => {
         const selected = data.selected;
         const page = selected + 1;
-        const href = `${pathName}?page=${page}`;
-        router.push(href);
+        const url = `${pathname}?page=${page}`;
+        router.push(url);
       }}
+      forcePage={page - 1}
+      disableInitialCallback={true}
     />
   );
 }
