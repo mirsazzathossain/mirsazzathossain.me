@@ -2,21 +2,20 @@
 import ArticleCard from "components/ArticleCard";
 import { MagnifyingGlassIcon, NotFoundIcon } from "components/Icons";
 import { Article } from "contentlayer/generated";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import ReactPaginate from "react-paginate";
 
 export default function SearchArticles({
   articles,
-  page,
 }: {
   articles: Article[];
-  page?: any;
 }): JSX.Element {
   const [searchValue, setSearchValue] = useState("");
 
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   const filteredArticles = articles.filter((article: any) => {
     const title = article.title.toLowerCase();
@@ -30,7 +29,9 @@ export default function SearchArticles({
     articles = filteredArticles;
   }
 
-  page = page || 1;
+  const page = searchParams.get("page")
+    ? parseInt(searchParams.get("page"))
+    : 1;
   const articlesPerPage = 5;
   const totalArticles = articles.length;
   const startIndex = (page - 1) * articlesPerPage;
