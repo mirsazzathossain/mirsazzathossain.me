@@ -50,6 +50,9 @@ export default async function Head({
       <meta property="og:description" content={article.description} />
       <meta property="og:url" content={`${server}/articles/${slug}`} />
       <meta property="og:site_name" content="Mir Sazzat Hossain" />
+      <meta property="author" content="Mir Sazzat Hossain" />
+      <meta property="article:published_time" content={article.publishedAt} />
+      <meta property="og:publish_date" content={article.publishedAt} />
       <meta
         property="og:image"
         content={`${server}/images/${article.covers[0].url}`}
