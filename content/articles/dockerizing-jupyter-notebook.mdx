@@ -169,8 +169,12 @@ services:
       /bin/bash -c "if ls /home/${NOTEBOOK_USER}/work/environments/*.yml >/dev/null 2>&1; then \
       for f in /home/${NOTEBOOK_USER}/work/environments/*.yml; do \
       env_name=$$(basename $${f%.yml}); \
+      if conda env list | grep -q $${env_name}; then \
+      echo \"Environment $${env_name} already exists. Skipping...\"; \
+      else \
       echo \"Creating environment $${env_name}...\"; \
       conda env create --quiet --name $${env_name} --file $${f}; \
+      fi; \
       done; \
       else \
       echo \"No environment files found. Creating default environment...\"; \
