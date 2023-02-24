@@ -26,7 +26,7 @@ export default function CodeBlock({ children, ...props }: any): JSX.Element {
   };
   return (
     <div
-      className="relative"
+      className="relative block-code"
       {...props}
       onMouseEnter={onEnter}
       onMouseLeave={onExit}

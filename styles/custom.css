@@ -40,6 +40,12 @@ code[data-theme="dark"] {
   @apply hidden dark:inline-block;
 }
 
+.block-code[data-theme="dark"],
+div[data-rehype-pretty-code-title][data-theme="dark"],
+.block-code code[data-theme="dark"] {
+  @apply hidden dark:block;
+}
+
 .step > h2,
 .step > h3,
 .step > h4,
