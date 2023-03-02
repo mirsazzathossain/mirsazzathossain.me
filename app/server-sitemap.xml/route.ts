@@ -100,5 +100,7 @@ export async function GET(request: Request) {
     })),
   ];
 
+  console.log("fields", fields);
+
   return getServerSideSitemap(request as any, fields as ISitemapField[]);
 }
