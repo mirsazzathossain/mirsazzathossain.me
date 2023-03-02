@@ -18,7 +18,7 @@
     "@types/node": "18.11.18",
     "@types/react": "18.0.28",
     "@types/react-dom": "18.0.11",
-    "@vercel/analytics": "^0.1.8",
+    "@vercel/analytics": "^0.1.11",
     "bibtex-js-parser": "^1.1.6",
     "clsx": "^1.2.1",
     "contentlayer": "^0.3.0",
