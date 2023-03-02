@@ -5,7 +5,7 @@ import {
   Article,
   Snippet,
 } from "contentlayer/generated";
-import { getServerSideSitemap, ISitemapField } from "next-sitemap";
+import { getServerSideSitemap } from "next-sitemap";
 
 // get sorted articles and snippets from contentlayer
 async function getSortedArticlesAndSnippets() {
@@ -100,7 +100,5 @@ export async function GET(request: Request) {
     })),
   ];
 
-  console.log("fields", fields);
-
-  return getServerSideSitemap(request as any, fields as ISitemapField[]);
+  return getServerSideSitemap([...fields]);
 }
