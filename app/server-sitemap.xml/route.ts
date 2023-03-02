@@ -1,4 +1,11 @@
-import { allArticles, allSnippets, Article } from "contentlayer/generated";
+import { server } from "config";
+import {
+  allArticles,
+  allSnippets,
+  Article,
+  Snippet,
+} from "contentlayer/generated";
+import { GetServerSidePropsContext } from "next";
 import { getServerSideSitemap, ISitemapField } from "next-sitemap";
 
 // get sorted articles and snippets from contentlayer
@@ -51,48 +58,48 @@ function getTagsAndCategories(articles: Article[]) {
   return { tags, categories };
 }
 
-export async function GET(request: Request) {
+export async function GET(ctx: GetServerSidePropsContext) {
   const { articles, snippets } = await getSortedArticlesAndSnippets();
   const { tags, categories } = getTagsAndCategories(articles);
 
   const fields = [
     ...articles.map((article: Article) => ({
-      loc: `https://mirsazzathossain.me/articles/${article.slug}`,
+      loc: `${server}/articles/${article.slug}`,
       lastmod: new Date(article.publishedAt as string).toISOString(),
       changefreq: "daily",
       priority: 0.7,
     })),
     ...snippets.map((snippet: Snippet) => ({
-      loc: `https://mirsazzathossain.me/snippets/${snippet.slug}`,
+      loc: `${server}/snippets/${snippet.slug}`,
       lastmod: new Date().toISOString(),
       changefreq: "daily",
       priority: 0.7,
     })),
     {
-      loc: "https://mirsazzathossain.me/articles/categories",
+      loc: `${server}/articles/categories`,
       lastmod: new Date().toISOString(),
       changefreq: "daily",
       priority: 0.7,
     },
     {
-      loc: "https://mirsazzathossain.me/articles/tags",
+      loc: `${server}/articles/tags`,
       lastmod: new Date().toISOString(),
       changefreq: "daily",
       priority: 0.7,
     },
     ...Array.from(tags).map((tag) => ({
-      loc: `https://mirsazzathossain.me/articles/tags/${tag}`,
+      loc: `${server}/articles/tags/${tag}`,
       lastmod: new Date().toISOString(),
       changefreq: "daily",
       priority: 0.7,
     })),
     ...Array.from(categories).map((category) => ({
-      loc: `https://mirsazzathossain.me/articles/categories/${category}`,
+      loc: `${server}/articles/categories/${category}`,
       lastmod: new Date().toISOString(),
       changefreq: "daily",
       priority: 0.7,
     })),
   ];
 
-  return getServerSideSitemap(fields as ISitemapField[]);
+  return getServerSideSitemap(ctx, fields as ISitemapField[]);
 }
