@@ -9,9 +9,6 @@ export default withContentlayer({
     experimental: {
         newNextLinkBehavior: true,
         scrollRestoration: true,
-        images: {
-            allowFutureImage: true,
-        },
         appDir: true,
     },
     typescript: {
