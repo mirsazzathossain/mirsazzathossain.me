@@ -33,7 +33,7 @@ export default function AuthorCard({
             <p>
               <Link href={article.author.url || ""}> Mir Sazzat Hossain</Link>{" "}
               is a Research Assistant at the Independent University of
-              Bangladesh's Center for Computation and Data Science (CCDS).
+              Bangladesh&apos;s Center for Computation and Data Science (CCDS).
             </p>
           </div>
         </div>
