@@ -2,6 +2,7 @@
 module.exports = {
   siteUrl: process.env.SITE_URL || "https://mirsazzathossain.me",
   generateRobotsTxt: true,
+  exclude: ['/server-sitemap.xml'],
   robotsTxtOptions: {
     policies: [
       {

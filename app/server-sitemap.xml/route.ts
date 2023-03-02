@@ -103,5 +103,3 @@ export async function GET(ctx: GetServerSidePropsContext) {
 
   return getServerSideSitemap(ctx, fields as ISitemapField[]);
 }
-
-export default function Sitemap() {}
