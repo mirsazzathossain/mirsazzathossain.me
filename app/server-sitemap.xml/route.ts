@@ -5,8 +5,7 @@ import {
   Article,
   Snippet,
 } from "contentlayer/generated";
-import { GetServerSidePropsContext } from "next";
-import { getServerSideSitemap, ISitemapField } from "next-sitemap";
+import { getServerSideSitemap } from "next-sitemap";
 
 // get sorted articles and snippets from contentlayer
 async function getSortedArticlesAndSnippets() {
@@ -58,7 +57,7 @@ function getTagsAndCategories(articles: Article[]) {
   return { tags, categories };
 }
 
-export async function GET(ctx: GetServerSidePropsContext) {
+export async function GET(request: Request) {
   const { articles, snippets } = await getSortedArticlesAndSnippets();
   const { tags, categories } = getTagsAndCategories(articles);
 
@@ -101,5 +100,5 @@ export async function GET(ctx: GetServerSidePropsContext) {
     })),
   ];
 
-  return getServerSideSitemap(ctx, fields as ISitemapField[]);
+  return getServerSideSitemap([...fields]);
 }
