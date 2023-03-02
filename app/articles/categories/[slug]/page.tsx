@@ -1,6 +1,8 @@
 import SearchArticles from "app/articles/SearchArticles";
 import SimpleLayout from "components/SimpleLayout";
+import { server } from "config";
 import { allArticles, Article, Category } from "contentlayer/generated";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 // Get sorted articles from the contentlayer
@@ -19,6 +21,61 @@ async function getSortedArticles(): Promise<Article[]> {
     }
     return 0;
   });
+}
+
+// Dynamic metadata for the page
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string };
+}): Promise<Metadata> {
+  return {
+    title: `Articles categorized as ${params.slug}`,
+    description: `This page contains all the articles ${
+      params?.slug ? `categorized as ${params.slug}` : ""
+    } available on this website.`,
+    openGraph: {
+      type: "website",
+      title: `Articles categorized as ${params.slug} - Mir Sazzat Hossain`,
+      description: `This page contains all the articles ${
+        params?.slug ? `categorized as ${params.slug}` : ""
+      } available on this website.`,
+      url: `${server}/articles/categories/${params.slug}`,
+      siteName: "Mir Sazzat Hossain - Innovative Researcher and Skilled Mentor",
+      images: [
+        {
+          url: `${server}/images/cover.jpg`,
+          width: 1200,
+          height: 630,
+          alt: `Articles categorized as ${params.slug}`,
+        },
+      ],
+      locals: ["en_US"],
+    },
+    twitter: {
+      card: "summary_large_image",
+      site: "@mir_sazzat",
+      creator: "@mir_sazzat",
+      title: `Articles categorized as ${params.slug} - Mir Sazzat Hossain`,
+      description: `This page contains all the articles ${
+        params?.slug ? `categorized as ${params.slug}` : ""
+      } available on this website.`,
+      images: [
+        {
+          url: `${server}/images/cover.jpg`,
+          width: 1200,
+          height: 630,
+          alt: `Articles categorized as ${params.slug}`,
+        },
+      ],
+    },
+    alternates: {
+      canonical: `${server}/articles/categories/${params.slug}`,
+      types: {
+        "application/rss+xml": `${server}/feed.xml`,
+      },
+    },
+  };
 }
 
 export default async function Articles({

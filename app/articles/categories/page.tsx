@@ -1,5 +1,7 @@
 import { Container } from "components/Container";
+import { server } from "config";
 import { allArticles, Article, Category } from "contentlayer/generated";
+import type { Metadata } from "next";
 import Link from "next/link";
 
 // Get sorted articles from the contentlayer
@@ -18,6 +20,70 @@ async function getSortedArticles(): Promise<Article[]> {
     }
     return 0;
   });
+}
+
+// Dynamic metadata for the page
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string };
+}): Promise<Metadata> {
+  const articles = await getSortedArticles();
+  // get all the unique categories
+  const categories = articles.reduce((acc: any, article: Article) => {
+    article.categories.forEach((category: Category) => {
+      if (!acc[category.title]) {
+        acc[category.title] = 1;
+      }
+    });
+    return acc;
+  }, {});
+
+  return {
+    title: "Article Categories",
+    description:
+      "This page contains all the categories of articles available on this website.",
+    keywords: [...Object.keys(categories)],
+    openGraph: {
+      type: "website",
+      title: "Article Categories - Mir Sazzat Hossain",
+      description:
+        "This page contains all the categories of articles available on this website.",
+      url: `${server}/articles/categories`,
+      siteName: "Mir Sazzat Hossain - Innovative Researcher and Skilled Mentor",
+      images: [
+        {
+          url: `${server}/images/og-image.png`,
+          alt: "Mir Sazzat Hossain - Innovative Researcher and Skilled Mentor",
+          width: 1200,
+          height: 630,
+        },
+      ],
+      locale: "en_US",
+    },
+    twitter: {
+      card: "summary_large_image",
+      site: "@mir_sazzat",
+      creator: "@mir_sazzat",
+      title: "Article Categories - Mir Sazzat Hossain",
+      description:
+        "This page contains all the categories of articles available on this website.",
+      images: [
+        {
+          url: `${server}/images/og-image.png`,
+          alt: "Mir Sazzat Hossain - Innovative Researcher and Skilled Mentor",
+          width: 1200,
+          height: 630,
+        },
+      ],
+    },
+    alternates: {
+      canonical: `${server}/articles/categories`,
+      types: {
+        "application/rss+xml": `${server}/feed.xml`,
+      },
+    },
+  };
 }
 
 export default async function Tags(): Promise<JSX.Element> {

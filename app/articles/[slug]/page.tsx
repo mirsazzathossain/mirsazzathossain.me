@@ -1,5 +1,7 @@
 import { Container } from "components/Container";
+import { server } from "config";
 import { allArticles, Article } from "contentlayer/generated";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import ArticlePage from "./ArticlePage";
 
@@ -13,6 +15,68 @@ export async function generateStaticParams(): Promise<any> {
 // Get the article data for the given slug
 function getArticle(slug: string, articles: Article[]): Article | undefined {
   return articles.find((a: Article) => a.slug === slug);
+}
+
+// Dynamic metadata for the article page
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string };
+}): Promise<Metadata> {
+  const article = await getArticle(params.slug, await allArticles);
+  return {
+    title: article?.title,
+    description: article?.description,
+    keywords: [
+      article?.tags?.map((tag) => tag.title).join(", "),
+      article?.categories?.map((category) => category.title).join(", "),
+    ],
+
+    // Open Graph
+    openGraph: {
+      type: "article",
+      title: article?.title,
+      publishedTime: article?.publishedAt,
+      authors: [article?.author?.name],
+      description: article?.description,
+      url: `${server}/articles/${params.slug}`,
+      siteName: "Mir Sazzat Hossain - Innovative Researcher and Skilled Mentor",
+      images: [
+        {
+          url: `${server}/images/${article?.covers[0].url}`,
+          width: 1200,
+          height: 630,
+          alt: article?.title,
+        },
+      ],
+      locals: ["en_US"],
+    },
+
+    // Twitter
+    twitter: {
+      cardType: "summary_large_image",
+      title: article?.title,
+      description: article?.description,
+      images: [
+        {
+          url: `${server}/images/${article?.covers[0].url}`,
+          width: 1200,
+          height: 630,
+          alt: article?.title,
+        },
+      ],
+      site: "@mir_sazzat",
+      creator: "@mir_sazzat",
+    },
+
+    // Alternates
+    alternates: {
+      canonical: `${server}/articles/${params.slug}`,
+      types: {
+        "application/rss+xml": `${server}/feed.xml`,
+      },
+    },
+  };
 }
 
 // Get sorted articles from the contentlayer
