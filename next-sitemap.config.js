@@ -12,9 +12,7 @@ module.exports = {
     ],
     additionalSitemaps: [
       `${process.env.SITE_URL || "https://mirsazzathossain.me"}/sitemap.xml`,
-      `${
-        process.env.SITE_URL || "https://mirsazzathossain.me"
-      }/server-sitemap.xml`,
+      `${process.env.SITE_URL || "https://mirsazzathossain.me"}/server-sitemap.xml`,
     ],
   },
 };
