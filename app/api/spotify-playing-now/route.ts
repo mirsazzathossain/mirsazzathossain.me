@@ -1,7 +1,8 @@
+import { NextResponse } from "next/server";
+
 import { getNowPlaying, getRecentTrack } from "utils/spotify";
 
-// eslint-disable-next-line import/no-anonymous-default-export
-export default async (_: any, res: any): Promise<any> => {
+export async function GET() {
   let response = await getNowPlaying();
 
   let song = null;
@@ -31,17 +32,20 @@ export default async (_: any, res: any): Promise<any> => {
     songUrl = song.item.external_urls.spotify;
   }
 
-  res.setHeader(
-    "Cache-Control",
-    "public, s-maxage=60, stale-while-revalidate=30"
+  return NextResponse.json(
+    {
+      album,
+      albumImageUrl,
+      artist,
+      isPlaying,
+      songUrl,
+      title,
+    },
+    {
+      headers: {
+        "Cache-Control": "public, s-maxage=60, stale-while-revalidate=30",
+      },
+      status: 200,
+    }
   );
-
-  return res.status(200).json({
-    album,
-    albumImageUrl,
-    artist,
-    isPlaying,
-    songUrl,
-    title,
-  });
-};
+}

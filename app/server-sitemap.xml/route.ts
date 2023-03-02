@@ -1,10 +1,4 @@
-import {
-  allArticles,
-  allSnippets,
-  Article,
-  Snippet,
-} from "contentlayer/generated";
-import { GetServerSideProps } from "next";
+import { allArticles, allSnippets, Article } from "contentlayer/generated";
 import { getServerSideSitemap, ISitemapField } from "next-sitemap";
 
 // get sorted articles and snippets from contentlayer
@@ -57,7 +51,7 @@ function getTagsAndCategories(articles: Article[]) {
   return { tags, categories };
 }
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
+export async function GET(request: Request) {
   const { articles, snippets } = await getSortedArticlesAndSnippets();
   const { tags, categories } = getTagsAndCategories(articles);
 
@@ -100,8 +94,5 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     })),
   ];
 
-  return getServerSideSitemap(ctx, fields as ISitemapField[]);
-};
-
-// Default export to prevent next.js errors
-export default function Sitemap() {}
+  return getServerSideSitemap(fields as ISitemapField[]);
+}
