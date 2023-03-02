@@ -11,7 +11,7 @@
     "postbuild": "next-sitemap"
   },
   "dependencies": {
-    "@giscus/react": "^2.2.6",
+    "@giscus/react": "^2.2.8",
     "@headlessui/react": "^1.7.12",
     "@stefanprobst/rehype-extract-toc": "^2.2.0",
     "@tailwindcss/typography": "^0.5.9",
