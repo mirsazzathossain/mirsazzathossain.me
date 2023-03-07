@@ -3837,10 +3837,10 @@ next-share@^0.19.0:
   dependencies:
     jsonp "^0.2.1"
 
-next-sitemap@^4.0.2:
-  version "4.0.2"
-  resolved "https://registry.yarnpkg.com/next-sitemap/-/next-sitemap-4.0.2.tgz#e652c497c36fd3aa875a7cf217774e2b586aa605"
-  integrity sha512-NQVzguzW6xkh0fZzmgZJ//H9f1DdvKmhJmTO1xuIPmDuZxM2Gd48CrKHXVnbK0zAx52hpyNe3ZUGkrExUWyljg==
+next-sitemap@^4.0.4:
+  version "4.0.4"
+  resolved "https://registry.yarnpkg.com/next-sitemap/-/next-sitemap-4.0.4.tgz#c20a638159ee40b3abe864281325cacc30581d9d"
+  integrity sha512-4/bUDeWNx03fc8ac+5wA55H1Zn3X3c1qj5iq3Mk5eidzxnBzIuUt4NJ+1TpB0n1m7HUgEtE+kaUGShFK0McZVg==
   dependencies:
     "@corex/deepmerge" "^4.0.37"
     minimist "^1.2.8"
