@@ -40,6 +40,8 @@ export default async function Home(): Promise<JSX.Element> {
         <Server component="Articles" />
       </Suspense>
 
+      {/* <Calendar /> */}
+
       <Suspense fallback={<LifeEventsPlaceholder />}>
         {/* @ts-expect-error Server Component */}
         <Server component="LifeEvents" />

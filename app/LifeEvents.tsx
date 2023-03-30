@@ -10,14 +10,18 @@ const Divider = () => {
   );
 };
 
-export default function LifeEvents({ lifeEvents }: { lifeEvents: any }): JSX.Element {
+export default function LifeEvents({
+  lifeEvents,
+}: {
+  lifeEvents: any;
+}): JSX.Element {
   let [isExpanded, setIsExpanded] = useState(false);
   const parentRef = useRef();
 
   return (
     <>
       {Object.keys(lifeEvents).length > 0 && (
-        <Container className="mt-9">
+        <Container className="mt-12">
           <div className="max-w-3xl">
             <h3 className="font-bold text-2xl md:text-4xl tracking-tight mb-6 text-zinc-800 dark:text-zinc-100">
               Life Events

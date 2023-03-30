@@ -59,3 +59,25 @@ declare type Course = {
   publishedDate: string;
   totalDuration: string;
 };
+
+declare type Color = {
+  id: string;
+  foreground: string;
+  background: string;
+};
+
+declare type CalEvent = {
+  title: string;
+  description: string;
+  location: string;
+  date: string;
+  startTime: string;
+  endTime: string;
+  color: Color;
+  link: string;
+};
+
+declare type Day = {
+  date: string;
+  events: CalEvent[];
+};
