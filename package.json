@@ -24,7 +24,7 @@
     "clsx": "^1.2.1",
     "contentlayer": "^0.3.0",
     "dotenv": "^16.0.3",
-    "eslint": "8.35.0",
+    "eslint": "8.37.0",
     "eslint-config-next": "^13.2.3",
     "feed": "^4.2.2",
     "globby": "^13.1.3",
