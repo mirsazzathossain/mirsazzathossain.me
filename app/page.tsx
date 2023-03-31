@@ -10,9 +10,11 @@ import About from "./About";
 import Server from "./Server";
 
 export default async function Home(): Promise<JSX.Element> {
-  if (typeof window === "undefined") {
+  // run generateRss() only in build time
+  if (process.env.NODE_ENV === "production") {
     await generateRss();
   }
+
   return (
     <>
       <Suspense fallback={<AboutPlaceholder />}>
