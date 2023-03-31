@@ -10,7 +10,9 @@ import About from "./About";
 import Server from "./Server";
 
 export default async function Home(): Promise<JSX.Element> {
-  await generateRss();
+  if (typeof window === "undefined") {
+    await generateRss();
+  }
   return (
     <>
       <Suspense fallback={<AboutPlaceholder />}>
