@@ -14,6 +14,7 @@
     "@giscus/react": "^2.2.8",
     "@headlessui/react": "^1.7.13",
     "@heroicons/react": "^2.0.17",
+    "@next/env": "*",
     "@stefanprobst/rehype-extract-toc": "^2.2.0",
     "@tailwindcss/typography": "^0.5.9",
     "@types/node": "18.15.11",
@@ -39,6 +40,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.8.0",
+    "react-is": "^18.2.0",
     "react-paginate": "^8.1.5",
     "react-tippy": "^1.4.0",
     "reading-time": "^1.5.0",
@@ -52,7 +54,6 @@
     "sharp": "^0.32.0",
     "shiki": "^0.14.1",
     "styled-components": "^5.3.9",
-    "swr": "^2.1.1",
     "typescript": "5.0.3",
     "unist-util-visit": "^4.1.2"
   },
