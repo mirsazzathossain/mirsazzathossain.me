@@ -16,6 +16,7 @@ const getAccessToken = async () => {
       "Content-Type": "application/x-www-form-urlencoded",
     },
     body: `grant_type=refresh_token&refresh_token=${refresh_token}`,
+    cache: "no-store",
   });
 
   return response.json();
@@ -28,6 +29,7 @@ export const getNowPlaying = async () => {
     headers: {
       Authorization: `Bearer ${access_token}`,
     },
+    cache: "no-store",
   });
 
   return response;
@@ -40,6 +42,7 @@ export const getRecentTrack = async () => {
     headers: {
       Authorization: `Bearer ${access_token}`,
     },
+    cache: "no-store",
   });
 
   return response;
