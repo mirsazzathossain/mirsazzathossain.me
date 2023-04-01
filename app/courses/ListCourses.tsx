@@ -1,10 +1,21 @@
 import CourseCard from "components/CourseCard";
-import { promises as fs } from "fs";
+import { server } from "config";
+import fs, { promises as ps } from "fs";
 
 // get courses from local file
 async function getListCourses(): Promise<Course[]> {
-  const res = await fs.readFile("content/courses.json", "utf-8");
-  const courses: Course[] = JSON.parse(res);
+  if (fs.existsSync("public/content/courses.json")) {
+    const res = await ps.readFile("public/content/courses.json", "utf-8");
+    const courses: Course[] = JSON.parse(res);
+    return courses;
+  }
+
+  const courses = fetch(`${server}/content/courses.json`)
+    .then((response) => response.json())
+    .then((data) => {
+      return data;
+    });
+
   return courses;
 }
 

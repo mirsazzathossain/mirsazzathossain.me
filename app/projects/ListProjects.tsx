@@ -1,12 +1,23 @@
 import { Card } from "components/Card";
 import { LinkIcon } from "components/Icons";
-import { promises as fs } from "fs";
+import { server } from "config";
+import fs, { promises as ps } from "fs";
 import Image from "next/image";
 
 // get projects from local file
 async function getListProjects(): Promise<Project[]> {
-  const res = await fs.readFile("content/projects.json", "utf-8");
-  const projects: Project[] = JSON.parse(res);
+  if (fs.existsSync("public/content/projects.json")) {
+    const res = await ps.readFile("public/content/projects.json", "utf-8");
+    const projects: Project[] = JSON.parse(res);
+    return projects;
+  }
+
+  const projects = fetch(`${server}/content/projects.json`)
+    .then((response) => response.json())
+    .then((data) => {
+      return data;
+    });
+
   return projects;
 }
 

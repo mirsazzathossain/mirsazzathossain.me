@@ -1,10 +1,21 @@
 import ResourceCard from "components/ResourceCard";
-import { promises as fs } from "fs";
+import { server } from "config";
+import fs, { promises as ps } from "fs";
 
 // get resources from local file
 async function getListResources(): Promise<Resource[]> {
-  const res = await fs.readFile("content/resources.json", "utf-8");
-  const resources: Resource[] = JSON.parse(res);
+  if (fs.existsSync("public/content/resources.json")) {
+    const res = await ps.readFile("public/content/resources.json", "utf-8");
+    const resources: Resource[] = JSON.parse(res);
+    return resources;
+  }
+
+  const resources = fetch(`${server}/content/resources.json`)
+    .then((response) => response.json())
+    .then((data) => {
+      return data;
+    });
+
   return resources;
 }
 

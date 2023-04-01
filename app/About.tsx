@@ -7,13 +7,25 @@ import {
   LinkedInIcon,
   TwitterIcon,
 } from "components/SocialIcons";
-import { promises as fs } from "fs";
+import { server } from "config";
+import fs, { promises as ps } from "fs";
 import Link from "next/link";
 
 // get about from local file
 async function getAbout(): Promise<any> {
-  const about = await fs.readFile("content/about.json", "utf-8");
-  return JSON.parse(about);
+  if (fs.existsSync("public/content/about.json")) {
+    const res = await ps.readFile("public/content/about.json", "utf-8");
+    const about: any = JSON.parse(res);
+    return about;
+  }
+
+  const about = fetch(`${server}/content/about.json`)
+    .then((response) => response.json())
+    .then((data) => {
+      return data;
+    });
+
+  return about;
 }
 
 function SocialLink({
