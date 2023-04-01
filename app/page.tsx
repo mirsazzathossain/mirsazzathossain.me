@@ -4,14 +4,14 @@ import EducationsPlaceholder from "components/skeleton/EducationsPlaceholder";
 import ExperiencesPlaceholder from "components/skeleton/ExperiencesPlaceholder";
 import LifeEventsPlaceholder from "components/skeleton/LifeEventsPlaceholder";
 import PublicationsPlaceholder from "components/skeleton/PublicationsPlaceholder";
+import fs from "fs";
 import { Suspense } from "react";
 import generateRss from "utils/generate-rss";
 import About from "./About";
 import Server from "./Server";
 
 export default async function Home(): Promise<JSX.Element> {
-  // run generateRss() only in build time
-  if (process.env.NODE_ENV === "production") {
+  if (fs.existsSync("public")) {
     await generateRss();
   }
 
