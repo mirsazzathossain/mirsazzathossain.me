@@ -1087,10 +1087,10 @@
   resolved "https://registry.yarnpkg.com/@vercel/analytics/-/analytics-0.1.11.tgz#727a0ac655a4a89104cdea3e6925476470299428"
   integrity sha512-mj5CPR02y0BRs1tN3oZcBNAX9a8NxsIUl9vElDPcqxnMfP0RbRc9fI9Ud7+QDg/1Izvt5uMumsr+6YsmVHcyuw==
 
-"@vercel/edge-config@^0.1.5":
-  version "0.1.5"
-  resolved "https://registry.yarnpkg.com/@vercel/edge-config/-/edge-config-0.1.5.tgz#bae545933479454008d1bccfca5c2158b39dbec4"
-  integrity sha512-hwOkwwSIQe+DlCU8aHGzGl4L67fNNekZ/kVcCl9VVORehJxSEn6npoK0xx85vyF4c9Q2BnlnJDZ7CLPtN0oQHw==
+"@vercel/edge-config@^0.1.6":
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/@vercel/edge-config/-/edge-config-0.1.6.tgz#f29a3345797b75e0a892cdd08a741168787d30b6"
+  integrity sha512-EYt3sooPn5R2kYS3zNarLGwH4UzYLmPT6uQc/6r1RhKiXtJC6D/x/U8+/CoSBnJBgLaoETB9WslKNKEuBLgavw==
 
 acorn-jsx@^5.0.0, acorn-jsx@^5.3.2:
   version "5.3.2"
