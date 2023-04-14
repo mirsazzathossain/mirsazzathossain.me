@@ -4509,10 +4509,10 @@ react-is@^18.2.0:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-18.2.0.tgz#199431eeaaa2e09f86427efbb4f1473edb47609b"
   integrity sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==
 
-react-paginate@^8.1.5:
-  version "8.1.5"
-  resolved "https://registry.yarnpkg.com/react-paginate/-/react-paginate-8.1.5.tgz#59eda2ab13c7d962b19ef815cd84e7e001e641c2"
-  integrity sha512-DnwbzimjyCmiregTP8npoHu2HvJ3NDm9+kBM8mx7dOVc66/4lSWzz0uTd1smRSENf1yD7SCZEOMduXbdyxNj1A==
+react-paginate@^8.2.0:
+  version "8.2.0"
+  resolved "https://registry.yarnpkg.com/react-paginate/-/react-paginate-8.2.0.tgz#947c3dcb444a6c16c1bcf8361871aa135baa3dcd"
+  integrity sha512-sJCz1PW+9PNIjUSn919nlcRVuleN2YPoFBOvL+6TPgrH/3lwphqiSOgdrLafLdyLDxsgK+oSgviqacF4hxsDIw==
   dependencies:
     prop-types "^15"
 

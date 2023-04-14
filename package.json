@@ -42,7 +42,7 @@
     "react-dom": "^18.2.0",
     "react-icons": "^4.8.0",
     "react-is": "^18.2.0",
-    "react-paginate": "^8.1.5",
+    "react-paginate": "^8.2.0",
     "react-tippy": "^1.4.0",
     "reading-time": "^1.5.0",
     "rehype-autolink-headings": "^6.1.1",
