@@ -20,7 +20,7 @@
     "@types/node": "18.15.11",
     "@types/react": "18.0.35",
     "@types/react-dom": "18.0.11",
-    "@vercel/analytics": "^0.1.11",
+    "@vercel/analytics": "^1.0.0",
     "@vercel/edge-config": "^0.1.7",
     "bibtex-js-parser": "^1.1.6",
     "clsx": "^1.2.1",
