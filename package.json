@@ -18,7 +18,7 @@
     "@stefanprobst/rehype-extract-toc": "^2.2.0",
     "@tailwindcss/typography": "^0.5.9",
     "@types/node": "18.15.12",
-    "@types/react": "18.0.35",
+    "@types/react": "18.0.37",
     "@types/react-dom": "18.0.11",
     "@vercel/analytics": "^0.1.11",
     "@vercel/edge-config": "^0.1.7",
