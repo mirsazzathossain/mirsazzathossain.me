@@ -46,7 +46,7 @@
     "react-tippy": "^1.4.0",
     "reading-time": "^1.5.0",
     "rehype-autolink-headings": "^6.1.1",
-    "rehype-katex": "^6.0.2",
+    "rehype-katex": "^6.0.3",
     "rehype-pretty-code": "^0.9.5",
     "rehype-slug": "^5.1.0",
     "remark-gfm": "^3.0.1",
