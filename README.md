@@ -20,9 +20,9 @@ In short, the tech stack of the website is as follows:
 
 - `app/*`: I have used next.js new `app` directory structure. This directory contains the main app.
 - `components/*`: All custom components are stored in this directory.
-- `content/*`: This directory contains all the content of the website. I have used [Contentlayer](https://contentlayer.dev/) to manage the content.
-- `pages/*`: All API routes of the website are stored in this directory.
+- `content/*`: This directory contains all the [Contentlayer](https://contentlayer.dev/) contents.
 - `public/*`: This directory contains all the static assets of the website.
+- `public/content/*`: This directory contains all the static contents of the website. e.g. projects, experiences, education, etc.
 - `styles/*`: I have used Tailwind CSS for styling. This directory contains the Tailwind CSS global styles and some custom styles for the website.
 - `utils/*`: This directory contains some utility functions.
 
