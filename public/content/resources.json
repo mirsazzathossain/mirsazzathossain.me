@@ -1,8 +1,8 @@
 [
   {
-    "title": "Demo Resource",
-    "url": "https://github.com/mirsazzathossain",
-    "description": "This is a demo resource",
-    "category": "Utilities"
+    "title": "Handling Class Imbalance via Class Weights",
+    "url": "https://blog.paperspace.com/class-imbalance-in-image-datasets/",
+    "description": "This article explains how to handle overfitting due to class imbalance in image datasets",
+    "category": "Computer Vision"
   }
 ]
