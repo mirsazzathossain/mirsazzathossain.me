@@ -4068,10 +4068,10 @@ next-share@^0.20.0:
   dependencies:
     jsonp "^0.2.1"
 
-next-sitemap@^4.0.8:
-  version "4.0.8"
-  resolved "https://registry.yarnpkg.com/next-sitemap/-/next-sitemap-4.0.8.tgz#e5f1917c7306b72af107eda86992fc882d30d936"
-  integrity sha512-2wbTQr71zMjWjfVbSvStfR9MunixzMLhYtVinVpf7j5uozcXFoMw3rvGVRMRVbzhStd3Mm43FbuV4o2gbFx66Q==
+next-sitemap@^4.0.9:
+  version "4.0.9"
+  resolved "https://registry.yarnpkg.com/next-sitemap/-/next-sitemap-4.0.9.tgz#534d2e96440e1579c7053f56cd4a1fe912b63ea5"
+  integrity sha512-8pbcEe4vrmgGEc3beVbrSqd8mTQ9lCsGxP+AOlArrGmeLkKD4TbSR41R2unQHHSTkBG8cQ/7gjKkdLBlzwtu6g==
   dependencies:
     "@corex/deepmerge" "^4.0.37"
     minimist "^1.2.8"
