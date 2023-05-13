@@ -32,7 +32,7 @@
     "globby": "^13.1.4",
     "googleapis": "^118.0.0",
     "json5": "^2.2.3",
-    "next": "13.4.1",
+    "next": "13.4.2",
     "next-contentlayer": "^0.3.2",
     "next-share": "^0.20.0",
     "next-sitemap": "^4.0.9",
