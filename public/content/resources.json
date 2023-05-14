@@ -4,5 +4,11 @@
     "url": "https://blog.paperspace.com/class-imbalance-in-image-datasets/",
     "description": "This article explains how to handle overfitting due to class imbalance in image datasets",
     "category": "Computer Vision"
+  },
+  {
+    "title": "Notes on AI",
+    "url": "https://notesonai.com/Notes+on+AI",
+    "description": "A collection of notes on AI, Deep Learning, and Machine Learning",
+    "category": "Machine Learning"
   }
 ]
