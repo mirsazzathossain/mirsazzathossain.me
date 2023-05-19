@@ -42,7 +42,7 @@ export default function PublicationCard({
       </time>
 
       <p className="text-xs text-zinc-400 dark:text-zinc-500 leading-5">
-        {publication.author?.split("and").map((author: any, index: any) => (
+        {publication.author?.split(" and ").map((author: any, index: any) => (
           <span key={index}>
             {author
               .trim()
@@ -54,7 +54,7 @@ export default function PublicationCard({
                   {authorIndex !== author.trim().split(",").length - 1 && " "}
                 </span>
               ))}
-            {index !== publication.author?.split("and").length - 1 && (
+            {index !== publication.author?.split(" and ").length - 1 && (
               <span>, </span>
             )}
           </span>
