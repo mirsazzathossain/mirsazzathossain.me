@@ -1106,10 +1106,17 @@
   resolved "https://registry.yarnpkg.com/@vercel/analytics/-/analytics-1.0.1.tgz#38308a626c91866cb00a249c08bf65251e9b9d81"
   integrity sha512-Ux0c9qUfkcPqng3vrR0GTrlQdqNJ2JREn/2ydrVuKwM3RtMfF2mWX31Ijqo1opSjNAq6rK76PwtANw6kl6TAow==
 
-"@vercel/edge-config@^0.1.10":
-  version "0.1.10"
-  resolved "https://registry.yarnpkg.com/@vercel/edge-config/-/edge-config-0.1.10.tgz#61428d1b7c6bd31968d09b71058b8465c1b69f6f"
-  integrity sha512-QdahUjvtpnnKD/vd79Gre7OVoEwjspktCFvOI6IXUqQ45e/Sk3In/rLOySF0dg4XHDWEuy+DRIK0SIOW2/C1FQ==
+"@vercel/edge-config-fs@0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@vercel/edge-config-fs/-/edge-config-fs-0.1.0.tgz#cda8327f611418c1d1cbb28c6bed02d782be928b"
+  integrity sha512-NRIBwfcS0bUoUbRWlNGetqjvLSwgYH/BqKqDN7vK1g32p7dN96k0712COgaz6VFizAm9b0g6IG6hR6+hc0KCPg==
+
+"@vercel/edge-config@^0.1.11":
+  version "0.1.11"
+  resolved "https://registry.yarnpkg.com/@vercel/edge-config/-/edge-config-0.1.11.tgz#a8a9ad5503afd1c0164ca5e549453fa560d65504"
+  integrity sha512-3UQsy6VqJ6LAls6YJpWtkxXSdj0pgZHOwikWtp3Mbk2qUkZRtZRQCTyIZyp6aqFqkuJxaCH7I7h3dhb82/EEdQ==
+  dependencies:
+    "@vercel/edge-config-fs" "0.1.0"
 
 acorn-jsx@^5.0.0, acorn-jsx@^5.3.2:
   version "5.3.2"

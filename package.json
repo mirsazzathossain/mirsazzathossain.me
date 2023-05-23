@@ -21,7 +21,7 @@
     "@types/react": "18.2.6",
     "@types/react-dom": "18.2.4",
     "@vercel/analytics": "^1.0.1",
-    "@vercel/edge-config": "^0.1.10",
+    "@vercel/edge-config": "^0.1.11",
     "bibtex-js-parser": "^1.1.6",
     "clsx": "^1.2.1",
     "contentlayer": "^0.3.2",
