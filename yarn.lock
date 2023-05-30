@@ -1111,10 +1111,10 @@
   resolved "https://registry.yarnpkg.com/@vercel/edge-config-fs/-/edge-config-fs-0.1.0.tgz#cda8327f611418c1d1cbb28c6bed02d782be928b"
   integrity sha512-NRIBwfcS0bUoUbRWlNGetqjvLSwgYH/BqKqDN7vK1g32p7dN96k0712COgaz6VFizAm9b0g6IG6hR6+hc0KCPg==
 
-"@vercel/edge-config@^0.1.11":
-  version "0.1.11"
-  resolved "https://registry.yarnpkg.com/@vercel/edge-config/-/edge-config-0.1.11.tgz#a8a9ad5503afd1c0164ca5e549453fa560d65504"
-  integrity sha512-3UQsy6VqJ6LAls6YJpWtkxXSdj0pgZHOwikWtp3Mbk2qUkZRtZRQCTyIZyp6aqFqkuJxaCH7I7h3dhb82/EEdQ==
+"@vercel/edge-config@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@vercel/edge-config/-/edge-config-0.2.0.tgz#3c88a361fefd8a1f47fb5856b857992cad1fc56c"
+  integrity sha512-gHs5dqhyOOU+Gh5kLLe6FVXKQr5D9Igb0w8xby0DSgCCY2VNv4cm+mHRtCbgQoD4MyMw7tgGFQme4DkJUNAmEg==
   dependencies:
     "@vercel/edge-config-fs" "0.1.0"
 
