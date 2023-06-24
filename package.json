@@ -19,7 +19,7 @@
     "@tailwindcss/typography": "^0.5.9",
     "@types/node": "20.3.1",
     "@types/react": "18.2.14",
-    "@types/react-dom": "18.2.4",
+    "@types/react-dom": "18.2.6",
     "@vercel/analytics": "^1.0.1",
     "@vercel/edge-config": "^0.2.1",
     "bibtex-js-parser": "^1.1.6",
