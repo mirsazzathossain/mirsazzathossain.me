@@ -35,7 +35,7 @@
     "next": "13.4.10",
     "next-contentlayer": "^0.3.3",
     "next-share": "^0.23.0",
-    "next-sitemap": "^4.1.3",
+    "next-sitemap": "^4.1.8",
     "next-themes": "^0.2.1",
     "postcss-focus-visible": "^9.0.0",
     "react": "^18.2.0",
