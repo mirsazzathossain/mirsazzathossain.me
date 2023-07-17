@@ -5749,10 +5749,10 @@ rehype-katex@^6.0.3:
     katex "^0.16.0"
     unist-util-visit "^4.0.0"
 
-rehype-pretty-code@^0.9.7:
-  version "0.9.7"
-  resolved "https://registry.yarnpkg.com/rehype-pretty-code/-/rehype-pretty-code-0.9.7.tgz#d7e7337a7c16f50210b261ab2e408323c9ea7624"
-  integrity sha512-QBYciToqn6osk7G1mnXXSfjpszB4H/ZoyS8STvr57W/dNkaRBhXhcfgzahjFB880h10xwsL8oxgDvDCpracsfg==
+rehype-pretty-code@^0.10.0:
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/rehype-pretty-code/-/rehype-pretty-code-0.10.0.tgz#bd2efd31eae8cb85e6091f62a84e269b764c78fd"
+  integrity sha512-qCD071Y+vUxEy9yyrATPk2+W9q7qCbzZgtc9suZhu75bmRQvOlBhJt4d3WvqSMTamkKoFkvqtCjyAk+ggH+aXQ==
   dependencies:
     "@types/hast" "^2.0.0"
     hash-obj "^4.0.0"
