@@ -23,7 +23,7 @@
     "@vercel/analytics": "^1.0.1",
     "@vercel/edge-config": "^0.2.1",
     "bibtex-js-parser": "^1.1.6",
-    "clsx": "^1.2.1",
+    "clsx": "^2.0.0",
     "contentlayer": "^0.3.3",
     "dotenv": "^16.3.1",
     "eslint": "8.44.0",
