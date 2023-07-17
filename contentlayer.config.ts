@@ -24,7 +24,12 @@ const PrettyCodeOptions: Partial<Options> = {
     }
   },
   onVisitHighlightedLine(node: any) {
-    node.properties.className.push("highlighted");
+    const nodeClass = node.properties.className;
+    if (nodeClass && nodeClass.length > 0) {
+      node.properties.className.push("highlighted");
+    } else {
+      node.properties.className = ["highlighted"];
+    }
   },
 
   onVisitHighlightedWord(node: any) {
