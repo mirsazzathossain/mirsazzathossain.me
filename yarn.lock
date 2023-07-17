@@ -4049,10 +4049,10 @@ next-contentlayer@^0.3.3:
     "@contentlayer/core" "0.3.3"
     "@contentlayer/utils" "0.3.3"
 
-next-share@^0.20.0:
-  version "0.20.0"
-  resolved "https://registry.yarnpkg.com/next-share/-/next-share-0.20.0.tgz#2fe5ac18a8e96497625d017708d2ca1347414216"
-  integrity sha512-7EZem/fJe9QljTt4SrhKzKjC5i+aiBw5YxIGJNH1+G+El0tKzwAYcrm35KWe+R3j4apqWl+Bpyjo2FKbpj7fow==
+next-share@^0.23.0:
+  version "0.23.0"
+  resolved "https://registry.yarnpkg.com/next-share/-/next-share-0.23.0.tgz#2903b237c4f3c3608486b413c1f5254376131eb1"
+  integrity sha512-SV80bqVZpAI1Weyzz7z3tqcT/6GPouP/E1BkjDxPbOGuyYynTx1yv0CCSaqH4CrBGT5i+MWukt0CCiYilRlnVA==
   dependencies:
     jsonp "^0.2.1"
 
