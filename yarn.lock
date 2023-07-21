@@ -1562,7 +1562,12 @@
     unist-util-visit "^4.0.0"
     vfile "^5.0.0"
 
-"@next/env@*", "@next/env@13.4.10", "@next/env@^13.4.3":
+"@next/env@*", "@next/env@^13.4.3":
+  version "13.4.11"
+  resolved "https://registry.yarnpkg.com/@next/env/-/env-13.4.11.tgz#bdb7ffdde4a6a8905eaf3a626f337f89facea911"
+  integrity sha512-BbPLOkfFFca+OpwSmGhNrl56B3ZzOFS4eJ85SpGTDpjlXoz7XFfS3MMOfjUCTuW1laTrQjm98I9Q30tsYpr8ew==
+
+"@next/env@13.4.10":
   version "13.4.10"
   resolved "https://registry.yarnpkg.com/@next/env/-/env-13.4.10.tgz#8b17783d2c09be126bbde9ff1164566517131bff"
   integrity sha512-3G1yD/XKTSLdihyDSa8JEsaWOELY+OWe08o0LUYzfuHp1zHDA8SObQlzKt+v+wrkkPcnPweoLH1ImZeUa0A1NQ==
