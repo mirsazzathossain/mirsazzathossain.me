@@ -1,9 +1,17 @@
 {
-  "2021": [
+  "2023":[
+    {
+      "title": "Paper 📄 accepted in IJCNN 2023",
+      "description": "My first paper has been accepted 🤩 in 2023 International Joint Conference on Neural Networks (IJCNN) - Special INNS Workshop: International Neural Network Society Workshop on Deep Learning. The title of the paper is 'Morphological Classification of Radio Galaxies Using Semi-Supervised Group Equivariant CNNs'." 
+    }
+  ],
+  "2022":[
     {
       "title": "Started working at Center for Computational and Data Sciences",
       "description": "I have started 💼 working at CCDS as a Research Assistant. I am currently working on a project called 'Radio Galaxy Classification' with AKMM Rahman and KMB Asad."
-    },
+    }
+  ],
+  "2021": [
     {
       "title": "Graduation",
       "description": "Got my degree 🎓 from the Independent University, Bangladesh. I was a Computer Science and Engineering student."

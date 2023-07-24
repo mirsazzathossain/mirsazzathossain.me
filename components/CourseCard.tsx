@@ -32,6 +32,7 @@ export default function CourseCard({
             className="h-16 w-16 rounded-lg object-cover shadow-sm"
             width={32}
             height={32}
+            priority
           />
         </div>
       </div>
