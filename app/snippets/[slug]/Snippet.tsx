@@ -28,7 +28,7 @@ export default function SnippetPage({
         <article>
           <div className="flex justify-between w-full mb-8">
             <header>
-              <h1 className="font-bold text-4xl sm:text-5xl tracking-tight mb-4 text-zinc-800 dark:text-zinc-100">
+              <h1 className="font-bold text-3xl sm:text-4xl tracking-tight mb-4 text-zinc-800 dark:text-zinc-100">
                 {snippet.title}
               </h1>
               <p className="text-gray-700 dark:text-gray-300">
