@@ -30,8 +30,8 @@ export default function CourseCard({
             alt={course.logo.alt}
             src={`/images/${course.logo.src}`}
             className="h-16 w-16 rounded-lg object-cover shadow-sm"
-            width={32}
-            height={32}
+            width={64}
+            height={64}
             priority
           />
         </div>
