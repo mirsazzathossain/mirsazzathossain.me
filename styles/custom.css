@@ -34,7 +34,7 @@ code {
   counter-reset: lineNumber;
 }
 
-code > [data-line]::before {
+code[data-line-numbers] > [data-line]::before {
   counter-increment: lineNumber;
   content: counter(lineNumber);
   @apply text-zinc-500 dark:text-zinc-100 mr-3 w-4 text-right inline-block;
