@@ -1,14 +1,14 @@
 [
   {
-    "title": "Demo Project",
-    "description": "A demo project for the this website.",
+    "title": "Restaurant Order Prediction Using USTGCN",
+    "description": "Real-time food order prediction using Unified Spatio-Temporal Graph Convolutional Network (USTGCN). 🍴🚀",
     "link": {
-      "href": "http://mirsazzathossain.me",
-      "label": "mirsazzathossain.me"
+      "href": "https://github.com/mirsazzathossain/Restaurant-Order-Prediction-USTGCN",
+      "label": "Restaurant-Order-Prediction-USTGCN"
     },
     "logo": {
-      "src": "logos/planetaria.svg",
-      "alt": "Mir Sazzat Hossain"
+      "src": "project-logos/burger.jpg",
+      "alt": "Burger"
     }
   }
 ]
