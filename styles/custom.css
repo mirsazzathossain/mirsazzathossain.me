@@ -34,10 +34,14 @@ code {
   counter-reset: lineNumber;
 }
 
+code > [data-line] {
+  @apply ml-3;
+}
+
 code[data-line-numbers] > [data-line]::before {
   counter-increment: lineNumber;
   content: counter(lineNumber);
-  @apply text-zinc-500 dark:text-zinc-100 mr-3 w-4 text-right inline-block;
+  @apply text-zinc-500 dark:text-zinc-100 w-4 text-right inline-block;
 }
 
 code[data-line-numbers-max-digits="2"] > [data-line]::before {
