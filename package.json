@@ -54,7 +54,7 @@
     "server-only": "^0.0.1",
     "sharp": "^0.32.4",
     "shiki": "^0.14.3",
-    "styled-components": "^6.0.5",
+    "styled-components": "^6.0.7",
     "typescript": "5.1.6",
     "unist-util-visit": "^5.0.0"
   },
