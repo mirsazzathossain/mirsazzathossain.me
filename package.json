@@ -30,7 +30,7 @@
     "eslint-config-next": "^13.4.13",
     "feed": "^4.2.2",
     "globby": "^13.2.2",
-    "googleapis": "^123.0.0",
+    "googleapis": "^124.0.0",
     "json5": "^2.2.3",
     "next": "13.4.13",
     "next-contentlayer": "^0.3.4",
