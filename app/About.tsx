@@ -2,9 +2,11 @@ import { Container } from "components/Container";
 import { DownloadFileIcon } from "components/Icons";
 
 import {
+  DBLPIcon,
   GitHubIcon,
   GoogleScholarIcon,
   LinkedInIcon,
+  SementicScholarIcon,
   TwitterIcon,
 } from "components/SocialIcons";
 import { server } from "config";
@@ -79,6 +81,10 @@ export default async function About() {
                   ? TwitterIcon
                   : socialLink.name === "google-scholar"
                   ? GoogleScholarIcon
+                  : socialLink.name === "semantic-scholar"
+                  ? SementicScholarIcon
+                  : socialLink.name === "dblp"
+                  ? DBLPIcon
                   : null
               }
               title={
@@ -90,6 +96,10 @@ export default async function About() {
                   ? "Twitter Profile"
                   : socialLink.name === "google-scholar"
                   ? "Google Scholar Profile"
+                  : socialLink.name === "semantic-scholar"
+                  ? "Semantic Scholar Profile"
+                  : socialLink.name === "dblp"
+                  ? "DBLP Profile"
                   : null
               }
             />

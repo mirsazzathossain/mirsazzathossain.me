@@ -8,12 +8,16 @@
   "description": "I am a research assistant at the Center for Computational and Data Sciences (CCDS) at Independent University, Bangladesh (IUB), actively involved in cutting-edge research projects in artificial intelligence, machine learning, and data science. My focus includes computer vision, group theory, manifold learning, and geometric machine learning, with a deep passion for developing innovative solutions that benefit sectors like astronomy, healthcare, and education. \nIn addition to my research responsibilities, I am actively involved in teaching undergraduate students, mentoring, and instructing various courses at IUB. My enthusiasm for learning new data science topics and conducting research drives me to make significant contributions and positively impact others' learning experiences. I am constantly striving to expand my knowledge and expertise in the field, with the ultimate goal of making a meaningful impact through my work.",
   "socialLinks": [
     {
-      "name": "twitter",
-      "url": "https://twitter.com/mir_sazzat"
-    },
-    {
       "name": "google-scholar",
       "url": "https://scholar.google.com/citations?user=HriPgEQAAAAJ"
+    },
+    {
+      "name": "semantic-scholar",
+      "url": "https://www.semanticscholar.org/author/Mir-Sazzat-Hossain/2220031205"
+    },
+    {
+      "name": "dblp",
+      "url": "https://dblp.org/pid/349/0737.html"
     },
     {
       "name": "github",
@@ -22,6 +26,10 @@
     {
       "name": "linkedin",
       "url": "https://linkedin.com/in/mirsazzathossain"
+    },
+    {
+      "name": "twitter",
+      "url": "https://twitter.com/mir_sazzat"
     }
   ],
   "resume": "files/mirsazzathossain-cv.pdf"
