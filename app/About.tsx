@@ -67,6 +67,13 @@ export default async function About() {
         >
           {about.description}
         </p>
+
+        {about.note && (
+          <p className="text-base text-zinc-600 dark:text-zinc-400">
+            <b>*Note:</b> {about.note}
+          </p>
+        )}
+
         <div className="mt-6 flex gap-6">
           {about.socialLinks.map((socialLink: any, index: any) => (
             <SocialLink
