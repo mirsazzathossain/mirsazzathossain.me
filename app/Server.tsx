@@ -47,7 +47,6 @@ async function getPublications(): Promise<any> {
   if (fs.existsSync("public/content/publications.bib")) {
     const res = await ps.readFile("public/content/publications.bib", "utf-8");
     const publications: any = BibtexParser.parseToJSON(res);
-    console.log(publications);
     return publications;
   }
 
