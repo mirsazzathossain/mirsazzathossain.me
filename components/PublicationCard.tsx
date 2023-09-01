@@ -7,6 +7,37 @@ export default function PublicationCard({
 }): JSX.Element {
   return (
     <div className="group relative flex flex-col items-start rounded-2xl border border-zinc-100 p-6 dark:border-zinc-700/40 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 mb-4">
+      <p className="text-xs text-zinc-400 dark:text-zinc-500 leading-5">
+        {publication.author?.split(" and ").map((author: any, index: any) => (
+          <span
+            key={index}
+            //   if author contains M.S. and Hossain, semi-bold the M.S. and Hossain
+            className={`${
+              author.includes("M.S.") && author.includes("Hossain")
+                ? "font-semibold"
+                : ""
+            }`}
+          >
+            {author
+              .trim()
+              .split(",")
+              .reverse()
+              .map((name: any, authorIndex: number) => (
+                <span key={name}>
+                  {name.trim()}
+                  {authorIndex !== author.trim().split(",").length - 1 && " "}
+                </span>
+              ))}
+            {index < publication.author?.split(" and ").length - 2 && (
+              <span>, </span>
+            )}
+            {index === publication.author?.split(" and ").length - 2 && (
+              <span> and </span>
+            )}
+          </span>
+        ))}
+      </p>
+
       <h2 className="relative z-10 text-base font-semibold tracking-tight text-zinc-800 dark:text-zinc-100">
         <Link href={publication.url ? publication.url : "#"}>
           {publication.title}
@@ -41,26 +72,6 @@ export default function PublicationCard({
         })}
       </time>
 
-      <p className="text-xs text-zinc-400 dark:text-zinc-500 leading-5">
-        {publication.author?.split(" and ").map((author: any, index: any) => (
-          <span key={index}>
-            {author
-              .trim()
-              .split(",")
-              .reverse()
-              .map((name: any, authorIndex: number) => (
-                <span key={name}>
-                  {name.trim()}
-                  {authorIndex !== author.trim().split(",").length - 1 && " "}
-                </span>
-              ))}
-            {index !== publication.author?.split(" and ").length - 1 && (
-              <span>, </span>
-            )}
-          </span>
-        ))}
-      </p>
-
       <p className="relative z-10 mt-2 text-sm text-zinc-600 dark:text-zinc-400">
         {publication.type === "article" && (
           <span>
@@ -84,7 +95,8 @@ export default function PublicationCard({
               </span>
             )}
             {publication.pages && <span>, Pages {publication.pages}</span>}
-
+            {publication.issn && <span>, ISSN {publication.issn}</span>}
+            {publication.note && <span>, ({publication.note})</span>}
             {publication.doi && (
               <span>
                 ,{" "}
@@ -92,7 +104,10 @@ export default function PublicationCard({
                   href={`https://doi.org/${publication.doi}`}
                   target="_blank"
                 >
-                  DOI: <span className="text-teal-500">{publication.doi}</span>
+                  DOI:{" "}
+                  <span className="text-teal-500 break-all">
+                    {publication.doi}
+                  </span>
                 </Link>
               </span>
             )}
@@ -116,6 +131,7 @@ export default function PublicationCard({
               </span>
             )}
             {publication.pages && <span>, Pages {publication.pages}</span>}
+            {publication.issn && <span>, ISSN {publication.issn}</span>}
             {publication.doi && (
               <span>
                 ,{" "}
@@ -123,7 +139,10 @@ export default function PublicationCard({
                   href={`https://doi.org/${publication.doi}`}
                   target="_blank"
                 >
-                  DOI: <span className="text-teal-500">{publication.doi}</span>
+                  DOI:{" "}
+                  <span className="text-teal-500 break-all">
+                    {publication.doi}
+                  </span>
                 </Link>
               </span>
             )}
