@@ -53,7 +53,7 @@
     "remark-math": "^5.1.1",
     "server-only": "^0.0.1",
     "sharp": "^0.32.5",
-    "shiki": "^0.14.3",
+    "shiki": "^0.14.4",
     "styled-components": "^6.0.7",
     "typescript": "5.2.2",
     "unist-util-visit": "^5.0.0"
