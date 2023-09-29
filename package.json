@@ -34,7 +34,7 @@
     "json5": "^2.2.3",
     "next": "13.5.2",
     "next-contentlayer": "^0.3.4",
-    "next-share": "^0.25.0",
+    "next-share": "^0.27.0",
     "next-sitemap": "^4.2.3",
     "next-themes": "^0.2.1",
     "postcss-focus-visible": "^9.0.0",
