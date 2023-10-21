@@ -2541,10 +2541,10 @@ googleapis-common@^7.0.0:
     url-template "^2.0.8"
     uuid "^9.0.0"
 
-googleapis@^127.0.0:
-  version "127.0.0"
-  resolved "https://registry.yarnpkg.com/googleapis/-/googleapis-127.0.0.tgz#466e723046eda45b83e4ae6e422e5d62b78ddf52"
-  integrity sha512-a27VnPktyqm+7TeWOAOV+iPL2fX2DJN0ueS/v9Zh5PN2PQI9sF/JxWGSeM5dAs5FBT+LI4oKcvCJS72AG9u9GQ==
+googleapis@^128.0.0:
+  version "128.0.0"
+  resolved "https://registry.yarnpkg.com/googleapis/-/googleapis-128.0.0.tgz#0005272f7f8730435d60ae0698d98910e16d0937"
+  integrity sha512-+sLtVYNazcxaSD84N6rihVX4QiGoqRdnlz2SwmQQkadF31XonDfy4ufk3maMg27+FiySrH0rd7V8p+YJG6cknA==
   dependencies:
     google-auth-library "^9.0.0"
     googleapis-common "^7.0.0"
