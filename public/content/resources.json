@@ -10,5 +10,11 @@
     "url": "https://notesonai.com/Notes+on+AI",
     "description": "A collection of notes on AI, Deep Learning, and Machine Learning",
     "category": "Machine Learning"
+  },
+  {
+    "title": "ViT Implementation in PyTorch",
+    "url": "https://github.com/lucidrains/vit-pytorch",
+    "description": "Implementation of SOTA Vision Transformer models using PyTorch",
+    "category": "Computer Vision"
   }
 ]
