@@ -32,7 +32,7 @@ const PrettyCodeOptions: Partial<Options> = {
     }
   },
 
-  onVisitHighlightedWord(node: any) {
+  onVisitHighlightedChars(node: any) {
     node.properties.className = ["word"];
   },
 };
@@ -47,7 +47,7 @@ export default makeSource({
     },
     remarkPlugins: [[remarkGfm], [remarkMath]],
     rehypePlugins: [
-      [rehypeKatex],
+      [rehypeKatex as any],
       [rehypeSlug],
       [rehypePrettyCode, PrettyCodeOptions],
       [withToc],
