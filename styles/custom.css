@@ -15,8 +15,9 @@ div[data-rehype-pretty-code-fragment] .line {
   @apply pl-2 pr-3 border-l-4 border-transparent;
 }
 div[data-rehype-pretty-code-fragment] .highlighted {
-  @apply border-l-teal-500 bg-teal-200/20;
+  @apply border-l-teal-500 bg-teal-200/20 border-l-2 pl-2.5;
 }
+
 div[data-rehype-pretty-code-fragment] code {
   @apply grid;
 }
@@ -35,7 +36,7 @@ code {
 }
 
 code > [data-line] {
-  @apply ml-3;
+  @apply pl-3;
 }
 
 code[data-line-numbers] > [data-line]::before {
