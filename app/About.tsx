@@ -115,7 +115,6 @@ export default async function About() {
             href={about.resume}
             title="Download Resume"
             icon={DownloadFileIcon}
-            download
           />
         </div>
       </div>
