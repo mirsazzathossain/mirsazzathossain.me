@@ -15,6 +15,7 @@ export const metadata: Metadata = {
     "Mir Sazzat Hossain is a recent college graduate with a solid foundation in computer science as well as competence in exploratory data analysis, machine learning, computer vision, and statistics. He is currently working as a Research Assistant at the Independent University, Bangladesh's Center for Computational and Data Sciences.",
   generator: "Mir Sazzat Hossain - Personal Website",
   applicationName: "Mir Sazzat Hossain - Personal Website",
+  referrer: "origin-when-cross-origin",
   keywords: [
     "Mir Sazzat Hossain",
     "Mir Sazzat",
@@ -109,7 +110,7 @@ export const metadata: Metadata = {
       },
     ],
   },
-  manifest: `${server}/site.webmanifest`,
+  manifest: `./site.webmanifest/`,
   twitter: {
     card: "summary_large_image",
     site: "@mir_sazzat",
