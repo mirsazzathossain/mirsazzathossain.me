@@ -17,7 +17,4 @@ export default withContentlayer({
         // !! WARN !!
         ignoreBuildErrors: true,
     },
-    headers: {
-        'Access-Control-Allow-Origin': ['https://www.mirsazzathossain.me', 'https://mirsazzathossain.me'],
-    }
 })
