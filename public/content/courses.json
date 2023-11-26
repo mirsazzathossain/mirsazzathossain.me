@@ -11,7 +11,37 @@
       "src": "logos/python.png",
       "alt": "Python Logo"
     },
-    "publishedDate": "2022-07-24",
+    "publishedDate": "2023-07-20",
+    "totalDuration": "Approx. 12 weeks"
+  },
+  {
+    "title": "Fundamentals of Computer System (Tutorial)",
+    "author": "Mir Sazzat Hossain",
+    "description": "This course is designed to introduce the students to the basic concepts of office suite and to provide them with the necessary skills to use the office suite in their academic and professional life.",
+    "link": {
+      "href": "#",
+      "label": "Github Repository Link"
+    },
+    "logo": {
+      "src": "logos/office.png",
+      "alt": "Office Logo"
+    },
+    "publishedDate": "2023-01-23",
+    "totalDuration": "Approx. 12 weeks"
+  },
+  {
+    "title": "Data Structures (Tutorial)",
+    "author": "Mir Sazzat Hossain",
+    "description": "This course is designed to introduce the students to the basic concepts of data structures and to provide them with the necessary skills to solve problems using the data structures covered in the course.",
+    "link": {
+      "href": "#",
+      "label": "Github Repository Link"
+    },
+    "logo": {
+      "src": "logos/python.png",
+      "alt": "Python Logo"
+    },
+    "publishedDate": "2022-07-20",
     "totalDuration": "Approx. 12 weeks"
   },
   {
