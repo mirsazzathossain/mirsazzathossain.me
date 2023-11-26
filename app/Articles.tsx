@@ -12,16 +12,16 @@ export default function Articles({ articles }: { articles: Article[] }) {
         <Container className="mt-9">
           <div className="max-w-3xl">
             <h3 className="font-bold text-2xl md:text-4xl tracking-tight mb-6 text-zinc-800 dark:text-zinc-100">
-              Articles
+              Posts
             </h3>
 
             <div className="flex max-w-3xl flex-col space-y-16">
-              {articles.slice(0, 4).map((article: any) => (
+              {articles.slice(0, 2).map((article: any) => (
                 <ArticleCard key={article.slug} article={article} />
               ))}
             </div>
 
-            {articles.length > 4 && (
+            {articles.length > 2 && (
               <div className="flex justify-center mt-10">
                 <Link
                   href="/articles"

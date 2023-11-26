@@ -2,7 +2,7 @@ import { withContentlayer } from 'next-contentlayer'
 
 export default withContentlayer({
     images: {
-        domains: ['images.unsplash.com', 'cdn.buymeacoffee.com'],
+        domains: ['images.unsplash.com', 'cdn.buymeacoffee.com', 'github.com'],
     },
     reactStrictMode: true,
     swcMinify: true,
