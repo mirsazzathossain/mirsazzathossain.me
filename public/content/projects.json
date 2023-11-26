@@ -7,8 +7,116 @@
       "label": "Restaurant-Order-Prediction-USTGCN"
     },
     "logo": {
-      "src": "project-logos/burger.jpg",
+      "src": "project-logos/burger.png",
       "alt": "Burger"
+    }
+  },
+  {
+    "title": "Astro Labeller: A web application for labelling astronomical images",
+    "description": "A Django web application for colaborative labelling of astronomical images into different categories. 🌟🌠",
+    "link": {
+      "href": "https://github.com/mirsazzathossain/astro-labeller",
+      "label": "astro-labeller"
+    },
+    "logo": {
+      "src": "project-logos/astro-labeller.png",
+      "alt": "Astro Labeller"
+    }
+  },
+  {
+    "title": "Spotify Playing Now: A card for showing your currently playing Spotify song",
+    "description": "A card for showing your currently playing Spotify song on your GitHub profile README or any other markdown file. 🎵🎶",
+    "link": {
+      "href": "https://github.com/mirsazzathossain/spotify-playing-now",
+      "label": "spotify-playing-now"
+    },
+    "logo": {
+      "src": "project-logos/spotify-playing-now.png",
+      "alt": "Spotify Playing Now"
+    }
+  },
+  {
+    "title": "Food Judge: A social media platform for foodies",
+    "description": "A social media platform for foodies to find restaurants, share their experiences, and connect with other foodies. 🍴🚀",
+    "link": {
+      "href": "https://github.com/mirsazzathossain/food-judge",
+      "label": "food-judge"
+    },
+    "logo": {
+      "src": "project-logos/food-judge.png",
+      "alt": "Food Judge"
+    }
+  },
+  {
+    "title": "SPMS: A web basde student performance monitoring system",
+    "description": "A web application for monitoring student performance based on their attendance, grades, and other metrics. 👨🏻‍🎓🧠",
+    "link": {
+      "href": "https://github.com/mirsazzathossain/spms-django",
+      "label": "spms-django"
+    },
+    "logo": {
+      "src": "project-logos/spms.png",
+      "alt": "SPMS"
+    }
+  },
+  {
+    "title": "HAMS: Appointments management system for hospitals",
+    "description": "A web application for managing patient records, scheduling appointments, and managing hospital resources. 🏥👩🏻‍⚕️",
+    "link": {
+      "href": "https://github.com/mirsazzathossain/hams-laravel",
+      "label": "hams-laravel"
+    },
+    "logo": {
+      "src": "project-logos/hams.png",
+      "alt": "HAMS"
+    }
+  },
+  {
+    "title": "Website for a local pizza shop - Pizza Roma",
+    "description": "A website built in Django for a local pizza shop to showcase their menu and take orders online. 🍕🍕",
+    "link": {
+      "href": "https://github.com/mirsazzathossain/pizzaroma-django",
+      "label": "pizzaroma-django"
+    },
+    "logo": {
+      "src": "project-logos/pizza-roma.png",
+      "alt": "Pizza Roma"
+    }
+  },
+  {
+    "title": "A web application for inventory management of a local bookstore",
+    "description": "A web application built in Django for managing inventory of a local bookstore and taking orders online. 📚📚",
+    "link": {
+      "href": "https://github.com/mirsazzathossain/bookshop-django",
+      "label": "bookshop-django"
+    },
+    "logo": {
+      "src": "project-logos/bookstore.png",
+      "alt": "Bookshop"
+    }
+  },
+  {
+    "title": "A simple e-commerce marketplace built using vanilla javascript",
+    "description": "A simple e-commerce marketplace with a shopping cart built using vanilla javascript. 🛒🛍",
+    "link": {
+      "href": "https://github.com/mirsazzathossain/online-marketplace",
+      "label": "online-marketplace"
+    },
+    "logo": {
+      "src": "project-logos/online-marketplace.png",
+      "alt": "Online Marketplace"
+    }
+  },
+  {
+    "title": "CSMS: Online car showroom management system for car dealers",
+    "description": "A web application for managing car showroom inventory, scheduling appointments, and managing car showroom resources. 🚗🚙",
+    "link": {
+      "href": "https://github.com/mirsazzathossain/CSMS",
+      "label": "CSMS"
+    },
+    "logo": {
+      "src": "project-logos/CSMS.png",
+      "alt": "CSMS"
     }
   }
 ]
