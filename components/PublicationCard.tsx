@@ -154,9 +154,11 @@ export default function PublicationCard({
         aria-hidden="true"
         className="relative z-10 mt-2 flex space-x-4 text-sm font-medium text-teal-500"
       >
-        <Link href={publication.url ? publication.url : "#"} target="_blank">
-          [ Paper ]
-        </Link>
+        {publication.url && (
+          <Link href={publication.url} target="_blank">
+            [ Paper ]
+          </Link>
+        )}
         {publication.supplement && (
           <Link href={publication.supplement} target="_blank">
             [ Supplement ]
