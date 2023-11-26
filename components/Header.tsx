@@ -11,11 +11,12 @@ import ThemeSelector from "./ThemeSelector";
 
 const navigations = [
   { href: "/", label: "Home" },
-  { href: "/articles", label: "Articles" },
+  { href: "/#publications", label: "Publications" },
   { href: "/projects", label: "Projects" },
   { href: "/courses", label: "Courses" },
   { href: "/snippets", label: "Snippets" },
   { href: "/resources", label: "Resources" },
+  { href: "/articles", label: "Posts" },
 ];
 
 function clamp(value: number, a: number, b: number): number {
