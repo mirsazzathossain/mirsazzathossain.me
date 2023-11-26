@@ -1,5 +1,5 @@
 import { Container } from "components/Container";
-import { DownloadFileIcon } from "components/Icons";
+import { ResumeIcon } from "components/Icons";
 
 import {
   DBLPIcon,
@@ -114,7 +114,7 @@ export default async function About() {
           <SocialLink
             href={about.resume}
             title="Download Resume"
-            icon={DownloadFileIcon}
+            icon={ResumeIcon}
             download
           />
         </div>
