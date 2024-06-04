@@ -1,0 +1,88 @@
+---
+title: "Diving into Group Theory: Foundations for Equivariant Neural Networks"
+tags:
+  - title: Group Theory
+  - title: Equivariant Neural Networks
+  - title: Lie Algebras
+  - title: Abstract Algebra
+categories:
+  - title: Mathematics
+  - title: Neural Networks
+  - title: Machine Learning
+author:
+  name: Mir Sazzat Hossain
+  designation: Research Assistant
+  url: https://mirsazzathossain.me
+  avatar:
+    url: user.png
+    alt: Mir Sazzat Hossain
+description: "Dive into the foundational elements of Group Theory, from understanding the basic properties of groups to exploring the intricacies of subgroups and generators."
+seoDescription: "Explore the core concepts of Group Theory: group properties, order of a group and its elements, group generators, and the significance of subgroups. A must-read for those bridging mathematics with advanced neural network designs."
+covers:
+  - url: content/group-theory-foundations-equivariant-neural-networks/group_theory.png
+    alt: Diving into Group Theory - Foundations for Equivariant Neural Networks
+status: published
+publishedAt: 2023-09-02
+---
+
+<img
+  src="/images/content/group-theory-foundations-equivariant-neural-networks/group_theory.png"
+  alt="Diving into Group Theory: Foundations for Equivariant Neural Networks"
+  sizes="100vw"
+  width="100%"
+  height="auto"
+/>
+
+## What is a Group?
+
+A group is an algebraic structure consisting of a set of elements and a binary operation that combines any two elements to form a third element. Let's say we have a set of elements $G$ and a binary operation "$.$", then we can say that $(G, .)$ is a group if the following properties are satisfied:
+
+1. **Closure:** The closure property states that for any two elements $g_1, g_2 \in G$, the result of the binary operation $g_1 . g_2$ is also an element of $G$. In other words, the binary operation "$.$" is closed under the set $G$. Mathematically, we can write this as:
+
+$$
+\forall g_1, g_2 \in G, g_1 . g_2 = g_3 \in G
+$$
+
+2. **Associativity:** The binary operation "$.$" is associative if for any three elements $g_1, g_2, g_3 \in G$, the following holds true:
+
+$$
+(g_1 . g_2) . g_3 = g_1 . (g_2 . g_3)
+$$
+
+3. **Identity:** There exists an element $e \in G$ such that for any element $g \in G$, the following holds true:
+
+$$
+e . g = g . e = g
+$$
+
+4. **Inverse:** For any element $g \in G$, there exists an unique element $g^{-1} \in G$ such that the following holds true:
+
+$$
+g . g^{-1} = g^{-1} . g = e
+$$
+
+A group is said to be **abelian** if the binary operation "$.$" is commutative. In other words, for any two elements $g_1, g_2 \in G$, the following holds true:
+
+$$
+g_1 . g_2 = g_2 . g_1
+$$
+
+Now, as we have a basic understanding of what a group is, let's look at some examples of groups.
+
+### Examples of Groups
+
+1. **Integers under addition:** The set of integers $\mathbb{Z}$ under addition is a group. The closure property is satisfied as the sum of any two integers is also an integer. The associativity property is also satisfied as the addition of integers is associative. The identity element is $0$ as $0 + n = n + 0 = n$ for any integer $n$. The inverse of an integer $n$ is $-n$ as $n + (-n) = (-n) + n = 0$.
+
+2. **Integers modulo $n$ under addition $(\mathbb{Z}/n\mathbb{Z}, +)$:** The set of integers modulo $n$ under addition is a group. The closure property is satisfied as the sum of any two integers modulo $n$ is also an integer modulo $n$. The associativity property is also satisfied as the addition of integers modulo $n$ is associative. The identity element is $0$ as $0 + n = n + 0 = n$ for any integer modulo $n$. The inverse of an integer modulo $n$ is $-n$ as $n + (-n) = (-n) + n = 0$.
+
+3. **Vectors under addition $(\mathbb{R}^n, +)$:** Every vector space is a group under addition. The closure property is satisfied as the sum of any two vectors is also a vector. The associativity property is also satisfied as the addition of vectors is associative. The identity element is the zero vector as $\mathbf{0} + \mathbf{v} = \mathbf{v} + \mathbf{0} = \mathbf{v}$ for any vector $\mathbf{v}$. The inverse of a vector $\mathbf{v}$ is $-\mathbf{v}$ as $\mathbf{v} + (-\mathbf{v}) = (-\mathbf{v}) + \mathbf{v} = \mathbf{0}$.
+
+### Order of a Group
+
+The order of a group is the number of elements in the group. The order of a group $G$ is denoted by $|G|$. For example, the order of the group $(\mathbb{Z}/n\mathbb{Z}, +)$ is $n$.
+
+### Order of an Element
+
+The order of an element $g$ of a group $G$ is the smallest positive integer $n$ such that $g^n = e$, where $e$ is the identity element of the group $G$. The order of an element $g$ is denoted by $|g|$. For example, the order of the element $1$ in the group $(\mathbb{Z}/n\mathbb{Z}, +)$ is $n$. Confused? Let's break it down.
+
+Let's say we have the set \{0, 1, 2, \dots, n-1\} and we want to find the order of the element 1. We know that the identity element of the group $(\mathbb{Z}/n\mathbb{Z}, +)$ is 0. So, we need to find the smallest positive integer $n$ such that $1^n = 0$. Let's try to find the order of the element 1 for $n = 5$.
