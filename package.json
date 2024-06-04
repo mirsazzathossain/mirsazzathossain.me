@@ -13,7 +13,7 @@
   "dependencies": {
     "@giscus/react": "^2.3.0",
     "@headlessui/react": "^1.7.17",
-    "@heroicons/react": "^2.0.18",
+    "@heroicons/react": "^2.1.3",
     "@next/env": "*",
     "@stefanprobst/rehype-extract-toc": "^2.2.0",
     "@tailwindcss/typography": "^0.5.10",
