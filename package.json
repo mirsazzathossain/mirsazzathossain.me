@@ -55,7 +55,7 @@
     "sharp": "^0.32.6",
     "shiki": "^0.14.5",
     "styled-components": "^6.1.1",
-    "typescript": "5.3.3",
+    "typescript": "5.5.3",
     "unist-util-visit": "^5.0.0"
   },
   "devDependencies": {
