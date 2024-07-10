@@ -11,7 +11,7 @@
     "postbuild": "next-sitemap"
   },
   "dependencies": {
-    "@giscus/react": "^2.3.0",
+    "@giscus/react": "^3.0.0",
     "@headlessui/react": "^2.1.2",
     "@heroicons/react": "^2.1.4",
     "@next/env": "*",
