@@ -1148,24 +1148,18 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react@*", "@types/react@18.2.56":
-  version "18.2.56"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-18.2.56.tgz#2d3e9021a0b6eb5bfc227761cc61b1c6dc6e0cd8"
-  integrity sha512-NpwHDMkS/EFZF2dONFQHgkPRwhvgq/OAvIaGQzxGSBmaeR++kTg6njr15Vatz0/2VcCEwJQFi6Jf4Q0qBu0rLA==
+"@types/react@*", "@types/react@18.3.3":
+  version "18.3.3"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-18.3.3.tgz#9679020895318b0915d7a3ab004d92d33375c45f"
+  integrity sha512-hti/R0pS0q1/xx+TsI73XIqk26eBsISZ2R0wUijXIngRK9R/e7Xw/cXVxQK7R5JjW+SV4zGcn5hXjudkN/pLIw==
   dependencies:
     "@types/prop-types" "*"
-    "@types/scheduler" "*"
     csstype "^3.0.2"
 
 "@types/resolve@^1.17.1":
   version "1.20.2"
   resolved "https://registry.yarnpkg.com/@types/resolve/-/resolve-1.20.2.tgz#97d26e00cd4a0423b4af620abecf3e6f442b7975"
   integrity sha512-60BCwRFOZCQhDncwQdxxeOEEkbc5dIMccYLwbxsS4TUNeVECQ/pBJ0j09mrHOl/JJvpRPGwO9SvE4nR2Nb/a4Q==
-
-"@types/scheduler@*":
-  version "0.16.2"
-  resolved "https://registry.yarnpkg.com/@types/scheduler/-/scheduler-0.16.2.tgz#1a62f89525723dde24ba1b01b092bf5df8ad4d39"
-  integrity sha512-hppQEBDmlwhFAXKJX2KnWLYu5yMfi91yazPb2l+lbJiwW+wdo1gNeRA+3RgNSO39WYX2euey41KEwnqesU2Jew==
 
 "@types/stylis@4.2.5":
   version "4.2.5"
@@ -4934,10 +4928,10 @@ react-tippy@^1.4.0:
   dependencies:
     popper.js "^1.11.1"
 
-react@^18.2.0:
-  version "18.2.0"
-  resolved "https://registry.yarnpkg.com/react/-/react-18.2.0.tgz#555bd98592883255fa00de14f1151a917b5d77d5"
-  integrity sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ==
+react@^18.3.1:
+  version "18.3.1"
+  resolved "https://registry.yarnpkg.com/react/-/react-18.3.1.tgz#49ab892009c53933625bd16b2533fc754cab2891"
+  integrity sha512-wS+hAgJShR0KhEvPJArfuPVN1+Hz1t0Y6n5jLrGQbkb4urgPE/0Rve+1kMB1v/oWgHgm4WIcV+i7F2pTVj+2iQ==
   dependencies:
     loose-envify "^1.1.0"
 
