@@ -25,7 +25,7 @@
     "bibtex-js-parser": "^1.1.6",
     "clsx": "^2.1.1",
     "contentlayer": "^0.3.4",
-    "dotenv": "^16.3.1",
+    "dotenv": "^16.4.5",
     "eslint": "8.54.0",
     "eslint-config-next": "^14.0.3",
     "feed": "^4.2.2",
