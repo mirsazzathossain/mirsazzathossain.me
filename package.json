@@ -17,7 +17,7 @@
     "@next/env": "*",
     "@stefanprobst/rehype-extract-toc": "^2.2.0",
     "@tailwindcss/typography": "^0.5.13",
-    "@types/node": "20.11.19",
+    "@types/node": "20.14.10",
     "@types/react": "18.2.56",
     "@types/react-dom": "18.2.15",
     "@vercel/analytics": "^1.1.1",
