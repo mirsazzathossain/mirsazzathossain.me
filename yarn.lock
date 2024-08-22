@@ -2764,10 +2764,10 @@ googleapis-common@^7.0.0:
     url-template "^2.0.8"
     uuid "^9.0.0"
 
-googleapis@^140.0.1:
-  version "140.0.1"
-  resolved "https://registry.yarnpkg.com/googleapis/-/googleapis-140.0.1.tgz#fe347353761f21a2959777186026475fad08ee0f"
-  integrity sha512-ZGvBX4mQcFXO9ACnVNg6Aqy3KtBPB5zTuue43YVLxwn8HSv8jB7w+uDKoIPSoWuxGROgnj2kbng6acXncOQRNA==
+googleapis@^142.0.0:
+  version "142.0.0"
+  resolved "https://registry.yarnpkg.com/googleapis/-/googleapis-142.0.0.tgz#fa7a0414ab6ec935554fe52eeba067602676a9c7"
+  integrity sha512-LsU1ynez4/KNPwnFMSDI93pBEsETNdQPCrT3kz2qgiNg5H2pW4dKW+1VmENMkZ4u9lMxA89nnXD3nqWBJ0rruQ==
   dependencies:
     google-auth-library "^9.0.0"
     googleapis-common "^7.0.0"
