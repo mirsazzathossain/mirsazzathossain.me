@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@giscus/react": "^3.0.0",
-    "@headlessui/react": "^2.1.2",
+    "@headlessui/react": "^2.1.10",
     "@heroicons/react": "^2.1.5",
     "@next/env": "*",
     "@stefanprobst/rehype-extract-toc": "^2.2.0",
