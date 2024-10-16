@@ -1,6 +1,8 @@
+"use client";
 import { Card } from "components/Card";
 import { LinkIcon } from "components/Icons";
 import Image from "next/image";
+import React from "react";
 
 export default function ProjectCard({
   project,
@@ -16,7 +18,12 @@ export default function ProjectCard({
           alt={project.logo.alt}
           height={32}
           width={32}
-          className={`${isImageLoading ? "hidden" : "block"} h-8 w-8`}
+          onLoad={() => setImageLoading(false)}
+          className={`${
+            isImageLoading
+              ? "blur-sm transition ease-in duration-300"
+              : "blue-none transition ease-in duration-300"
+          } h-8 w-8`}
         />
       </div>
       <h2 className="mt-6 text-base font-semibold text-zinc-800 dark:text-zinc-100">
