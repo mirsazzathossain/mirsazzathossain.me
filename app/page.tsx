@@ -9,7 +9,6 @@ import { Suspense } from "react";
 import generateRss from "utils/generate-rss";
 import About from "./About";
 import Server from "./Server";
-import Miscellaneous from "./Miscellaneous";
 
 export default async function Home(): Promise<JSX.Element> {
   if (fs.existsSync("public")) {
@@ -40,7 +39,7 @@ export default async function Home(): Promise<JSX.Element> {
         <Server component="Publications" />
       </Suspense>
 
-      <Miscellaneous />
+      {/* <Miscellaneous /> */}
 
       <Suspense fallback={<ArticlesPlaceholder />}>
         {/* @ts-expect-error Server Component */}
