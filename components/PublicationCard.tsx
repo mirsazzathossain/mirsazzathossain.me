@@ -153,16 +153,16 @@ export default function PublicationCard({
 
       <div
         aria-hidden="true"
-        className="relative z-10 mt-2 flex space-x-4 text-sm font-medium text-teal-500"
+        className="relative z-10 mt-2 flex space-x-2 text-sm font-medium text-teal-500"
       >
         {publication.url && (
           <Link href={publication.url} target="_blank">
-            [ Paper ]
+            [Paper]
           </Link>
         )}
         {publication.supplement && (
           <Link href={publication.supplement} target="_blank">
-            [ Supplement ]
+            [Supplement]
           </Link>
         )}
         {publication.code && (
@@ -170,7 +170,7 @@ export default function PublicationCard({
             href={publication.code ? publication.code : "#"}
             target="_blank"
           >
-            [ Code ]
+            [Code]
           </Link>
         )}
         {publication.slides && (
@@ -178,7 +178,7 @@ export default function PublicationCard({
             href={publication.slides ? publication.slides : "#"}
             target="_blank"
           >
-            [ Slides ]
+            [Slides]
           </Link>
         )}
         {publication.video && (
@@ -186,7 +186,7 @@ export default function PublicationCard({
             href={publication.video ? publication.video : "#"}
             target="_blank"
           >
-            [ Video ]
+            [Video]
           </Link>
         )}
         {publication.poster && (
@@ -194,7 +194,7 @@ export default function PublicationCard({
             href={publication.poster ? publication.poster : "#"}
             target="_blank"
           >
-            [ Poster ]
+            [Poster]
           </Link>
         )}
       </div>
