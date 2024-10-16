@@ -118,6 +118,7 @@ export default function PublicationCard({
             <span className="font-semibold italic">
               {publication.booktitle}
             </span>
+            {publication.location && <span>, {publication.location}</span>}
             {publication.year && (
               <span>
                 ,{" "}
@@ -186,6 +187,14 @@ export default function PublicationCard({
             target="_blank"
           >
             [ Video ]
+          </Link>
+        )}
+        {publication.poster && (
+          <Link
+            href={publication.poster ? publication.poster : "#"}
+            target="_blank"
+          >
+            [ Poster ]
           </Link>
         )}
       </div>
