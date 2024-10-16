@@ -11,7 +11,7 @@ export default function ProjectCard({
 }): JSX.Element {
   const [isImageLoading, setImageLoading] = React.useState(true);
   return (
-    <Card as="li">
+    <Card>
       <div className="relative z-10 flex h-12 w-12 items-center justify-center rounded-full bg-white shadow-md shadow-zinc-800/5 ring-1 ring-zinc-900/5 dark:border dark:border-zinc-700/50 dark:bg-zinc-800 dark:ring-0">
         <Image
           src={`/images/${project.logo.src}`}
@@ -21,8 +21,8 @@ export default function ProjectCard({
           onLoad={() => setImageLoading(false)}
           className={`${
             isImageLoading
-              ? "blur-sm transition ease-in duration-300"
-              : "blue-none transition ease-in duration-300"
+              ? "blur-sm transition ease-in duration-100"
+              : "blue-none transition ease-in duration-100"
           } h-8 w-8`}
         />
       </div>

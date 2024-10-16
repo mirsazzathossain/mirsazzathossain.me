@@ -1,12 +1,15 @@
+"use client";
 import { Snippet } from "contentlayer/generated";
 import Image from "next/image";
 import Link from "next/link";
+import React from "react";
 
 export default function SnipeetCard({
   snippet,
 }: {
   snippet: Snippet;
 }): JSX.Element {
+  const [isImageLoading, setIsImageLoading] = React.useState(true);
   return (
     <Link
       className="animate-background bg-gradient-to-r from-green-300 via-blue-500 to-purple-600 bg-[length:400%_400%] shadow-lg transition [animation-duration:_6s] hover:shadow-sm rounded-xl p-0.5 w-full relative"
@@ -18,7 +21,12 @@ export default function SnipeetCard({
           height={32}
           width={32}
           src={`/images/${snippet.logo.url}`}
-          className="rounded-xl"
+          onLoad={() => setIsImageLoading(false)}
+          className={`${
+            isImageLoading
+              ? "blur-sm transition ease-in duration-100"
+              : "blue-none transition ease-in duration-100"
+          } rounded-xl`}
         />
         <h3 className="text-lg font-bold text-left mt-2 text-zinc-800 dark:text-zinc-100 break-all">
           {snippet.title}

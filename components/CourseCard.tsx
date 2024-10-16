@@ -1,11 +1,15 @@
+"use client";
 import Image from "next/image";
 import Link from "next/link";
+import React from "react";
 
 export default function CourseCard({
   course,
 }: {
   course: Course;
 }): JSX.Element {
+  const [isImageLoading, setIsImageLoading] = React.useState(true);
+
   return (
     <Link
       href={course.link.href}
@@ -29,10 +33,14 @@ export default function CourseCard({
           <Image
             alt={course.logo.alt}
             src={`/images/${course.logo.src}`}
-            className="h-16 w-16 rounded-lg object-cover shadow-sm"
+            className={`${
+              isImageLoading
+                ? "blur-sm transition ease-in duration-100"
+                : "blue-none transition ease-in duration-100"
+            } h-16 w-16 rounded-lg object-cover shadow-sm`}
             width={64}
             height={64}
-            priority
+            onLoad={() => setIsImageLoading(false)}
           />
         </div>
       </div>
