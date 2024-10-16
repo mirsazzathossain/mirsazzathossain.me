@@ -1,5 +1,29 @@
 [
   {
+    "title": "RGC: Radio Galaxy Classifier - A Python Package",
+    "description": "A Python package for processing and classifying radio galaxy images 📡🧠. The acronym also pays tribute to Radha Govinda Chandra 🔭, a pioneering variable star observer.",
+    "link": {
+      "href": "https://github.com/mirsazzathossain/radio-galaxy-classifier",
+      "label": "radio-galaxy-classifier"
+    },
+    "logo": {
+      "src": "project-logos/radio-galaxy-classifier.png",
+      "alt": "Radio Galaxy Classifier"
+    }
+  },
+  {
+    "title": "Mir Sazzat Hossain | Personal Website",
+    "description": "My personal website, built with Next.js, Tailwind CSS, Contentlayer, and 🚀 deployed on Vercel 🔼",
+    "link": {
+      "href": "https://github.com/mirsazzathossain/mirsazzathossain.me",
+      "label": "mirsazzathossain.me"
+    },
+    "logo": {
+      "src": "project-logos/mirsazzathossain-me.png",
+      "alt": "mirsazzathossain.me"
+    }
+  },
+  {
     "title": "Restaurant Order Prediction Using USTGCN",
     "description": "Real-time food order prediction using Unified Spatio-Temporal Graph Convolutional Network (USTGCN). 🍴🚀",
     "link": {

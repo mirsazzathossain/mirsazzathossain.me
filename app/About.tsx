@@ -2,12 +2,15 @@ import { Container } from "components/Container";
 import { ResumeIcon } from "components/Icons";
 
 import {
+  ACMIcon,
   DBLPIcon,
   GitHubIcon,
   GoogleScholarIcon,
   LinkedInIcon,
+  OrcidIcon,
+  ResearchGateIcon,
   SementicScholarIcon,
-  TwitterIcon,
+  TwitterXIcon,
 } from "components/SocialIcons";
 import { server } from "config";
 import fs, { promises as ps } from "fs";
@@ -62,7 +65,7 @@ export default async function About() {
           </Link>
         </h2>
         <p
-          className="mt-6 text-base text-zinc-600 dark:text-zinc-400"
+          className="mt-6 text-base text-justify text-zinc-600 dark:text-zinc-400 leading-relaxed"
           style={{ whiteSpace: "pre-line" }}
         >
           {about.description}
@@ -74,7 +77,7 @@ export default async function About() {
           </p>
         )}
 
-        <div className="mt-6 flex gap-6">
+        <div className="mt-6 flex gap-5">
           {about.socialLinks.map((socialLink: any, index: any) => (
             <SocialLink
               key={index}
@@ -85,13 +88,19 @@ export default async function About() {
                   : socialLink.name === "linkedin"
                   ? LinkedInIcon
                   : socialLink.name === "twitter"
-                  ? TwitterIcon
+                  ? TwitterXIcon
                   : socialLink.name === "google-scholar"
                   ? GoogleScholarIcon
                   : socialLink.name === "semantic-scholar"
                   ? SementicScholarIcon
                   : socialLink.name === "dblp"
                   ? DBLPIcon
+                  : socialLink.name === "researchgate"
+                  ? ResearchGateIcon
+                  : socialLink.name === "orcid"
+                  ? OrcidIcon
+                  : socialLink.name === "acm-dl"
+                  ? ACMIcon
                   : null
               }
               title={
@@ -107,6 +116,12 @@ export default async function About() {
                   ? "Semantic Scholar Profile"
                   : socialLink.name === "dblp"
                   ? "DBLP Profile"
+                  : socialLink.name === "researchgate"
+                  ? "ResearchGate Profile"
+                  : socialLink.name === "orcid"
+                  ? "ORCID Profile"
+                    ? socialLink.name === "acm-dl"
+                    : "ACM Digital Library Profile"
                   : null
               }
             />

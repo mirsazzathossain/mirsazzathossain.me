@@ -1,11 +1,11 @@
 {
   "name": "Mir Sazzat Hossain",
-  "designation": "Research Assistant",
+  "designation": "Junior Research Scientist",
   "company": {
     "name": "Center for Computational & Data Sciences",
     "url": "https://ccds.ai/"
   },
-  "description": "I am a research assistant at the Center for Computational and Data Sciences (CCDS) at Independent University, Bangladesh (IUB), actively involved in cutting-edge research projects in artificial intelligence, machine learning, and data science. My focus includes computer vision, group theory, manifold learning, and geometric machine learning, with a deep passion for developing innovative solutions that benefit sectors like astronomy, healthcare, and education. \nIn addition to my research responsibilities, I am actively involved in teaching undergraduate students, mentoring, and instructing various courses at IUB. My enthusiasm for learning new data science topics and conducting research drives me to make significant contributions and positively impact others' learning experiences. I am constantly striving to expand my knowledge and expertise in the field, with the ultimate goal of making a meaningful impact through my work.",
+  "description": "A highly motivated and aspiring researcher with a strong background in computer vision and machine learning. With a proven track record spanning over two years, I have contributed significantly to the field, publishing research articles in prestigious conferences, including ICIP and IJCNN. My primary research interests center around various aspects of computer vision and solving real-world problems from different domains using it. \n\nCurrently, I am working as a Junior Research Scientist at the Center for Computational & Data Sciences (CCDS) at Independent University, Bangladesh. My current research projects include domain adaptation, Mixtures-of-Experts in large multi-modal models (LMMS), protein dynamics prediction using 3D CNNs, and particle jet tagging using graph neural networks. \n\nTo advance my research experience, I am actively seeking Ph.D. positions in computer vision and machine learning, focusing on topics such as domain adaptation, self-supervised learning, generative models, and vision-language models. I am committed to continuous learning and growth and am excited to contribute to the advancement of computer vision and machine learning research.",
   "socialLinks": [
     {
       "name": "google-scholar",
@@ -33,5 +33,5 @@
     }
   ],
   "resume": "files/mirsazzathossain-cv.pdf",
-  "note": "Seeking PhD opportunities in machine learning and computer vision."
+  "note": ""
 }
