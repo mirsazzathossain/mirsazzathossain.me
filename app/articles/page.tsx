@@ -16,11 +16,11 @@ export const metadata: Metadata = {
       "All my articles are written with the goal of helping you learn something new. I hope you enjoy them!",
     url: `${server}/articles`,
     type: "website",
-    siteName: "Mir Sazzat Hossain - Innovative Researcher and Skilled Mentor",
+    siteName: "Mir Sazzat Hossain | Personal Website",
     images: [
       {
         url: `${server}/images/og-image.png`,
-        alt: "Mir Sazzat Hossain - Innovative Researcher and Skilled Mentor",
+        alt: "Mir Sazzat Hossain | Personal Website",
         width: 1200,
         height: 630,
       },
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     images: [
       {
         url: `${server}/images/og-image.png`,
-        alt: "Mir Sazzat Hossain - Innovative Researcher and Skilled Mentor",
+        alt: "Mir Sazzat Hossain | Personal Website",
         width: 1200,
         height: 630,
       },

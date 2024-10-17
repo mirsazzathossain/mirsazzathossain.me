@@ -41,7 +41,7 @@ export async function generateMetadata({
         params?.slug ? `categorized as ${params.slug}` : ""
       } available on this website.`,
       url: `${server}/articles/categories/${params.slug}`,
-      siteName: "Mir Sazzat Hossain - Innovative Researcher and Skilled Mentor",
+      siteName: "Mir Sazzat Hossain | Personal Website",
       images: [
         {
           url: `${server}/images/cover.jpg`,

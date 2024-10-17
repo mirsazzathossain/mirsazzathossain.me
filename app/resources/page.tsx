@@ -15,7 +15,7 @@ export const metadata: Metadata = {
       "These materials have been tremendously beneficial to me in my learning path. I hope you find these helpful as well!",
     url: `${server}/resources`,
     type: "website",
-    site_name: "Mir Sazzat Hossain - Innovative Researcher and Skilled Mentor",
+    site_name: "Mir Sazzat Hossain | Personal Website",
     images: [
       {
         url: `${server}/images/og-image.png`,

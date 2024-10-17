@@ -8,7 +8,7 @@ import ClientThemeProvider from "./theme-provider";
 
 export const metadata: Metadata = {
   title: {
-    default: "Mir Sazzat Hossain - Innovative Researcher and Skilled Mentor",
+    default: "Mir Sazzat Hossain | Personal Website",
     template: "%s - Mir Sazzat Hossain",
   },
   description:
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     "Mir",
     "Hossain",
     "Mir Sazzat Hossain",
-    "Mir Sazzat Hossain - Innovative Researcher and Skilled Mentor",
+    "Mir Sazzat Hossain | Personal Website",
     "Mir Sazzat Hossain - Personal Website",
     "Sajjad",
     "Sajjat",
@@ -48,17 +48,17 @@ export const metadata: Metadata = {
     email: true,
   },
   openGraph: {
-    title: "Mir Sazzat Hossain - Innovative Researcher and Skilled Mentor",
+    title: "Mir Sazzat Hossain | Personal Website",
     description:
       "Mir Sazzat Hossain is a recent college graduate with a solid foundation in computer science as well as competence in exploratory data analysis, machine learning, computer vision, and statistics. He is currently working as a Research Assistant at the Independent University, Bangladesh's Center for Computational and Data Sciences.",
     url: `${server}`,
-    siteName: "Mir Sazzat Hossain - Innovative Researcher and Skilled Mentor",
+    siteName: "Mir Sazzat Hossain | Personal Website",
     images: [
       {
         url: `${server}/images/og-image.png`,
         width: 1200,
         height: 630,
-        alt: "Mir Sazzat Hossain - Innovative Researcher and Skilled Mentor",
+        alt: "Mir Sazzat Hossain | Personal Website",
       },
     ],
     locale: "en_US",
@@ -114,7 +114,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     site: "@mir_sazzat",
-    title: "Mir Sazzat Hossain - Innovative Researcher and Skilled Mentor",
+    title: "Mir Sazzat Hossain | Personal Website",
     description:
       "Mir Sazzat Hossain is a recent college graduate with a solid foundation in computer science as well as competence in exploratory data analysis, machine learning, computer vision, and statistics. He is currently working as a Research Assistant at the Independent University, Bangladesh's Center for Computational and Data Sciences.",
     creator: "@mir_sazzat",
@@ -123,7 +123,7 @@ export const metadata: Metadata = {
         url: `${server}/images/og-image.png`,
         width: 1200,
         height: 630,
-        alt: "Mir Sazzat Hossain - Innovative Researcher and Skilled Mentor",
+        alt: "Mir Sazzat Hossain | Personal Website",
       },
     ],
   },

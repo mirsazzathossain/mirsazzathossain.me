@@ -50,11 +50,11 @@ export async function generateMetadata({
       description:
         "This page contains all the categories of articles available on this website.",
       url: `${server}/articles/categories`,
-      siteName: "Mir Sazzat Hossain - Innovative Researcher and Skilled Mentor",
+      siteName: "Mir Sazzat Hossain | Personal Website",
       images: [
         {
           url: `${server}/images/og-image.png`,
-          alt: "Mir Sazzat Hossain - Innovative Researcher and Skilled Mentor",
+          alt: "Mir Sazzat Hossain | Personal Website",
           width: 1200,
           height: 630,
         },
@@ -71,7 +71,7 @@ export async function generateMetadata({
       images: [
         {
           url: `${server}/images/og-image.png`,
-          alt: "Mir Sazzat Hossain - Innovative Researcher and Skilled Mentor",
+          alt: "Mir Sazzat Hossain | Personal Website",
           width: 1200,
           height: 630,
         },
