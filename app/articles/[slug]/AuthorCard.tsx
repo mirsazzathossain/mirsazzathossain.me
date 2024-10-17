@@ -30,10 +30,11 @@ export default function AuthorCard({
             </h4>
           </div>
           <div>
-            <p>
+            <p className="text-justify">
               <Link href={article.author.url || ""}> Mir Sazzat Hossain</Link>{" "}
-              is a Research Assistant at the Independent University of
-              Bangladesh&apos;s Center for Computation and Data Science (CCDS).
+              is a Junior Research Scientist working at the Independent
+              University of Bangladesh&apos;s Center for Computation and Data
+              Science (CCDS).
             </p>
           </div>
         </div>

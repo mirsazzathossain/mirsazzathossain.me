@@ -37,7 +37,7 @@ export default function ExperienceCard({
             <p className="text-xs text-zinc-400 dark:text-zinc-500 leading-5">
               {props.location}
             </p>{" "}
-            <p className="leading-5 text-zinc-600 dark:text-zinc-400 mt-2">
+            <p className="leading-5 text-zinc-600 dark:text-zinc-400 mt-2 text-justify">
               {props.description}
             </p>
             <div className="pt-2 flex md:flex-row flex-wrap">

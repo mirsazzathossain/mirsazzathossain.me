@@ -37,7 +37,7 @@
   },
   {
     "title": "Astro Labeller: A web application for labelling astronomical images",
-    "description": "A Django web application for colaborative labelling of astronomical images into different categories. 🌟🌠",
+    "description": "A Django based web application for colaborative labelling of astronomical images into different categories. 🌟🌠",
     "link": {
       "href": "https://github.com/mirsazzathossain/astro-labeller",
       "label": "astro-labeller"
@@ -49,7 +49,7 @@
   },
   {
     "title": "Spotify Playing Now: A card for showing your currently playing Spotify song",
-    "description": "A card for showing your currently playing Spotify song on your GitHub profile README or any other markdown file. 🎵🎶",
+    "description": "A card for showing your currently playing Spotify song on your GitHub profile README or other markdown file. 🎵🎶",
     "link": {
       "href": "https://github.com/mirsazzathossain/spotify-playing-now",
       "label": "spotify-playing-now"
@@ -61,7 +61,7 @@
   },
   {
     "title": "Food Judge: A social media platform for foodies",
-    "description": "A social media platform for foodies to find restaurants, share their experiences, and connect with other foodies. 🍴🚀",
+    "description": "A social media platform for foodies to find restaurants, share their experiences, and easily connect with other foodies. 🍴🚀",
     "link": {
       "href": "https://github.com/mirsazzathossain/food-judge",
       "label": "food-judge"
@@ -73,7 +73,7 @@
   },
   {
     "title": "SPMS: A web basde student performance monitoring system",
-    "description": "A web application for monitoring student performance based on their attendance, grades, and other metrics. 👨🏻‍🎓🧠",
+    "description": "A Django based web application for monitoring student performance based on their attendance, grades, and other metrics. 👨🏻‍🎓🧠",
     "link": {
       "href": "https://github.com/mirsazzathossain/spms-django",
       "label": "spms-django"
@@ -85,7 +85,7 @@
   },
   {
     "title": "HAMS: Appointments management system for hospitals",
-    "description": "A web application for managing patient records, scheduling appointments, and managing hospital resources. 🏥👩🏻‍⚕️",
+    "description": "A web application for managing patient records, scheduling doctor appointments, and managing hospital resources. 🏥👩🏻‍⚕️",
     "link": {
       "href": "https://github.com/mirsazzathossain/hams-laravel",
       "label": "hams-laravel"
@@ -121,7 +121,7 @@
   },
   {
     "title": "A simple e-commerce marketplace built using vanilla javascript",
-    "description": "A simple e-commerce marketplace with a shopping cart built using vanilla javascript. 🛒🛍",
+    "description": "A e-commerce marketplace with a shopping cart built using vanilla javascript. 🛒🛍",
     "link": {
       "href": "https://github.com/mirsazzathossain/online-marketplace",
       "label": "online-marketplace"
@@ -133,7 +133,7 @@
   },
   {
     "title": "CSMS: Online car showroom management system for car dealers",
-    "description": "A web application for managing car showroom inventory, scheduling appointments, and managing car showroom resources. 🚗🚙",
+    "description": "A web application for managing a car showroom, including inventory, appointments, and other resources. 🚗🚙",
     "link": {
       "href": "https://github.com/mirsazzathossain/CSMS",
       "label": "CSMS"

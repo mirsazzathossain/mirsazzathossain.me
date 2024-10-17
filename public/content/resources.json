@@ -16,5 +16,11 @@
     "url": "https://github.com/lucidrains/vit-pytorch",
     "description": "Implementation of SOTA Vision Transformer models using PyTorch",
     "category": "Computer Vision"
+  },
+  {
+    "title": "The Annotated Transformer",
+    "url": "https://nlp.seas.harvard.edu/annotated-transformer/",
+    "description": "A detailed explanation of the Transformer model",
+    "category": "Natural Language Processing"
   }
 ]

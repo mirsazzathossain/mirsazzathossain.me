@@ -1,13 +1,30 @@
 [
   {
-    "title": "Research Assistant",
+    "title": "Junior Research Scientist",
     "company": "Center for Computational & Data Sciences",
     "companyURL": "http://ccds.ai/",
     "companyLogo": "/images/ccds.png",
     "location": "Plot 16, Aftabuddin Ahmed Road, Block B, Bashnudhara RA, Dhaka 1229, Bangladesh.",
     "type": "Full-time",
-    "date": "Feb 2022 - Present",
-    "description": "At CCDS, my responsibilities include participating in research projects and generating new research ideas in the fields of computational science, artificial intelligence, and data science. I am also responsible for studying and implementing new algorithms, as well as understanding advanced mathematical and statistical concepts.",
+    "date": "Jul 2024 - Present",
+    "description": "As a Junior Research Scientist at CCDS, I lead projects on protein dynamics prediction using 3D CNNs and particle jet tagging with graph neural networks. I am also involved in projects on test-time adaptation and mixtures of experts (MoE) for large multi-modal models (LMMS). Furthermore, I am mentoring two undergraduate thesis projects at IUB.",
+    "skills": [
+      "Domain Adaptation",
+      "Mixtures-of-Experts",
+      "Large Multi-Modal Models (LMMS)",
+      "Graph Neural Networks",
+      "3D CNNs"
+    ]
+  },
+  {
+    "title": "Post-baccalaureate Research Assistant",
+    "company": "Center for Computational & Data Sciences",
+    "companyURL": "http://ccds.ai/",
+    "companyLogo": "/images/ccds.png",
+    "location": "Plot 16, Aftabuddin Ahmed Road, Block B, Bashnudhara RA, Dhaka 1229, Bangladesh.",
+    "type": "Full-time",
+    "date": "Feb 2022 - Jun 2024",
+    "description": "I developed a RNN based method for image super-resolution (ICIP 2024), and implemented a semi-supervised equivariant CNN for radio galaxy classification (IJCNN 2023). I also conducted tutorials and labs on Basic Programming, Data Structures, AI, and ML at IUB. Additionally, I mentored undergraduates on thesis implementation and write-ups.",
     "skills": [
       "Artificial Intelligence (AI)",
       "Machine Learning",
@@ -19,14 +36,14 @@
     ]
   },
   {
-    "title": "Teaching Assistant",
+    "title": "Post-baccalaureate Teaching Assistant",
     "company": "Independent University, Bangladesh",
     "companyURL": "https://iub.edu.bd/",
     "companyLogo": "/images/iub.png",
     "location": "Plot 16, Aftabuddin Ahmed Road, Block B, Bashnudhara RA, Dhaka 1229, Bangladesh.",
     "type": "Part-time",
-    "date": "Sep 2021 - Jan 2022",
-    "description": "As a teaching assistant at IUB, I had the opportunity to collaborate with an assistant professor and teach a lab course on numerical methods. My responsibilities included introducing students to numerical approaches, demonstrating their application using Python, and redesigning the lab materials to be compatible with Python.",
+    "date": "Jan 2021 - Jan 2022",
+    "description": "As a teaching assistant at IUB, I actively supported Dr. AKM Mahbubur Rahman in teaching a lab course on numerical methods. I redesigned all previous lab materials from MATLAB to Python. Additionally, I helped students understand numerical approaches and effectively addressed their queries during lab sessions.",
     "skills": [
       "Numerical Methods",
       "Numpy",
@@ -43,7 +60,7 @@
     "location": "Plot 16, Aftabuddin Ahmed Road, Block B, Bashnudhara RA, Dhaka 1229, Bangladesh.",
     "type": "Part-time",
     "date": "Oct 2019 - Dec 2019",
-    "description": "As an undergraduate teaching assistant at IUB, I worked as a part-time tutor at the Math Tutorial Center, providing support to struggling students and managing the center. This experience allowed me to develop my skills in assisting students with their academic difficulties and gain valuable teaching experience.",
+    "description": "I worked part-time at the Math Tutorial Center, supporting students facing math difficulties. Alongside other tutors, I managed the center to ensure effective student support. I provided individualized tutoring to students from various disciplines, which helped me develop strong communication and problem-solving skills.",
     "skills": [
       "Linear Algebra",
       "Statistics",

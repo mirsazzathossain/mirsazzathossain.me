@@ -46,7 +46,7 @@ export default function CourseCard({
       </div>
 
       <div className="mt-4 sm:pr-8">
-        <p className="text-sm text-zinc-600 dark:text-zinc-400">
+        <p className="text-sm text-zinc-600 dark:text-zinc-400 text-justify">
           {course.description}
         </p>
       </div>

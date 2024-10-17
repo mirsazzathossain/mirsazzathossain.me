@@ -115,7 +115,7 @@ export default function ArticlePage({
             </time>
           </header>
 
-          <div className="mt-8 prose dark:prose-invert">
+          <div className="mt-8 prose dark:prose-invert text-justify">
             <Component components={mdxComponents as any} />
           </div>
 

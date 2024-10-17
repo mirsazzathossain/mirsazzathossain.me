@@ -45,7 +45,7 @@ export default function SnippetPage({
               />
             </div>
           </div>
-          <div className="mt-8 prose dark:prose-invert">
+          <div className="mt-8 prose dark:prose-invert text-justify">
             <Component components={mdxComponents as any} />
           </div>
         </article>

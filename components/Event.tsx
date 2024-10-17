@@ -17,7 +17,9 @@ const Step = ({ title, children }: { title: string; children: any }) => {
 
         <p className="font-medium text-zinc-800 dark:text-zinc-100">{title}</p>
       </div>
-      <p className="text-zinc-600 dark:text-zinc-400 ml-6">{children}</p>
+      <p className="text-zinc-600 dark:text-zinc-400 ml-6 text-justify">
+        {children}
+      </p>
     </li>
   );
 };
