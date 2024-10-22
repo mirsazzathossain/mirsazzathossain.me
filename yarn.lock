@@ -636,9 +636,9 @@
     vfile "^5.0.0"
 
 "@next/env@*":
-  version "14.2.6"
-  resolved "https://registry.yarnpkg.com/@next/env/-/env-14.2.6.tgz#4f8ab1ca549a90bf0c83454b798b0ebae7098b15"
-  integrity sha512-bs5DFKV+08EjWrl8EB+KKqev1ZTNONH1vFCaHh911aaB362NnP32UDTbE9VQhyiAgbFqJsfDkSxFERNDDb3j0g==
+  version "15.0.0"
+  resolved "https://registry.yarnpkg.com/@next/env/-/env-15.0.0.tgz#d25cb3b8f846a99974d9cd1fa6c45ad0db9e2b00"
+  integrity sha512-Mcv8ZVmEgTO3bePiH/eJ7zHqQEs2gCqZ0UId2RxHmDDc7Pw6ngfSrOFlxG8XDpaex+n2G+TKPsQAf28MO+88Gw==
 
 "@next/env@14.2.5":
   version "14.2.5"
