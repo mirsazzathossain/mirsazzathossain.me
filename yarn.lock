@@ -392,10 +392,10 @@
     protobufjs "^7.0.0"
     yargs "^16.2.0"
 
-"@headlessui/react@^2.1.2":
-  version "2.1.2"
-  resolved "https://registry.yarnpkg.com/@headlessui/react/-/react-2.1.2.tgz#3ca9378d7d0db6aefdb135f957815790786214ef"
-  integrity sha512-Kb3hgk9gRNRcTZktBrKdHhF3xFhYkca1Rk6e1/im2ENf83dgN54orMW0uSKTXFnUpZOUFZ+wcY05LlipwgZIFQ==
+"@headlessui/react@^2.2.0":
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@headlessui/react/-/react-2.2.0.tgz#a8e32f0899862849a1ce1615fa280e7891431ab7"
+  integrity sha512-RzCEg+LXsuI7mHiSomsu/gBJSjpupm6A1qIZ5sWjd7JhARNlMiSA4kKfJpCKwU9tE+zMRterhhrP74PvfJrpXQ==
   dependencies:
     "@floating-ui/react" "^0.26.16"
     "@react-aria/focus" "^3.17.1"
