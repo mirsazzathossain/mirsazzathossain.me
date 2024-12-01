@@ -29,12 +29,10 @@ export default function Publications({
               <div
                 key={index}
                 className={
-                  "h-0 overflow-hidden transition-height ease-in-out duration-[400ms] "
+                  "overflow-hidden transition-height ease-in-out duration-[400ms] " +
+                  (isExpanded ? "h-fit" : "h-0")
                 }
                 ref={parentRef as any}
-                style={{
-                  height: isExpanded ? fitContent : 0,
-                }}
               >
                 <PublicationCard key={index} publication={publication} />
               </div>
