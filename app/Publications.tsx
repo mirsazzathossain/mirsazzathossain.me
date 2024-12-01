@@ -33,6 +33,9 @@ export default function Publications({
                   " overflow-hidden transition-height ease-in-out duration-[400ms]"
                 }
                 ref={parentRef as any}
+                style={{
+                  height: isExpanded ? parentRef.current.scrollHeight : 0,
+                }}
               >
                 <PublicationCard key={index} publication={publication} />
               </div>
