@@ -33,7 +33,7 @@ export default function Publications({
                 }
                 ref={parentRef as any}
                 style={{
-                  height: isExpanded ? fit-content : 0,
+                  height: isExpanded ? fitContent : 0,
                 }}
               >
                 <PublicationCard key={index} publication={publication} />
