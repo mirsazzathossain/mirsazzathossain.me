@@ -10,7 +10,7 @@ export default function Publications({
   publications: any;
 }): JSX.Element {
   let [isExpanded, setIsExpanded] = useState(false);
-  const parentRef = useRef();
+  const contentRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   return (
     <>
@@ -29,12 +29,13 @@ export default function Publications({
               <div
                 key={index}
                 className={
-                  (isExpanded ? "h-auto" : "h-0") +
-                  " overflow-hidden transition-height ease-in-out duration-[400ms]"
+                  "h-0 overflow-hidden transition-height ease-in-out duration-[400ms] "
                 }
-                ref={parentRef as any}
+                ref={(el) => (contentRefs.current[index] = el)}
                 style={{
-                  height: isExpanded ? parentRef.current.clientHeight : 0,
+                  height: isExpanded
+                    ? contentRefs.current[index]?.scrollHeight
+                    : 0,
                 }}
               >
                 <PublicationCard key={index} publication={publication} />

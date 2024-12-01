@@ -84,7 +84,7 @@ export default function PublicationCard({
                 </span>
               </span>
             )}
-            {publication.issue && <span>Issue {publication.issue}</span>}
+            {publication.issue && <span>, Issue {publication.issue}</span>}
             {publication.year && (
               <span>
                 ,{" "}

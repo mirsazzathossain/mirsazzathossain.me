@@ -10,7 +10,7 @@ export default function Experiences({
   experiences: any;
 }): JSX.Element {
   let [isExpanded, setIsExpanded] = useState(false);
-  const parentRef = useRef();
+  const parentRef = useRef<(HTMLDivElement | null)[]>([]);
 
   return (
     <>
@@ -30,10 +30,10 @@ export default function Experiences({
                 className={
                   "h-0 overflow-hidden transition-height ease-in-out duration-[400ms] "
                 }
-                ref={parentRef as any}
+                ref={(el) => (parentRef.current[index] = el)}
                 style={{
                   height: isExpanded
-                    ? (parentRef.current as any).scrollHeight
+                    ? parentRef.current[index]?.scrollHeight
                     : 0,
                 }}
               >
