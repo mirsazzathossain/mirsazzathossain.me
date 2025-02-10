@@ -16,7 +16,7 @@
     "@heroicons/react": "^2.2.0",
     "@next/env": "*",
     "@stefanprobst/rehype-extract-toc": "^2.2.0",
-    "@tailwindcss/typography": "^0.5.15",
+    "@tailwindcss/typography": "^0.5.16",
     "@types/node": "22.13.1",
     "@types/react": "18.3.4",
     "@types/react-dom": "18.3.0",
