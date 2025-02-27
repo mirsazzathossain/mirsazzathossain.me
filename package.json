@@ -27,7 +27,7 @@
     "contentlayer": "^0.3.4",
     "dotenv": "^16.4.7",
     "eslint": "8.57.0",
-    "eslint-config-next": "^15.0.3",
+    "eslint-config-next": "^15.2.0",
     "feed": "^4.2.2",
     "globby": "^14.1.0",
     "googleapis": "^144.0.0",
