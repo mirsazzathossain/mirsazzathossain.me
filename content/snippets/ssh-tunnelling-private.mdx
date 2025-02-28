@@ -1,0 +1,61 @@
+---
+title: "Accessing a Private Server via SSH Tunneling"
+description: "How to access a private server behind a firewall using SSH tunneling."
+language: bash
+logo:
+  url: logos/bash.png
+  alt: Bash Logo
+---
+
+## Create an SSH Tunnel from Your Machine
+
+To access a private server (`private-server`) inside a remote network, establish an SSH tunnel through a publicly accessible server (`gateway-server`).
+
+```bash
+ssh -L 2222:192.168.1.100:22 user@gateway-server
+```
+
+- `-L 2222:192.168.1.100:22` → Forwards local port `2222` to `private-server:22`.
+- `user@gateway-server` → The intermediate server with public access.
+
+<HighlightText>
+  Note: Replace `192.168.1.100` with the actual private server IP inside the remote network.
+</HighlightText>
+
+## Open a New Terminal and Connect to the Private Server
+
+```bash
+ssh -p 2222 user@localhost
+```
+
+Now, you're securely connected to `private-server`!
+
+## Run the Tunnel in the Background
+
+To keep the tunnel running in the background, use:
+
+```bash
+ssh -f -N -L 2222:192.168.1.100:22 user@gateway-server
+```
+
+- `-f` → Run in background.
+- `-N` → Do not execute remote commands, only forward ports.
+
+## Automate the Tunnel with SSH Config
+
+Add the following to `~/.ssh/config` on your local machine for quick access:
+
+```ini
+Host private-tunnel
+    HostName gateway-server
+    LocalForward 2222 192.168.1.100:22
+```
+
+Now, simply run:
+
+```bash
+ssh private-tunnel
+ssh -p 2222 user@localhost
+```
+
+This setup allows seamless access to a private server behind a firewall using SSH tunneling!
