@@ -15,7 +15,7 @@
     "@headlessui/react": "^2.2.0",
     "@heroicons/react": "^2.2.0",
     "@next/env": "*",
-    "@stefanprobst/rehype-extract-toc": "^2.2.0",
+    "@stefanprobst/rehype-extract-toc": "^3.0.0",
     "@tailwindcss/typography": "^0.5.16",
     "@types/node": "22.13.1",
     "@types/react": "18.3.4",
