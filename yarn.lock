@@ -3212,10 +3212,10 @@ googleapis-common@^8.0.0:
     qs "^6.7.0"
     url-template "^2.0.8"
 
-googleapis@^156.0.0:
-  version "156.0.0"
-  resolved "https://registry.yarnpkg.com/googleapis/-/googleapis-156.0.0.tgz#beebc9a6a3ff0bb4eb51fb32de460e29455caabe"
-  integrity sha512-Th401jKVdtrIaAc/b5iv8dfNVN2O7EgU/32Zvb2zxK3hiRrBU8hNbF7wMmOAEsvqnEKssq6XlXMaCBKazrvakw==
+googleapis@^159.0.0:
+  version "159.0.0"
+  resolved "https://registry.yarnpkg.com/googleapis/-/googleapis-159.0.0.tgz#986c7a02cf37d400ed4149e5cd0a8be6af697d1a"
+  integrity sha512-halby2+lQwHNxUDk70aQNXP1BlBwdwr7svTJZvDi7vKwrWbVMKhVrZ86h8p3zRcWbO4qAgLQ4ODAf8TgD3DhGQ==
   dependencies:
     google-auth-library "^10.2.0"
     googleapis-common "^8.0.0"
