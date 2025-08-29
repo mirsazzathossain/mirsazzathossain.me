@@ -28,7 +28,7 @@
     "dotenv": "^17.2.1",
     "eslint": "9.34.0",
     "eslint-config-next": "^15.5.0",
-    "feed": "^4.2.2",
+    "feed": "^5.1.0",
     "globby": "^14.1.0",
     "googleapis": "^159.0.0",
     "json5": "^2.2.3",
