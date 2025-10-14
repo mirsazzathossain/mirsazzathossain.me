@@ -690,10 +690,10 @@
   resolved "https://registry.yarnpkg.com/@next/env/-/env-13.5.6.tgz#c1148e2e1aa166614f05161ee8f77ded467062bc"
   integrity sha512-Yac/bV5sBGkkEXmAX5FWPS9Mmo2rthrOPRQQNfycJPkjUAUclomCPH7QFVCDQ4Mp2k2K1SSM6m0zrxYrOwtFQw==
 
-"@next/eslint-plugin-next@15.5.0":
-  version "15.5.0"
-  resolved "https://registry.yarnpkg.com/@next/eslint-plugin-next/-/eslint-plugin-next-15.5.0.tgz#bee716b8d435e3c8496391770c6eff5dcf848e51"
-  integrity sha512-+k83U/fST66eQBjTltX2T9qUYd43ntAe+NZ5qeZVTQyTiFiHvTLtkpLKug4AnZAtuI/lwz5tl/4QDJymjVkybg==
+"@next/eslint-plugin-next@15.5.5":
+  version "15.5.5"
+  resolved "https://registry.yarnpkg.com/@next/eslint-plugin-next/-/eslint-plugin-next-15.5.5.tgz#0c87d323dc67ed0dec11441c857e3142c491466c"
+  integrity sha512-FMzm412l9oFB8zdRD+K6HQ1VzlS+sNNsdg0MfvTg0i8lfCyTgP/RFxiu/pGJqZ/IQnzn9xSiLkjOVI7Iv4nbdQ==
   dependencies:
     fast-glob "3.3.1"
 
@@ -2504,12 +2504,12 @@ escape-string-regexp@^5.0.0:
   resolved "https://registry.yarnpkg.com/escape-string-regexp/-/escape-string-regexp-5.0.0.tgz#4683126b500b61762f2dbebace1806e8be31b1c8"
   integrity sha512-/veY75JbMK4j1yjvuUxuVsiS/hr/4iHs9FTT6cgTexxdE0Ly/glccBAkloH/DofkjRbZU3bnoj38mOmhkZ0lHw==
 
-eslint-config-next@^15.5.0:
-  version "15.5.0"
-  resolved "https://registry.yarnpkg.com/eslint-config-next/-/eslint-config-next-15.5.0.tgz#3b9ec8ceb175986a7781b4106646da6a8d09c08f"
-  integrity sha512-Yl4hlOdBqstAuHnlBfx2RimBzWQwysM2SJNu5EzYVa2qS2ItPs7lgxL0sJJDudEx5ZZHfWPZ/6U8+FtDFWs7/w==
+eslint-config-next@^15.5.5:
+  version "15.5.5"
+  resolved "https://registry.yarnpkg.com/eslint-config-next/-/eslint-config-next-15.5.5.tgz#f6eb1c9cbac48d3586fa041bc4d71c6c5d9a7600"
+  integrity sha512-f8lRSSelp6cqrYjxEMjJ5En3WV913gTu/w9goYShnIujwDSQlKt4x9MwSDiduE9R5mmFETK44+qlQDxeSA0rUA==
   dependencies:
-    "@next/eslint-plugin-next" "15.5.0"
+    "@next/eslint-plugin-next" "15.5.5"
     "@rushstack/eslint-patch" "^1.10.3"
     "@typescript-eslint/eslint-plugin" "^5.4.2 || ^6.0.0 || ^7.0.0 || ^8.0.0"
     "@typescript-eslint/parser" "^5.4.2 || ^6.0.0 || ^7.0.0 || ^8.0.0"
