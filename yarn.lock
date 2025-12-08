@@ -5585,10 +5585,10 @@ react-is@^16.13.1:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
 
-react-is@^19.2.0:
-  version "19.2.0"
-  resolved "https://registry.yarnpkg.com/react-is/-/react-is-19.2.0.tgz#ddc3b4a4e0f3336c3847f18b806506388d7b9973"
-  integrity sha512-x3Ax3kNSMIIkyVYhWPyO09bu0uttcAIoecO/um/rKGQ4EltYWVYtyiGkS/3xMynrbVQdS69Jhlv8FXUEZehlzA==
+react-is@^19.2.1:
+  version "19.2.1"
+  resolved "https://registry.yarnpkg.com/react-is/-/react-is-19.2.1.tgz#712fa6ee30c8398dc34260017325dad92b9224c5"
+  integrity sha512-L7BnWgRbMwzMAubQcS7sXdPdNLmKlucPlopgAzx7FtYbksWZgEWiuYM5x9T6UqS2Ne0rsgQTq5kY2SGqpzUkYA==
 
 react-paginate@^8.3.0:
   version "8.3.0"
