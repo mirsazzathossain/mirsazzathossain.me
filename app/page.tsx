@@ -17,6 +17,13 @@ export default async function Home(): Promise<JSX.Element> {
 
   return (
     <>
+      <div style={{ width: "100%", background: "#f3f4f6", textAlign: "center", padding: "10px 16px", fontSize: "0.9rem", color: "#374151" }}>
+        This is the archived v1 site. The current site is at{" "}
+        <a href="https://mirsazzathossain.me" style={{ color: "#1d4ed8", textDecoration: "underline" }}>
+          mirsazzathossain.me
+        </a>
+      </div>
+
       <Suspense fallback={<AboutPlaceholder />}>
         {/* @ts-expect-error Server Component */}
         <About />
