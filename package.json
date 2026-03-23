@@ -29,7 +29,7 @@
     "eslint": "9.39.2",
     "eslint-config-next": "^16.1.6",
     "feed": "^5.2.0",
-    "globby": "^16.0.0",
+    "globby": "^16.1.1",
     "googleapis": "^164.1.0",
     "json5": "^2.2.3",
     "next": "15.5.14",
