@@ -3512,10 +3512,10 @@ globby@^13.1.2:
     merge2 "^1.4.1"
     slash "^4.0.0"
 
-globby@^16.0.0:
-  version "16.0.0"
-  resolved "https://registry.yarnpkg.com/globby/-/globby-16.0.0.tgz#45a133d4e70fcfdd6e33b3166d490c99c9298f5a"
-  integrity sha512-ejy4TJFga99yW6Q0uhM3pFawKWZmtZzZD/v/GwI5+9bCV5Ew+D2pSND6W7fUes5UykqSsJkUfxFVdRh7Q1+P3Q==
+globby@^16.1.1:
+  version "16.1.1"
+  resolved "https://registry.yarnpkg.com/globby/-/globby-16.1.1.tgz#a26012f57b819f0491c834dbf09f89b0ce6ba104"
+  integrity sha512-dW7vl+yiAJSp6aCekaVnVJxurRv7DCOLyXqEG3RYMYUg7AuJ2jCqPkZTA8ooqC2vtnkaMcV5WfFBMuEnTu1OQg==
   dependencies:
     "@sindresorhus/merge-streams" "^4.0.0"
     fast-glob "^3.3.3"
