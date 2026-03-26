@@ -1354,12 +1354,12 @@
   resolved "https://registry.yarnpkg.com/@types/ms/-/ms-0.7.31.tgz#31b7ca6407128a3d2bbc27fe2d21b345397f6197"
   integrity sha512-iiUgKzV9AuaEkZqkOLDIvlQiL6ltuZd9tGcW3gwpnX8JbuiuhFlEGmmFXEXkN50Cvq7Os88IY2v0dkDqXYWVgA==
 
-"@types/node@25.0.10", "@types/node@>=12.12.47", "@types/node@>=13.7.0":
-  version "25.0.10"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-25.0.10.tgz#4864459c3c9459376b8b75fd051315071c8213e7"
-  integrity sha512-zWW5KPngR/yvakJgGOmZ5vTBemDoSqF3AcV/LrO5u5wTWyEAVVh+IT39G4gtyAkh3CtTZs8aX/yRM82OfzHJRg==
+"@types/node@25.5.0", "@types/node@>=12.12.47", "@types/node@>=13.7.0":
+  version "25.5.0"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-25.5.0.tgz#5c99f37c443d9ccc4985866913f1ed364217da31"
+  integrity sha512-jp2P3tQMSxWugkCUKLRPVUpGaL5MVFwF8RDuSRztfwgN1wmqJeMSbKlnEtQqU8UrhTmzEmZdu2I6v2dpp7XIxw==
   dependencies:
-    undici-types "~7.16.0"
+    undici-types "~7.18.0"
 
 "@types/parse5@^6.0.0":
   version "6.0.3"
@@ -7076,10 +7076,10 @@ unbox-primitive@^1.1.0:
     has-symbols "^1.1.0"
     which-boxed-primitive "^1.1.1"
 
-undici-types@~7.16.0:
-  version "7.16.0"
-  resolved "https://registry.yarnpkg.com/undici-types/-/undici-types-7.16.0.tgz#ffccdff36aea4884cbfce9a750a0580224f58a46"
-  integrity sha512-Zz+aZWSj8LE6zoxD+xrjh4VfkIG8Ya6LvYkZqtUQGJPZjYl53ypCaUwWqo7eI0x66KBGeRo+mlBEkMSeSZ38Nw==
+undici-types@~7.18.0:
+  version "7.18.2"
+  resolved "https://registry.yarnpkg.com/undici-types/-/undici-types-7.18.2.tgz#29357a89e7b7ca4aef3bf0fd3fd0cd73884229e9"
+  integrity sha512-AsuCzffGHJybSaRrmr5eHr81mwJU3kjw6M+uprWvCXiNeN9SOGwQ3Jn8jb8m3Z6izVgknn1R0FTCEAP2QrLY/w==
 
 unicorn-magic@^0.4.0:
   version "0.4.0"
