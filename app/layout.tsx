@@ -1,10 +1,18 @@
 import AnalyticsWrapper from "components/analytics";
 import Header from "components/Header";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import Footer from "../components/Footer";
 import { server } from "../config";
 import "../styles/globals.css";
 import ClientThemeProvider from "./theme-provider";
+
+export const viewport: Viewport = {
+  themeColor: "#ffffff",
+  colorScheme: "light",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+};
 
 export const metadata: Metadata = {
   title: {
@@ -38,8 +46,6 @@ export const metadata: Metadata = {
       url: `${server}`,
     },
   ],
-  themeColor: "#ffffff",
-  colorScheme: "light",
   creator: "Mir Sazzat Hossain",
   publisher: "Mir Sazzat Hossain",
   formatDetection: {
@@ -126,11 +132,6 @@ export const metadata: Metadata = {
         alt: "Mir Sazzat Hossain | Personal Website",
       },
     ],
-  },
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 1,
   },
   verification: {
     google: "google-site-verification=0",
