@@ -13,7 +13,7 @@ async function getSpotifyPlayingNow() {
   let albumImageUrl = null;
   let songUrl = null;
 
-  if (response.status === 204 || response.status > 400) {
+  if (response.status === 204 || response.status >= 400) {
     response = await getRecentTrack();
     response = await response.json();
     song = (response as any).items[0].track;
