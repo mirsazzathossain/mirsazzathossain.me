@@ -1,4 +1,12 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "framework": "astro"
+  "framework": "astro",
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "www.mirsazzathossain.me" }],
+      "destination": "https://mirsazzathossain.me/:path*",
+      "permanent": true
+    }
+  ]
 }
