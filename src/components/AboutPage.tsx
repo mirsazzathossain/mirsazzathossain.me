@@ -290,9 +290,41 @@ export default function AboutPage({
             </div>
           ))}
 
-          {/* Experience */}
-          {sectionTitle("Experience")}
-          {experiences.map((exp, i) => (
+          {/* Industry */}
+          {sectionTitle("Industry")}
+          {experiences.filter((e) => e.category === "industry").map((exp, i) => (
+            <div key={i} className="flex gap-[14px] items-start py-3 border-b border-rule-2">
+              <OrgLogo name={exp.company} />
+              <div className="flex-1 min-w-0">
+                <h3 className="font-serif text-[15.5px] text-ink m-0 mb-0.5">{exp.title}</h3>
+                <p className="font-serif text-[12.5px] text-ink-3 m-0 mb-1">{exp.company} · Part-time</p>
+                <p className="font-serif text-[13px] text-ink-2 m-0 leading-[1.55]">
+                  {exp.description.split(".")[0]}.
+                </p>
+              </div>
+              <span className="font-mono text-[11px] text-ink-3 whitespace-nowrap shrink-0">{exp.date}</span>
+            </div>
+          ))}
+
+          {/* Research */}
+          {sectionTitle("Research")}
+          {experiences.filter((e) => e.category === "research").map((exp, i) => (
+            <div key={i} className="flex gap-[14px] items-start py-3 border-b border-rule-2">
+              <OrgLogo name={exp.company} />
+              <div className="flex-1 min-w-0">
+                <h3 className="font-serif text-[15.5px] text-ink m-0 mb-0.5">{exp.title}</h3>
+                <p className="font-serif text-[12.5px] text-ink-3 m-0 mb-1">{exp.company}</p>
+                <p className="font-serif text-[13px] text-ink-2 m-0 leading-[1.55]">
+                  {exp.description.split(".")[0]}.
+                </p>
+              </div>
+              <span className="font-mono text-[11px] text-ink-3 whitespace-nowrap shrink-0">{exp.date}</span>
+            </div>
+          ))}
+
+          {/* Teaching */}
+          {sectionTitle("Teaching")}
+          {experiences.filter((e) => e.category === "teaching").map((exp, i) => (
             <div key={i} className="flex gap-[14px] items-start py-3 border-b border-rule-2">
               <OrgLogo name={exp.company} />
               <div className="flex-1 min-w-0">

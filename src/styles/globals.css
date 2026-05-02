@@ -88,18 +88,6 @@
   }
 }
 
-@layer utilities {
-  /* Defaults until Header.tsx hydrates and sets scroll-driven CSS variables */
-  html {
-    --header-position: sticky;
-    --header-height: auto;
-    --header-mb: 0px;
-    --content-offset: 0px;
-    --avatar-image-transform: translate3d(0, 0, 0) scale(1);
-    --avatar-border-transform: translate3d(0, 0, 0) scale(1);
-    --avatar-border-opacity: 0;
-  }
-}
 
 .pretty-code-button {
   @apply text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 h-4 w-4;
