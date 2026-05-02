@@ -2,10 +2,19 @@ import { cn } from "@/lib/cn";
 import React from "react";
 import { CopyDoneIcon, CopyIcon } from "../Icons";
 
+/** Rehype/MDX can pass lowercase HTML attrs; React expects camelCase. */
+function propsForReactDom(props: Record<string, unknown>) {
+  const { tabindex, ...rest } = props;
+  const out: Record<string, unknown> = { ...rest };
+  if (tabindex !== undefined) out.tabIndex = tabindex;
+  return out;
+}
+
 export default function CodeBlock({ children, ...props }: any): JSX.Element {
   const preRef = React.useRef<HTMLPreElement>(null);
   const [hovered, setHovered] = React.useState(false);
   const [copied, setCopied] = React.useState(false);
+  const domProps = propsForReactDom(props);
 
   const onCopy = () => {
     setCopied(true);
@@ -15,7 +24,7 @@ export default function CodeBlock({ children, ...props }: any): JSX.Element {
 
   return (
     <div
-      {...props}
+      {...domProps}
       className="relative block-code"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
@@ -36,7 +45,7 @@ export default function CodeBlock({ children, ...props }: any): JSX.Element {
           {copied && <CopyDoneIcon className="h-5 w-5 text-teal-500" />}
         </button>
       )}
-      <pre ref={preRef} {...props}>
+      <pre ref={preRef} {...domProps}>
         {children}
       </pre>
     </div>
