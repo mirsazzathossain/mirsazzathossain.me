@@ -14,7 +14,7 @@ export default function Avatar({
     <a
       href="/"
       aria-label="Home"
-      className={cn(className, "pointer-events-auto")}
+      className={cn(className, "pointer-events-auto block rounded-full")}
       {...props}
     >
       <img
@@ -23,8 +23,7 @@ export default function Avatar({
         width={large ? 64 : 36}
         height={large ? 64 : 36}
         className={cn(
-          "rounded-full bg-zinc-100 object-cover dark:bg-zinc-800",
-          large ? "h-16 w-16" : "h-9 w-9",
+          "rounded-full bg-zinc-100 object-cover dark:bg-zinc-800 w-full h-full",
         )}
         fetchPriority={large ? "high" : "auto"}
       />

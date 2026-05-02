@@ -20,18 +20,20 @@
       "url": "https://dblp.org/pid/349/0737.html"
     },
     {
+      "name": "acl",
+      "url": "https://aclanthology.org/people/mir-sazzat-hossain/"
+    },
+    {
+      "name": "openreview",
+      "url": "https://openreview.net/profile?id=~Mir_Sazzat_Hossain1"
+    },
+    {
       "name": "github",
       "url": "https://github.com/mirsazzathossain"
-    },
-    {
-      "name": "linkedin",
-      "url": "https://linkedin.com/in/mirsazzathossain"
-    },
-    {
-      "name": "twitter",
-      "url": "https://twitter.com/mir_sazzat"
     }
   ],
   "resume": "files/mirsazzathossain-cv.pdf",
-  "note": ""
+  "note": "",
+  "location": "Dhaka, Bangladesh",
+  "email": "mirsazzathossain@gmail.com"
 }

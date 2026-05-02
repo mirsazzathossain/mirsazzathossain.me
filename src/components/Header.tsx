@@ -1,15 +1,15 @@
 "use client";
 
 import { cn } from "@/lib/cn";
-import { useLayoutEffect, useRef } from "react";
+import { useLayoutEffect, useRef, useState, useEffect } from "react";
 import Avatar from "./Avatar";
-import { Container } from "./Container";
-import DesktopNavigation from "./DesktopNavigation";
 import MobileNavigation from "./MobileNavigation";
 import ThemeSelector from "./ThemeSelector";
+import SearchModal from "./SearchModal";
 
 const navigations = [
   { href: "/", label: "Home" },
+  { href: "/about", label: "About" },
   { href: "/#publications", label: "Publications" },
   { href: "/projects", label: "Projects" },
   { href: "/courses", label: "Courses" },
@@ -67,9 +67,23 @@ export default function Header({
 
   const layoutVarsRef = useRef<HTMLDivElement | null>(null);
   const headerRef = useRef<HTMLDivElement | null>(null);
-  const avatarRef = useRef<HTMLDivElement | null>(null);
   const isInitial = useRef(true);
   const rafRef = useRef(0);
+  const avatarMetricsRef = useRef({ initialSbTop: 0, init: false });
+
+  const [searchOpen, setSearchOpen] = useState(false);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setSearchOpen((o) => !o);
+      }
+      if (e.key === "Escape") setSearchOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
   useLayoutEffect(() => {
     const upDelay = 64;
@@ -88,15 +102,6 @@ export default function Header({
         return;
       }
 
-      const spacer = avatarRef.current;
-      let rawDown = spacer?.offsetTop ?? 0;
-      if (isHomePage && rawDown < 8 && spacer) {
-        const headerBox = nav.getBoundingClientRect();
-        const spacerBox = spacer.getBoundingClientRect();
-        rawDown = Math.round(spacerBox.top - headerBox.top);
-      }
-      const downDelay = isHomePage ? Math.max(rawDown, 1) : rawDown;
-
       function updateHeaderStyles(headerEl: HTMLDivElement): void {
         const { top, height } = headerEl.getBoundingClientRect();
         const scrollY = clamp(
@@ -104,6 +109,17 @@ export default function Header({
           0,
           document.documentElement.scrollHeight - window.innerHeight,
         );
+
+        // Let's use the actual physical distance between avatars for the delay
+        const sb = document.getElementById("sidebar-avatar");
+        const nb = document.getElementById("navbar-avatar");
+        let downDelay = 0;
+        if (isHomePage && sb && nb) {
+          // If initialized, use the metrics
+          const metrics = avatarMetricsRef.current;
+          const initialTop = metrics.init ? metrics.initialSbTop : sb.getBoundingClientRect().top + scrollY;
+          downDelay = Math.max((initialTop as number) - nb.getBoundingClientRect().top, 0);
+        }
 
         if (isInitial.current) {
           setProperty(root, {
@@ -114,7 +130,7 @@ export default function Header({
 
         setProperty(root, {
           property: "--content-offset",
-          value: `${downDelay}px`,
+          value: `0px`,
         });
 
         if (isInitial.current || scrollY < downDelay) {
@@ -148,52 +164,62 @@ export default function Header({
         }
       }
 
-      function updateAvatarStyles(styleRoot: HTMLElement): void {
-        if (!isHomePage) {
+      function updateAvatarStyles(): void {
+        if (!isHomePage || window.innerWidth < 1024) {
+          const styleRoot = document.documentElement;
+          setProperty(styleRoot, { property: "--flying-opacity", value: "0" });
           return;
         }
 
-        const fromScale = 1;
-        const toScale = 36 / 64;
-        const fromX = 0;
-        const toX = 2 / 16;
+        const sb = document.getElementById("sidebar-avatar");
+        const nb = document.getElementById("navbar-avatar");
+        if (!sb || !nb) return;
 
-        const dy = downDelay - readScrollY();
+        const sbRect = sb.getBoundingClientRect();
+        const nbRect = nb.getBoundingClientRect();
 
-        let scale = (dy * (fromScale - toScale)) / downDelay + toScale;
-        scale = clamp(scale, fromScale, toScale);
+        const metrics = avatarMetricsRef.current;
+        if (!metrics.init || window.scrollY === 0) {
+           metrics.initialSbTop = sbRect.top + window.scrollY;
+           metrics.init = true;
+        }
 
-        let x = (dy * (fromX - toX)) / downDelay + toX;
-        x = clamp(x, fromX, toX);
+        // Calculate the physical distance from the sidebar avatar's top to the navbar avatar's top
+        const distanceToNavbar = (metrics.initialSbTop as number) - nbRect.top;
+        const transitionDistance = Math.max(distanceToNavbar, 1);
+        const p = clamp(window.scrollY / transitionDistance, 0, 1);
 
-        setProperty(styleRoot, {
-          property: "--avatar-image-transform",
-          value: `translate3d(${x}rem, 0, 0) scale(${scale})`,
-        });
+        const endSize = 32;
+        const size = 132 - p * (132 - endSize);
+        
+        // Keep it horizontally centered along the vertical axis
+        const offsetForCenter = (132 - size) / 2;
+        const x = sbRect.left + offsetForCenter;
 
-        const borderScale = 1 / (toScale / scale);
-        const borderX = (-toX + x) * borderScale;
-        const borderTransform = `translate3d(${borderX}rem, 0, 0) scale(${borderScale})`;
+        // The y position should just be the natural scroll position, clamped to not go above the navbar
+        const naturalY = (metrics.initialSbTop as number) - window.scrollY;
+        const y = Math.max(nbRect.top, naturalY);
 
-        setProperty(styleRoot, {
-          property: "--avatar-border-transform",
-          value: borderTransform,
-        });
-        const nearEnd = Math.abs(scale - toScale) < 0.002;
-        setProperty(styleRoot, {
-          property: "--avatar-border-opacity",
-          value: nearEnd ? "1" : "0",
-        });
+        const styleRoot = document.documentElement;
+        setProperty(styleRoot, { property: "--flying-x", value: `${x}px` });
+        setProperty(styleRoot, { property: "--flying-y", value: `${y}px` });
+        setProperty(styleRoot, { property: "--flying-size", value: `${size}px` });
+        setProperty(styleRoot, { property: "--flying-opacity", value: `${p}` });
       }
 
       updateHeaderStyles(nav);
-      updateAvatarStyles(root);
+      updateAvatarStyles();
       isInitial.current = false;
     }
 
     function onScroll(): void {
       cancelAnimationFrame(rafRef.current);
       rafRef.current = requestAnimationFrame(updateStyles);
+    }
+    
+    function onResize(): void {
+      avatarMetricsRef.current.init = false;
+      updateStyles();
     }
 
     updateStyles();
@@ -206,89 +232,117 @@ export default function Header({
     }
 
     window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", updateStyles);
+    window.addEventListener("resize", onResize);
 
     return () => {
       cancelAnimationFrame(rafRef.current);
       ro?.disconnect();
       window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", updateStyles);
+      window.removeEventListener("resize", onResize);
     };
   }, [isHomePage, pathname]);
 
   return (
     <div ref={layoutVarsRef}>
+      {isHomePage && (
+        <div 
+          className="fixed z-50 pointer-events-none hidden lg:block"
+          style={{
+            left: "var(--flying-x, -9999px)",
+            top: "var(--flying-y, -9999px)",
+            width: "var(--flying-size, 0px)",
+            height: "var(--flying-size, 0px)",
+          }}
+        >
+          <div 
+            className="absolute -inset-[3px] rounded-full bg-bg shadow-[0_1px_2px_rgba(15,23,42,0.04)] ring-1 ring-rule"
+            style={{ opacity: "var(--flying-opacity, 0)" }}
+          />
+          <img
+            src="/images/user.png"
+            alt=""
+            className="absolute inset-0 w-full h-full rounded-full object-cover"
+            style={{
+              boxShadow: "calc((1 - var(--flying-opacity, 0)) * 0px) calc((1 - var(--flying-opacity, 0)) * 6px) calc((1 - var(--flying-opacity, 0)) * 20px) rgba(15,23,42,0.10)"
+            }}
+          />
+        </div>
+      )}
       <header
-        className="pointer-events-none relative z-50 flex flex-col"
+        className="pointer-events-none relative z-40 flex flex-col"
         style={{
           height: "var(--header-height)",
           marginBottom: "var(--header-mb)",
         }}
       >
-        {isHomePage && (
-          <>
-            <div
-              ref={avatarRef}
-              className="order-last mt-[calc(--spacing(16)-(--spacing(3)))]"
-            />
-            <Container
-              className="top-0 order-last -mb-3 pt-3"
-              style={{ position: "var(--header-position)" }}
-            >
-              <div className="relative">
-                <AvatarContainer
-                  className="absolute left-0 top-3 origin-left transition-opacity"
-                  style={{
-                    opacity: "var(--avatar-border-opacity, 0)",
-                    transform: "var(--avatar-border-transform)",
-                  }}
-                />
-                <Avatar
-                  large
-                  className="block h-16 w-16 origin-left"
-                  style={{ transform: "var(--avatar-image-transform)" }}
-                />
-              </div>
-            </Container>
-          </>
-        )}
         <div
           ref={headerRef}
-          className="top-0 z-10 pt-6"
+          className="top-0 z-10 pointer-events-auto bg-bg/80 backdrop-blur-[14px] backdrop-saturate-[180%] border-b border-rule"
           style={{
             position: "var(--header-position)" as any,
           }}
         >
-          <Container>
-            <div className="relative flex gap-4">
-              <div className="flex flex-1">
-                {!isHomePage && (
-                  <AvatarContainer>
-                    <Avatar />
+          <div className="max-w-[1100px] mx-auto px-[clamp(20px,4vw,36px)] py-[14px] grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-3">
+            <a href="/" className="inline-flex items-center gap-[10px] justify-self-start min-w-0 hover:no-underline">
+              <div className="w-[34px] h-[34px] flex items-center justify-center">
+                {isHomePage ? (
+                  <>
+                    <AvatarContainer className="hidden lg:block opacity-0 pointer-events-none p-0 w-[32px] h-[32px] bg-transparent shadow-none ring-0">
+                      <Avatar id="navbar-avatar" large={false} className="w-[32px] h-[32px] !bg-transparent" />
+                    </AvatarContainer>
+                    <AvatarContainer className="lg:hidden p-0 w-[32px] h-[32px] bg-bg shadow-[0_1px_2px_rgba(15,23,42,0.04)] ring-1 ring-rule">
+                      <Avatar large={false} className="w-[32px] h-[32px] !bg-transparent" />
+                    </AvatarContainer>
+                  </>
+                ) : (
+                  <AvatarContainer className="p-0 w-[32px] h-[32px] bg-bg shadow-[0_1px_2px_rgba(15,23,42,0.04)] ring-1 ring-rule">
+                    <Avatar large={false} className="w-[32px] h-[32px] !bg-transparent" />
                   </AvatarContainer>
                 )}
               </div>
-              <div className="flex flex-1 justify-end md:justify-center">
-                <MobileNavigation
-                  links={navigations}
-                  className="pointer-events-auto md:hidden"
-                />
-                <DesktopNavigation
-                  links={navigations}
-                  currentPath={normalizedPathname}
-                  className="pointer-events-auto hidden md:block"
-                />
-              </div>
-              <div className="flex justify-end md:flex-1">
-                <div className="pointer-events-auto">
-                  <ThemeSelector />
-                </div>
+            </a>
+            
+            <div className="justify-self-center flex items-center">
+              <nav className="hidden lg:flex items-center gap-[2px] p-[5px_6px] border border-rule rounded-full bg-bg shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+                {navigations.map(l => {
+                  const isActive = normalizedPathname === l.href || (l.href !== "/" && normalizedPathname.startsWith(l.href));
+                  return (
+                    <a key={l.href} href={l.href} className={cn(
+                      "text-[13px] font-medium px-[13px] py-[6px] rounded-full transition-colors whitespace-nowrap",
+                      isActive ? "text-link bg-accent-soft" : "text-ink-2 hover:text-ink hover:bg-bg-2"
+                    )}>
+                      {l.label}
+                    </a>
+                  );
+                })}
+              </nav>
+              <div className="flex lg:hidden items-center gap-1">
+                <a href="/search" onClick={(e) => { e.preventDefault(); setSearchOpen(true); }} aria-label="Search" title="Search" className="inline-flex w-[34px] h-[34px] items-center justify-center border border-transparent rounded-[8px] bg-transparent text-ink-3 transition-all duration-150 hover:bg-bg-2 hover:text-ink hover:border-rule">
+                  <svg className="w-[15px] h-[15px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                </a>
+                <a href="/rss.xml" aria-label="RSS Feed" title="RSS Feed" className="inline-flex w-[34px] h-[34px] items-center justify-center border border-transparent rounded-[8px] bg-transparent text-ink-3 transition-all duration-150 hover:bg-bg-2 hover:text-ink hover:border-rule" target="_blank" rel="noreferrer">
+                  <svg className="w-[15px] h-[15px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+                </a>
+                <ThemeSelector />
               </div>
             </div>
-          </Container>
+
+            <div className="flex justify-end items-center gap-1 justify-self-end">
+              <div className="hidden lg:flex items-center gap-1">
+                <a href="/search" onClick={(e) => { e.preventDefault(); setSearchOpen(true); }} aria-label="Search" title="Search" className="inline-flex w-[34px] h-[34px] items-center justify-center border border-transparent rounded-[8px] bg-transparent text-ink-3 transition-all duration-150 hover:bg-bg-2 hover:text-ink hover:border-rule">
+                  <svg className="w-[15px] h-[15px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                </a>
+                <a href="/rss.xml" aria-label="RSS Feed" title="RSS Feed" className="inline-flex w-[34px] h-[34px] items-center justify-center border border-transparent rounded-[8px] bg-transparent text-ink-3 transition-all duration-150 hover:bg-bg-2 hover:text-ink hover:border-rule" target="_blank" rel="noreferrer">
+                  <svg className="w-[15px] h-[15px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+                </a>
+                <ThemeSelector />
+              </div>
+              <MobileNavigation links={navigations} className="lg:hidden" />
+            </div>
+          </div>
         </div>
       </header>
-      {isHomePage && <div style={{ height: "var(--content-offset)" }} />}
+      {searchOpen && <SearchModal onClose={() => setSearchOpen(false)} />}
     </div>
   );
 }

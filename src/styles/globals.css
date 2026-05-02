@@ -1,18 +1,51 @@
 @import 'tailwindcss';
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600;6..72,700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 @config '../../tailwind.config.cjs';
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-/*
-  The default border color has changed to `currentcolor` in Tailwind CSS v4,
-  so we've added these compatibility styles to make sure everything still
-  looks the same as it did with Tailwind CSS v3.
-
-  If we ever want to remove these styles, we need to add an explicit border
-  color utility to any element that depends on these defaults.
-*/
 @layer base {
+  :root {
+    --bg: #ffffff;
+    --bg-2: #f8fafc;
+    --bg-3: #f1f5f9;
+    --ink: #0f172a;
+    --ink-2: #334155;
+    --ink-3: #64748b;
+    --ink-4: #94a3b8;
+    --rule: #e2e8f0;
+    --rule-2: #f1f5f9;
+    --link: #2563eb;
+    --link-hover: #1d4ed8;
+    --accent-soft: #eff6ff;
+    --green: #10b981;
+    --amber: #f59e0b;
+    --rose: #f43f5e;
+    --violet: #8b5cf6;
+
+    --max: 1100px;
+    --max-narrow: 740px;
+    --pad: clamp(20px, 4vw, 36px);
+    --r: 6px;
+    --r-lg: 10px;
+  }
+
+  .dark, [data-theme="dark"] {
+    --bg: #0b1220;
+    --bg-2: #0f172a;
+    --bg-3: #1e293b;
+    --ink: #f1f5f9;
+    --ink-2: #cbd5e1;
+    --ink-3: #94a3b8;
+    --ink-4: #64748b;
+    --rule: #1e293b;
+    --rule-2: #1a2434;
+    --link: #60a5fa;
+    --link-hover: #93c5fd;
+    --accent-soft: #172554;
+  }
+
   *,
   ::after,
   ::before,
@@ -139,4 +172,27 @@ div[data-rehype-pretty-code-title][data-theme="dark"],
 .step > h5,
 .step > h6 {
   @apply my-0;
+}
+
+/* ============ ABOUT PAGE — availability grid ============ */
+.avail-cell-free {
+  background: color-mix(in srgb, var(--green) 18%, transparent);
+  border: 1px solid color-mix(in srgb, var(--green) 35%, var(--rule));
+}
+.avail-cell-busy {
+  background: color-mix(in srgb, #ef4444 14%, transparent);
+  border: 1px solid color-mix(in srgb, #ef4444 30%, var(--rule));
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent 0 4px,
+    color-mix(in srgb, #ef4444 18%, transparent) 4px 5px
+  );
+}
+.avail-free-sw {
+  background: color-mix(in srgb, var(--green) 30%, transparent);
+  border: 1px solid color-mix(in srgb, var(--green) 50%, var(--rule));
+}
+.avail-busy-sw {
+  background: color-mix(in srgb, #ef4444 22%, transparent);
+  border: 1px solid color-mix(in srgb, #ef4444 45%, var(--rule));
 }

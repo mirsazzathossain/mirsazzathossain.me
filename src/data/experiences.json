@@ -3,10 +3,11 @@
     "title": "Junior Research Scientist",
     "company": "Center for Computational & Data Sciences",
     "companyURL": "http://ccds.ai/",
-    "companyLogo": "/images/ccds.png",
+    "companyLogo": "/images/logos/ccds.png",
     "location": "Plot 16, Aftabuddin Ahmed Road, Block B, Bashnudhara RA, Dhaka 1229, Bangladesh.",
     "type": "Full-time",
     "date": "Jul 2024 - Present",
+    "category": "research",
     "description": "As a Junior Research Scientist at CCDS, I lead projects on protein dynamics prediction using 3D CNNs and particle jet tagging with graph neural networks. I am also involved in projects on test-time adaptation and mixtures of experts (MoE) for large multi-modal models (LMMS). Furthermore, I am mentoring two undergraduate thesis projects at IUB.",
     "skills": [
       "Domain Adaptation",
@@ -17,13 +18,31 @@
     ]
   },
   {
+    "title": "ML Engineer (Consulting)",
+    "company": "Penta Global Limited",
+    "companyURL": "#",
+    "companyLogo": "/images/logos/penta-global.png",
+    "location": "Dhaka, Bangladesh",
+    "type": "Part-time",
+    "date": "Aug 2023 - Present",
+    "category": "industry",
+    "description": "Conversational AI integration in a customer-facing chatbot. Built ML pipelines for delivery-telemetry risk scoring.",
+    "skills": [
+      "Conversational AI",
+      "ML Pipelines",
+      "NLP",
+      "Risk Scoring"
+    ]
+  },
+  {
     "title": "Post-baccalaureate Research Assistant",
     "company": "Center for Computational & Data Sciences",
     "companyURL": "http://ccds.ai/",
-    "companyLogo": "/images/ccds.png",
+    "companyLogo": "/images/logos/ccds.png",
     "location": "Plot 16, Aftabuddin Ahmed Road, Block B, Bashnudhara RA, Dhaka 1229, Bangladesh.",
     "type": "Full-time",
     "date": "Feb 2022 - Jun 2024",
+    "category": "research",
     "description": "I developed a RNN based method for image super-resolution (ICIP 2024), and implemented a semi-supervised equivariant CNN for radio galaxy classification (IJCNN 2023). I also conducted tutorials and labs on Basic Programming, Data Structures, AI, and ML at IUB. Additionally, I mentored undergraduates on thesis implementation and write-ups.",
     "skills": [
       "Artificial Intelligence (AI)",
@@ -39,10 +58,11 @@
     "title": "Post-baccalaureate Teaching Assistant",
     "company": "Independent University, Bangladesh",
     "companyURL": "https://iub.edu.bd/",
-    "companyLogo": "/images/iub.png",
+    "companyLogo": "/images/logos/iub.png",
     "location": "Plot 16, Aftabuddin Ahmed Road, Block B, Bashnudhara RA, Dhaka 1229, Bangladesh.",
     "type": "Part-time",
     "date": "May 2021 - Jan 2022",
+    "category": "teaching",
     "description": "As a teaching assistant at IUB, I actively supported Dr. AKM Mahbubur Rahman in teaching a lab course on numerical methods. I redesigned all previous lab materials from MATLAB to Python. Additionally, I helped students understand numerical approaches and effectively addressed their queries during lab sessions.",
     "skills": [
       "Numerical Methods",
@@ -56,10 +76,11 @@
     "title": "Undergraduate Teaching Assistant",
     "company": "Independent University, Bangladesh",
     "companyURL": "https://iub.edu.bd/",
-    "companyLogo": "/images/iub.png",
+    "companyLogo": "/images/logos/iub.png",
     "location": "Plot 16, Aftabuddin Ahmed Road, Block B, Bashnudhara RA, Dhaka 1229, Bangladesh.",
     "type": "Part-time",
     "date": "Oct 2019 - Apr 2021",
+    "category": "teaching",
     "description": "I worked part-time at the Math Tutorial Center, supporting students facing math difficulties. Alongside other tutors, I managed the center to ensure effective student support. I provided individualized tutoring to students from various disciplines, which helped me develop strong communication and problem-solving skills.",
     "skills": [
       "Linear Algebra",

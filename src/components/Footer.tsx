@@ -16,7 +16,7 @@ function NavLink({
   return (
     <a
       href={href}
-      className="transition hover:text-teal-500 dark:hover:text-teal-400"
+      className="text-ink-3 hover:text-ink transition-colors"
     >
       {children}
     </a>
@@ -25,17 +25,17 @@ function NavLink({
 
 export default function Footer(): JSX.Element {
   return (
-    <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
-      <div className="flex gap-6 text-sm font-medium text-zinc-800 dark:text-zinc-200">
+    <div className="flex flex-col sm:flex-row justify-between items-center gap-4 flex-wrap">
+      <div className="flex gap-4 font-medium flex-wrap justify-center">
         {navigations.map((navigation) => (
           <NavLink key={navigation.href} href={navigation.href}>
             {navigation.label}
           </NavLink>
         ))}
       </div>
-      <p className="text-sm text-zinc-400 dark:text-zinc-500">
-        © {new Date().getFullYear()} all rights reserved.
-      </p>
+      <div className="text-center sm:text-right">
+        <span>© {new Date().getFullYear()} Mir Sazzat Hossain · all rights reserved.</span>
+      </div>
     </div>
   );
 }

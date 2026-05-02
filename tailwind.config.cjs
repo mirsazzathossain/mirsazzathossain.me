@@ -4,6 +4,29 @@ module.exports = {
   plugins: [require('@tailwindcss/typography')],
   theme: {
     extend: {
+      colors: {
+        bg: 'var(--bg)',
+        'bg-2': 'var(--bg-2)',
+        'bg-3': 'var(--bg-3)',
+        ink: 'var(--ink)',
+        'ink-2': 'var(--ink-2)',
+        'ink-3': 'var(--ink-3)',
+        'ink-4': 'var(--ink-4)',
+        rule: 'var(--rule)',
+        'rule-2': 'var(--rule-2)',
+        link: 'var(--link)',
+        'link-hover': 'var(--link-hover)',
+        'accent-soft': 'var(--accent-soft)',
+        'theme-green': 'var(--green)',
+        'theme-amber': 'var(--amber)',
+        'theme-rose': 'var(--rose)',
+        'theme-violet': 'var(--violet)',
+      },
+      fontFamily: {
+        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif'],
+        serif: ['Newsreader', '"Source Serif 4"', 'Georgia', 'serif'],
+        mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
+      },
         animation: {
             background: 'background ease infinite',
         },
