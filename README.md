@@ -4,33 +4,32 @@
 
 ![website status](https://img.shields.io/website?down_color=red&down_message=offline&up_color=green&up_message=online&url=https%3A%2F%2Fmirsazzathossain.me&style=flat-square) ![GitHub](https://img.shields.io/github/license/mirsazzathossain/mirsazzathossain.me?style=flat-square) ![GitHub last commit](https://img.shields.io/github/last-commit/mirsazzathossain/mirsazzathossain.me?style=flat-square) ![GitHub repo size](https://img.shields.io/github/repo-size/mirsazzathossain/mirsazzathossain.me?style=flat-square) ![GitHub top language](https://img.shields.io/github/languages/top/mirsazzathossain/mirsazzathossain.me?style=flat-square)
 
-This is the source code of my personal website [mirsazzathossain.me](https://mirsazzathossain.me). This academic portfolio website is a comprehensive and visually appealing online presence that showcases my skills, achievements, and experiences in my field of study. I built the website using [Next.js](https://nextjs.org/), a highly popular JavaScript framework that allows for the creation of server-rendered and statically generated web applications. To ensure a modern and professional design, I utilized [Tailwind CSS](https://tailwindcss.com/), a utility-first CSS framework, and was inspired by the [Spotlight](https://spotlight.tailwindui.com/) theme from Tailwind UI. The content of my website is managed with the help of [Contentlayer](https://www.contentlayer.dev/), a platform that simplifies the creation and management of content, and is written in Markdown for efficient organization and formatting. The blog posts on my website feature a commenting system powered by [Giscus](https://giscus.app/), a GitHub-based discussion platform, allowing for interactive communication and feedback from my audience. Additionally, I integrated the [Spotify](https://www.spotify.com/) Web API to showcase my recently played songs on the website and used icons from [Heroicons](https://heroicons.com/) to enhance the visual appeal of my website. My website is hosted on [Vercel](https://vercel.com/), a reliable cloud platform for hosting static sites and serverless functions, ensuring smooth and fast access for all users. Overall, I believe my academic portfolio website demonstrates my dedication to staying up-to-date with modern technologies and presents a dynamic and visually striking online presence.
+This is the source code for my personal site [mirsazzathossain.me](https://mirsazzathossain.me). It is an academic portfolio built with [Astro](https://astro.build/), using [React](https://react.dev/) for interactive islands where needed, and [Tailwind CSS v4](https://tailwindcss.com/) for styling. The visual design is inspired by the [Spotlight](https://spotlight.tailwindui.com/) theme from Tailwind UI. Articles and snippets live in Astro [content collections](https://docs.astro.build/en/guides/content-collections/) as MDX, with math via `remark-math` and `rehype-katex` (KaTeX CSS from the layout). [Giscus](https://giscus.app/) powers comments on posts, and the [Spotify](https://www.spotify.com/) Web API is used for the “now playing” footer widget. The site is deployed on [Vercel](https://vercel.com/) using [`@astrojs/vercel`](https://docs.astro.build/en/guides/integrations-guide/vercel/); `vercel.json` sets `"framework": "astro"` so the project is not mistaken for Next.js.
 
-In short, the tech stack of the website is as follows:
+In short, the tech stack is:
 
-- Framework: [Next.js](https://nextjs.org/)
-- Styling: [Tailwind CSS](https://tailwindcss.com/)
-- Icons: [Heroicons](https://heroicons.com/)
-- Content: [Markdown](https://www.markdownguide.org/)
-- Content Management: [Contentlayer](https://www.contentlayer.dev/)
+- Framework: [Astro](https://astro.build/) (static output + Vercel adapter)
+- UI islands: [React](https://react.dev/)
+- Styling: [Tailwind CSS](https://tailwindcss.com/) v4
+- Content: MDX via [@astrojs/mdx](https://docs.astro.build/en/guides/integrations-guide/mdx/)
 - Deployment: [Vercel](https://vercel.com/)
 - Comments: [giscus](https://giscus.app/)
 
 ## Overview
 
-- `src/pages/*`: Astro routes and endpoints.
+- `src/pages/*`: Astro routes.
 - `src/components/*`: React and Astro components.
 - `src/content/*`: MDX articles and snippets (content collections).
-- `src/data/*`: Site data loaded at build time (JSON, BibTeX source); not served as static URLs.
-- `public/*`: Static assets copied to the site root as-is (favicon, manifest, logos, etc.).
-- `src/styles/*`: Global CSS (Tailwind v4).
+- `src/data/*`: Site data loaded at build time (JSON, BibTeX source); not exposed as separate static URLs.
+- `public/*`: Static assets (favicon, manifest, images, and so on).
+- `src/styles/*`: Global CSS (Tailwind entry + custom layers).
 - `src/utils/*`: Shared utilities.
+- `vercel.json`: Vercel framework preset (`astro`).
+- `.github/workflows/ci.yml`: CI runs `npm ci` and `npm run build` on pushes and pull requests to `main`.
 
 ## Cloning and Forking
 
-If you want to clone or fork this repository, please make sure to remove or replace `src/data/*`, `src/content/*`, and personal assets under `public/` as they contain personal content.
-
-Clone the repository by running the following command.
+If you clone or fork this repository, replace or remove `src/data/*`, `src/content/*`, and personal assets under `public/` as needed.
 
 ```bash
 git clone https://github.com/mirsazzathossain/mirsazzathossain.me.git
@@ -38,36 +37,40 @@ git clone https://github.com/mirsazzathossain/mirsazzathossain.me.git
 git clone git@github.com:mirsazzathossain/mirsazzathossain.me.git
 ```
 
-You can remove the `content` and `public` directories by running the following commands.
+You can clear personal content with:
 
 ```bash
-rm -rf content
-rm -rf public
+rm -rf src/content src/data
+# Then add your own under src/content, src/data, and public/
 ```
-
-Add your own content and assets in the `content` and `public` directories respectively.
 
 ## Installation
 
-Install the dependencies by running the following command.
-
 ```bash
 npm install
-# or
-yarn install
 ```
 
-Finally, run the following command to start the development server.
+Start the dev server:
 
 ```bash
 npm run dev
-# or
-yarn dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:4321](http://localhost:4321) in your browser (Astro’s default port).
 
-**Note**: You have to create a `.env` file in the root directory and add the following environment variables to get the Spotify integration working.
+Production build:
+
+```bash
+npm run build
+```
+
+Optional: set `SITE_URL` for canonical URLs and sitemap generation (defaults to `https://mirsazzathossain.me` in `astro.config.mjs`). Client-side code can use `PUBLIC_SITE_URL` (see `src/config.ts`).
+
+### Environment variables
+
+Create a `.env` (or configure vars in Vercel) for integrations:
+
+**Spotify** (footer widget):
 
 ```bash
 SPOTIFY_CLIENT_ID=yourspotifyclientid
@@ -75,15 +78,20 @@ SPOTIFY_CLIENT_SECRET=yourspotifyclientsecret
 SPOTIFY_REFRESH_TOKEN=yourspotifyrefreshtoken
 ```
 
-You can get the `SPOTIFY_CLIENT_ID` and `SPOTIFY_CLIENT_SECRET` from [Spotify Developer Dashboard](https://developer.spotify.com/dashboard/). You can get the `SPOTIFY_REFRESH_TOKEN` from [Spotify Web API Console](https://developer.spotify.com/console/get-recently-played/).
+Obtain client ID and secret from the [Spotify Developer Dashboard](https://developer.spotify.com/dashboard/). Refresh token flow is documented in Spotify’s [Web API](https://developer.spotify.com/documentation/web-api) guides.
+
+**Google Calendar** (if you use calendar features):
+
+```bash
+GOOGLE_CALENDAR_API_KEY=...
+GOOGLE_CALENDAR_ID=...
+```
 
 ## Inspiration
-
-I have used the following websites as inspiration for building this website.
 
 - [Delba - delba.dev](https://delba.dev/)
 - [Lee Robinson - leerob.io](https://leerob.io/)
 - [Manu Arora - manuarora.in](https://manuarora.in/)
-- [Tailwind Nextjs Starter Blog](https://github.com/timlrx/tailwind-nextjs-starter-blog)
+- [Tailwind Next.js Starter Blog](https://github.com/timlrx/tailwind-nextjs-starter-blog) (early inspiration; this repo is Astro-based.)
 
-The styles of the website are inspired by the [Spotlight](https://spotlight.tailwindui.com/) theme design by [Tailwind UI](https://tailwindui.com/).
+The layout and typography are influenced by the [Spotlight](https://spotlight.tailwindui.com/) theme from [Tailwind UI](https://tailwindui.com/).

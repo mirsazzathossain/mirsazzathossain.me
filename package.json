@@ -20,6 +20,7 @@
     "@giscus/react": "^3.1.0",
     "@tailwindcss/typography": "^0.5.19",
     "@vercel/analytics": "^2.0.1",
+    "@vercel/speed-insights": "^2.0.0",
     "astro": "^6.2.1",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",

@@ -1,4 +1,5 @@
 ---
+import SpeedInsights from "@vercel/speed-insights/astro";
 import AnalyticsWrapper from "@/components/analytics";
 import SiteFooter from "@/components/SiteFooter.astro";
 import Header from "@/components/Header";
@@ -131,6 +132,7 @@ const pageTitle = title
         </main>
         <AnalyticsWrapper client:load />
         <SiteFooter />
+        <SpeedInsights />
       </div>
   </body>
 </html>
