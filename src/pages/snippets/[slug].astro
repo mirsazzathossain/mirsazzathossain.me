@@ -1,0 +1,68 @@
+---
+import SnippetBack from "@/components/SnippetBack";
+import Layout from "@/layouts/Layout.astro";
+import mdxComponents from "@/components/mdx/mdx-map";
+import { getCollection, getEntry, render } from "astro:content";
+
+export async function getStaticPaths() {
+  const snippets = await getCollection("snippets");
+  return snippets.map((s) => ({ params: { slug: s.id } }));
+}
+
+const { slug } = Astro.params;
+const entry = await getEntry("snippets", slug!);
+if (!entry) return Astro.redirect("/404");
+
+const { Content } = await render(entry);
+---
+
+<Layout
+  title={entry.data.title}
+  description={entry.data.description}
+  canonicalPath={`/snippets/${entry.id}`}
+>
+  <div class="mt-16 sm:px-8 lg:mt-32">
+    <div class="mx-auto max-w-7xl lg:px-8">
+      <div class="relative px-4 sm:px-8 lg:px-12">
+        <div class="mx-auto max-w-2xl">
+          <div class="xl:relative">
+            <div class="mx-auto max-w-2xl">
+              <SnippetBack
+                client:load
+                className="group mb-8 flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-md shadow-zinc-800/5 ring-1 ring-zinc-900/5 transition dark:border dark:border-zinc-700/50 dark:bg-zinc-800 dark:ring-0 dark:ring-white/10 dark:hover:border-zinc-700 dark:hover:ring-white/20 lg:absolute lg:-left-5 lg:mb-0 lg:-mt-2 xl:-top-1.5 xl:left-0 xl:mt-0"
+              />
+              <article>
+                <div class="mb-8 flex w-full justify-between">
+                  <header>
+                    <h1
+                      class="mb-4 text-3xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-4xl"
+                    >
+                      {entry.data.title}
+                    </h1>
+                    <p class="text-gray-700 dark:text-gray-300">
+                      {entry.data.description}
+                    </p>
+                  </header>
+                  <div class="mt-0 sm:mt-2">
+                    <img
+                      alt={entry.data.logo.alt}
+                      height="48"
+                      width="48"
+                      class="rounded-full"
+                      src={`/images/${entry.data.logo.url}`}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </div>
+                </div>
+                <div class="prose dark:prose-invert mt-8 text-justify">
+                  <Content components={mdxComponents} />
+                </div>
+              </article>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>

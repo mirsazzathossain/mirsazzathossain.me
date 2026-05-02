@@ -1,0 +1,59 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import SimpleLayout from "@/components/SimpleLayout";
+import SearchArticles from "@/components/articles/SearchArticles";
+import { getSortedPublishedArticles } from "@/utils/articles";
+import { slugify } from "@/utils/slugify";
+import type { GetStaticPaths } from "astro";
+
+export const getStaticPaths: GetStaticPaths = async ({ paginate }) => {
+  const articles = await getSortedPublishedArticles();
+  const slugs = new Set<string>();
+  for (const article of articles) {
+    for (const tag of article.data.tags ?? []) {
+      slugs.add(slugify(tag.title));
+    }
+  }
+
+  return [...slugs].flatMap((slug) => {
+    const filtered = articles.filter((article) =>
+      article.data.tags?.some((t) => slugify(t.title) === slug),
+    );
+    if (!filtered.length) return [];
+    return paginate(filtered, { pageSize: 5, params: { slug } });
+  });
+};
+
+const allArticles = await getSortedPublishedArticles();
+const { slug } = Astro.params;
+const allForTag = allArticles.filter((article) =>
+  article.data.tags?.some((t) => slugify(t.title) === slug),
+);
+const { page } = Astro.props;
+
+if (!slug || !allForTag.length) {
+  return Astro.redirect("/404");
+}
+
+const tagTitle =
+  allForTag[0].data.tags?.find((t) => slugify(t.title) === slug)?.title ?? slug;
+---
+
+<Layout
+  title={
+    page.currentPage > 1
+      ? `${tagTitle} – Articles (page ${page.currentPage})`
+      : `Articles tagged with ${tagTitle}`
+  }
+  description={`This page contains all the articles tagged with ${tagTitle} available on this website.`}
+  canonicalPath={page.url.current}
+>
+  <SimpleLayout title={`Articles tagged with ${tagTitle}`}>
+    <SearchArticles
+      client:load
+      allArticles={allForTag}
+      page={page}
+      paginationBase={`/articles/tags/${slug}`}
+    />
+  </SimpleLayout>
+</Layout>

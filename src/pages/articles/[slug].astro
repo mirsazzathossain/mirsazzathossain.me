@@ -1,0 +1,167 @@
+---
+import Comments from "@/components/Comments";
+import ArticlePrevNext from "@/components/ArticlePrevNext";
+import ArticleBack from "@/components/ArticleBack";
+import AuthorCard from "@/components/articles/AuthorCard";
+import RelatedArticles from "@/components/articles/RelatedArticles";
+import SocialShare from "@/components/SocialShare";
+import Layout from "@/layouts/Layout.astro";
+import mdxComponents from "@/components/mdx/mdx-map";
+import {
+  categoryHref,
+  getNextAndPrevArticles,
+  getRelatedArticles,
+  getSortedPublishedArticles,
+} from "@/utils/articles";
+import { slugify } from "@/utils/slugify";
+import { getCollection, getEntry, render } from "astro:content";
+import readingTime from "@/utils/reading-time";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("articles", ({ data }) => {
+    return data.status === "published";
+  });
+  return posts.map((post) => ({ params: { slug: post.id } }));
+}
+
+const { slug } = Astro.params;
+const entry = await getEntry("articles", slug!);
+
+if (!entry) {
+  return Astro.redirect("/404");
+}
+
+const sorted = await getSortedPublishedArticles();
+const { previousArticle, nextArticle } = getNextAndPrevArticles(entry, sorted);
+const relatedArticles = getRelatedArticles(entry, sorted);
+
+const { Content } = await render(entry);
+
+const rt = readingTime(entry.body);
+const siteOrigin = Astro.site?.href.replace(/\/$/, "") ?? "";
+
+const published = entry.data.publishedAt
+  ? new Date(entry.data.publishedAt).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    })
+  : "";
+---
+
+<Layout
+  title={entry.data.title}
+  description={entry.data.description}
+  canonicalPath={`/articles/${entry.id}`}
+  ogImage={`/images/${entry.data.covers[0]?.url ?? "og-image.png"}`}
+  ogType="article"
+  publishedTime={entry.data.publishedAt?.toISOString()}
+  authors={[entry.data.author.name]}
+  keywords={[
+    ...(entry.data.tags?.map((t) => t.title) ?? []),
+    ...entry.data.categories.map((c) => c.title),
+  ]}
+>
+  <div class="mt-16 sm:px-8 lg:mt-32">
+    <div class="mx-auto max-w-7xl lg:px-8">
+      <div class="relative px-4 sm:px-8 lg:px-12">
+        <div class="mx-auto max-w-2xl lg:max-w-5xl">
+          <div class="xl:relative">
+            <div class="mx-auto max-w-2xl">
+              <ArticleBack
+                client:load
+                className="group mb-8 flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-md shadow-zinc-800/5 ring-1 ring-zinc-900/5 transition dark:border dark:border-zinc-700/50 dark:bg-zinc-800 dark:ring-0 dark:ring-white/10 dark:hover:border-zinc-700 dark:hover:ring-white/20 lg:absolute lg:-left-5 lg:mb-0 lg:-mt-2 xl:-top-1.5 xl:left-0 xl:mt-0"
+              />
+
+              <article>
+                <header class="flex flex-col">
+                  <h1
+                    class="mt-6 text-3xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-4xl"
+                  >
+                    {entry.data.title}
+                  </h1>
+
+                  <time
+                    datetime={published}
+                    class="order-first flex items-center text-base text-zinc-400 dark:text-zinc-500"
+                  >
+                    <span class="h-4 w-0.5 rounded-full bg-zinc-200 dark:bg-zinc-500"
+                    ></span>
+                    <span class="ml-3 truncate">
+                      {published}
+                      {" • "}
+                      {rt.text}
+                      {" • "}
+                      {
+                        entry.data.categories.map((category, index) => (
+                          <span>
+                            <a
+                              href={categoryHref(category.title)}
+                              class="font-medium text-teal-500 hover:text-teal-600 dark:text-teal-400 dark:hover:text-teal-300"
+                            >
+                              {category.title}
+                            </a>
+                            {index < entry.data.categories.length - 1
+                              ? ", "
+                              : ""}
+                          </span>
+                        ))
+                      }
+                    </span>
+                  </time>
+                </header>
+
+                <div class="prose dark:prose-invert mt-8 text-justify">
+                  <Content components={mdxComponents} />
+                </div>
+
+                <div class="mt-8 grid grid-cols-2 gap-4 md:grid-cols-3">
+                  <div class="flex items-center md:col-span-2">
+                    {
+                      entry.data.tags?.slice(0, 3).map((tag) => (
+                        <a
+                          href={`/articles/tags/${slugify(tag.title)}`}
+                          class="mb-2 mr-2 inline-block truncate rounded-md bg-gray-100 px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-200 dark:bg-zinc-800 dark:text-zinc-100 dark:hover:bg-zinc-700"
+                        >
+                          {tag.title}
+                        </a>
+                      ))
+                    }
+                  </div>
+
+                  <div class="flex items-center justify-end">
+                    <SocialShare
+                      client:load
+                      article={entry}
+                      siteUrl={siteOrigin}
+                    />
+                  </div>
+                </div>
+
+                <hr
+                  class="mt-8 mb-8 border-t border-zinc-200 dark:border-zinc-700"
+                />
+                <ArticlePrevNext
+                  client:load
+                  previousId={previousArticle?.id}
+                  nextId={nextArticle?.id}
+                />
+                <hr
+                  class="mt-8 mb-8 border-t border-zinc-200 dark:border-zinc-700"
+                />
+
+                <AuthorCard article={entry} />
+                <Comments client:load />
+                {
+                  relatedArticles.length > 0 && (
+                    <RelatedArticles articles={relatedArticles} />
+                  )
+                }
+              </article>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>

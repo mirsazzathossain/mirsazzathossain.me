@@ -1,0 +1,23 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import SimpleLayout from "@/components/SimpleLayout";
+import ListCourses from "@/components/ListCourses";
+import { readSiteJson } from "@/utils/json-data";
+
+const courses = await readSiteJson<Course[]>("courses.json");
+---
+
+<Layout
+  title="Courses"
+  description="During my time at IUB, I've worked as a teaching assistant and research assistant for a few different courses. These are the courses I've instructed."
+  canonicalPath="/courses"
+>
+  <SimpleLayout
+    title="Courses that I've instructed as a RA or TA at IUB"
+    intro="During my time at IUB, I've worked as a teaching assistant and research assistant for a few different courses. These are the courses I've instructed."
+  >
+    <div class="mt-16 sm:mt-20">
+      <ListCourses client:load courses={courses} />
+    </div>
+  </SimpleLayout>
+</Layout>

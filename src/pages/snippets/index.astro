@@ -1,0 +1,23 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import SimpleLayout from "@/components/SimpleLayout";
+import ListSnippets from "@/components/ListSnippets";
+import { getCollection } from "astro:content";
+
+const snippets = await getCollection("snippets");
+---
+
+<Layout
+  title="Code Snippets"
+  description="I've been writing code for a long time. Here are some of the snippets I've found useful and reusable."
+  canonicalPath="/snippets"
+>
+  <SimpleLayout
+    title="Snippets of Code I Find Useful"
+    intro="I've been writing code for a long time. Here are some of the snippets I've found useful and reusable."
+  >
+    <div class="mt-16 sm:mt-20">
+      <ListSnippets client:load snippets={snippets} />
+    </div>
+  </SimpleLayout>
+</Layout>

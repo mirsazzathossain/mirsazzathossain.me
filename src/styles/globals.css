@@ -1,0 +1,142 @@
+@import 'tailwindcss';
+
+@config '../../tailwind.config.cjs';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+
+  /* KaTeX: follow prose text color (AstroPaper-style; zinc palette matches typography) */
+  .prose .katex {
+    color: inherit;
+  }
+
+  .prose .katex-display {
+    @apply text-zinc-900;
+  }
+
+  .dark .prose .katex-display,
+  .prose-invert .katex-display {
+    @apply text-zinc-100;
+  }
+}
+
+@utility no-scrollbar {
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+@utility thin-scrollbar {
+  &::-webkit-scrollbar {
+    height: 10px !important;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--color-teal-500);
+    border-radius: 6px;
+  }
+}
+
+@layer utilities {
+  /* Defaults until Header.tsx hydrates and sets scroll-driven CSS variables */
+  html {
+    --header-position: sticky;
+    --header-height: auto;
+    --header-mb: 0px;
+    --content-offset: 0px;
+    --avatar-image-transform: translate3d(0, 0, 0) scale(1);
+    --avatar-border-transform: translate3d(0, 0, 0) scale(1);
+    --avatar-border-opacity: 0;
+  }
+}
+
+.pretty-code-button {
+  @apply text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 h-4 w-4;
+}
+
+div[data-rehype-pretty-code-title] {
+  @apply text-sm font-mono text-zinc-500 dark:text-zinc-100 bg-zinc-200/50 dark:bg-zinc-700 px-4 py-2 no-underline hover:underline w-full leading-6;
+}
+
+div[data-rehype-pretty-code-fragment] {
+  @apply overflow-hidden border-zinc-100 dark:border-zinc-700 border-2 rounded-md;
+}
+
+div[data-rehype-pretty-code-fragment] pre {
+  @apply thin-scrollbar overflow-x-auto py-4 text-sm font-medium leading-6 bg-[#F9FAFB] dark:bg-[#111827];
+}
+
+div[data-rehype-pretty-code-fragment] .line {
+  @apply pl-2 pr-3 border-l-4 border-transparent;
+}
+div[data-rehype-pretty-code-fragment] .highlighted {
+  @apply border-l-teal-500 bg-teal-200/20 border-l-2 pl-2.5;
+}
+
+div[data-rehype-pretty-code-fragment] code {
+  @apply grid;
+}
+
+code {
+  counter-reset: lineNumber;
+}
+
+code > [data-line] {
+  @apply pl-3;
+}
+
+code[data-line-numbers] > [data-line]::before {
+  counter-increment: lineNumber;
+  content: counter(lineNumber);
+  @apply text-zinc-500 dark:text-zinc-100 mr-3 -ml-3 w-4 text-right inline-block;
+}
+
+code[data-line-numbers-max-digits="2"] > [data-line]::before {
+  @apply w-6;
+}
+
+code[data-line-numbers-max-digits="3"] > [data-line]::before {
+  @apply w-8;
+}
+
+div[data-theme="light"],
+code[data-theme="light"] {
+  @apply dark:hidden;
+}
+
+div[data-theme="dark"],
+code[data-theme="dark"] {
+  @apply hidden dark:inline-block;
+}
+
+.block-code[data-theme="dark"],
+div[data-rehype-pretty-code-title][data-theme="dark"],
+.block-code code[data-theme="dark"] {
+  @apply hidden dark:block;
+}
+
+.step > h2,
+.step > h3,
+.step > h4,
+.step > h5,
+.step > h6 {
+  @apply my-0;
+}

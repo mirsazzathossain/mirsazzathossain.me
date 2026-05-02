@@ -1,43 +1,16 @@
 {
+  "extends": "astro/tsconfigs/strict",
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "contentlayer/generated": ["./.contentlayer/generated"]
+      "@/*": ["src/*"],
+      "components/*": ["src/components/*"],
+      "config": ["src/config.ts"],
+      "utils/*": ["src/utils/*"]
     },
-    "target": "es5",
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "noEmit": true,
-    "esModuleInterop": true,
-    "module": "esnext",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "jsx": "preserve",
-    "incremental": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ]
+    "jsx": "react-jsx",
+    "jsxImportSource": "react"
   },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".contentlayer/generated",
-    "components/Avatar.tsx",
-    "components/Container.tsx",
-    "components/DesktopNavigation.tsx",
-    "components/Header.tsx",
-    "components/MobileNavigation.tsx",
-    "components/ThemeSelector.tsx",
-    ".next/types/**/*.ts",
-    "utils/generate-rss.mts",
-    "next-sitemap.config.js"
-, "utils/generate-rss.ts"  ],
-  "exclude": ["node_modules"]
+  "include": [".astro/types.d.ts", "src/**/*", "typings.d.ts"],
+  "exclude": ["dist", "node_modules"]
 }

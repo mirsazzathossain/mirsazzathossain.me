@@ -1,0 +1,136 @@
+---
+import AnalyticsWrapper from "@/components/analytics";
+import SiteFooter from "@/components/SiteFooter.astro";
+import Header from "@/components/Header";
+import { siteUrl } from "@/config";
+import "@/styles/globals.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+  canonicalPath?: string;
+  ogImage?: string;
+  ogType?: string;
+  publishedTime?: string;
+  authors?: string[];
+  keywords?: string[];
+}
+
+const {
+  title,
+  description = "Mir Sazzat Hossain is a recent college graduate with a solid foundation in computer science as well as competence in exploratory data analysis, machine learning, computer vision, and statistics. He is currently working as a Research Assistant at the Independent University, Bangladesh's Center for Computational and Data Sciences.",
+  canonicalPath,
+  ogImage = "/images/og-image.png",
+  ogType = "website",
+  publishedTime,
+  authors,
+  keywords = [
+    "Mir Sazzat Hossain",
+    "Mir Sazzat",
+    "Sazzat",
+    "Sazzat Hossain",
+    "Mir",
+    "Hossain",
+    "Personal Website",
+  ],
+} = Astro.props;
+
+const origin = Astro.site?.href ?? siteUrl;
+const canonical = new URL(canonicalPath ?? Astro.url.pathname, origin).href;
+const ogImageUrl = new URL(ogImage, origin).href;
+const pageTitle = title
+  ? `${title} - Mir Sazzat Hossain`
+  : "Mir Sazzat Hossain | Personal Website";
+---
+
+<!doctype html>
+<html lang="en" class="h-full antialiased">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1"
+    />
+    <meta name="theme-color" content="#ffffff" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="application-name" content="Mir Sazzat Hossain - Personal Website" />
+    <meta name="referrer" content="origin-when-cross-origin" />
+    <meta name="keywords" content={keywords.join(", ")} />
+    <meta name="author" content="Mir Sazzat Hossain" />
+    <meta name="creator" content="Mir Sazzat Hossain" />
+    <meta name="publisher" content="Mir Sazzat Hossain" />
+    <meta name="format-detection" content="telephone=yes,address=yes,email=yes" />
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" type="application/rss+xml" href={`${origin}/rss.xml`} />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content="Mir Sazzat Hossain | Personal Website" />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={pageTitle} />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:type" content={ogType} />
+    {publishedTime && (
+      <meta property="article:published_time" content={publishedTime} />
+    )}
+    {authors?.map((name) => <meta property="article:author" content={name} />)}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@mir_sazzat" />
+    <meta name="twitter:creator" content="@mir_sazzat" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="icon" href="/favicon-16x16.png" sizes="16x16" type="image/png" />
+    <link rel="icon" href="/favicon-32x32.png" sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="android-chrome-192x192" href="/android-chrome-192x192.png" />
+    <link rel="android-chrome-512x512" href="/android-chrome-512x512.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="google-site-verification" content="google-site-verification=0" />
+    <meta name="msvalidate.01" content="msvalidate.01=0" />
+    <meta name="yandex-verification" content="yandex-verification=0" />
+    <script is:inline>
+      (function () {
+        const k = "theme";
+        try {
+          const t = localStorage.getItem(k);
+          const d = window.matchMedia("(prefers-color-scheme: dark)").matches;
+          const dark = t === "dark" || (t !== "light" && d);
+          document.documentElement.classList.toggle("dark", dark);
+        } catch {
+          /* localStorage unavailable */
+        }
+      })();
+    </script>
+  </head>
+  <body class="flex h-full min-h-screen flex-col bg-zinc-50 dark:bg-black">
+    <div class="fixed inset-0 flex justify-center sm:px-8">
+      <div class="flex w-full max-w-7xl lg:px-8">
+        <div
+          class="w-full bg-white ring-1 ring-zinc-100 dark:bg-zinc-900 dark:ring-zinc-300/20"
+        >
+        </div>
+      </div>
+    </div>
+    <div class="relative">
+        <Header client:load pathname={Astro.url.pathname} />
+        <main>
+          <slot />
+        </main>
+        <AnalyticsWrapper client:load />
+        <SiteFooter />
+      </div>
+  </body>
+</html>

@@ -1,0 +1,29 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import AboutSection from "@/components/AboutSection";
+import Educations from "@/components/sections/Educations";
+import Experiences from "@/components/sections/Experiences";
+import Publications from "@/components/sections/Publications";
+import Articles from "@/components/sections/Articles";
+import LifeEvents from "@/components/sections/LifeEvents";
+import { getSortedPublishedArticles } from "@/utils/articles";
+import { readSiteJson } from "@/utils/json-data";
+
+const about = await readSiteJson("about.json");
+const educations = await readSiteJson<Education[]>("educations.json");
+const experiences = await readSiteJson<Experience[]>("experiences.json");
+const lifeEvents = await readSiteJson<Record<string, unknown>>(
+  "life_events.json",
+);
+const publications = await readSiteJson("publications.json");
+const articles = await getSortedPublishedArticles();
+---
+
+<Layout>
+  <AboutSection about={about} />
+  <Educations client:load educations={educations} />
+  <Experiences client:load experiences={experiences} />
+  <Publications client:load publications={publications} />
+  <Articles client:load articles={articles} />
+  <LifeEvents client:load lifeEvents={lifeEvents} />
+</Layout>

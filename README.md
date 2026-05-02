@@ -18,17 +18,17 @@ In short, the tech stack of the website is as follows:
 
 ## Overview
 
-- `app/*`: I have used next.js new `app` directory structure. This directory contains the main app.
-- `components/*`: All custom components are stored in this directory.
-- `content/*`: This directory contains all the [Contentlayer](https://contentlayer.dev/) contents.
-- `public/*`: This directory contains all the static assets of the website.
-- `public/content/*`: This directory contains all the static contents of the website. e.g. projects, experiences, education, etc.
-- `styles/*`: I have used Tailwind CSS for styling. This directory contains the Tailwind CSS global styles and some custom styles for the website.
-- `utils/*`: This directory contains some utility functions.
+- `src/pages/*`: Astro routes and endpoints.
+- `src/components/*`: React and Astro components.
+- `src/content/*`: MDX articles and snippets (content collections).
+- `src/data/*`: Site data loaded at build time (JSON, BibTeX source); not served as static URLs.
+- `public/*`: Static assets copied to the site root as-is (favicon, manifest, logos, etc.).
+- `src/styles/*`: Global CSS (Tailwind v4).
+- `src/utils/*`: Shared utilities.
 
 ## Cloning and Forking
 
-If you want to clone or fork this repository, please make sure to remove the `content` and `public` directories as they contain my personal content and assets. You can add your own content and assets in the `content` and `public` directories respectively.
+If you want to clone or fork this repository, please make sure to remove or replace `src/data/*`, `src/content/*`, and personal assets under `public/` as they contain personal content.
 
 Clone the repository by running the following command.
 
