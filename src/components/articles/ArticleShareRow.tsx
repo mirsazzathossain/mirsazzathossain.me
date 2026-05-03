@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { TwitterIcon, LinkedInIcon, FacebookIcon, WhatsAppIcon, LinkIcon } from "@/components/ui/Icon";
+import { TwitterIcon, LinkedInIcon, FacebookIcon, WhatsAppIcon, LinkIcon } from "@/components/Icons";
 
 export default function ArticleShareRow({ title, url }: { title: string; url: string }): JSX.Element {
   const [copied, setCopied] = useState(false);

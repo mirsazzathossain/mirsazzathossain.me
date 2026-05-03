@@ -1,6 +1,6 @@
 ---
 import ArticleShareRow from "@/components/articles/ArticleShareRow";
-import Comments from "@/components/Comments";
+import Comments from "@/components/articles/Comments";
 import Layout from "@/layouts/Layout.astro";
 import mdxComponents from "@/components/mdx/mdx-map";
 import {
@@ -8,7 +8,7 @@ import {
   getSortedPublishedArticles,
   tagHref,
 } from "@/utils/articles";
-import { slugify } from "@/utils/slugify";
+import { cleanMarkdownHeading, slugify } from "@/utils/slugify";
 import { getCollection, getEntry, render } from "astro:content";
 import readingTime from "@/utils/reading-time";
 
@@ -47,14 +47,9 @@ const published = entry.data.publishedAt
   : "";
 
 const primaryCategory = entry.data.categories[0]?.title ?? "Post";
-const cleanHeading = (text: string) =>
-  text
-    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
-    .replace(/[`*_~#]/g, "")
-    .trim();
 const toc = Array.from(entry.body.matchAll(/^(#{2,3})\s+(.+)$/gm)).map(
   ([, depth, text]) => {
-    const title = cleanHeading(text);
+    const title = cleanMarkdownHeading(text);
     return {
       depth: depth.length,
       title,
@@ -290,78 +285,3 @@ const referenceItems: { text: string; href?: string }[] = [];
     }
   });
 </script>
-
-<style>
-  .post-body :global(p) {
-    margin: 0 0 1em;
-    max-width: 65ch;
-  }
-
-  .post-body :global(h2) {
-    margin: 1.6em 0 0.5em;
-    font-family: var(--font-serif);
-    font-size: 22px;
-    font-weight: 600;
-    line-height: 1.25;
-    color: var(--ink);
-  }
-
-  .post-body :global(h3) {
-    margin: 1.4em 0 0.4em;
-    font-family: var(--font-serif);
-    font-size: 18px;
-    font-weight: 600;
-    line-height: 1.3;
-    color: var(--ink);
-  }
-
-  .post-body :global(a) {
-    color: var(--link);
-    text-decoration: underline;
-    text-decoration-color: color-mix(in srgb, var(--link) 35%, transparent);
-    text-decoration-thickness: 1px;
-    text-underline-offset: 3px;
-  }
-
-  .post-body :global(code) {
-    border: 1px solid var(--rule);
-    border-radius: 3px;
-    background: var(--bg-2);
-    padding: 1px 5px;
-    font-family: var(--font-mono);
-    font-size: 0.86em;
-    color: var(--ink);
-  }
-
-  .post-body :global(pre code) {
-    border: 0;
-    background: transparent;
-    padding: 0;
-    font-size: inherit;
-    color: inherit;
-  }
-
-  .post-body :global(blockquote) {
-    margin: 1em 0;
-    border-left: 3px solid var(--link);
-    padding-left: 16px;
-    color: var(--ink-2);
-    font-style: italic;
-  }
-
-  .post-body :global(img) {
-    margin: 1.4em 0;
-    max-width: 100%;
-    border-radius: var(--r);
-  }
-
-  .post-body :global(ul),
-  .post-body :global(ol) {
-    margin: 1em 0;
-    padding-left: 1.25rem;
-  }
-
-  .post-body :global(li) {
-    margin: 0.35em 0;
-  }
-</style>

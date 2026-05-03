@@ -4,7 +4,7 @@
 
 ![website status](https://img.shields.io/website?down_color=red&down_message=offline&up_color=green&up_message=online&url=https%3A%2F%2Fmirsazzathossain.me&style=flat-square) ![GitHub](https://img.shields.io/github/license/mirsazzathossain/mirsazzathossain.me?style=flat-square) ![GitHub last commit](https://img.shields.io/github/last-commit/mirsazzathossain/mirsazzathossain.me?style=flat-square) ![GitHub repo size](https://img.shields.io/github/repo-size/mirsazzathossain/mirsazzathossain.me?style=flat-square) ![GitHub top language](https://img.shields.io/github/languages/top/mirsazzathossain/mirsazzathossain.me?style=flat-square)
 
-This is the source code for my personal site [mirsazzathossain.me](https://mirsazzathossain.me). It is an academic portfolio built with [Astro](https://astro.build/), using [React](https://react.dev/) for interactive islands where needed, and [Tailwind CSS v4](https://tailwindcss.com/) for styling. The visual design is inspired by the [Spotlight](https://spotlight.tailwindui.com/) theme from Tailwind UI. Articles and snippets live in Astro [content collections](https://docs.astro.build/en/guides/content-collections/) as MDX, with math via `remark-math` and `rehype-katex` (KaTeX CSS from the layout). [Giscus](https://giscus.app/) powers comments on posts, and the [Spotify](https://www.spotify.com/) Web API is used for the “now playing” footer widget. The site is deployed on [Vercel](https://vercel.com/) using [`@astrojs/vercel`](https://docs.astro.build/en/guides/integrations-guide/vercel/); `vercel.json` sets `"framework": "astro"` so the project is not mistaken for Next.js.
+This is the source code for my personal site [mirsazzathossain.me](https://mirsazzathossain.me). It is an academic portfolio built with [Astro](https://astro.build/), using [React](https://react.dev/) for interactive islands where needed, and [Tailwind CSS v4](https://tailwindcss.com/) for styling. The visual design is inspired by the [Spotlight](https://spotlight.tailwindui.com/) theme from Tailwind UI. Articles and snippets live in Astro [content collections](https://docs.astro.build/en/guides/content-collections/) as MDX, with math via `remark-math` and `rehype-katex` (KaTeX CSS from the layout). [Giscus](https://giscus.app/) powers comments on posts. The site is deployed on [Vercel](https://vercel.com/) using [`@astrojs/vercel`](https://docs.astro.build/en/guides/integrations-guide/vercel/); `vercel.json` sets `"framework": "astro"` so the project is not mistaken for Next.js.
 
 In short, the tech stack is:
 
@@ -64,27 +64,21 @@ Production build:
 npm run build
 ```
 
-Optional: set `SITE_URL` for canonical URLs and sitemap generation (defaults to `https://mirsazzathossain.me` in `astro.config.mjs`). Client-side code can use `PUBLIC_SITE_URL` (see `src/config.ts`).
-
 ### Environment variables
 
-Create a `.env` (or configure vars in Vercel) for integrations:
+Create a `.env` for local development (or configure vars in Vercel) for integrations:
 
-**Spotify** (footer widget):
+**Google Calendar** (powers the calendar widget):
 
 ```bash
-SPOTIFY_CLIENT_ID=yourspotifyclientid
-SPOTIFY_CLIENT_SECRET=yourspotifyclientsecret
-SPOTIFY_REFRESH_TOKEN=yourspotifyrefreshtoken
+PUBLIC_GOOGLE_API_KEY=...
+PUBLIC_GOOGLE_CALENDAR_IDS=...
 ```
 
-Obtain client ID and secret from the [Spotify Developer Dashboard](https://developer.spotify.com/dashboard/). Refresh token flow is documented in Spotify’s [Web API](https://developer.spotify.com/documentation/web-api) guides.
-
-**Google Calendar** (if you use calendar features):
+**OmniVault sync** (CI/CD only — not needed for local dev):
 
 ```bash
-GOOGLE_CALENDAR_API_KEY=...
-GOOGLE_CALENDAR_ID=...
+VAULT_TOKEN=...  # GitHub PAT with read access to the private omnivault repo
 ```
 
 ## Inspiration

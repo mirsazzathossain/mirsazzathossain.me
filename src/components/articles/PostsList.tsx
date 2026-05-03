@@ -4,7 +4,7 @@ import type { ArticleEntry } from "@/utils/articles";
 import readingTime from "@/utils/reading-time";
 import { slugify } from "@/utils/slugify";
 import { useEffect, useMemo, useState } from "react";
-import { SearchIcon, ArrowLeftIcon, ArrowRightIcon } from "@/components/ui/Icon";
+import { SearchIcon, ArrowLeftIcon, ArrowRightIcon } from "@/components/Icons";
 
 const POSTS_PER_PAGE = 20;
 

@@ -1,7 +1,7 @@
 ---
 import Layout from "@/layouts/Layout.astro";
-import SimpleLayout from "@/components/SimpleLayout";
-import ListSnippets from "@/components/ListSnippets";
+import SimpleLayout from "@/components/layout/SimpleLayout";
+import ListSnippets from "@/components/snippets/ListSnippets";
 import { getCollection } from "astro:content";
 
 const snippets = await getCollection("snippets");

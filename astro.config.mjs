@@ -6,8 +6,18 @@ import { defineConfig } from "astro/config";
 import rehypeKatex from "rehype-katex";
 import remarkMath from "remark-math";
 
+const DEFAULT_SITE_URL = "https://mirsazzathossain.me";
+const vercelHost =
+  process.env.VERCEL_PROJECT_PRODUCTION_URL ?? process.env.VERCEL_URL;
+const vercelSiteUrl = vercelHost
+  ? vercelHost.startsWith("http")
+    ? vercelHost
+    : `https://${vercelHost}`
+  : undefined;
+const resolvedSiteUrl = process.env.SITE_URL ?? vercelSiteUrl ?? DEFAULT_SITE_URL;
+
 export default defineConfig({
-  site: process.env.SITE_URL || "https://mirsazzathossain.me",
+  site: resolvedSiteUrl,
   output: "static",
   adapter: vercel(),
   /** Pre-bundle CJS `react-dom/client` so `import { createRoot }` works in the browser for islands. */

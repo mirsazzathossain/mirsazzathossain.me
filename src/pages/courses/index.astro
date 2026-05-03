@@ -1,7 +1,7 @@
 ---
 import Layout from "@/layouts/Layout.astro";
-import SimpleLayout from "@/components/SimpleLayout";
-import ListCourses from "@/components/ListCourses";
+import SimpleLayout from "@/components/layout/SimpleLayout";
+import ListCourses from "@/components/courses/ListCourses";
 import { readSiteJson } from "@/utils/json-data";
 
 const courses = await readSiteJson<Course[]>("courses.json");

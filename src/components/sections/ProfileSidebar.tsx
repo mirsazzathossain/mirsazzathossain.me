@@ -7,18 +7,18 @@ import {
   LinkedInIcon,
   OrcidIcon,
   ResearchGateIcon,
-  SementicScholarIcon,
+  SemanticScholarIcon,
   TwitterXIcon,
   ACLIcon,
   OpenReviewIcon,
-} from "@/components/SocialIcons";
+} from "@/components/Icons";
 
 function pickIcon(name: string) {
   if (name === "github") return GitHubIcon;
   if (name === "linkedin") return LinkedInIcon;
   if (name === "twitter") return TwitterXIcon;
   if (name === "google-scholar") return GoogleScholarIcon;
-  if (name === "semantic-scholar") return SementicScholarIcon;
+  if (name === "semantic-scholar") return SemanticScholarIcon;
   if (name === "dblp") return DBLPIcon;
   if (name === "researchgate") return ResearchGateIcon;
   if (name === "orcid") return OrcidIcon;
@@ -95,7 +95,7 @@ export default function ProfileSidebar({ about }: { about: any }) {
                 target="_blank"
                 rel="noreferrer"
               >
-                <Icon className="w-4 h-4 fill-current" />
+                <Icon className="w-4 h-4" />
               </a>
             </li>
           );

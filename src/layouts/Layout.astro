@@ -1,10 +1,9 @@
 ---
 import SpeedInsights from "@vercel/speed-insights/astro";
-import AnalyticsWrapper from "@/components/analytics";
-import SiteFooter from "@/components/SiteFooter.astro";
-import Header from "@/components/Header";
-import BackToTop from "@/components/BackToTop";
-import { siteUrl } from "@/config";
+import AnalyticsWrapper from "@/components/layout/analytics";
+import Footer from "@/components/layout/Footer.astro";
+import Header from "@/components/layout/Header";
+import BackToTop from "@/components/layout/BackToTop";
 import "@/styles/globals.css";
 
 interface Props {
@@ -37,7 +36,7 @@ const {
   ],
 } = Astro.props;
 
-const origin = Astro.site?.href ?? siteUrl;
+const origin = Astro.site?.href ?? Astro.url.origin;
 const canonical = new URL(canonicalPath ?? Astro.url.pathname, origin).href;
 const ogImageUrl = new URL(ogImage, origin).href;
 const pageTitle = title
@@ -116,6 +115,15 @@ const pageTitle = title
         }
       })();
     </script>
+    <script is:inline>
+      // Prevent layout shift from scrollbar appearing/disappearing
+      function updateScrollbarPadding() {
+        const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+        document.documentElement.style.paddingRight = scrollbarWidth + 'px';
+      }
+      updateScrollbarPadding();
+      window.addEventListener('resize', updateScrollbarPadding);
+    </script>
   </head>
   <body class="flex min-h-screen flex-col bg-bg text-ink-2 font-sans text-[14.5px] leading-[1.65] antialiased">
     <div class="relative flex min-h-screen flex-col">
@@ -123,9 +131,9 @@ const pageTitle = title
         <main class="flex-auto max-w-[1100px] w-full mx-auto px-[clamp(20px,4vw,36px)] pt-[clamp(28px,5vw,56px)] pb-[64px]">
           <slot />
         </main>
-        <AnalyticsWrapper client:load />
-        <SiteFooter />
-        <BackToTop client:load />
+        <AnalyticsWrapper client:only="react" />
+        <Footer />
+        <BackToTop client:only="react" />
         <SpeedInsights />
       </div>
     <script is:inline>
