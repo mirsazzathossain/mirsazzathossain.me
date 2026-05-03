@@ -1,0 +1,15 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Publications from "@/components/sections/Publications";
+import { readSiteJson } from "@/utils/json-data";
+
+const publications = await readSiteJson("publications.json");
+---
+
+<Layout
+  title="Publications"
+  description="Peer-reviewed papers, workshop contributions, and preprints by Mir Sazzat Hossain across computer vision, domain adaptation, and astrophysical machine learning."
+  canonicalPath="/publications"
+>
+  <Publications client:load publications={publications} />
+</Layout>

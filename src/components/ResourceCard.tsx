@@ -1,4 +1,4 @@
-import { AnchorIcon } from "./Icons";
+
 
 export default function ResourceCard({
   resource,
@@ -8,25 +8,20 @@ export default function ResourceCard({
   return (
     <a
       href={resource.url}
-      className="animate-background relative w-full rounded-xl bg-linear-to-r from-green-300 via-blue-500 to-purple-600 bg-size-[400%_400%] p-0.5 shadow-lg transition [animation-duration:6s] hover:shadow-xs"
+      className="group block p-[12px_14px] border border-rule rounded-[8px] bg-bg hover:border-ink-3 hover:no-underline transition-colors"
       target="_blank"
       rel="noreferrer"
     >
-      <div className="rounded-[10px] bg-white dark:bg-zinc-800 p-4 sm:p-6 h-full">
-        <div className="flex items-center text-zinc-600 dark:text-zinc-400">
-          <span className="mt-1 text-zinc-400 dark:text-zinc-200 inline-block break-all">
-            {new URL(resource.url).hostname.replace("www.", "")}
-          </span>
-          <AnchorIcon className="h-4 w-4 ml-1 mt-1.5" />
-        </div>
-
-        <h3 className="text-lg font-bold text-left mt-2 text-zinc-800 dark:text-zinc-100 break-all">
-          {resource.title}
-        </h3>
-        <p className="mt-1 text-zinc-600 dark:text-zinc-400 break-all">
-          {resource.description}
-        </p>
+      <div className="font-mono text-[10.5px] text-ink-3 inline-flex items-center gap-1">
+        <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        {new URL(resource.url).hostname.replace("www.", "")}
       </div>
+      <h3 className="font-serif text-[14px] font-semibold text-ink leading-[1.3] m-[4px_0]">
+        {resource.title}
+      </h3>
+      <p className="text-[12.5px] text-ink-2 leading-[1.5] m-0">
+        {resource.description}
+      </p>
     </a>
   );
 }

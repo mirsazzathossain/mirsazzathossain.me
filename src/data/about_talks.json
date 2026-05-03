@@ -12,8 +12,7 @@
     "venue": "ICIP 2025",
     "location": "Anchorage, USA",
     "date": "2025-09",
-    "type": "oral",
-    "slidesUrl": "#"
+    "type": "oral"
   },
   {
     "title": "Lightweight Recurrent Network for Super-Resolution",
@@ -21,7 +20,7 @@
     "location": "Abu Dhabi, UAE",
     "date": "2024-10",
     "type": "poster",
-    "slidesUrl": "/files/super-resolution-icip2024-poster.pdf"
+    "posterUrl": "/files/super-resolution-icip2024-poster.pdf"
   },
   {
     "title": "Group-Equivariant CNNs for Radio Galaxy Morphology",

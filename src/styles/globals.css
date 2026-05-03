@@ -1,5 +1,5 @@
-@import 'tailwindcss';
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600;6..72,700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600;6..72,700&family=JetBrains+Mono:wght@400;500;600&display=swap");
 
 @config '../../tailwind.config.cjs';
 
@@ -31,7 +31,8 @@
     --r-lg: 10px;
   }
 
-  .dark, [data-theme="dark"] {
+  .dark,
+  [data-theme="dark"] {
     --bg: #0b1220;
     --bg-2: #0f172a;
     --bg-3: #1e293b;
@@ -54,7 +55,7 @@
     border-color: var(--color-gray-200, currentcolor);
   }
 
-  /* KaTeX: follow prose text color (AstroPaper-style; zinc palette matches typography) */
+  /* KaTeX: follow prose text color */
   .prose .katex {
     color: inherit;
   }
@@ -88,99 +89,72 @@
   }
 }
 
-
-.pretty-code-button {
-  @apply text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 h-4 w-4;
+/* Prism token colors (fallback for any Prism-highlighted content) */
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+  color: var(--ink-4);
 }
 
-div[data-rehype-pretty-code-title] {
-  @apply text-sm font-mono text-zinc-500 dark:text-zinc-100 bg-zinc-200/50 dark:bg-zinc-700 px-4 py-2 no-underline hover:underline w-full leading-6;
+.token.punctuation {
+  color: var(--ink-3);
 }
 
-div[data-rehype-pretty-code-fragment] {
-  @apply overflow-hidden border-zinc-100 dark:border-zinc-700 border-2 rounded-md;
+.token.property,
+.token.tag,
+.token.boolean,
+.token.number,
+.token.constant,
+.token.symbol {
+  color: var(--link);
 }
 
-div[data-rehype-pretty-code-fragment] pre {
-  @apply thin-scrollbar overflow-x-auto py-4 text-sm font-medium leading-6 bg-[#F9FAFB] dark:bg-[#111827];
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+  color: var(--green);
 }
 
-div[data-rehype-pretty-code-fragment] .line {
-  @apply pl-2 pr-3 border-l-4 border-transparent;
-}
-div[data-rehype-pretty-code-fragment] .highlighted {
-  @apply border-l-teal-500 bg-teal-200/20 border-l-2 pl-2.5;
-}
-
-div[data-rehype-pretty-code-fragment] code {
-  @apply grid;
+.token.operator,
+.token.entity,
+.token.url,
+.token.variable {
+  color: var(--ink-2);
 }
 
-code {
-  counter-reset: lineNumber;
+.token.atrule,
+.token.attr-value,
+.token.keyword {
+  color: var(--violet);
 }
 
-code > [data-line] {
-  @apply pl-3;
+.token.function,
+.token.class-name {
+  color: var(--amber);
 }
 
-code[data-line-numbers] > [data-line]::before {
-  counter-increment: lineNumber;
-  content: counter(lineNumber);
-  @apply text-zinc-500 dark:text-zinc-100 mr-3 -ml-3 w-4 text-right inline-block;
+.token.regex,
+.token.important {
+  color: var(--rose);
 }
 
-code[data-line-numbers-max-digits="2"] > [data-line]::before {
-  @apply w-6;
+.token.important,
+.token.bold {
+  font-weight: 600;
 }
 
-code[data-line-numbers-max-digits="3"] > [data-line]::before {
-  @apply w-8;
+.token.italic {
+  font-style: italic;
 }
 
-div[data-theme="light"],
-code[data-theme="light"] {
-  @apply dark:hidden;
-}
-
-div[data-theme="dark"],
-code[data-theme="dark"] {
-  @apply hidden dark:inline-block;
-}
-
-.block-code[data-theme="dark"],
-div[data-rehype-pretty-code-title][data-theme="dark"],
-.block-code code[data-theme="dark"] {
-  @apply hidden dark:block;
-}
-
-.step > h2,
-.step > h3,
-.step > h4,
-.step > h5,
-.step > h6 {
-  @apply my-0;
-}
-
-/* ============ ABOUT PAGE — availability grid ============ */
-.avail-cell-free {
-  background: color-mix(in srgb, var(--green) 18%, transparent);
-  border: 1px solid color-mix(in srgb, var(--green) 35%, var(--rule));
-}
-.avail-cell-busy {
-  background: color-mix(in srgb, #ef4444 14%, transparent);
-  border: 1px solid color-mix(in srgb, #ef4444 30%, var(--rule));
-  background-image: repeating-linear-gradient(
-    45deg,
-    transparent 0 4px,
-    color-mix(in srgb, #ef4444 18%, transparent) 4px 5px
-  );
-}
-.avail-free-sw {
-  background: color-mix(in srgb, var(--green) 30%, transparent);
-  border: 1px solid color-mix(in srgb, var(--green) 50%, var(--rule));
-}
-.avail-busy-sw {
-  background: color-mix(in srgb, #ef4444 22%, transparent);
-  border: 1px solid color-mix(in srgb, #ef4444 45%, var(--rule));
+/* ============ SNIPPET LIST — card hover ============ */
+.snippet-card:hover {
+  border-color: color-mix(in srgb, var(--link) 45%, var(--rule)) !important;
+  box-shadow: 0 6px 22px color-mix(in srgb, var(--link) 12%, transparent) !important;
+  transform: translateY(-2px) !important;
+  text-decoration: none !important;
 }

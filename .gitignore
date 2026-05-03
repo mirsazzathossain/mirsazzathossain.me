@@ -31,3 +31,6 @@ yarn-error.log*
 out/
 .contentlayer/
 .claude/
+.codex/
+.agents/
+design-to-be/

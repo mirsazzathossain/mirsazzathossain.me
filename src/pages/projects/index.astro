@@ -1,7 +1,6 @@
 ---
-import Layout from "@/layouts/Layout.astro";
-import SimpleLayout from "@/components/SimpleLayout";
 import ListProjects from "@/components/ListProjects";
+import Layout from "@/layouts/Layout.astro";
 import { readSiteJson } from "@/utils/json-data";
 
 const projects = await readSiteJson<Project[]>("projects.json");
@@ -9,15 +8,17 @@ const projects = await readSiteJson<Project[]>("projects.json");
 
 <Layout
   title="Projects"
-  description="I've worked on tons of little projects over the years but these are the ones that I'm most proud of. Many of them are open-source, so if you see something that piques your interest, check out the code and contribute if you have ideas for how it can be improved."
+  description="Open-source code I've shipped, contributed to, or maintained — research work, course projects, hobby builds, and small utilities."
   canonicalPath="/projects"
 >
-  <SimpleLayout
-    title="Things I've made trying to put my dent in the universe."
-    intro="I've worked on tons of little projects over the years but these are the ones that I'm most proud of. Many of them are open-source, so if you see something that piques your interest, check out the code and contribute if you have ideas for how it can be improved."
-  >
-    <div class="mt-16 sm:mt-20">
+  <div class="space-y-8">
+    <header class="mb-8 max-w-[720px]">
+      <p class="m-0 mb-1.5 font-mono text-[11px] uppercase tracking-[0.14em] text-ink-3">Code</p>
+      <h1 class="m-0 font-serif text-[clamp(28px,4.5vw,42px)] font-bold leading-[1.05] tracking-[-0.02em] text-ink">Projects</h1>
+      <p class="m-0 mt-3 max-w-[60ch] text-[15px] text-ink-2">Open-source code I've shipped, contributed to, or maintained — research work, course projects, hobby builds, and small utilities.</p>
+    </header>
+    <div>
       <ListProjects client:load projects={projects} />
     </div>
-  </SimpleLayout>
+  </div>
 </Layout>

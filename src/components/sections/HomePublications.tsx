@@ -38,6 +38,7 @@ export function HomePublications({ publications }: { publications: any[] }) {
       <div className="flex flex-col">
         {featured.map((p) => {
           const isNew = p.year >= "2025";
+          const detailHref = p.id ? `/publications/${p.id}` : p.url || "#";
           const venueShort = p.journal?.includes("Image Processing") ? "ICIP" 
                            : p.journal?.includes("Neural Networks") ? "IJCNN"
                            : p.journal?.includes("Artificial Intelligence") ? "IJCAI"
@@ -61,7 +62,7 @@ export function HomePublications({ publications }: { publications: any[] }) {
                 )}
               </div>
               <h3 className="font-serif text-[16.5px] leading-[1.32] m-0 mb-[5px] tracking-[-0.01em] font-semibold">
-                <a href={p.url || "#"} className="text-ink hover:text-link hover:no-underline transition-colors" target="_blank" rel="noreferrer">
+                <a href={detailHref} className="text-ink hover:text-link hover:no-underline transition-colors">
                   {p.title}
                 </a>
               </h3>

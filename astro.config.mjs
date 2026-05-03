@@ -41,13 +41,7 @@ export default defineConfig({
   },
   integrations: [
     mdx({
-      syntaxHighlight: "shiki",
-      shikiConfig: {
-        themes: {
-          light: "github-light",
-          dark: "github-dark",
-        },
-      },
+      syntaxHighlight: "prism",
       remarkPlugins: [remarkMath],
       rehypePlugins: [rehypeKatex],
     }),

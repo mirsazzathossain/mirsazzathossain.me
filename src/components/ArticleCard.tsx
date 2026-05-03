@@ -29,7 +29,7 @@ export default function ArticleCard({
           {published}
         </Card.Eyebrow>
         <Card.Description>{article.data.description}</Card.Description>
-        <Card.Cta>Read article</Card.Cta>
+        <Card.Cta>Read post</Card.Cta>
       </Card>
       <Card.Eyebrow
         as="time"

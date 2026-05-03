@@ -1,7 +1,6 @@
 ---
 import Layout from "@/layouts/Layout.astro";
-import SimpleLayout from "@/components/SimpleLayout";
-import SearchArticles from "@/components/articles/SearchArticles";
+import PostsList from "@/components/articles/PostsList";
 import { getSortedPublishedArticles } from "@/utils/articles";
 import { slugify } from "@/utils/slugify";
 import type { GetStaticPaths } from "astro";
@@ -17,17 +16,17 @@ export const getStaticPaths: GetStaticPaths = async ({ paginate }) => {
 
   return [...slugs].flatMap((slug) => {
     const filtered = articles.filter((article) =>
-      article.data.categories.some((c) => slugify(c.title) === slug),
+      article.data.categories.some((category) => slugify(category.title) === slug),
     );
     if (!filtered.length) return [];
-    return paginate(filtered, { pageSize: 5, params: { slug } });
+    return paginate(filtered, { pageSize: 20, params: { slug } });
   });
 };
 
 const allArticles = await getSortedPublishedArticles();
 const { slug } = Astro.params;
 const allForCategory = allArticles.filter((article) =>
-  article.data.categories.some((c) => slugify(c.title) === slug),
+  article.data.categories.some((category) => slugify(category.title) === slug),
 );
 const { page } = Astro.props;
 
@@ -36,25 +35,31 @@ if (!slug || !allForCategory.length) {
 }
 
 const categoryTitle =
-  allForCategory[0].data.categories.find((c) => slugify(c.title) === slug)
-    ?.title ?? slug;
+  allForCategory[0].data.categories.find(
+    (category) => slugify(category.title) === slug,
+  )?.title ?? slug;
 ---
 
 <Layout
   title={
     page.currentPage > 1
-      ? `${categoryTitle} – Articles (page ${page.currentPage})`
-      : `Articles categorized as ${categoryTitle}`
+      ? `${categoryTitle} - Posts (page ${page.currentPage})`
+      : `Posts in ${categoryTitle}`
   }
-  description={`This page contains all the articles categorized as ${categoryTitle} available on this website.`}
+  description={`Posts in ${categoryTitle}.`}
   canonicalPath={page.url.current}
 >
-  <SimpleLayout title={`Articles categorized as ${categoryTitle}`}>
-    <SearchArticles
-      client:load
-      allArticles={allForCategory}
-      page={page}
-      paginationBase={`/articles/categories/${slug}`}
-    />
-  </SimpleLayout>
+  <header class="mb-8 max-w-[720px]">
+    <p class="m-0 mb-1.5 font-mono text-[11px] tracking-[0.14em] uppercase text-ink-3">
+      Category
+    </p>
+    <h1 class="m-0 font-serif text-[clamp(28px,4.5vw,42px)] font-semibold leading-[1.05] tracking-[-0.02em] text-ink">
+      {categoryTitle}
+    </h1>
+    <p class="mt-3 mb-0 max-w-[60ch] text-[15px] text-ink-2">
+      Posts and notes in {categoryTitle}.
+    </p>
+  </header>
+
+  <PostsList client:load articles={allForCategory} initialPage={page.currentPage} />
 </Layout>

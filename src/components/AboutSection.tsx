@@ -84,10 +84,7 @@ export default function AboutSection({ about }: { about: any }): JSX.Element {
             {about.company.name}
           </a>
         </h2>
-        <p
-          className="mt-6 text-justify text-base leading-relaxed text-zinc-600 dark:text-zinc-400"
-          style={{ whiteSpace: "pre-line" }}
-        >
+        <p className="mt-6 whitespace-pre-line text-justify text-base leading-relaxed text-zinc-600 dark:text-zinc-400">
           {about.description}
         </p>
 

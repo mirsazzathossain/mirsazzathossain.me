@@ -18,9 +18,10 @@ ssh -L 2222:192.168.1.100:22 user@gateway-server
 - `-L 2222:192.168.1.100:22` → Forwards local port `2222` to `private-server:22`.
 - `user@gateway-server` → The intermediate server with public access.
 
-<HighlightText>
-  Note: Replace `192.168.1.100` with the actual private server IP inside the remote network.
-</HighlightText>
+<mark>
+  Note: Replace `192.168.1.100` with the actual private server IP inside the
+  remote network.
+</mark>
 
 ## Open a New Terminal and Connect to the Private Server
 

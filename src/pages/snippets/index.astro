@@ -8,16 +8,15 @@ const snippets = await getCollection("snippets");
 ---
 
 <Layout
-  title="Code Snippets"
-  description="I've been writing code for a long time. Here are some of the snippets I've found useful and reusable."
+  title="Snippets"
+  description="Tiny, copy-paste-ready solutions for tasks I keep running into."
   canonicalPath="/snippets"
 >
   <SimpleLayout
-    title="Snippets of Code I Find Useful"
-    intro="I've been writing code for a long time. Here are some of the snippets I've found useful and reusable."
+    eyebrow="Reference"
+    title="Snippets"
+    intro="Tiny, copy-paste-ready solutions for tasks I keep running into — kept here so I (and you) don't re-derive them from scratch."
   >
-    <div class="mt-16 sm:mt-20">
-      <ListSnippets client:load snippets={snippets} />
-    </div>
+    <ListSnippets client:load snippets={snippets} />
   </SimpleLayout>
 </Layout>

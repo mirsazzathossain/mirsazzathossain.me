@@ -9,7 +9,7 @@ export default function RelatedArticles({
   return (
     <div className="mt-12">
       <h2 className="text-2xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100">
-        Related Articles
+        Related Posts
       </h2>
       <div className="mt-6 flex max-w-3xl flex-col space-y-16">
         {articles.map((article) => (
@@ -22,7 +22,7 @@ export default function RelatedArticles({
                 {article.data.title}
               </Card.Title>
               <Card.Description>{article.data.description}</Card.Description>
-              <Card.Cta>Read article</Card.Cta>
+              <Card.Cta>Read post</Card.Cta>
             </Card>
           </article>
         ))}

@@ -1,78 +1,114 @@
-"use client";
-import React from "react";
+import { ArrowRightIcon } from "@/components/ui/Icon";
 
 export default function CourseCard({
   course,
 }: {
   course: Course;
 }): JSX.Element {
-  const [isImageLoading, setIsImageLoading] = React.useState(true);
-
   return (
+    /* .course */
     <a
       href={course.link.href}
-      className="relative block overflow-hidden rounded-lg border border-gray-100 dark:border-zinc-700/40 p-8 shadow-lg hover:shadow-xs"
-      target="_blank"
-      rel="noreferrer"
+      style={{ padding: "18px 18px 16px", gap: 10, borderRadius: 10 }}
+      className="flex flex-col border border-rule bg-bg transition-[border-color,transform] duration-150 hover:border-ink-3 hover:-translate-y-[2px] hover:no-underline"
     >
-      <span className="animate-background absolute inset-x-0 bottom-0 h-2 bg-linear-to-r from-green-300 via-blue-500 to-purple-600 bg-size-[400%_400%] transition [animation-duration:6s]"></span>
+      {/* .course__top */}
+      <div style={{ gap: 12 }} className="flex items-center">
+        <img
+          src={`/images/${course.logo.src}`}
+          alt={course.logo.alt}
+          width={36}
+          height={36}
+          className="object-contain"
+        />
 
-      <div className="justify-between sm:flex">
-        <div>
-          <h3 className="text-xl font-bold text-zinc-800 dark:text-zinc-100">
-            {course.title}
-          </h3>
-
-          <p className="mt-1 text-xs font-medium text-zinc-800 dark:text-zinc-100">
-            By {course.author}
-          </p>
-        </div>
-
-        <div className="ml-3 hidden shrink-0 sm:block">
-          <img
-            alt={course.logo.alt}
-            src={`/images/${course.logo.src}`}
-            className={`${
-              isImageLoading
-                ? "blur-xs transition ease-in duration-100"
-                : "blue-none transition ease-in duration-100"
-            } h-16 w-16 rounded-lg object-cover shadow-xs`}
-            width={64}
-            height={64}
-            onLoad={() => setIsImageLoading(false)}
-          />
+        {/* .course__top-text */}
+        <div style={{ gap: 2 }} className="flex flex-col min-w-0 flex-1">
+          {/* .course__code */}
+          <span
+            style={{
+              fontFamily: "var(--font-mono)",
+              fontSize: 12,
+              fontWeight: 600,
+              color: "var(--ink)",
+            }}
+          >
+            {course.code}
+          </span>
+          {/* .course__role */}
+          <span
+            style={{
+              fontFamily: "var(--font-mono)",
+              fontSize: 9.5,
+              letterSpacing: "0.1em",
+              textTransform: "uppercase",
+              color: "var(--ink-3)",
+            }}
+          >
+            {course.role}
+          </span>
         </div>
       </div>
 
-      <div className="mt-4 sm:pr-8">
-        <p className="text-sm text-zinc-600 dark:text-zinc-400 text-justify">
-          {course.description}
-        </p>
+      {/* .course__title */}
+      <h3
+        style={{
+          fontFamily: "var(--font-serif)",
+          fontSize: 16,
+          lineHeight: 1.3,
+          margin: "2px 0 0",
+          color: "var(--ink)",
+        }}
+      >
+        {course.title}
+      </h3>
+
+      {/* .course__inst */}
+      <p style={{ fontSize: 12, color: "var(--ink-3)", margin: 0 }}>
+        {course.inst}
+      </p>
+
+      {/* .course__desc */}
+      <p
+        style={{
+          fontSize: 12.5,
+          color: "var(--ink-2)",
+          margin: 0,
+          lineHeight: 1.55,
+          flex: 1,
+        }}
+      >
+        {course.description}
+      </p>
+
+      {/* .course__foot */}
+      <div
+        style={{ paddingTop: 10, borderTop: "1px solid var(--rule-2)" }}
+        className="flex justify-between items-center"
+      >
+        {/* .course__term */}
+        <span
+          style={{
+            fontFamily: "var(--font-mono)",
+            fontSize: 11,
+            color: "var(--ink-3)",
+          }}
+        >
+          {course.term}
+        </span>
+        {/* .course__cta */}
+        <span
+          style={{
+            fontFamily: "var(--font-mono)",
+            fontSize: 11.5,
+            color: "var(--link)",
+          }}
+          className="inline-flex items-center gap-[4px]"
+        >
+          View materials
+          <ArrowRightIcon width={10} height={10} strokeWidth={2.5} />
+        </span>
       </div>
-
-      <dl className="mt-6 flex">
-        <div className="flex flex-col-reverse">
-          <dt className="text-sm font-medium text-zinc-800 dark:text-zinc-100">
-            Published
-          </dt>
-          <dd className="text-xs text-zinc-600 dark:text-zinc-400">
-            {new Date(course.publishedDate).toLocaleDateString("en-US", {
-              month: "long",
-              day: "numeric",
-              year: "numeric",
-            })}
-          </dd>
-        </div>
-
-        <div className="ml-3 flex flex-col-reverse sm:ml-6">
-          <dt className="text-sm font-medium text-zinc-800 dark:text-zinc-100">
-            Course Duration
-          </dt>
-          <dd className="text-xs text-zinc-600 dark:text-zinc-400">
-            {course.totalDuration}
-          </dd>
-        </div>
-      </dl>
     </a>
   );
 }

@@ -109,10 +109,10 @@ export default function SearchArticles({
     <>
       <div className="relative mb-12 max-w-3xl sm:mb-16">
         <input
-          aria-label="Search articles"
+          aria-label="Search posts"
           type="text"
           onChange={(e) => setSearchValue(e.target.value)}
-          placeholder="Search articles"
+          placeholder="Search posts"
           className="block w-full rounded-md border border-gray-200 bg-white px-4 py-2 text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-zinc-800/90 dark:text-zinc-400"
         />
 
@@ -130,7 +130,7 @@ export default function SearchArticles({
           <div className="text-center">
             <NotFoundIcon className="mx-auto h-20 w-20 text-gray-500 dark:text-gray-400" />
             <p className="text-xl font-medium text-gray-500 dark:text-gray-400">
-              No articles found.
+              No posts found.
             </p>
 
             <p className="text-gray-500 dark:text-gray-400">

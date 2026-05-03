@@ -1,0 +1,74 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import PublicationDetail from "@/components/PublicationDetail";
+import { readSiteJson } from "@/utils/json-data";
+
+type Publication = {
+  id?: string;
+  title?: string;
+  abstract?: string;
+};
+
+export async function getStaticPaths() {
+  const publications = await readSiteJson<Publication[]>("publications.json");
+
+  return publications
+    .filter((publication) => publication.id)
+    .map((publication) => ({
+      params: { id: publication.id },
+      props: { publication },
+    }));
+}
+
+const { publication } = Astro.props;
+---
+
+<Layout
+  title={publication.title}
+  description={publication.abstract ?? publication.title}
+  canonicalPath={`/publications/${publication.id}`}
+>
+  <PublicationDetail publication={publication} />
+</Layout>
+
+<script is:inline>
+  document.addEventListener("click", async (event) => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+
+    const button = target.closest("[data-copy-cite]");
+    if (!button) return;
+
+    const block = button.closest(".block-code");
+    const text = block?.querySelector("pre")?.textContent?.trim() || "";
+    const label = button.querySelector("[data-copy-label]");
+
+    const reset = () => {
+      if (label) label.textContent = "Copy";
+      button.setAttribute("aria-label", "Copy citation");
+    };
+
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(text);
+      } else {
+        const textarea = document.createElement("textarea");
+        textarea.value = text;
+        textarea.setAttribute("readonly", "");
+        textarea.style.position = "fixed";
+        textarea.style.opacity = "0";
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textarea);
+      }
+
+      if (label) label.textContent = "Copied";
+      button.setAttribute("aria-label", "Citation copied");
+      window.setTimeout(reset, 1600);
+    } catch {
+      if (label) label.textContent = "Failed";
+      window.setTimeout(reset, 1600);
+    }
+  });
+</script>

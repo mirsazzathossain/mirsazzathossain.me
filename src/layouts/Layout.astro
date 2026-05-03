@@ -46,7 +46,7 @@ const pageTitle = title
 ---
 
 <!doctype html>
-<html lang="en" class="h-full antialiased">
+<html lang="en" class="antialiased">
   <head>
     <meta charset="UTF-8" />
     <meta
@@ -117,7 +117,7 @@ const pageTitle = title
       })();
     </script>
   </head>
-  <body class="flex h-full min-h-screen flex-col bg-bg text-ink-2 font-sans text-[14.5px] leading-[1.65] antialiased">
+  <body class="flex min-h-screen flex-col bg-bg text-ink-2 font-sans text-[14.5px] leading-[1.65] antialiased">
     <div class="relative flex min-h-screen flex-col">
         <Header client:load pathname={Astro.url.pathname} />
         <main class="flex-auto max-w-[1100px] w-full mx-auto px-[clamp(20px,4vw,36px)] pt-[clamp(28px,5vw,56px)] pb-[64px]">
@@ -128,5 +128,34 @@ const pageTitle = title
         <BackToTop client:load />
         <SpeedInsights />
       </div>
+    <script is:inline>
+      document.addEventListener("click", async (event) => {
+        const target = event.target;
+        if (!(target instanceof Element)) return;
+
+        const button = target.closest("[data-copy-code]");
+        if (!(button instanceof HTMLElement)) return;
+
+        const block = button.closest(".block-code");
+        const code = block?.querySelector("pre")?.textContent || "";
+        const label = button.querySelector("[data-copy-label]");
+
+        try {
+          await navigator.clipboard.writeText(code);
+          if (label) label.textContent = "Copied";
+          button.setAttribute("aria-label", "Code copied");
+          window.setTimeout(() => {
+            if (label) label.textContent = "Copy";
+            button.setAttribute("aria-label", "Copy code");
+          }, 1800);
+        } catch {
+          if (label) label.textContent = "Failed";
+          window.setTimeout(() => {
+            if (label) label.textContent = "Copy";
+            button.setAttribute("aria-label", "Copy code");
+          }, 1800);
+        }
+      });
+    </script>
   </body>
 </html>

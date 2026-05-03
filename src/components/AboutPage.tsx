@@ -1,9 +1,7 @@
 import React from "react";
 import {
-  GitHubIcon,
-  GoogleScholarIcon,
   LinkedInIcon,
-  TwitterXIcon,
+  DiscordIcon,
 } from "@/components/SocialIcons";
 
 interface About {
@@ -51,7 +49,9 @@ interface Talk {
   location: string;
   date: string;
   type: "oral" | "poster" | "workshop";
-  slidesUrl: string;
+  slidesUrl?: string;
+  videoUrl?: string;
+  posterUrl?: string;
 }
 
 interface Service {
@@ -63,8 +63,10 @@ interface Service {
 interface Press {
   title: string;
   outlet: string;
+  publisher?: string;
   date: string;
   url: string;
+  image?: string;
   desc: string;
 }
 
@@ -198,8 +200,7 @@ export default function AboutPage({
           About
         </p>
         <h1
-          className="leading-[1.05] tracking-[-0.02em] m-0 font-serif text-ink font-semibold"
-          style={{ fontSize: "clamp(28px, 4.5vw, 42px)" }}
+          className="m-0 font-serif text-[clamp(28px,4.5vw,42px)] font-semibold leading-[1.05] tracking-[-0.02em] text-ink"
         >
           {about.name}
         </h1>
@@ -225,39 +226,23 @@ export default function AboutPage({
             alt={about.name}
           />
           <div className="grid gap-[6px] mt-[14px] text-[12.5px] text-ink-2">
-            <span className="inline-flex items-center gap-[6px]">
+            <a
+              href="https://www.google.com/maps?q=23.8103,90.4125"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-[6px] hover:text-link transition-colors"
+            >
               <PinIcon /> {location}
-            </span>
-            <span className="inline-flex items-center gap-[6px]">
-              <EmailIcon />
-              <a href={`mailto:${email}`} className="text-link hover:text-link-hover">
-                {email}
-              </a>
-            </span>
-            <span className="inline-flex items-center gap-[6px]">
-              <GoogleScholarIcon className="w-[13px] h-[13px] fill-current" />
-              <a href={getSocialUrl("google-scholar")} target="_blank" rel="noreferrer" className="text-link hover:text-link-hover">
-                Google Scholar
-              </a>
-            </span>
-            <span className="inline-flex items-center gap-[6px]">
-              <GitHubIcon className="w-[13px] h-[13px] fill-current" />
-              <a href={getSocialUrl("github")} target="_blank" rel="noreferrer" className="text-link hover:text-link-hover">
-                mirsazzathossain
-              </a>
-            </span>
-            <span className="inline-flex items-center gap-[6px]">
-              <LinkedInIcon className="w-[13px] h-[13px] fill-current" />
-              <a href={getSocialUrl("linkedin")} target="_blank" rel="noreferrer" className="text-link hover:text-link-hover">
-                mirsazzathossain
-              </a>
-            </span>
-            <span className="inline-flex items-center gap-[6px]">
-              <TwitterXIcon className="w-[13px] h-[13px] fill-current" />
-              <a href={getSocialUrl("twitter")} target="_blank" rel="noreferrer" className="text-link hover:text-link-hover">
-                @mir_sazzat
-              </a>
-            </span>
+            </a>
+            <a href={`mailto:${email}`} className="inline-flex items-center gap-[6px] hover:text-link transition-colors">
+              <EmailIcon /> {email}
+            </a>
+            <a href="https://www.linkedin.com/in/mirsazzathossain/" target="_blank" rel="noreferrer" className="inline-flex items-center gap-[6px] hover:text-link transition-colors">
+              <LinkedInIcon className="w-[13px] h-[13px] fill-current" /> mirsazzathossain
+            </a>
+            <a href="https://discord.gg/M7Jjv9hr" target="_blank" rel="noreferrer" className="inline-flex items-center gap-[6px] hover:text-link transition-colors">
+              <DiscordIcon className="w-[13px] h-[13px] fill-current" /> mirsazzathossain
+            </a>
           </div>
         </aside>
 
@@ -277,10 +262,9 @@ export default function AboutPage({
             <div key={i} className="flex gap-[14px] items-start py-3 border-b border-rule-2">
               <OrgLogo name={edu.school} />
               <div className="flex-1 min-w-0">
-                <h3 className="font-serif text-[15.5px] text-ink m-0 mb-0.5">{edu.school}</h3>
+                <h3 className="font-serif text-[15.5px] text-ink m-0 mb-0.5"><a href={edu.schoolURL} target="_blank" rel="noreferrer" className="hover:text-link transition-colors">{edu.school}</a></h3>
                 <p className="font-serif text-[12.5px] text-ink-3 m-0 mb-1">
-                  {edu.degree} in {edu.major}
-                  {edu.minor ? ` — Minor in ${edu.minor}` : ""}
+                  {(() => { const [full, abbr] = edu.degree.split(" - "); return abbr ? `${full} · ${abbr} in ${edu.major}` : `${full} in ${edu.major}`; })()}{edu.minor ? ` · Minor in ${edu.minor}` : ""}
                 </p>
                 <p className="font-serif text-[13px] text-ink-2 m-0 leading-[1.55]">
                   {edu.description.split(".")[0]}.
@@ -297,7 +281,7 @@ export default function AboutPage({
               <OrgLogo name={exp.company} />
               <div className="flex-1 min-w-0">
                 <h3 className="font-serif text-[15.5px] text-ink m-0 mb-0.5">{exp.title}</h3>
-                <p className="font-serif text-[12.5px] text-ink-3 m-0 mb-1">{exp.company} · Part-time</p>
+                <p className="font-serif text-[12.5px] text-ink-3 m-0 mb-1"><a href={exp.companyURL} target="_blank" rel="noreferrer" className="hover:text-link transition-colors">{exp.company}</a> · Part-time</p>
                 <p className="font-serif text-[13px] text-ink-2 m-0 leading-[1.55]">
                   {exp.description.split(".")[0]}.
                 </p>
@@ -313,7 +297,7 @@ export default function AboutPage({
               <OrgLogo name={exp.company} />
               <div className="flex-1 min-w-0">
                 <h3 className="font-serif text-[15.5px] text-ink m-0 mb-0.5">{exp.title}</h3>
-                <p className="font-serif text-[12.5px] text-ink-3 m-0 mb-1">{exp.company}</p>
+                <p className="font-serif text-[12.5px] text-ink-3 m-0 mb-1"><a href={exp.companyURL} target="_blank" rel="noreferrer" className="hover:text-link transition-colors">{exp.company}</a></p>
                 <p className="font-serif text-[13px] text-ink-2 m-0 leading-[1.55]">
                   {exp.description.split(".")[0]}.
                 </p>
@@ -329,7 +313,7 @@ export default function AboutPage({
               <OrgLogo name={exp.company} />
               <div className="flex-1 min-w-0">
                 <h3 className="font-serif text-[15.5px] text-ink m-0 mb-0.5">{exp.title}</h3>
-                <p className="font-serif text-[12.5px] text-ink-3 m-0 mb-1">{exp.company}</p>
+                <p className="font-serif text-[12.5px] text-ink-3 m-0 mb-1"><a href={exp.companyURL} target="_blank" rel="noreferrer" className="hover:text-link transition-colors">{exp.company}</a></p>
                 <p className="font-serif text-[13px] text-ink-2 m-0 leading-[1.55]">
                   {exp.description.split(".")[0]}.
                 </p>
@@ -344,11 +328,25 @@ export default function AboutPage({
             {awards.map((award, i) => (
               <li
                 key={i}
-                className="grid items-baseline py-[7px] text-[13px] border-b border-dashed border-rule last:border-b-0"
-                style={{ gridTemplateColumns: "22px 1fr auto", gap: "10px" }}
+                className="grid grid-cols-[22px_1fr_auto] items-baseline gap-2.5 border-b border-dashed border-rule py-[7px] text-[13px] last:border-b-0"
               >
                 <span className="text-[13px]">{award.icon}</span>
-                <span className="text-ink">{award.title}</span>
+                {award.credentialUrl ? (
+                  <a
+                    href={award.credentialUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    title={award.credentialLabel || "View credential"}
+                    className="inline-flex items-baseline gap-[5px] text-ink hover:text-link transition-colors group/award"
+                  >
+                    <span>{award.title}</span>
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 opacity-40 group-hover/award:opacity-100 transition-opacity self-center">
+                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
+                    </svg>
+                  </a>
+                ) : (
+                  <span className="text-ink">{award.title}</span>
+                )}
                 <span className="font-mono text-[11.5px] text-ink-3 whitespace-nowrap">{award.time}</span>
               </li>
             ))}
@@ -357,37 +355,42 @@ export default function AboutPage({
           {/* Talks & Presentations */}
           {sectionTitle("Talks & Presentations")}
           <ul className="list-none p-0 m-0 mb-2">
-            {talks.map((talk, i) => (
-              <li
-                key={i}
-                className="grid py-[11px] border-b border-dashed border-rule last:border-b-0 items-baseline"
-                style={{ gridTemplateColumns: "64px 1fr auto", gap: "14px" }}
-              >
-                <span
-                  className={`font-mono text-[9.5px] tracking-[0.1em] uppercase px-2 py-[3px] rounded-[3px] text-center font-semibold self-center justify-self-start ${talkTypeClass(talk.type)}`}
+            {talks.map((talk, i) => {
+              const url = talk.slidesUrl || talk.videoUrl || talk.posterUrl;
+              return (
+                <li
+                  key={i}
+                  className={`relative group -mx-2 grid grid-cols-[64px_1fr_auto] items-start gap-[14px] rounded-[6px] border-b border-dashed border-rule px-2 py-[11px] transition-colors last:border-b-0${url ? " cursor-pointer hover:bg-bg-2" : ""}`}
                 >
-                  {talk.type}
-                </span>
-                <div className="min-w-0">
-                  <p className="font-serif text-[14.5px] leading-[1.4] text-ink m-0 mb-0.5">
-                    {talk.title}
-                  </p>
-                  <p className="font-serif text-[12px] text-ink-3 m-0 italic">
-                    {talk.venue} ·{" "}
-                    <span className="not-italic">{talk.location}</span>
-                  </p>
-                </div>
-                <span className="font-mono text-[11px] text-ink-3 whitespace-nowrap">{talk.date}</span>
-              </li>
-            ))}
+                  <span
+                    className={`font-mono text-[9.5px] tracking-[0.1em] uppercase px-2 py-[3px] rounded-[3px] text-center font-semibold mt-[2px] justify-self-start ${talkTypeClass(talk.type)}`}
+                  >
+                    {talk.type}
+                  </span>
+                  <div className="min-w-0">
+                    {url ? (
+                      <a href={url} target="_blank" rel="noreferrer" className="inline-flex items-baseline gap-[5px] font-serif text-[14.5px] leading-[1.4] text-ink group-hover:text-link transition-colors m-0 mb-0.5 after:absolute after:inset-0 after:content-['']">
+                        <span>{talk.title}</span>
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 opacity-40 group-hover:opacity-100 transition-opacity self-center">
+                          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
+                        </svg>
+                      </a>
+                    ) : (
+                      <p className="font-serif text-[14.5px] leading-[1.4] text-ink m-0 mb-0.5">{talk.title}</p>
+                    )}
+                    <p className="font-serif text-[12px] text-ink-3 m-0 italic">
+                      {talk.venue} · <span className="not-italic">{talk.location}</span>
+                    </p>
+                  </div>
+                  <span className="font-mono text-[11px] text-ink-3 whitespace-nowrap mt-[3px]">{talk.date}</span>
+                </li>
+              );
+            })}
           </ul>
 
           {/* Service & Reviewing */}
           {sectionTitle("Service & Reviewing")}
-          <div
-            className="grid gap-2 mb-2"
-            style={{ gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))" }}
-          >
+          <div className="mb-2 grid gap-2 [grid-template-columns:repeat(auto-fill,minmax(180px,1fr))]">
             {service.map((s, i) => (
               <div
                 key={i}
@@ -406,17 +409,52 @@ export default function AboutPage({
           {sectionTitle("Press & Mentions")}
           <ul className="list-none p-0 m-0">
             {press.map((p, i) => (
-              <li key={i} className="py-[14px] border-b border-dashed border-rule last:border-b-0">
-                <div className="flex justify-between gap-3 items-baseline mb-1">
-                  <span className="font-mono text-[10.5px] tracking-[0.06em] uppercase text-link font-semibold">
-                    {p.outlet}
-                  </span>
-                  <span className="font-mono text-[11px] text-ink-3">{p.date}</span>
+              <li key={i} className="relative group py-[14px] border-b border-dashed border-rule last:border-b-0 -mx-2 px-2 rounded-[6px] hover:bg-bg-2 transition-colors cursor-pointer">
+                <div
+                  className={`grid grid-rows-[auto_auto] ${p.image ? "grid-cols-[84px_1fr]" : "grid-cols-1"}`}
+                >
+                  {/* Row 1: spacer | logos + date */}
+                  {p.image && <div />}
+                  <div className="flex justify-between gap-3 items-center mb-[6px]">
+                    <div className="flex items-center gap-[6px]">
+                      {p.outlet === "Bigganchinta" ? (
+                        <>
+                          <img src="/images/logos/bigganchinta.svg" alt="Bigganchinta" className="h-[11px] w-auto dark:brightness-[4] dark:grayscale" />
+                          {p.publisher === "Prothom Alo" && (
+                            <>
+                              <span className="text-ink-4 text-[10px]">by</span>
+                              <img src="/images/logos/prothom-alo.svg" alt="Prothom Alo" className="h-[14px] w-auto dark:brightness-[10] dark:grayscale" />
+                            </>
+                          )}
+                        </>
+                      ) : (
+                        <span className="font-mono text-[10.5px] tracking-[0.06em] uppercase text-link font-semibold">
+                          {p.outlet}
+                        </span>
+                      )}
+                    </div>
+                    <span className="font-mono text-[11px] text-ink-3 whitespace-nowrap">{p.date}</span>
+                  </div>
+                  {/* Row 2: image | title + desc */}
+                  {p.image && (
+                    <img
+                      src={p.image}
+                      alt={p.title}
+                      className="w-[72px] h-[56px] object-cover rounded-[6px] border border-rule self-start"
+                    />
+                  )}
+                  <div className="min-w-0">
+                    <a
+                      href={p.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="font-serif text-[15px] leading-[1.35] text-ink group-hover:text-link transition-colors m-0 mb-1 block after:absolute after:inset-0 after:content-['']"
+                    >
+                      {p.title}
+                    </a>
+                    <p className="font-serif text-[12.5px] text-ink-2 leading-[1.55] m-0 max-w-[65ch]">{p.desc}</p>
+                  </div>
                 </div>
-                <p className="font-serif text-[16px] leading-[1.35] text-ink m-0 mb-1">
-                  {p.title}
-                </p>
-                <p className="font-serif text-[13px] text-ink-2 leading-[1.55] m-0 max-w-[65ch]">{p.desc}</p>
               </li>
             ))}
           </ul>
@@ -451,19 +489,16 @@ export default function AboutPage({
               </div>
               <div className="flex gap-3 font-mono text-[11px] text-ink-3">
                 <span className="inline-flex items-center gap-[5px]">
-                  <span className="inline-block w-3 h-3 rounded-[3px] avail-free-sw" />
+                  <span className="inline-block h-3 w-3 rounded-[3px] border border-[color-mix(in_srgb,var(--green)_50%,var(--rule))] bg-[color-mix(in_srgb,var(--green)_30%,transparent)]" />
                   free
                 </span>
                 <span className="inline-flex items-center gap-[5px]">
-                  <span className="inline-block w-3 h-3 rounded-[3px] avail-busy-sw" />
+                  <span className="inline-block h-3 w-3 rounded-[3px] border border-[color-mix(in_srgb,#ef4444_45%,var(--rule))] bg-[color-mix(in_srgb,#ef4444_22%,transparent)]" />
                   busy
                 </span>
               </div>
             </div>
-            <div
-              className="grid gap-[3px] items-stretch"
-              style={{ gridTemplateColumns: "56px repeat(7, 1fr)" }}
-            >
+            <div className="grid grid-cols-[56px_repeat(7,1fr)] items-stretch gap-[3px]">
               <div />
               {availability.dates.map((d, i) => (
                 <div key={i} className="flex flex-col py-[6px] pb-2 text-center border-b border-rule">
@@ -481,7 +516,11 @@ export default function AboutPage({
                   {(availability.grid[ri] || "").split("").map((c, ci) => (
                     <div
                       key={ci}
-                      className={`min-h-[22px] rounded-[3px] ${c === "f" ? "avail-cell-free" : "avail-cell-busy"}`}
+                      className={
+                        c === "f"
+                          ? "min-h-[22px] rounded-[3px] border border-[color-mix(in_srgb,var(--green)_35%,var(--rule))] bg-[color-mix(in_srgb,var(--green)_18%,transparent)]"
+                          : "min-h-[22px] rounded-[3px] border border-[color-mix(in_srgb,#ef4444_30%,var(--rule))] bg-[color-mix(in_srgb,#ef4444_14%,transparent)] bg-[repeating-linear-gradient(45deg,transparent_0_4px,color-mix(in_srgb,#ef4444_18%,transparent)_4px_5px)]"
+                      }
                       title={`${availability.days[ci]} ${h}`}
                     />
                   ))}
@@ -506,16 +545,14 @@ export default function AboutPage({
             {timeline.map((yr) => (
               <div
                 key={yr.year}
-                className="grid gap-[14px] py-[10px] border-b border-dashed border-rule last:border-b-0 items-baseline"
-                style={{ gridTemplateColumns: "60px 1fr" }}
+                className="grid grid-cols-[60px_1fr] items-baseline gap-[14px] border-b border-dashed border-rule py-[10px] last:border-b-0"
               >
                 <div className="font-mono text-[13px] text-ink font-semibold">{yr.year}</div>
                 <div className="grid gap-[5px]">
                   {yr.items.map((item, j) => (
                     <div
                       key={j}
-                      className="text-[13px] text-ink-2 grid gap-[10px]"
-                      style={{ gridTemplateColumns: "60px 1fr" }}
+                      className="grid grid-cols-[60px_1fr] gap-2.5 text-[13px] text-ink-2"
                     >
                       <span
                         className={`font-mono text-[9.5px] tracking-[0.1em] uppercase px-[6px] py-[2px] rounded-[3px] h-fit ${kindClass(item.kind)}`}

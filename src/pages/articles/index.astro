@@ -1,3 +1,28 @@
 ---
-return Astro.redirect("/articles/list", 301);
+import Layout from "@/layouts/Layout.astro";
+import PostsList from "@/components/articles/PostsList";
+import { getSortedPublishedArticles } from "@/utils/articles";
+
+const articles = await getSortedPublishedArticles();
 ---
+
+<Layout
+  title="Posts"
+  description="Notes on machine learning, mathematics, and the occasional engineering recipe, written while learning out loud."
+  canonicalPath="/articles"
+>
+  <header class="mb-8 max-w-[720px]">
+    <p class="m-0 mb-1.5 font-mono text-[11px] tracking-[0.14em] uppercase text-ink-3">
+      Writing
+    </p>
+    <h1 class="m-0 font-serif text-[clamp(28px,4.5vw,42px)] font-semibold leading-[1.05] tracking-[-0.02em] text-ink">
+      Posts
+    </h1>
+    <p class="mt-3 mb-0 max-w-[60ch] text-[15px] text-ink-2">
+      Notes on machine learning, mathematics, and the occasional engineering
+      recipe, written while learning out loud.
+    </p>
+  </header>
+
+  <PostsList client:load articles={articles} />
+</Layout>

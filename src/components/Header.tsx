@@ -9,7 +9,7 @@ import SearchModal from "./SearchModal";
 const navigations = [
   { href: "/", label: "Home" },
   { href: "/about", label: "About" },
-  { href: "/#publications", label: "Publications" },
+  { href: "/publications", label: "Publications" },
   { href: "/projects", label: "Projects" },
   { href: "/courses", label: "Courses" },
   { href: "/snippets", label: "Snippets" },
@@ -25,6 +25,36 @@ export default function Header({ pathname }: { pathname: string }): JSX.Element 
   const normalizedPathname = normalizePathname(pathname);
 
   const [searchOpen, setSearchOpen] = useState(false);
+  const [isShowing, setIsShowing] = useState(true);
+  const lastScrollY = useRef(0);
+
+  useEffect(() => {
+    let ticking = false;
+
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const currentScrollY = window.scrollY;
+          
+          if (currentScrollY < 50) {
+            setIsShowing(true);
+          } else {
+            if (currentScrollY > lastScrollY.current + 5) {
+              setIsShowing(false);
+            } else if (currentScrollY < lastScrollY.current - 5) {
+              setIsShowing(true);
+            }
+          }
+          lastScrollY.current = currentScrollY;
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -40,7 +70,12 @@ export default function Header({ pathname }: { pathname: string }): JSX.Element 
 
   return (
     <>
-      <header className="sticky top-0 z-40">
+      <header 
+        className={cn(
+          "sticky top-0 z-40 transition-transform duration-500 ease-in-out",
+          isShowing ? "translate-y-0" : "-translate-y-full"
+        )}
+      >
         <div className="bg-bg/80 backdrop-blur-[14px] backdrop-saturate-[180%] border-b border-rule">
           <div className="max-w-[1100px] mx-auto px-[clamp(20px,4vw,36px)] py-[14px] grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-3">
 

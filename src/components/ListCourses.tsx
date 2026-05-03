@@ -1,14 +1,10 @@
 import CourseCard from "@/components/CourseCard";
 
-export default function ListCourses({
-  courses,
-}: {
-  courses: Course[];
-}): JSX.Element {
+export default function ListCourses({ courses }: { courses: Course[] }): JSX.Element {
   return (
-    <div className="my-2 mt-4 grid w-full grid-cols-1 gap-4 lg:grid-cols-2">
-      {courses.map((course: Course, index) => (
-        <CourseCard key={index} course={course} />
+    <div className="grid grid-cols-[repeat(auto-fill,minmax(290px,1fr))] gap-[14px]">
+      {courses.map((course) => (
+        <CourseCard key={course.slug} course={course} />
       ))}
     </div>
   );

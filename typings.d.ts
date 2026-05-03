@@ -34,6 +34,7 @@ declare type Resource = {
 declare type Project = {
   title: string;
   description: string;
+  type?: string;
   link: {
     href: string;
     label: string;
@@ -44,10 +45,32 @@ declare type Project = {
   };
 };
 
-declare type Course = {
+declare type CourseNotebook = {
+  n: string;
   title: string;
-  author: string;
+};
+
+declare type CourseResource = {
+  title: string;
+  href: string;
+};
+
+declare type CourseScheduleItem = {
+  week: string;
+  topic: string;
+};
+
+declare type Course = {
+  code: string;
+  slug: string;
+  title: string;
+  role: string;
+  term: string;
+  inst: string;
+  lang: string;
   description: string;
+  students?: number;
+  repo?: string;
   link: {
     href: string;
     label: string;
@@ -58,6 +81,11 @@ declare type Course = {
   };
   publishedDate: string;
   totalDuration: string;
+  syllabus?: string;
+  outcome?: string;
+  schedule?: CourseScheduleItem[];
+  notebooks?: CourseNotebook[];
+  resources?: CourseResource[];
 };
 
 declare type Color = {

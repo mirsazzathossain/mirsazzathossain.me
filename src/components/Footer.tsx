@@ -1,5 +1,5 @@
 const navigations = [
-  { href: "/articles", label: "Articles" },
+  { href: "/articles", label: "Posts" },
   { href: "/projects", label: "Projects" },
   { href: "/courses", label: "Courses" },
   { href: "/snippets", label: "Snippets" },

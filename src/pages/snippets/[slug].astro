@@ -1,7 +1,6 @@
 ---
-import SnippetBack from "@/components/SnippetBack";
-import Layout from "@/layouts/Layout.astro";
 import mdxComponents from "@/components/mdx/mdx-map";
+import Layout from "@/layouts/Layout.astro";
 import { getCollection, getEntry, render } from "astro:content";
 
 export async function getStaticPaths() {
@@ -14,6 +13,23 @@ const entry = await getEntry("snippets", slug!);
 if (!entry) return Astro.redirect("/404");
 
 const { Content } = await render(entry);
+
+const LANG_META: Record<string, { label: string; color: string; glyph: string }> = {
+  python:     { label: "Python",     color: "#3572A5", glyph: "py"  },
+  bash:       { label: "Bash",       color: "#4EAA25", glyph: "$_"  },
+  shell:      { label: "Shell",      color: "#4EAA25", glyph: "$_"  },
+  javascript: { label: "JavaScript", color: "#f1e05a", glyph: "JS"  },
+  typescript: { label: "TypeScript", color: "#3178C6", glyph: "TS"  },
+  latex:      { label: "LaTeX",      color: "#3D6117", glyph: "TeX" },
+  yaml:       { label: "YAML",       color: "#cb171e", glyph: "Y"   },
+  sql:        { label: "SQL",        color: "#e38c00", glyph: "SQL" },
+  rust:       { label: "Rust",       color: "#dea584", glyph: "Rs"  },
+  cpp:        { label: "C++",        color: "#f34b7d", glyph: "C++" },
+  office:     { label: "Office",     color: "#D24726", glyph: "Off" },
+};
+
+const lang = (entry.data.language || "").toLowerCase();
+const meta = LANG_META[lang] || { label: entry.data.language, color: "#94a3b8", glyph: "</>" };
 ---
 
 <Layout
@@ -21,48 +37,40 @@ const { Content } = await render(entry);
   description={entry.data.description}
   canonicalPath={`/snippets/${entry.id}`}
 >
-  <div class="mt-16 sm:px-8 lg:mt-32">
-    <div class="mx-auto max-w-7xl lg:px-8">
-      <div class="relative px-4 sm:px-8 lg:px-12">
-        <div class="mx-auto max-w-2xl">
-          <div class="xl:relative">
-            <div class="mx-auto max-w-2xl">
-              <SnippetBack
-                client:load
-                className="group mb-8 flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-md shadow-zinc-800/5 ring-1 ring-zinc-900/5 transition dark:border dark:border-zinc-700/50 dark:bg-zinc-800 dark:ring-0 dark:ring-white/10 dark:hover:border-zinc-700 dark:hover:ring-white/20 lg:absolute lg:-left-5 lg:mb-0 lg:-mt-2 xl:-top-1.5 xl:left-0 xl:mt-0"
-              />
-              <article>
-                <div class="mb-8 flex w-full justify-between">
-                  <header>
-                    <h1
-                      class="mb-4 text-3xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-4xl"
-                    >
-                      {entry.data.title}
-                    </h1>
-                    <p class="text-gray-700 dark:text-gray-300">
-                      {entry.data.description}
-                    </p>
-                  </header>
-                  <div class="mt-0 sm:mt-2">
-                    <img
-                      alt={entry.data.logo.alt}
-                      height="48"
-                      width="48"
-                      class="rounded-full"
-                      src={`/images/${entry.data.logo.url}`}
-                      loading="lazy"
-                      decoding="async"
-                    />
-                  </div>
-                </div>
-                <div class="prose dark:prose-invert mt-8 text-justify">
-                  <Content components={mdxComponents} />
-                </div>
-              </article>
-            </div>
-          </div>
+  <article class="mx-auto max-w-[var(--max-narrow)]">
+
+    <a href="/snippets" class="mb-[18px] inline-block font-mono text-[12px] text-ink-3 no-underline transition-colors hover:text-link hover:no-underline">← All snippets</a>
+
+    <header class="mb-[26px] flex items-start gap-[18px] border-b border-rule pb-[22px]">
+      <div class="min-w-0 flex-1">
+        <h1 class="m-0 mb-2 font-sans text-[clamp(24px,3.6vw,32px)] font-bold leading-[1.18] tracking-[-0.02em] text-ink">
+          {entry.data.title}
+        </h1>
+        <p class="m-0 mb-3 max-w-[60ch] text-[14.5px] leading-[1.55] text-ink-2">
+          {entry.data.description}
+        </p>
+        <div class="flex flex-wrap gap-1.5">
+          <span class="rounded-full border border-[color-mix(in_srgb,var(--link)_25%,var(--rule))] bg-accent-soft px-3 py-[3px] text-[11.5px] font-medium text-link">Snippet</span>
+          <span class="rounded-full border border-rule bg-bg-2 px-3 py-[3px] text-[11.5px] font-medium text-ink-2">{meta.label}</span>
         </div>
       </div>
+      <span aria-hidden="true" class="relative inline-flex h-[50px] w-[50px] shrink-0 items-center justify-center text-ink-2">
+        {entry.data.logo?.url ? (
+          <img src={`/images/${entry.data.logo.url}`} alt={entry.data.logo.alt} width="36" height="36" class="object-contain" />
+        ) : (
+          <>
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round">
+              <path d="M5 7.2 12 3l7 4.2v9.6L12 21l-7-4.2Z"/>
+            </svg>
+            <span class="absolute inset-0 flex items-center justify-center font-mono text-[11px] font-bold tracking-[-0.04em] text-ink-2">{meta.glyph}</span>
+          </>
+        )}
+      </span>
+    </header>
+
+    <div class="prose dark:prose-invert prose-code:font-mono">
+      <Content components={mdxComponents} />
     </div>
-  </div>
+
+  </article>
 </Layout>

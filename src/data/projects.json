@@ -1,7 +1,13 @@
 [
   {
-    "title": "RGC: Radio Galaxy Classifier - A Python Package",
-    "description": "A Python package for processing and classifying radio galaxy images 📡🧠. The acronym also pays tribute to Radha Govinda Chandra 🔭, a pioneering variable star observer.",
+    "title": "RGC",
+    "type": "Research",
+    "glyph": "🔭",
+    "tags": ["python", "ml"],
+    "stars": 42,
+    "language": "Python",
+    "languageColor": "#3572A5",
+    "description": "A Python package for processing and classifying radio galaxy images. The acronym also pays tribute to Radha Govinda Chandra, a pioneering variable star observer.",
     "link": {
       "href": "https://github.com/mirsazzathossain/radio-galaxy-classifier",
       "label": "radio-galaxy-classifier"
@@ -12,8 +18,14 @@
     }
   },
   {
-    "title": "Mir Sazzat Hossain | Personal Website",
-    "description": "My personal website, built with Next.js, Tailwind CSS, Contentlayer, and 🚀 deployed on Vercel 🔼",
+    "title": "Personal Website",
+    "type": "Hobby",
+    "glyph": "🌐",
+    "tags": ["typescript", "nextjs"],
+    "stars": 180,
+    "language": "TypeScript",
+    "languageColor": "#3178C6",
+    "description": "My personal website built with Next.js, Tailwind CSS, and Contentlayer, deployed on Vercel.",
     "link": {
       "href": "https://github.com/mirsazzathossain/mirsazzathossain.me",
       "label": "mirsazzathossain.me"
@@ -24,11 +36,17 @@
     }
   },
   {
-    "title": "Restaurant Order Prediction Using USTGCN",
-    "description": "Real-time food order prediction using Unified Spatio-Temporal Graph Convolutional Network (USTGCN). 🍴🚀",
+    "title": "Restaurant USTGCN",
+    "type": "Research",
+    "glyph": "🍔",
+    "tags": ["python", "graph-ml"],
+    "stars": 12,
+    "language": "Python",
+    "languageColor": "#3572A5",
+    "description": "Real-time food order prediction using Unified Spatio-Temporal Graph Convolutional Network (USTGCN).",
     "link": {
-      "href": "https://github.com/mirsazzathossain/Restaurant-Order-Prediction-USTGCN",
-      "label": "Restaurant-Order-Prediction-USTGCN"
+      "href": "https://github.com/mirsazzathossain/ROP-USTGCN",
+      "label": "ROP-USTGCN"
     },
     "logo": {
       "src": "project-logos/burger.png",
@@ -36,8 +54,14 @@
     }
   },
   {
-    "title": "Astro Labeller: A web application for labelling astronomical images",
-    "description": "A Django based web application for colaborative labelling of astronomical images into different categories. 🌟🌠",
+    "title": "Astro Labeller",
+    "type": "Research",
+    "glyph": "🛰️",
+    "tags": ["django", "python"],
+    "stars": 8,
+    "language": "Python",
+    "languageColor": "#3572A5",
+    "description": "A Django-based web application for collaborative labelling of astronomical images into different categories.",
     "link": {
       "href": "https://github.com/mirsazzathossain/astro-labeller",
       "label": "astro-labeller"
@@ -48,8 +72,14 @@
     }
   },
   {
-    "title": "Spotify Playing Now: A card for showing your currently playing Spotify song",
-    "description": "A card for showing your currently playing Spotify song on your GitHub profile README or other markdown file. 🎵🎶",
+    "title": "Spotify Playing Now",
+    "type": "Hobby",
+    "glyph": "🎵",
+    "tags": ["javascript"],
+    "stars": 34,
+    "language": "JavaScript",
+    "languageColor": "#f1e05a",
+    "description": "A card for showing your currently playing Spotify song on your GitHub profile README or other markdown files.",
     "link": {
       "href": "https://github.com/mirsazzathossain/spotify-playing-now",
       "label": "spotify-playing-now"
@@ -60,8 +90,14 @@
     }
   },
   {
-    "title": "Food Judge: A social media platform for foodies",
-    "description": "A social media platform for foodies to find restaurants, share their experiences, and easily connect with other foodies. 🍴🚀",
+    "title": "Food Judge",
+    "type": "Course",
+    "glyph": "🍽️",
+    "tags": ["django", "web"],
+    "stars": 6,
+    "language": "Python",
+    "languageColor": "#3572A5",
+    "description": "A social media platform for food lovers to discover restaurants, share experiences, and connect with others.",
     "link": {
       "href": "https://github.com/mirsazzathossain/food-judge",
       "label": "food-judge"
@@ -72,8 +108,14 @@
     }
   },
   {
-    "title": "SPMS: A web basde student performance monitoring system",
-    "description": "A Django based web application for monitoring student performance based on their attendance, grades, and other metrics. 👨🏻‍🎓🧠",
+    "title": "SPMS",
+    "type": "Course",
+    "glyph": "🎓",
+    "tags": ["django", "education"],
+    "stars": 4,
+    "language": "Python",
+    "languageColor": "#3572A5",
+    "description": "A Django-based web application for monitoring student performance based on attendance, grades, and other metrics.",
     "link": {
       "href": "https://github.com/mirsazzathossain/spms-django",
       "label": "spms-django"
@@ -84,8 +126,14 @@
     }
   },
   {
-    "title": "HAMS: Appointments management system for hospitals",
-    "description": "A web application for managing patient records, scheduling doctor appointments, and managing hospital resources. 🏥👩🏻‍⚕️",
+    "title": "HAMS",
+    "type": "Course",
+    "glyph": "🏥",
+    "tags": ["laravel", "php"],
+    "stars": 2,
+    "language": "PHP",
+    "languageColor": "#777BB4",
+    "description": "A web application for managing patient records, scheduling doctor appointments, and hospital resources.",
     "link": {
       "href": "https://github.com/mirsazzathossain/hams-laravel",
       "label": "hams-laravel"
@@ -96,8 +144,14 @@
     }
   },
   {
-    "title": "Website for a local pizza shop - Pizza Roma",
-    "description": "A website built in Django for a local pizza shop to showcase their menu and take orders online. 🍕🍕",
+    "title": "Pizza Roma",
+    "type": "Course",
+    "glyph": "🍕",
+    "tags": ["django", "web"],
+    "stars": 1,
+    "language": "Python",
+    "languageColor": "#3572A5",
+    "description": "A website built in Django for a local pizza shop to showcase its menu and take orders online.",
     "link": {
       "href": "https://github.com/mirsazzathossain/pizzaroma-django",
       "label": "pizzaroma-django"
@@ -108,8 +162,14 @@
     }
   },
   {
-    "title": "A web application for inventory management of a local bookstore",
-    "description": "A web application built in Django for managing inventory of a local bookstore and taking orders online. 📚📚",
+    "title": "Bookshop Inventory",
+    "type": "Course",
+    "glyph": "📚",
+    "tags": ["django", "inventory"],
+    "stars": 3,
+    "language": "Python",
+    "languageColor": "#3572A5",
+    "description": "A Django web application for managing local bookstore inventory and processing online orders.",
     "link": {
       "href": "https://github.com/mirsazzathossain/bookshop-django",
       "label": "bookshop-django"
@@ -120,8 +180,14 @@
     }
   },
   {
-    "title": "A simple e-commerce marketplace built using vanilla javascript",
-    "description": "A e-commerce marketplace with a shopping cart built using vanilla javascript. 🛒🛍",
+    "title": "Online Marketplace",
+    "type": "Course",
+    "glyph": "🛒",
+    "tags": ["javascript", "vanilla"],
+    "stars": 7,
+    "language": "JavaScript",
+    "languageColor": "#f1e05a",
+    "description": "An e-commerce marketplace with a shopping cart built using vanilla JavaScript.",
     "link": {
       "href": "https://github.com/mirsazzathossain/online-marketplace",
       "label": "online-marketplace"
@@ -132,8 +198,14 @@
     }
   },
   {
-    "title": "CSMS: Online car showroom management system for car dealers",
-    "description": "A web application for managing a car showroom, including inventory, appointments, and other resources. 🚗🚙",
+    "title": "CSMS",
+    "type": "Course",
+    "glyph": "🚗",
+    "tags": ["php", "web"],
+    "stars": 2,
+    "language": "PHP",
+    "languageColor": "#777BB4",
+    "description": "A web application for managing a car showroom, including inventory, appointments, and related resources.",
     "link": {
       "href": "https://github.com/mirsazzathossain/CSMS",
       "label": "CSMS"

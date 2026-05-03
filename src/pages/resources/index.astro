@@ -13,11 +13,12 @@ const resources = await readSiteJson<Resource[]>("resources.json");
   canonicalPath="/resources"
 >
   <SimpleLayout
-    title="Some excellent resources worth sharing"
-    intro="These materials have been tremendously beneficial to me in my learning path. I hope you find these helpful as well!"
+    eyebrow="Curated"
+    title="Resources"
+    intro="Bookmarks, tutorials, and references I keep returning to. Organized by topic for easy scanning."
   >
-    <div class="mt-16 sm:mt-20">
-      <ListResources resources={resources} />
+    <div class="mt-8">
+      <ListResources client:load resources={resources} />
     </div>
   </SimpleLayout>
 </Layout>

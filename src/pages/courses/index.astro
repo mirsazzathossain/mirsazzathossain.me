@@ -9,15 +9,16 @@ const courses = await readSiteJson<Course[]>("courses.json");
 
 <Layout
   title="Courses"
-  description="During my time at IUB, I've worked as a teaching assistant and research assistant for a few different courses. These are the courses I've instructed."
+  description="Tutorial sessions, lab worksheets, and tutorial materials I've prepared as a teaching assistant at IUB."
   canonicalPath="/courses"
 >
   <SimpleLayout
-    title="Courses that I've instructed as a RA or TA at IUB"
-    intro="During my time at IUB, I've worked as a teaching assistant and research assistant for a few different courses. These are the courses I've instructed."
+    eyebrow="Teaching"
+    title="Courses"
+    intro="Tutorial sessions, lab worksheets, and tutorial materials I've prepared as a teaching assistant at IUB. Click any course for full syllabus, weekly schedule, and notebooks."
   >
-    <div class="mt-16 sm:mt-20">
-      <ListCourses client:load courses={courses} />
+    <div class="mt-8">
+      <ListCourses courses={courses} />
     </div>
   </SimpleLayout>
 </Layout>

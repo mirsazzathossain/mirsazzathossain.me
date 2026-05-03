@@ -9,7 +9,8 @@
     "year": "2025",
     "booktitle": "To appear",
     "note": "This paper has been accepted for publication in ICIP 2025.",
-    "url": "https://arxiv.org/pdf/2505.21915"
+    "url": "https://arxiv.org/pdf/2505.21915",
+    "citation_count": 8
   },
   {
     "id": "HOSSAIN2025RGC-BENT",
@@ -25,7 +26,8 @@
     "keywords": "Surveys;Deep learning;Radio astronomy;Source coding;Morphology;Benchmark testing;Transformers;Convolutional neural networks;Physics;Image classification;Bent Active Galactic Nuclei (AGN);Astronomical Image Classification;Astrophysical Data Analysis;Radio Galaxy Morphology;Radio Galaxy Classification",
     "doi": "10.1109/ICIP55913.2025.11084387",
     "code": "https://github.com/mirsazzathossain/RGC-Bent",
-    "url": "https://ieeexplore.ieee.org/document/11084387"
+    "url": "https://ieeexplore.ieee.org/document/11084387",
+    "citation_count": 6
   },
   {
     "id": "adnan2025relation",
@@ -39,7 +41,8 @@
     "pages": "To appear",
     "note": "Accepted in Astronomy & Astrophysics (A&A)",
     "url": "https://arxiv.org/pdf/2412.00361",
-    "code": "https://github.com/mirsazzathossain/BDLensing"
+    "code": "https://github.com/mirsazzathossain/BDLensing",
+    "citation_count": 14
   },
   {
     "id": "rajib2025fedctta",
@@ -53,7 +56,8 @@
     "code": "https://github.com/mirsazzathossain/fedctta",
     "url": "https://arxiv.org/pdf/2505.13643",
     "note": "This paper has been accepted for publication in IJCNN 2025.",
-    "slides": "https://mirsazzathossain.me/files/fedctta-presentation.pdf"
+    "slides": "https://mirsazzathossain.me/files/fedctta-presentation.pdf",
+    "citation_count": 21
   },
   {
     "id": "HOSSAIN10647844",
@@ -70,7 +74,8 @@
     "doi": "10.1109/ICIP51287.2024.10647844",
     "url": "https://ieeexplore.ieee.org/document/10647844",
     "code": "https://github.com/mirsazzathossain/LiteSRNet",
-    "poster": "https://mirsazzathossain.me/files/super-resolution-icip2024-poster.pdf"
+    "poster": "https://mirsazzathossain.me/files/super-resolution-icip2024-poster.pdf",
+    "citation_count": 39
   },
   {
     "id": "HOSSAIN2023601",
@@ -91,7 +96,8 @@
     "abstract": "Out of the estimated few trillion galaxies, only around a million have been detected through radio frequencies, and only a tiny fraction, approximately a thousand, have been manually classified. We have addressed this disparity between labeled and unlabeled images of radio galaxies by employing a semi-supervised learning approach to classify them into the known Fanaroff-Riley Type I (FRI) and Type II (FRII) categories. A Group Equivariant Convolutional Neural Network (G-CNN) was used as an encoder of the state-of-the-art self-supervised methods SimCLR (A Simple Framework for Contrastive Learning of Visual Representations) and BYOL (Bootstrap Your Own Latent). The G-CNN preserves the equivariance for the Euclidean Group E(2), enabling it to effectively learn the representation of globally oriented feature maps. After representation learning, we trained a fully-connected classifier and fine-tuned the trained encoder with labeled data. Our findings demonstrate that our semi-supervised approach outperforms existing state-of-the-art methods across several metrics, including cluster quality, convergence rate, accuracy, precision, recall, and the F1-score. Moreover, statistical significance testing via a t-test revealed that our method surpasses the performance of a fully supervised G-CNN. This study emphasizes the importance of semi-supervised learning in radio galaxy classification, where labeled data are still scarce, but the prospects for discovery are immense.",
     "code": "https://github.com/mirsazzathossain/radio-galaxy-classifier-v1",
     "poster": "https://mirsazzathossain.me/files/rgc-iub-poster.pdf",
-    "slides": "https://mirsazzathossain.me/files/rgc-inns-dlia-2023-presentation.pdf"
+    "slides": "https://mirsazzathossain.me/files/rgc-inns-dlia-2023-presentation.pdf",
+    "citation_count": 32
   },
   {
     "id": "iftee2025slomo",
@@ -104,7 +110,8 @@
     "pages": "To appear",
     "url": "https://mirsazzathossain.me/files/slomo-fast.pdf",
     "code": "https://github.com/mirsazzathossain/test-time-adaptation",
-    "note": "This paper is under review."
+    "note": "This paper is under review.",
+    "citation_count": 3
   },
   {
     "id": "HOSSAIN2023512",
@@ -119,6 +126,7 @@
     "note": "In Preparation",
     "author": "M.S. Hossain and K.M.B. Asad and P. Saikia, and F. Akter and A. Momen and A.A. Ali and J.K. Ghosh and M.A. Amin and A.K.M.M. Rahman",
     "code": "https://github.com/mirsazzathossain/radio-galaxy-classifier",
-    "url": "https://mirsazzathossain.me/files/rgc.pdf"
+    "url": "https://mirsazzathossain.me/files/rgc.pdf",
+    "citation_count": 19
   }
 ]
