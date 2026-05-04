@@ -3,8 +3,11 @@
     "title": "RGC",
     "type": "Research",
     "glyph": "🔭",
-    "tags": ["python", "ml"],
-    "stars": 42,
+    "tags": [
+      "python",
+      "ml"
+    ],
+    "stars": 3,
     "language": "Python",
     "languageColor": "#3572A5",
     "description": "A Python package for processing and classifying radio galaxy images. The acronym also pays tribute to Radha Govinda Chandra, a pioneering variable star observer.",
@@ -21,8 +24,11 @@
     "title": "Personal Website",
     "type": "Hobby",
     "glyph": "🌐",
-    "tags": ["typescript", "nextjs"],
-    "stars": 180,
+    "tags": [
+      "typescript",
+      "nextjs"
+    ],
+    "stars": 289,
     "language": "TypeScript",
     "languageColor": "#3178C6",
     "description": "My personal website built with Next.js, Tailwind CSS, and Contentlayer, deployed on Vercel.",
@@ -39,8 +45,11 @@
     "title": "Restaurant USTGCN",
     "type": "Research",
     "glyph": "🍔",
-    "tags": ["python", "graph-ml"],
-    "stars": 12,
+    "tags": [
+      "python",
+      "graph-ml"
+    ],
+    "stars": 0,
     "language": "Python",
     "languageColor": "#3572A5",
     "description": "Real-time food order prediction using Unified Spatio-Temporal Graph Convolutional Network (USTGCN).",
@@ -57,8 +66,11 @@
     "title": "Astro Labeller",
     "type": "Research",
     "glyph": "🛰️",
-    "tags": ["django", "python"],
-    "stars": 8,
+    "tags": [
+      "django",
+      "python"
+    ],
+    "stars": 1,
     "language": "Python",
     "languageColor": "#3572A5",
     "description": "A Django-based web application for collaborative labelling of astronomical images into different categories.",
@@ -75,8 +87,10 @@
     "title": "Spotify Playing Now",
     "type": "Hobby",
     "glyph": "🎵",
-    "tags": ["javascript"],
-    "stars": 34,
+    "tags": [
+      "javascript"
+    ],
+    "stars": 2,
     "language": "JavaScript",
     "languageColor": "#f1e05a",
     "description": "A card for showing your currently playing Spotify song on your GitHub profile README or other markdown files.",
@@ -93,8 +107,11 @@
     "title": "Food Judge",
     "type": "Course",
     "glyph": "🍽️",
-    "tags": ["django", "web"],
-    "stars": 6,
+    "tags": [
+      "django",
+      "web"
+    ],
+    "stars": 0,
     "language": "Python",
     "languageColor": "#3572A5",
     "description": "A social media platform for food lovers to discover restaurants, share experiences, and connect with others.",
@@ -111,8 +128,11 @@
     "title": "SPMS",
     "type": "Course",
     "glyph": "🎓",
-    "tags": ["django", "education"],
-    "stars": 4,
+    "tags": [
+      "django",
+      "education"
+    ],
+    "stars": 0,
     "language": "Python",
     "languageColor": "#3572A5",
     "description": "A Django-based web application for monitoring student performance based on attendance, grades, and other metrics.",
@@ -129,8 +149,11 @@
     "title": "HAMS",
     "type": "Course",
     "glyph": "🏥",
-    "tags": ["laravel", "php"],
-    "stars": 2,
+    "tags": [
+      "laravel",
+      "php"
+    ],
+    "stars": 0,
     "language": "PHP",
     "languageColor": "#777BB4",
     "description": "A web application for managing patient records, scheduling doctor appointments, and hospital resources.",
@@ -147,8 +170,11 @@
     "title": "Pizza Roma",
     "type": "Course",
     "glyph": "🍕",
-    "tags": ["django", "web"],
-    "stars": 1,
+    "tags": [
+      "django",
+      "web"
+    ],
+    "stars": 0,
     "language": "Python",
     "languageColor": "#3572A5",
     "description": "A website built in Django for a local pizza shop to showcase its menu and take orders online.",
@@ -165,8 +191,11 @@
     "title": "Bookshop Inventory",
     "type": "Course",
     "glyph": "📚",
-    "tags": ["django", "inventory"],
-    "stars": 3,
+    "tags": [
+      "django",
+      "inventory"
+    ],
+    "stars": 0,
     "language": "Python",
     "languageColor": "#3572A5",
     "description": "A Django web application for managing local bookstore inventory and processing online orders.",
@@ -183,8 +212,11 @@
     "title": "Online Marketplace",
     "type": "Course",
     "glyph": "🛒",
-    "tags": ["javascript", "vanilla"],
-    "stars": 7,
+    "tags": [
+      "javascript",
+      "vanilla"
+    ],
+    "stars": 0,
     "language": "JavaScript",
     "languageColor": "#f1e05a",
     "description": "An e-commerce marketplace with a shopping cart built using vanilla JavaScript.",
@@ -201,8 +233,11 @@
     "title": "CSMS",
     "type": "Course",
     "glyph": "🚗",
-    "tags": ["php", "web"],
-    "stars": 2,
+    "tags": [
+      "php",
+      "web"
+    ],
+    "stars": 0,
     "language": "PHP",
     "languageColor": "#777BB4",
     "description": "A web application for managing a car showroom, including inventory, appointments, and related resources.",

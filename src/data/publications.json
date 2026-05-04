@@ -1,132 +1,628 @@
 [
   {
-    "id": "HOSSAIN2025LULC",
+    "id": "IWHjjKOFINEC",
     "type": "article",
-    "raw": "@article{HOSSAIN2025LULC,\n    title = {BD Open LULC Map: High-Resolution Land Use and Land Cover Mapping & Benchmarking for Urban Development in Dhaka, Bangladesh},\n    author = {M.S. Hossain and R.H. Rajib and M.A.K. Iftee and O. Paul and A.B.S. Nayem and A. Sarker and M.A. Amin and A.A. Ali and A.K.M.M. Rahman},\n    journal = {2025 IEEE International Conference on Image Processing},\n    year = {2025},\n    booktitle={To appear},\n    note = {This paper has been accepted for publication in ICIP 2025.},\n    url = {https://arxiv.org/pdf/2505.21915},\n}",
-    "title": "BD Open LULC Map: High-Resolution Land Use and Land Cover Mapping & Benchmarking for Urban Development in Dhaka, Bangladesh",
-    "author": "M.S. Hossain and R.H. Rajib and M.A.K. Iftee and O. Paul and A.B.S. Nayem and A. Sarker and M.A. Amin and A.A. Ali and A.K.M.M. Rahman",
-    "journal": "2025 IEEE International Conference on Image Processing",
-    "year": "2025",
-    "booktitle": "To appear",
-    "note": "This paper has been accepted for publication in ICIP 2025.",
-    "url": "https://arxiv.org/pdf/2505.21915",
-    "citation_count": 8
-  },
-  {
-    "id": "HOSSAIN2025RGC-BENT",
-    "type": "article",
-    "raw": "@article{HOSSAIN2025RGC-BENT,\n    title = {RGC-BENT: A Novel Dataset for BENT Radio Galaxy Classification},\n    author = {M.S. Hossain and K.M.B. Asad and Payaswini Saikia, and Adrita Khan and M.A.K. Iftee and R.H. Rajib  and A. Momen and J.K. Ghosh and M.A. Amin and A.A. Ali and A.K.M.M. Rahman},\n    year = {2025},\n    month = {09},\n    pages={2868-2873},\n    location={Anchorage Alaska, USA},\n    booktitle={2025 IEEE International Conference on Image Processing (ICIP)},\n    keywords={Surveys;Deep learning;Radio astronomy;Source coding;Morphology;Benchmark testing;Transformers;Convolutional neural networks;Physics;Image classification;Bent Active Galactic Nuclei (AGN);Astronomical Image Classification;Astrophysical Data Analysis;Radio Galaxy Morphology;Radio Galaxy Classification},\n    doi={10.1109/ICIP55913.2025.11084387},\n    code = {https://github.com/mirsazzathossain/RGC-Bent},\n    url = {https://ieeexplore.ieee.org/document/11084387},\n}",
-    "title": "RGC-BENT: A Novel Dataset for BENT Radio Galaxy Classification",
-    "author": "M.S. Hossain and K.M.B. Asad and Payaswini Saikia, and Adrita Khan and M.A.K. Iftee and R.H. Rajib  and A. Momen and J.K. Ghosh and M.A. Amin and A.A. Ali and A.K.M.M. Rahman",
-    "year": "2025",
-    "month": "09",
-    "pages": "2868-2873",
-    "location": "Anchorage Alaska, USA",
-    "booktitle": "2025 IEEE International Conference on Image Processing (ICIP)",
-    "keywords": "Surveys;Deep learning;Radio astronomy;Source coding;Morphology;Benchmark testing;Transformers;Convolutional neural networks;Physics;Image classification;Bent Active Galactic Nuclei (AGN);Astronomical Image Classification;Astrophysical Data Analysis;Radio Galaxy Morphology;Radio Galaxy Classification",
-    "doi": "10.1109/ICIP55913.2025.11084387",
-    "code": "https://github.com/mirsazzathossain/RGC-Bent",
-    "url": "https://ieeexplore.ieee.org/document/11084387",
-    "citation_count": 6
-  },
-  {
-    "id": "adnan2025relation",
-    "type": "article",
-    "raw": "@article{adnan2025relation,\n  title={Investigating the Relation Between Environment and Internal Structure of Massive Elliptical Galaxies Using Strong Lensing},\n  author={S.M. Rafee Adnan and M.J. Hasan and A. Al-Imtiaz and S.H. Robin and F.R. Shwadhin and A.J. Shajib and M.H. Nahid and M.H. Tanver and T. Akter and N. Jahan and Z. Jafar and M. Rashid and A. Biswas and A.A. Chowdhury and J. Feardous and A. Rahaman and M. Ridwan and R.D. Sharma and Z. Chowdhury and M.S. Hossain},\n  journal={Astronomy & Astrophysics (A&A)},\n  year={2025},\n  volume={To appear},\n  pages={To appear},\n  note={Accepted in Astronomy & Astrophysics (A&A)},\n  url={https://arxiv.org/pdf/2412.00361},\n  code={https://github.com/mirsazzathossain/BDLensing},\n}",
-    "title": "Investigating the Relation Between Environment and Internal Structure of Massive Elliptical Galaxies Using Strong Lensing",
-    "author": "S.M. Rafee Adnan and M.J. Hasan and A. Al-Imtiaz and S.H. Robin and F.R. Shwadhin and A.J. Shajib and M.H. Nahid and M.H. Tanver and T. Akter and N. Jahan and Z. Jafar and M. Rashid and A. Biswas and A.A. Chowdhury and J. Feardous and A. Rahaman and M. Ridwan and R.D. Sharma and Z. Chowdhury and M.S. Hossain",
-    "journal": "Astronomy & Astrophysics (A&A)",
-    "year": "2025",
-    "volume": "To appear",
-    "pages": "To appear",
-    "note": "Accepted in Astronomy & Astrophysics (A&A)",
-    "url": "https://arxiv.org/pdf/2412.00361",
-    "code": "https://github.com/mirsazzathossain/BDLensing",
-    "citation_count": 14
-  },
-  {
-    "id": "rajib2025fedctta",
-    "type": "article",
-    "raw": "@article{rajib2025fedctta,\n  title={FedCTTA: A Collaborative Approach to Continual Test-Time Adaptation in Federated Learning},\n  author={R.H. Rajib and M.A.K. Iftee and M.S. Hossain and A.K.M.M. Rahman and S. Mistry and M.A. Amin and A.K.M.M. Rahman},\n  journal={Proceedings of the International Joint Conference on Neural Networks (IJCNN)},\n  year={2025},\n  booktitle={To appear},\n  code={https://github.com/mirsazzathossain/fedctta},\n  url={https://arxiv.org/pdf/2505.13643},\n  note={This paper has been accepted for publication in IJCNN 2025.},\n  slides={https://mirsazzathossain.me/files/fedctta-presentation.pdf},\n}",
-    "title": "FedCTTA: A Collaborative Approach to Continual Test-Time Adaptation in Federated Learning",
-    "author": "R.H. Rajib and M.A.K. Iftee and M.S. Hossain and A.K.M.M. Rahman and S. Mistry and M.A. Amin and A.K.M.M. Rahman",
-    "journal": "Proceedings of the International Joint Conference on Neural Networks (IJCNN)",
-    "year": "2025",
-    "booktitle": "To appear",
-    "code": "https://github.com/mirsazzathossain/fedctta",
-    "url": "https://arxiv.org/pdf/2505.13643",
-    "note": "This paper has been accepted for publication in IJCNN 2025.",
-    "slides": "https://mirsazzathossain.me/files/fedctta-presentation.pdf",
-    "citation_count": 21
-  },
-  {
-    "id": "HOSSAIN10647844",
-    "type": "inproceedings",
-    "raw": "@inproceedings{HOSSAIN10647844,\n    author={M.S. Hossain and A.K.M.M. Rahman and M.A. Amin and A.A. Ali},\n    booktitle={2024 IEEE International Conference on Image Processing (ICIP)}, \n    title={Lightweight Recurrent Neural Network for Image Super-Resolution}, \n    year={2024},\n    month={10},\n    pages={1567-1573},\n    location={Abu Dhabi, United Arab Emirates},\n    keywords={Performance evaluation;Recurrent neural networks;Costs;Convolution;Computational modeling;Superresolution;Transformers;Single Image Super-Resolution;Recurrent Neural Networks;Efficient Super-Resolution},\n    doi={10.1109/ICIP51287.2024.10647844},\n    url={https://ieeexplore.ieee.org/document/10647844},\n    code={https://github.com/mirsazzathossain/LiteSRNet},\n    poster={https://mirsazzathossain.me/files/super-resolution-icip2024-poster.pdf},\n}",
-    "author": "M.S. Hossain and A.K.M.M. Rahman and M.A. Amin and A.A. Ali",
-    "booktitle": "2024 IEEE International Conference on Image Processing (ICIP)",
-    "title": "Lightweight Recurrent Neural Network for Image Super-Resolution",
-    "year": "2024",
-    "month": "10",
-    "pages": "1567-1573",
-    "location": "Abu Dhabi, United Arab Emirates",
-    "keywords": "Performance evaluation;Recurrent neural networks;Costs;Convolution;Computational modeling;Superresolution;Transformers;Single Image Super-Resolution;Recurrent Neural Networks;Efficient Super-Resolution",
-    "doi": "10.1109/ICIP51287.2024.10647844",
-    "url": "https://ieeexplore.ieee.org/document/10647844",
-    "code": "https://github.com/mirsazzathossain/LiteSRNet",
-    "poster": "https://mirsazzathossain.me/files/super-resolution-icip2024-poster.pdf",
-    "citation_count": 39
-  },
-  {
-    "id": "HOSSAIN2023601",
-    "type": "article",
-    "raw": "@article{HOSSAIN2023601,\n    title = {Morphological classification of Radio Galaxies using Semi-Supervised Group Equivariant CNNs},\n    journal = {Procedia Computer Science},\n    volume = {222},\n    issue = {C},\n    pages = {601-612},\n    year = {2023},\n    note = {International Neural Network Society Workshop on Deep Learning Innovations and Applications (INNS DLIA 2023)},\n    issn = {1877-0509},\n    doi = {https://doi.org/10.1016/j.procs.2023.08.198},\n    url = {https://www.sciencedirect.com/science/article/pii/S1877050923009638},\n    author = {M.S. Hossain and S. Roy and K.M.B. Asad and A. Momen and A.A. Ali and M.A. Amin and A.K.M.M. Rahman},\n    keywords = {Radio Galaxy, Fanaroff-Riley, G-CNN, SimCLR, BYOL, Semi-supervised Learning},\n    abstract = {Out of the estimated few trillion galaxies, only around a million have been detected through radio frequencies, and only a tiny fraction, approximately a thousand, have been manually classified. We have addressed this disparity between labeled and unlabeled images of radio galaxies by employing a semi-supervised learning approach to classify them into the known Fanaroff-Riley Type I (FRI) and Type II (FRII) categories. A Group Equivariant Convolutional Neural Network (G-CNN) was used as an encoder of the state-of-the-art self-supervised methods SimCLR (A Simple Framework for Contrastive Learning of Visual Representations) and BYOL (Bootstrap Your Own Latent). The G-CNN preserves the equivariance for the Euclidean Group E(2), enabling it to effectively learn the representation of globally oriented feature maps. After representation learning, we trained a fully-connected classifier and fine-tuned the trained encoder with labeled data. Our findings demonstrate that our semi-supervised approach outperforms existing state-of-the-art methods across several metrics, including cluster quality, convergence rate, accuracy, precision, recall, and the F1-score. Moreover, statistical significance testing via a t-test revealed that our method surpasses the performance of a fully supervised G-CNN. This study emphasizes the importance of semi-supervised learning in radio galaxy classification, where labeled data are still scarce, but the prospects for discovery are immense.},\n    code = {https://github.com/mirsazzathossain/radio-galaxy-classifier-v1},\n    poster = {https://mirsazzathossain.me/files/rgc-iub-poster.pdf},\n    slides = {https://mirsazzathossain.me/files/rgc-inns-dlia-2023-presentation.pdf},\n}",
-    "title": "Morphological classification of Radio Galaxies using Semi-Supervised Group Equivariant CNNs",
-    "journal": "Procedia Computer Science",
-    "volume": "222",
-    "issue": "C",
+    "title": "Morphological Classification of Radio Galaxies using Semi-Supervised Group Equivariant CNNs",
+    "authors": [
+      {
+        "name": "Mir Sazzat Hossain"
+      },
+      {
+        "name": "Sugandha Roy"
+      },
+      {
+        "name": "KMB Asad"
+      },
+      {
+        "name": "Arshad Momen"
+      },
+      {
+        "name": "Amin Ahsan Ali"
+      },
+      {
+        "name": "M Ashraful Amin"
+      },
+      {
+        "name": "AKM Mahbubur Rahman"
+      }
+    ],
+    "year": 2023,
+    "venue": "Procedia Computer Science",
+    "citation_count": 13,
+    "citation_updated": "2026-05-05",
     "pages": "601-612",
-    "year": "2023",
-    "note": "International Neural Network Society Workshop on Deep Learning Innovations and Applications (INNS DLIA 2023)",
-    "issn": "1877-0509",
-    "doi": "https://doi.org/10.1016/j.procs.2023.08.198",
-    "url": "https://www.sciencedirect.com/science/article/pii/S1877050923009638",
-    "author": "M.S. Hossain and S. Roy and K.M.B. Asad and A. Momen and A.A. Ali and M.A. Amin and A.K.M.M. Rahman",
-    "keywords": "Radio Galaxy, Fanaroff-Riley, G-CNN, SimCLR, BYOL, Semi-supervised Learning",
-    "abstract": "Out of the estimated few trillion galaxies, only around a million have been detected through radio frequencies, and only a tiny fraction, approximately a thousand, have been manually classified. We have addressed this disparity between labeled and unlabeled images of radio galaxies by employing a semi-supervised learning approach to classify them into the known Fanaroff-Riley Type I (FRI) and Type II (FRII) categories. A Group Equivariant Convolutional Neural Network (G-CNN) was used as an encoder of the state-of-the-art self-supervised methods SimCLR (A Simple Framework for Contrastive Learning of Visual Representations) and BYOL (Bootstrap Your Own Latent). The G-CNN preserves the equivariance for the Euclidean Group E(2), enabling it to effectively learn the representation of globally oriented feature maps. After representation learning, we trained a fully-connected classifier and fine-tuned the trained encoder with labeled data. Our findings demonstrate that our semi-supervised approach outperforms existing state-of-the-art methods across several metrics, including cluster quality, convergence rate, accuracy, precision, recall, and the F1-score. Moreover, statistical significance testing via a t-test revealed that our method surpasses the performance of a fully supervised G-CNN. This study emphasizes the importance of semi-supervised learning in radio galaxy classification, where labeled data are still scarce, but the prospects for discovery are immense.",
-    "code": "https://github.com/mirsazzathossain/radio-galaxy-classifier-v1",
-    "poster": "https://mirsazzathossain.me/files/rgc-iub-poster.pdf",
-    "slides": "https://mirsazzathossain.me/files/rgc-inns-dlia-2023-presentation.pdf",
-    "citation_count": 32
+    "volume": "222",
+    "abstract": "Out of the estimated few trillion galaxies, only around a million have been detected through radio frequencies, and only a tiny fraction, approximately a thousand, have been manually classified. We have addressed this disparity between labeled and unlabeled images of radio galaxies by employing a semi-supervised learning approach to classify them into the known Fanaroff-Riley Type I (FRI) and Type II (FRII) categories. A Group Equivariant Convolutional Neural Network (G-CNN) was used as an encoder of the state-of-the-art self-supervised methods SimCLR (A Simple Framework for Contrastive Learning of Visual Representations) and BYOL (Bootstrap Your Own Latent). The G-CNN preserves the equivariance for the Euclidean Group E(2), enabling it to effectively learn the representation of globally oriented feature maps. After representation learning, we trained a fully-connected classifier and fine-tuned the …",
+    "url": "https://www.sciencedirect.com/science/article/pii/S1877050923009638"
   },
   {
-    "id": "iftee2025slomo",
+    "id": "O3NaXMp0MMsC",
     "type": "article",
-    "raw": "@article{iftee2025slomo,\n  title={SloMo-Fast: Slow-Momentum and Fast-Adaptive Teachers for Source-Free Continual Test-Time Adaptation},\n  author={M.A.K. Iftee and M.S. Hossain and R.H. Rajib and A.K.M.M. Rahman and T. Iqbal and M.M. Islam and M.A. Amin and A.K.M.M. Rahman},\n  journal={Proceedings of the International Joint Conference on Artificial Intelligence (IJCAI)},\n  year={2025},\n  pages={To appear},\n  url={https://mirsazzathossain.me/files/slomo-fast.pdf},\n  code={https://github.com/mirsazzathossain/test-time-adaptation},\n  note={This paper is under review.},\n}",
+    "title": "FedCTTA: A Collaborative Approach to Continual Test-Time Adaptation in Federated Learning",
+    "authors": [
+      {
+        "name": "Rakibul Hasan Rajib"
+      },
+      {
+        "name": "Md Akil Raihan Iftee"
+      },
+      {
+        "name": "Mir Sazzat Hossain"
+      },
+      {
+        "name": "AKM Mahbubur Rahman"
+      },
+      {
+        "name": "Sajib Mistry"
+      },
+      {
+        "name": "M Ashraful Amin"
+      },
+      {
+        "name": "Amin Ahsan Ali"
+      }
+    ],
+    "year": 2025,
+    "venue": "",
+    "citation_count": 2,
+    "citation_updated": "2026-05-05",
+    "pages": "1-8",
+    "abstract": "Federated Learning (FL) enables collaborative model training across distributed clients without sharing raw data, making it ideal for privacy-sensitive applications. However, FL models often suffer performance degradation due to distribution shifts between training and deployment. Test-Time Adaptation (TTA) offers a promising solution by allowing models to adapt using only test samples. However, existing TTA methods in FL face challenges such as computational overhead, privacy risks from feature sharing, and scalability concerns due to memory constraints. To address these limitations, we propose Federated Continual Test-Time Adaptation (FedCTTA), a privacy-preserving and computationally efficient framework for federated adaptation. Unlike prior methods that rely on sharing local feature statistics, FedCTTA avoids direct feature exchange by leveraging similarity-aware aggregation based on model output …",
+    "url": "https://ieeexplore.ieee.org/abstract/document/11228519/"
+  },
+  {
+    "id": "hMod-77fHWUC",
+    "type": "article",
+    "title": "Benchmarking Large Language Models on Bangla Dialect Translation and Dialectal Sentiment Analysis",
+    "authors": [
+      {
+        "name": "Md Mahir Jawad"
+      },
+      {
+        "name": "Rafid Ahmed"
+      },
+      {
+        "name": "Ishita Sur Apan"
+      },
+      {
+        "name": "Tasnimul Hossain Tomal"
+      },
+      {
+        "name": "Fabiha Haider"
+      },
+      {
+        "name": "Mir Sazzat Hossain"
+      },
+      {
+        "name": "Md Farhad Alam Bhuiyan"
+      }
+    ],
+    "year": 2025,
+    "venue": "",
+    "citation_count": 1,
+    "citation_updated": "2026-05-05",
+    "abstract": "We present a novel Bangla Dialect Dataset comprising 600 annotated instances across four major dialects: Chattogram, Barishal, Sylhet, and Noakhali. The dataset was constructed from YouTube comments spanning diverse domains to capture authentic dialectal variations in informal online communication. Each instance includes the original dialectical text, its standard Bangla translation, and sentiment labels (Positive and Negative). We benchmark several state-of-the-art large language models on dialect-to-standard translation and sentiment analysis tasks using zero-shot and few-shot prompting strategies. Our experiments reveal that transliteration significantly improves translation quality for closed-source models, with GPT-4o-mini achieving the highest BLEU score of 0.343 in zero-shot with transliteration. For sentiment analysis, GPT-4o-mini demonstrates perfect precision, recall, and F1 scores (1.000) in few-shot settings. This dataset addresses the critical gap in resources for low-resource Bangla dialects and provides a foundation for developing dialect-aware NLP systems.",
+    "url": "https://aclanthology.org/2025.banglalp-1.26/"
+  },
+  {
+    "id": "R3hNpaxXUhUC",
+    "type": "article",
+    "title": "BD Open LULC Map: High-resolution land use land cover mapping & benchmarking for urban development in Dhaka, Bangladesh",
+    "authors": [
+      {
+        "name": "Mir Sazzat Hossain"
+      },
+      {
+        "name": "Ovi Paul"
+      },
+      {
+        "name": "Md Akil Raihan Iftee"
+      },
+      {
+        "name": "Rakibul Hasan Rajib"
+      },
+      {
+        "name": "Abu Bakar Siddik Nayem"
+      },
+      {
+        "name": "Anis Sarker"
+      },
+      {
+        "name": "Arshad Momen"
+      },
+      {
+        "name": "Md Ashraful Amin"
+      },
+      {
+        "name": "Amin Ahsan Ali"
+      },
+      {
+        "name": "Akm Mahbubur Rahman"
+      }
+    ],
+    "year": 2025,
+    "venue": "",
+    "citation_count": 1,
+    "citation_updated": "2026-05-05",
+    "pages": "2808-2813",
+    "abstract": "Land Use Land Cover (LULC) mapping using deep learning significantly enhances the reliability of LULC classification, aiding in understanding geography, socioeconomic conditions, poverty levels, and urban sprawl. However, the scarcity of annotated satellite data, especially in South/East Asian developing countries, poses a major challenge due to limited funding, diverse infrastructures, and dense populations. In this work, we introduce the BD Open LULC Map (BOLM), providing pixel-wise LULC annotations across eleven classes (e.g., Farmland, Water, Forest, Urban Structure, Rural Built- Up) for Dhaka metropolitan city and its surroundings using high-resolution Bing satellite imagery (2.22 m/pixel). BOLM spans 4,392 km2 (891 million pixels), with ground truth validated through a three-stage process involving GIS experts. We benchmark LULC segmentation using DeepLab V3+ across five major classes and …",
+    "url": "https://ieeexplore.ieee.org/abstract/document/11084396/"
+  },
+  {
+    "id": "TQgYirikUcIC",
+    "type": "article",
+    "title": "Rgc-bent: A novel dataset for bent radio galaxy classification",
+    "authors": [
+      {
+        "name": "Mir Sazzat Hossain"
+      },
+      {
+        "name": "Khan Muhammad Bin Asad"
+      },
+      {
+        "name": "Payaswini Saikia"
+      },
+      {
+        "name": "Adrita Khan"
+      },
+      {
+        "name": "Md Akil Raihan Iftee"
+      },
+      {
+        "name": "Rakibul Hasan Rajib"
+      },
+      {
+        "name": "Arshad Momen"
+      },
+      {
+        "name": "Md Ashraful Amin"
+      },
+      {
+        "name": "Amin Ahsan Ali"
+      },
+      {
+        "name": "AKM Mahbubur Rahman"
+      }
+    ],
+    "year": 2025,
+    "venue": "",
+    "citation_count": 1,
+    "citation_updated": "2026-05-05",
+    "pages": "2868-2873",
+    "abstract": "We introduce a novel machine learning dataset tailored for the classification of bent radio active galactic nuclei (AGN) in astronomical observations. Bent radio AGN, distinguished by their curved jet structures, provide critical insights into galaxy cluster dynamics, interactions within the intracluster medium, and the broader physics of AGN. Despite their astrophysical significance, the classification of bent radio AGN remains a challenge due to the scarcity of specialized datasets and benchmarks. To address this, we present a dataset, derived from a well-recognized radio astronomy survey, that is designed to support the classification of NAT (Narrow-Angle Tail) and WAT (Wide-Angle Tail) categories, along with detailed data processing steps. We further evaluate the performance of state-of-the-art deep learning models on the dataset, including Convolutional Neural Networks (CNNs), and transformer-based …",
+    "url": "https://ieeexplore.ieee.org/abstract/document/11084387/"
+  },
+  {
+    "id": "e5wmG9Sq2KIC",
+    "type": "article",
+    "title": "Beyond Classification: Benchmarking Object Detection Models for Efficient Tomato Leaf Disease Identification on a Real-World Dataset",
+    "authors": [
+      {
+        "name": "Fahim Mahafuz Ruhad"
+      },
+      {
+        "name": "Md Fahim"
+      },
+      {
+        "name": "Mir Sazzat Hossain"
+      },
+      {
+        "name": "Md Fahad Monir"
+      },
+      {
+        "name": "Ashraful Islam"
+      },
+      {
+        "name": "M Ashraful Amin"
+      }
+    ],
+    "year": 2025,
+    "venue": "Smart Agricultural Technology",
+    "citation_count": 1,
+    "citation_updated": "2026-05-05",
+    "pages": "101336",
+    "abstract": "Tomato is one of the most economically significant horticultural crops worldwide, yet its cultivation is frequently hindered by foliar diseases such as Late Blight, Bacterial Spot, and Septoria Leaf Spot. These diseases not only reduce yield but also result in substantial financial losses, particularly for smallholder farmers. Traditional manual inspection methods are labor-intensive and error-prone, highlighting the need for automated and accurate disease detection systems. While image classification models have been widely explored for plant disease identification, they often fail to capture spatial symptom details, leading to reduced interpretability and accuracy—especially for visually ambiguous diseases. In this study, we propose an object detection-based approach to localize and identify tomato leaf diseases more effectively. To facilitate this, we introduce a novel, regionally diverse dataset comprising nine common …",
+    "url": "https://www.sciencedirect.com/science/article/pii/S2772375525005672"
+  },
+  {
+    "id": "-f6ydRqryjwC",
+    "type": "article",
+    "title": "Investigating the relation between the environment and internal structure of massive elliptical galaxies using strong lensing",
+    "authors": [
+      {
+        "name": "SM Rafee Adnan"
+      },
+      {
+        "name": "Muhammad Jobair Hasan"
+      },
+      {
+        "name": "Ahmad Al-Imtiaz"
+      },
+      {
+        "name": "Sulyman H Robin"
+      },
+      {
+        "name": "Fahim R Shwadhin"
+      },
+      {
+        "name": "Anowar J Shajib"
+      },
+      {
+        "name": "Mamun Hossain Nahid"
+      },
+      {
+        "name": "Mehedi Hasan Tanver"
+      },
+      {
+        "name": "Tanjela Akter"
+      },
+      {
+        "name": "Nusrath Jahan"
+      },
+      {
+        "name": "Zareef Jafar"
+      },
+      {
+        "name": "Mamunur Rashid"
+      },
+      {
+        "name": "Anik Biswas"
+      },
+      {
+        "name": "Akbar Ahmed Chowdhury"
+      },
+      {
+        "name": "Jannatul Feardous"
+      },
+      {
+        "name": "Ajmi Rahaman"
+      },
+      {
+        "name": "Masuk Ridwan"
+      },
+      {
+        "name": "Rahul D Sharma"
+      },
+      {
+        "name": "Zannat Chowdhury"
+      },
+      {
+        "name": "Mir Sazzat Hossain"
+      }
+    ],
+    "year": 2025,
+    "venue": "Astronomy & Astrophysics",
+    "citation_count": 1,
+    "citation_updated": "2026-05-05",
+    "pages": "A259",
+    "volume": "699",
+    "abstract": "Strong lensing by massive galaxies probes their mass distribution, thus providing a window for studying their internal structure, i.e., the distributions of luminous and dark matter. In this paper, we investigate the relation between the internal structure of massive elliptical galaxies and their environment using a sample of 15 strong lensing systems. We performed lens modeling for them using LENSTRONOMY and constrained the mass and light distributions of the deflector galaxies. We adopted the local galaxy density as a metric for the environment and tested our results against several alternative definitions of it. We robustly find that the centroid offset between the mass and light is not correlated with the local galaxy density. This result supports using centroid offsets as a probe of dark-matter theories, since the environment’s impact on these offsets can be treated as negligible. Although we find a moderate to strong …",
+    "url": "https://www.aanda.org/articles/aa/abs/2025/07/aa53239-24/aa53239-24.html"
+  },
+  {
+    "id": "qUcmZB5y_30C",
+    "type": "article",
+    "title": "Lightweight recurrent neural network for image super-resolution",
+    "authors": [
+      {
+        "name": "Mir Sazzat Hossain"
+      },
+      {
+        "name": "Akm Mahbubur Rahman"
+      },
+      {
+        "name": "Md Ashraful Amin"
+      },
+      {
+        "name": "Amin Ahsan Ali"
+      }
+    ],
+    "year": 2024,
+    "venue": "",
+    "citation_count": 1,
+    "citation_updated": "2026-05-05",
+    "pages": "1567-1573",
+    "abstract": "In recent years, significant progress has been made in image super-resolution through the use of large-scale models. However, the efficacy of these models comes at the cost of their substantial size, posing challenges and limitations when deploying them on resource-constrained devices. Despite their remarkable performance, the feasibility of employing such models on low-end devices has remained a contentious topic. In light of this, our research introduces a lightweight approach to image super-resolution, leveraging a simple recurrent neural network architecture consisting of a recurrent convolution block. Our proposed model uses less than 75k parameters, which is 10 times fewer than the state-of-the-art transformer-based super-resolution model. Despite its small size, the proposed model performs well in image super-resolution tasks both visually and quantitatively. Our work presents a promising direction for …",
+    "url": "https://ieeexplore.ieee.org/abstract/document/10647844/"
+  },
+  {
+    "id": "2P1L_qKh6hAC",
+    "type": "article",
+    "title": "How Good LLMs Are at Answering Bangla Medical Visual Questions? Dataset and Benchmarking",
+    "authors": [
+      {
+        "name": "Rafid Ahmed"
+      },
+      {
+        "name": "Intesar Tahmid"
+      },
+      {
+        "name": "Mir Sazzat Hossain"
+      },
+      {
+        "name": "Tasnimul Hossain Tomal"
+      },
+      {
+        "name": "Md Fahim"
+      },
+      {
+        "name": "Md Farhad Alam Bhuiyan"
+      }
+    ],
+    "year": 2026,
+    "venue": "",
+    "citation_count": 0,
+    "citation_updated": "2026-05-05",
+    "pages": "1-14",
+    "abstract": "Recent advancements in Large Language Models (LLMs) and Large Vision Language Models (LVLMs) have enabled general-purpose systems to demonstrate promising capabilities in complex reasoning tasks, including those in the medical domain. Medical Visual Question Answering (MedVQA) has particularly benefited from these developments. However, despite Bangla being one of the most widely spoken languages globally, there exists no established Med-VQA benchmark for it. To address this gap, we introduce BanglaMedVQA, a dataset comprising clinically validated image–question–answer pairs, along with a comprehensive evaluation of current foundation models on this resource. Consistent with prior findings that report low performance of current models on English MedVQA benchmarks, our analysis reveals that Bangla performance is substantially lower, reflecting the challenges inherent to low-resource languages. Even top-performing models such as Gemini and GPT-4.1 mini fail to accurately answer specialized diagnostic questions, indicating severe limitations in fine-grained medical reasoning. Although certain open-source models, such as Gemma-3, occasionally outperform these models in general categories, they too struggle with clinically complex questions, underscoring the urgent need for top-notch evaluation method.",
+    "url": "https://www.researchgate.net/profile/Mir-Hossain-4/publication/401499713_How_Good_LLMs_Are_at_Answering_Bangla_Medical_Visual_Questions_Dataset_and_Benchmarking/links/69a72d06bff9750ad9c722ff/How-Good-LLMs-Are-at-Answering-Bangla-Medical-Visual-Questions-Dataset-and-Benchmarking.pdf"
+  },
+  {
+    "id": "k_IJM867U9cC",
+    "type": "article",
+    "title": "R-MMA: Enhancing Vision-Language Models with Recurrent Adapters for Few-Shot and Cross-Domain Generalization",
+    "authors": [
+      {
+        "name": "Md Fahim"
+      },
+      {
+        "name": "Md Farhan Ishmam"
+      },
+      {
+        "name": "Mir Sazzat Hossain"
+      },
+      {
+        "name": "M Ashraful Amin"
+      },
+      {
+        "name": "Amin Ahsan Ali"
+      },
+      {
+        "name": "AKM Rahman"
+      }
+    ],
+    "year": 2026,
+    "venue": "",
+    "citation_count": 0,
+    "citation_updated": "2026-05-05",
+    "pages": "6496-6506",
+    "abstract": "Despite the strong generalization capabilities of pre-trained vision-language models (VLMs) like CLIP, adapting these models for few-shot generalization tasks still presents a fundamental challenge. This challenge, often termed the discrimination-generalization dilemma, highlights the need to fine-tune task-specific knowledge while simultaneously preserving the model's general, pre-trained knowledge. Prompt learning offers a partial solution but often struggles to capture rich visual-textual interactions. Adapter-based methods like MMA improve alignment by adding learnable modules, but their use of multiple independent adapters increases parameter overhead and can limit transferability due to naive fusion of adapted and frozen features. To address these limitations, we introduce Recurrent Multi-Modal Adapter (R-MMA), a lightweight and efficient extension of MMA that enhances both performance and generalization. R-MMA employs a recurrent adapter module with shared weights across multiple layers of the image and text encoders. This design substantially reduces the parameter count while maintaining high expressive capacity. Additionally, R-MMA integrates an attention-based alignment mechanism to harmonize the adapter outputs with the frozen encoder features before fusion. This ensures better preservation of the pre-trained representations and enhances cross-modal consistency. Extensive experiments across 15 datasets on diverse tasks, including few-shot learning, generalization to novel classes and domains, and dataset transfer scenarios, demonstrate that R-MMA consistently surpasses state-of-the-art baselines, achieving …",
+    "url": "https://openaccess.thecvf.com/content/WACV2026/html/Fahim_R-MMA_Enhancing_Vision-Language_Models_with_Recurrent_Adapters_for_Few-Shot_and_WACV_2026_paper.html"
+  },
+  {
+    "id": "GnPB-g6toBAC",
+    "type": "article",
+    "title": "CMBAN: Cartoon-Driven Meme Contextual Classification Dataset for Bangla",
+    "authors": [
+      {
+        "name": "Newaz Ben Alam"
+      },
+      {
+        "name": "Akm Moshiur Rahman Mazumder"
+      },
+      {
+        "name": "Mir Sazzat Hossain"
+      },
+      {
+        "name": "Mysha Samiha"
+      },
+      {
+        "name": "Md Alvi Noor Hossain"
+      },
+      {
+        "name": "Md Fahim"
+      },
+      {
+        "name": "Amin Ahsan Ali"
+      },
+      {
+        "name": "Ashraful Islam"
+      },
+      {
+        "name": "M Ashraful Amin"
+      },
+      {
+        "name": "Akmmahbubur Rahman"
+      }
+    ],
+    "year": 2025,
+    "venue": "",
+    "citation_count": 0,
+    "citation_updated": "2026-05-05",
+    "pages": "2178-2194",
+    "abstract": "Social networks extensively feature memes, particularly cartoon images, as a prevalent form of communication often conveying complex sentiments or harmful content. Detecting such content, particularly when it involves Bengali and English text, remains a multimodal challenge. This paper introduces*** CMBan***, a novel and culturally relevant dataset of 2,641 annotated cartoon memes. It addresses meme classification based on their sentiment across five key categories: Humor, Sarcasm, Offensiveness, Motivational Content, and Overall Sentiment, incorporating both image and text features. Our curated dataset specifically aids in detecting nuanced offensive content and navigating complexities of pure Bengali, English, or code-mixed Bengali-English languages. Through rigorous experimentation involving over 12 multimodal models, including monolingual, multilingual, and proprietary architectures, and utilizing prompting methods like Chain-Of-Thought (CoT), findings suggest this cartoon-based, code-mixed meme content poses substantial understanding challenges. Experimental results demonstrate that closed models excel over open models. While the LoRA fine-tuning strategy equalizes performance across model architectures and improves classification of challenging aspects in multilingual meme contexts, this work advances meme classification by providing effective solution for detecting harmful content in multilingual meme contexts.",
+    "url": "https://aclanthology.org/2025.findings-ijcnlp.135/"
+  },
+  {
+    "id": "YFjsv_pBGBYC",
+    "type": "article",
+    "title": "LP-FT-LORA: A Three-Stage PEFT Framework for Efficient Domain Adaptation in Bangla NLP Tasks",
+    "authors": [
+      {
+        "name": "Tasnimul Hossain Tomal"
+      },
+      {
+        "name": "Anam Borhan Uddin"
+      },
+      {
+        "name": "Intesar Tahmid"
+      },
+      {
+        "name": "Mir Sazzat Hossain"
+      },
+      {
+        "name": "Md Fahim"
+      },
+      {
+        "name": "Md Farhad Alam Bhuiyan"
+      }
+    ],
+    "year": 2025,
+    "venue": "",
+    "citation_count": 0,
+    "citation_updated": "2026-05-05",
+    "abstract": "Adapting large pre-trained language models (LLMs) to downstream tasks typically requires fine-tuning, but fully updating all parameters is computationally prohibitive. Parameter-Efficient Fine-Tuning (PEFT) methods like Low-Rank Adaptation (LoRA) reduce this cost by updating a small subset of parameters. However, the standard approach of jointly training LoRA adapters and a new classifier head from a cold start can lead to training instability, as the classifier chases shifting feature representations. To address this, we propose LP-FT-LoRA, a novel three-stage training framework that decouples head alignment from representation learning to enhance stability and performance. Our framework first aligns the classifier head with the frozen backbone via linear probing, then trains only the LoRA adapters to learn task-specific features, and finally performs a brief joint refinement of the head and adapters. We conduct extensive experiments on five Bangla NLP benchmarks across four open-weight compact transformer models. The results demonstrate that LP-FT-LoRA consistently outperforms standard LoRA fine-tuning and other baselines, achieving state-of-the-art average performance and showing improved generalization on out-of-distribution datasets.",
+    "url": "https://aclanthology.org/2025.banglalp-1.17/"
+  },
+  {
+    "id": "isC4tDSrTZIC",
+    "type": "article",
+    "title": "E-PCN: Jet Tagging with Explainable Particle Chebyshev Networks Using Kinematic Features",
+    "authors": [
+      {
+        "name": "Md Raqibul Islam"
+      },
+      {
+        "name": "Adrita Khan"
+      },
+      {
+        "name": "Mir Sazzat Hossain"
+      },
+      {
+        "name": "Choudhury Ben Yamin Siddiqui"
+      },
+      {
+        "name": "Md Zakir Hossan"
+      },
+      {
+        "name": "Tanjib Khan"
+      },
+      {
+        "name": "M Arshad Momen"
+      },
+      {
+        "name": "Amin Ahsan Ali"
+      },
+      {
+        "name": "AKM Mahbubur Rahman"
+      }
+    ],
+    "year": 2025,
+    "venue": "arXiv e-prints",
+    "citation_count": 0,
+    "citation_updated": "2026-05-05",
+    "pages": "arXiv: 2512.07420",
+    "abstract": "The identification and classification of collimated particle sprays, or jets, are essential for interpreting data from high-energy collider experiments. While deep learning has improved jet classification, it often lacks interpretability. We introduce the Explainable Particle Chebyshev Network (E-PCN), a graph neural network extending the Particle Chebyshev Network (PCN). E-PCN integrates kinematic variables into jet classification by constructing four graph representations per jet, each weighted by a distinct variable: angular separation (), transverse momentum (), momentum fraction (), and invariant mass squared (). We use the concept of Gradient-weighted Class Activation Mapping (Grad-CAM) to determine which kinematic variables dominate classification outcomes. Analysis reveals that angular separation and transverse momentum collectively account for approximately 76% of classification decisions (40 …",
+    "url": "https://ui.adsabs.harvard.edu/abs/2025arXiv251207420R/abstract"
+  },
+  {
+    "id": "hC7cP41nSMkC",
+    "type": "article",
     "title": "SloMo-Fast: Slow-Momentum and Fast-Adaptive Teachers for Source-Free Continual Test-Time Adaptation",
-    "author": "M.A.K. Iftee and M.S. Hossain and R.H. Rajib and A.K.M.M. Rahman and T. Iqbal and M.M. Islam and M.A. Amin and A.K.M.M. Rahman",
-    "journal": "Proceedings of the International Joint Conference on Artificial Intelligence (IJCAI)",
-    "year": "2025",
-    "pages": "To appear",
-    "url": "https://mirsazzathossain.me/files/slomo-fast.pdf",
-    "code": "https://github.com/mirsazzathossain/test-time-adaptation",
-    "note": "This paper is under review.",
-    "citation_count": 3
+    "authors": [
+      {
+        "name": "Md Akil Raihan Iftee"
+      },
+      {
+        "name": "Mir Sazzat Hossain"
+      },
+      {
+        "name": "Rakibul Hasan Rajib"
+      },
+      {
+        "name": "Tariq Iqbal"
+      },
+      {
+        "name": "Md Mofijul Islam"
+      },
+      {
+        "name": "M Ashraful Amin"
+      },
+      {
+        "name": "Amin Ahsan Ali"
+      },
+      {
+        "name": "AKM Rahman"
+      }
+    ],
+    "year": 2025,
+    "venue": "arXiv preprint arXiv:2511.18468",
+    "citation_count": 0,
+    "citation_updated": "2026-05-05",
+    "abstract": "Continual Test-Time Adaptation (CTTA) is crucial for deploying models in real-world applications with unseen, evolving target domains. Existing CTTA methods, however, often rely on source data or prototypes, limiting their applicability in privacy-sensitive and resource-constrained settings. Additionally, these methods suffer from long-term forgetting, which degrades performance on previously encountered domains as target domains shift. To address these challenges, we propose SloMo-Fast, a source-free, dual-teacher CTTA framework designed for enhanced adaptability and generalization. It includes two complementary teachers: the Slow-Teacher, which exhibits slow forgetting and retains long-term knowledge of previously encountered domains to ensure robust generalization, and the Fast-Teacher rapidly adapts to new domains while accumulating and integrating knowledge across them. This framework preserves knowledge of past domains and adapts efficiently to new ones. We also introduce Cyclic Test-Time Adaptation (Cyclic-TTA), a novel CTTA benchmark that simulates recurring domain shifts. Our extensive experiments demonstrate that SloMo-Fast consistently outperforms state-of-the-art methods across Cyclic-TTA, as well as ten other CTTA settings, highlighting its ability to both adapt and generalize across evolving and revisited domains.",
+    "url": "https://arxiv.org/abs/2511.18468"
   },
   {
-    "id": "HOSSAIN2023512",
+    "id": "iH-uZ7U-co4C",
     "type": "article",
-    "raw": "@article{HOSSAIN2023512,\n    title = {RGC: a radio galaxy classifier based on artificial neural networks: I. Classifying the VLA images of bent radio AGNs},\n    journal = {Astronomy & Astrophysics (A&A)},\n    month = {11},\n    year = {2024},\n    volume = {To appear},\n    pages = {To appear},\n    note = {In Preparation},\n    author = {M.S. Hossain and K.M.B. Asad and P. Saikia, and F. Akter and A. Momen and A.A. Ali and J.K. Ghosh and M.A. Amin and A.K.M.M. Rahman},\n    code = {https://github.com/mirsazzathossain/radio-galaxy-classifier},\n    url = {https://mirsazzathossain.me/files/rgc.pdf},\n}",
-    "title": "RGC: a radio galaxy classifier based on artificial neural networks: I. Classifying the VLA images of bent radio AGNs",
-    "journal": "Astronomy & Astrophysics (A&A)",
-    "month": "11",
-    "year": "2024",
-    "volume": "To appear",
-    "pages": "To appear",
-    "note": "In Preparation",
-    "author": "M.S. Hossain and K.M.B. Asad and P. Saikia, and F. Akter and A. Momen and A.A. Ali and J.K. Ghosh and M.A. Amin and A.K.M.M. Rahman",
-    "code": "https://github.com/mirsazzathossain/radio-galaxy-classifier",
-    "url": "https://mirsazzathossain.me/files/rgc.pdf",
-    "citation_count": 19
+    "title": "pFedBBN: A Personalized Federated Test-Time Adaptation with Balanced Batch Normalization for Class-Imbalanced Data",
+    "authors": [
+      {
+        "name": "Md Akil Raihan Iftee"
+      },
+      {
+        "name": "Syed Md Ahnaf Hasan"
+      },
+      {
+        "name": "Mir Sazzat Hossain"
+      },
+      {
+        "name": "Rakibul Hasan Rajib"
+      },
+      {
+        "name": "Amin Ahsan Ali"
+      },
+      {
+        "name": "AKM Rahman"
+      },
+      {
+        "name": "Sajib Mistry"
+      },
+      {
+        "name": "Monowar Bhuyan"
+      }
+    ],
+    "year": 2025,
+    "venue": "arXiv preprint arXiv:2511.18066",
+    "citation_count": 0,
+    "citation_updated": "2026-05-05",
+    "abstract": "Test-time adaptation (TTA) in federated learning (FL) is crucial for handling unseen data distributions across clients, particularly when faced with domain shifts and skewed class distributions. Class Imbalance (CI) remains a fundamental challenge in FL, where rare but critical classes are often severely underrepresented in individual client datasets. Although prior work has addressed CI during training through reliable aggregation and local class distribution alignment, these methods typically rely on access to labeled data or coordination among clients, and none address class unsupervised adaptation to dynamic domains or distribution shifts at inference time under federated CI constraints. Revealing the failure of state-of-the-art TTA in federated client adaptation in CI scenario, we propose pFedBBN,a personalized federated test-time adaptation framework that employs balanced batch normalization (BBN) during local client adaptation to mitigate prediction bias by treating all classes equally, while also enabling client collaboration guided by BBN similarity, ensuring that clients with similar balanced representations reinforce each other and that adaptation remains aligned with domain-specific characteristics. pFedBBN supports fully unsupervised local adaptation and introduces a class-aware model aggregation strategy that enables personalized inference without compromising privacy. It addresses both distribution shifts and class imbalance through balanced feature normalization and domain-aware collaboration, without requiring any labeled or raw data from clients. Extensive experiments across diverse baselines show that pFedBBN …",
+    "url": "https://arxiv.org/abs/2511.18066"
+  },
+  {
+    "id": "_Qo2XoVZTnwC",
+    "type": "article",
+    "title": "RGC: a radio AGN classifier based on deep learning. I. A semi-supervised model for the VLA images of bent radio AGNs",
+    "authors": [
+      {
+        "name": "MS Hossain"
+      },
+      {
+        "name": "MSH Shahal"
+      },
+      {
+        "name": "A Khan"
+      },
+      {
+        "name": "KMB Asad"
+      },
+      {
+        "name": "P Saikia"
+      },
+      {
+        "name": "F Akter"
+      },
+      {
+        "name": "A Ali"
+      },
+      {
+        "name": "MA Amin"
+      },
+      {
+        "name": "A Momen"
+      },
+      {
+        "name": "M Hasan"
+      },
+      {
+        "name": "AKMM Rahman"
+      }
+    ],
+    "year": 2025,
+    "venue": "arXiv preprint arXiv:2510.22190",
+    "citation_count": 0,
+    "citation_updated": "2026-05-05",
+    "abstract": "Wide-angle tail (WAT) and narrow-angle tail (NAT) radio active galactic nuclei (RAGNs) are key tracers of dense environments in galaxy groups and clusters, yet no machine-learning classifier of bent RAGNs has been trained using both unlabeled data and purely visually inspected labels. We release the RGC Python package, which includes two newly preprocessed labeled datasets of 639 WATs and NATs derived from a publicly available catalog of visually inspected sources, along with a semi-supervised RGC model that leverages 20,000 unlabeled RAGNs. The two labeled datasets in RGC were preprocessed using PyBDSF which retains spurious sources, and Photutils which removes them. The RGC model integrates the self-supervised framework BYOL (Bootstrap YOur Latent) with the supervised E2CNN (E2-equivariant Convolutional Neural Network) to form a semi-supervised binary classifier. The RGC model, when trained and evaluated on a dataset devoid of spurious sources, reaches peak performance, attaining an accuracy of 88.88% along with F1-scores of 0.90 for WATs and 0.85 for NATs. The model's attention patterns amid class imbalance suggest that this work can serve as a stepping stone toward developing physics-informed foundation models capable of identifying a broad range of AGN physical properties.",
+    "url": "https://arxiv.org/abs/2510.22190"
   }
 ]

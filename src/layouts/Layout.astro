@@ -9,6 +9,7 @@ import "@/styles/globals.css";
 interface Props {
   title?: string;
   description?: string;
+  name?: string;
   canonicalPath?: string;
   ogImage?: string;
   ogType?: string;
@@ -19,19 +20,17 @@ interface Props {
 
 const {
   title,
-  description = "Mir Sazzat Hossain is a recent college graduate with a solid foundation in computer science as well as competence in exploratory data analysis, machine learning, computer vision, and statistics. He is currently working as a Research Assistant at the Independent University, Bangladesh's Center for Computational and Data Sciences.",
+  name = "Mir Sazzat Hossain",
+  description = `${name} is a recent college graduate with a solid foundation in computer science as well as competence in exploratory data analysis, machine learning, computer vision, and statistics. He is currently working as a Research Assistant at the Independent University, Bangladesh's Center for Computational and Data Sciences.`,
   canonicalPath,
   ogImage = "/images/og-image.png",
   ogType = "website",
   publishedTime,
   authors,
   keywords = [
-    "Mir Sazzat Hossain",
-    "Mir Sazzat",
-    "Sazzat",
-    "Sazzat Hossain",
-    "Mir",
-    "Hossain",
+    name,
+    name.split(" ")[0],
+    name.split(" ")[1],
     "Personal Website",
   ],
 } = Astro.props;
@@ -40,8 +39,8 @@ const origin = Astro.site?.href ?? Astro.url.origin;
 const canonical = new URL(canonicalPath ?? Astro.url.pathname, origin).href;
 const ogImageUrl = new URL(ogImage, origin).href;
 const pageTitle = title
-  ? `${title} - Mir Sazzat Hossain`
-  : "Mir Sazzat Hossain | Personal Website";
+  ? `${title} - ${name}`
+  : `${name} | Personal Website`;
 ---
 
 <!doctype html>

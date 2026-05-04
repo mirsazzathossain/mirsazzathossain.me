@@ -1,16 +1,15 @@
 ---
 import Layout from "@/layouts/Layout.astro";
 import PublicationDetail from "@/components/publications/PublicationDetail";
-import { readSiteJson } from "@/utils/json-data";
-
-type Publication = {
-  id?: string;
-  title?: string;
-  abstract?: string;
-};
+import { mergePublicationOverrides, type Publication } from "@/utils/publications";
+import base from "@/data/publications.json";
+import overrides from "@/data/publications.override.json";
 
 export async function getStaticPaths() {
-  const publications = await readSiteJson<Publication[]>("publications.json");
+  const publications = mergePublicationOverrides(
+    base as Publication[],
+    overrides as Partial<Publication>[]
+  );
 
   return publications
     .filter((publication) => publication.id)
@@ -21,14 +20,20 @@ export async function getStaticPaths() {
 }
 
 const { publication } = Astro.props;
+const mergedPublications = mergePublicationOverrides(
+  base as Publication[],
+  overrides as Partial<Publication>[]
+);
+const currentPublication =
+  mergedPublications.find((item) => item.id === Astro.params.id) ?? publication;
 ---
 
 <Layout
-  title={publication.title}
-  description={publication.abstract ?? publication.title}
-  canonicalPath={`/publications/${publication.id}`}
+  title={currentPublication.title}
+  description={currentPublication.abstract ?? currentPublication.title}
+  canonicalPath={`/publications/${currentPublication.id}`}
 >
-  <PublicationDetail publication={publication} />
+  <PublicationDetail publication={currentPublication} />
 </Layout>
 
 <script is:inline>

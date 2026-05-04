@@ -1,0 +1,44 @@
+[
+  {
+    "title": "Best Long Paper Award, BLP 2025 @ EMNLP",
+    "time": "Nov 2025",
+    "icon": "🏆",
+    "credentialUrl": "/files/blp-workshop-award.pdf",
+    "credentialLabel": "View award certificate"
+  },
+  {
+    "title": "IEEE Signal Processing Society Travel Grant of $1,000 - ICIP 2024",
+    "time": "Oct 2024",
+    "icon": "💰",
+    "credentialUrl": "/files/icip2024-travel-grant.pdf",
+    "credentialLabel": "View grant letter"
+  },
+  {
+    "title": "IUB academic honors: VC's List (3x), Dean's Merit List, and Dean's List.",
+    "time": "2018 — 2021",
+    "icon": "🎓",
+    "credentialUrl": "/files/merit-list.pdf",
+    "credentialLabel": "View details"
+  },
+  {
+    "title": "Winner of Intra IUB Tech Fest Programming Contest (Summer 2019)",
+    "time": "2019",
+    "icon": "🏅",
+    "credentialUrl": "/files/intra-iub-tech-fest-2019.pdf",
+    "credentialLabel": "View certificate"
+  },
+  {
+    "title": "Winner of ACM Week Code Debugging Contest (2019)",
+    "time": "2019",
+    "icon": "🏅",
+    "credentialUrl": "/files/acm-week-code-debugging-2019.pdf",
+    "credentialLabel": "View certificate"
+  },
+  {
+    "title": "Represented IUB @ 2019 ICPC Asia Dhaka Regional Contestant",
+    "time": "2019",
+    "icon": "👨‍💻",
+    "credentialUrl": "/files/icpc-asia-dhaka-2019.pdf",
+    "credentialLabel": "ICPC archive"
+  }
+]

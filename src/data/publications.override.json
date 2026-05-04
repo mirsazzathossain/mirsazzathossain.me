@@ -1,0 +1,79 @@
+[
+  {
+    "id": "k_IJM867U9cC",
+    "featured": true,
+    "type": "conference",
+    "venue": "IEEE/CVF Winter Conference on Applications of Computer Vision",
+    "venue_short": "WACV 2026",
+    "venue_citation": "Proceedings of the IEEE/CVF Winter Conference on Applications of Computer Vision (WACV), 2026, pp. 6496-6506.",
+    "abstract": "Despite the strong generalization capabilities of pre-trained vision-language models (VLMs) like CLIP, adapting these models for few-shot generalization tasks still presents a fundamental challenge. This challenge, often termed the discrimination-generalization dilemma, highlights the need to fine-tune task-specific knowledge while simultaneously preserving the model's general, pre-trained knowledge. Prompt learning offers a partial solution but often struggles to capture rich visual-textual interactions. Adapter-based methods like MMA improve alignment by adding learnable modules, but their use of multiple independent adapters increases parameter overhead and can limit transferability due to naive fusion of adapted and frozen features. To address these limitations, we introduce Recurrent Multi-Modal Adapter (R-MMA), a lightweight and efficient extension of MMA that enhances both performance and generalization. R-MMA employs a recurrent adapter module with shared weights across multiple layers of the image and text encoders. This design substantially reduces the parameter count while maintaining high expressive capacity. Additionally, R-MMA integrates an attention-based alignment mechanism to harmonize the adapter outputs with the frozen encoder features before fusion. This ensures better preservation of the pre-trained representations and enhances cross-modal consistency. Extensive experiments across 15 datasets on diverse tasks, including few-shot learning, generalization to novel classes and domains, and dataset transfer scenarios, demonstrate that R-MMA consistently surpasses state-of-the-art baselines, achieving strong performance with improved efficiency and a better balance between adaptation and generalization. Our work achieves one of the highest forms of parameter efficiency with only three trainable weight matrices for the whole network, regardless of the network depth. Our code is available at: https://github.com/farhanishmam/R-MMA.",
+    "bibtex": "@InProceedings{Fahim_2026_WACV,\n    author    = {Fahim, Md and Ishmam, Md Farhan and Hossain, Mir Sazzat and Amin, M Ashraful and Ali, Amin Ahsan and Rahman, AKM Mahbubur},\n    title     = {R-MMA: Enhancing Vision-Language Models with Recurrent Adapters for Few-Shot and Cross-Domain Generalization},\n    booktitle = {Proceedings of the IEEE/CVF Winter Conference on Applications of Computer Vision (WACV)},\n    month     = {March},\n    year      = {2026},\n    pages     = {6496-6506}\n}"
+  },
+  {
+    "id": "IWHjjKOFINEC",
+    "type": "workshop",
+    "venue_short": "INNS DLIA 2023",
+    "slides": "https://mirsazzathossain.me/files/rgc-inns-dlia-2023-presentation.pdf",
+    "poster": "https://mirsazzathossain.me/files/rgc-iub-poster.pdf"
+  },
+  {
+    "id": "TQgYirikUcIC",
+    "featured": true,
+    "type": "conference",
+    "venue": "IEEE International Conference on Image Processing",
+    "venue_short": "ICIP 2025"
+  },
+  {
+    "id": "GnPB-g6toBAC",
+    "featured": true,
+    "type": "conference",
+    "venue": "Findings of the Association for Computational Linguistics: IJCNLP-AACL",
+    "venue_short": "ACL Findings 2025"
+  },
+  {
+    "id": "qUcmZB5y_30C",
+    "type": "conference",
+    "venue": "IEEE International Conference on Image Processing",
+    "venue_short": "ICIP 2024",
+    "poster": "https://mirsazzathossain.me/files/super-resolution-icip2024-poster.pdf"
+  },
+  {
+    "id": "O3NaXMp0MMsC",
+    "type": "conference",
+    "venue": "International Joint Conference on Neural Networks",
+    "venue_short": "IJCNN 2025",
+    "slides": "https://mirsazzathossain.me/files/fedctta-presentation.pdf"
+  },
+  {
+    "id": "R3hNpaxXUhUC",
+    "type": "conference",
+    "venue": "IEEE International Conference on Image Processing",
+    "venue_short": "ICIP 2025"
+  },
+  {
+    "id": "hMod-77fHWUC",
+    "type": "workshop",
+    "venue": "BanglaLP Workshop at IJCNLP-AACL",
+    "venue_short": "BanglaLP 2025"
+  },
+  {
+    "id": "YFjsv_pBGBYC",
+    "type": "workshop",
+    "venue": "BanglaLP Workshop at IJCNLP-AACL",
+    "venue_short": "BanglaLP 2025"
+  },
+  {
+    "id": "2P1L_qKh6hAC",
+    "featured": true,
+    "type": "workshop",
+    "venue": "The Second AAAI Bridge Program on AI for Medicine and Healthcare",
+    "venue_short": "AAAI Bridge 2026",
+    "venue_citation": "Proceedings of The Second AAAI Bridge Program on AI for Medicine and Healthcare, PMLR 317:1-14, 2026.",
+    "pages": "1-14",
+    "volume": "317",
+    "pdf": "https://raw.githubusercontent.com/mlresearch/v317/main/assets/ahmed26a/ahmed26a.pdf",
+    "url": "https://proceedings.mlr.press/v317/ahmed26a.html",
+    "abstract": "Recent advancements in Large Language Models (LLMs) and Large Vision Language Models (LVLMs) have enabled general-purpose systems to demonstrate promising capabilities in complex reasoning tasks, including those in the medical domain. Medical Visual Question Answering (MedVQA) has particularly benefited from these developments. However, despite Bangla being one of the most widely spoken languages globally, there exists no established MedVQA benchmark for it. To address this gap, we introduce BanglaMedVQA, a dataset comprising clinically validated image–question–answer pairs, along with a comprehensive evaluation of current foundation models on this resource. Consistent with prior findings that report low performance of current models on English MedVQA benchmarks, our analysis reveals that Bangla performance is substantially lower, reflecting the challenges inherent to low-resource languages. Even top-performing models such as Gemini and GPT-4.1 mini fail to accurately answer specialized diagnostic questions, indicating severe limitations in fine-grained medical reasoning. Although certain open-source models, such as Gemma-3, occasionally outperform these models in general categories, they too struggle with clinically complex questions, underscoring the urgent need for top-notch evaluation method.",
+    "bibtex": "@InProceedings{pmlr-v317-ahmed26a,\n  title = \t {How Good LLMs Are at Answering Bangla Medical Visual Questions? Dataset and Benchmarking},\n  author =       {Ahmed, Rafid and Tahmid, Intesar and Hossain, Mir Sazzat and Tomal, Tasnimul Hossain and Fahim, Md and Bhuiyan, Md Farhad Alam},\n  booktitle = \t {Proceedings of The Second AAAI Bridge Program on AI for Medicine and Healthcare},\n  pages = \t {1--14},\n  year = \t {2026},\n  editor = \t {Wu, Junde and Pan, Jiazhen and Zhu, Jiayuan and Luo, Luyang and Li, Yitong and Xu, Min and Jin, Yueming and Rueckert, Daniel},\n  volume = \t {317},\n  series = \t {Proceedings of Machine Learning Research},\n  month = \t {20--21 Jan},\n  publisher =    {PMLR},\n  pdf = \t {https://raw.githubusercontent.com/mlresearch/v317/main/assets/ahmed26a/ahmed26a.pdf},\n  url = \t {https://proceedings.mlr.press/v317/ahmed26a.html},\n  abstract = \t {Recent advancements in Large Language Models (LLMs) and Large Vision Language Models (LVLMs) have enabled general-purpose systems to demonstrate promising capabilities in complex reasoning tasks, including those in the medical domain. Medical Visual Question Answering (MedVQA) has particularly benefited from these developments. However, despite Bangla being one of the most widely spoken languages globally, there exists no established MedVQA benchmark for it. To address this gap, we introduce BanglaMedVQA, a dataset comprising clinically validated image–question–answer pairs, along with a comprehensive evaluation of current foundation models on this resource. Consistent with prior findings that report low performance of current models on English MedVQA benchmarks, our analysis reveals that Bangla performance is substantially lower, reflecting the challenges inherent to low-resource languages. Even top-performing models such as Gemini and GPT-4.1 mini fail to accurately answer specialized diagnostic questions, indicating severe limitations in fine-grained medical reasoning. Although certain open-source models, such as Gemma-3, occasionally outperform these models in general categories, they too struggle with clinically complex ques- tions, underscoring the urgent need for top-notch evaluation method.}\n}"
+  }
+]

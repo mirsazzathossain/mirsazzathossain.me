@@ -1,9 +1,15 @@
 ---
 import Layout from "@/layouts/Layout.astro";
 import Publications from "@/components/publications/Publications";
-import { readSiteJson } from "@/utils/json-data";
+import { mergePublicationOverrides, type Publication, type ScholarStats } from "@/utils/publications";
+import base from "@/data/publications.json";
+import overrides from "@/data/publications.override.json";
+import stats from "@/data/scholar_stats.json";
 
-const publications = await readSiteJson("publications.json");
+const publications = mergePublicationOverrides(
+  base as Publication[],
+  overrides as Partial<Publication>[]
+);
 ---
 
 <Layout
@@ -11,5 +17,5 @@ const publications = await readSiteJson("publications.json");
   description="Peer-reviewed papers, workshop contributions, and preprints by Mir Sazzat Hossain across computer vision, domain adaptation, and astrophysical machine learning."
   canonicalPath="/publications"
 >
-  <Publications client:load publications={publications} />
+  <Publications client:load publications={publications} stats={stats as ScholarStats} />
 </Layout>

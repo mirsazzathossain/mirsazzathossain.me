@@ -1,24 +1,30 @@
 ---
-import Layout from "@/layouts/Layout.astro";
-import ProfileSidebar from "@/components/sections/ProfileSidebar";
 import { HeroBio, RecentNews } from "@/components/sections/HeroBio";
-import { HomePublications } from "@/components/sections/HomePublications";
 import { HomeArticles } from "@/components/sections/HomeArticles";
+import { HomePublications } from "@/components/sections/HomePublications";
+import ProfileSidebar from "@/components/sections/ProfileSidebar";
+import pubBase from "@/data/publications.json";
+import pubOverrides from "@/data/publications.override.json";
+import Layout from "@/layouts/Layout.astro";
 import { getSortedPublishedArticles } from "@/utils/articles";
 import { readSiteJson } from "@/utils/json-data";
+import { mergePublicationOverrides, type Publication } from "@/utils/publications";
 
 const about = await readSiteJson("about.json");
-const lifeEvents = await readSiteJson<Record<string, unknown>>("life_events.json");
-const publications = await readSiteJson("publications.json");
+const news = await readSiteJson("news.json");
+const publications = mergePublicationOverrides(
+  pubBase as Publication[],
+  pubOverrides as Partial<Publication>[]
+);
 const articles = await getSortedPublishedArticles();
 ---
 
-<Layout>
+<Layout name={about.name}>
   <section class="grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-[clamp(28px,5vw,56px)] mb-12">
     <ProfileSidebar client:load about={about} />
     <div>
       <HeroBio client:load about={about} />
-      <RecentNews client:load lifeEvents={lifeEvents} />
+      <RecentNews client:load news={news} />
       <HomePublications client:load publications={publications} />
       <HomeArticles client:load articles={articles} />
     </div>

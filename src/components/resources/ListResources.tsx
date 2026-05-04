@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import ResourceCard from "@/components/resources/ResourceCard";
-import { SearchIcon } from "@/components/Icons";
+import { SearchField } from "@/components/ui/SearchField";
 
 export default function ListResources({
   resources,
@@ -36,16 +36,12 @@ export default function ListResources({
   return (
     <>
       <div className="mb-[24px] pb-4 border-b border-rule">
-        <label className="inline-flex items-center gap-[7px] py-1.5 px-3 border border-rule rounded-full bg-bg min-w-full sm:min-w-[260px] lg:min-w-[320px] text-ink-3">
-          <SearchIcon className="h-[13px] w-[13px] shrink-0" />
-          <span className="sr-only">Search resources</span>
-          <input 
-            placeholder="Search resources…" 
-            value={q} 
-            onChange={(e) => setQ(e.target.value)} 
-            className="w-full border-0 outline-none bg-transparent font-sans text-[13px] text-ink placeholder:text-ink-3"
-          />
-        </label>
+        <SearchField
+          value={q}
+          onChange={setQ}
+          placeholder="Search resources…"
+          label="Search resources"
+        />
       </div>
 
       {filteredResources.length === 0 && (

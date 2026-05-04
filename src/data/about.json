@@ -1,12 +1,24 @@
 {
   "name": "Mir Sazzat Hossain",
-  "designation": "Junior Research Scientist",
+  "photo": "/images/user.png",
+  "designation": "Research Assistant",
   "company": {
-    "name": "Center for Computational & Data Sciences",
-    "url": "https://ccds.ai/"
+    "name": "Independent University, Bangladesh",
+    "url": "https://iub.ac.bd/",
+    "department": {
+      "name": "Center for Computational & Data Sciences",
+      "url": "https://ccds.ai/"
+    }
   },
-  "description": "A highly motivated and aspiring researcher with a strong background in computer vision and machine learning. Over the past two years, I have actively contributed to the field, publishing research articles in well-regarded conferences such as ICIP and IJCNN. My primary research interests center around various aspects of computer vision and solving real-world problems from different domains using it. \n\nCurrently, I am working as a Junior Research Scientist at the Center for Computational & Data Sciences (CCDS) at Independent University, Bangladesh. My current research projects include domain adaptation, Mixtures-of-Experts in large multi-modal models (LMMs), protein dynamics prediction using 3D CNNs, and particle jet tagging using graph neural networks. \n\nTo advance my research experience, I am actively seeking Ph.D. positions in computer vision and machine learning, focusing on topics such as domain adaptation, self-supervised learning, generative models, and vision-language models. I am committed to continuous learning and growth and am excited to contribute to the advancement of computer vision and machine learning research.",
-  "socialLinks": [
+  "researchInterests": [
+    "Multimodal Learning",
+    "Domain Adaptation",
+    "CUAs",
+    "Vision-Language Models",
+    "Federated Learning"
+  ],
+  "description": "A highly motivated and aspiring researcher with a strong background in deep learning, with recent work centered on multimodal learning. Over the past few years, I have actively contributed to the field, publishing research articles in top-tier venues such as ACL and WACV. My primary research interests lie in vision-language models. I have also worked on domain adaptation and federated learning, and continue to explore these areas with strong interest.\n\nCurrently, I am working as a Research Assistant at the Center for Computational & Data Sciences (CCDS) at Independent University, Bangladesh. My recent work explores multimodal alignment, efficient adaptation, and generative approaches, including diffusion models and constrained generation. I am actively seeking Ph.D. opportunities in Computer Science, with an emphasis on vision-language models, domain adaptation, and generative models.",
+  "academicLinks": [
     {
       "name": "google-scholar",
       "url": "https://scholar.google.com/citations?user=HriPgEQAAAAJ"
@@ -32,8 +44,23 @@
       "url": "https://github.com/mirsazzathossain"
     }
   ],
+  "socialLinks": [
+    {
+      "name": "linkedin",
+      "url": "https://www.linkedin.com/in/mirsazzathossain/",
+      "username": "mirsazzathossain"
+    },
+    {
+      "name": "discord",
+      "url": "https://discord.gg/M7Jjv9hr",
+      "username": "mirsazzathossain"
+    }
+  ],
   "resume": "files/mirsazzathossain-cv.pdf",
-  "note": "",
-  "location": "Dhaka, Bangladesh",
+  "availability": "Applying for Fall 2026 PhD",
+  "location": {
+    "name": "Dhaka, Bangladesh",
+    "url": "https://www.google.com/maps/place/Dhaka/@23.7810672,90.2548772,11z/"
+  },
   "email": "mirsazzathossain@gmail.com"
 }

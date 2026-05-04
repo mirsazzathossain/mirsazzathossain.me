@@ -1,0 +1,50 @@
+[
+  {
+    "title": "AlphaFold 3: Protein Structure Prediction Advances",
+    "venue": "BRAC Interdisciplinary Computational Biology Workshop",
+    "location": "Dhaka, Bangladesh",
+    "date": "2026-01",
+    "type": "poster",
+    "posterUrl": "/files/alphaFold-3-brac-poster.pdf"
+  },
+  {
+    "title": "R-MMA: Enhancing Vision-Language Models with Recurrent Adapters for Few-Shot and Cross-Domain Generalization",
+    "venue": "WACV 2026",
+    "location": "Arizona, USA",
+    "date": "2026-03",
+    "type": "poster",
+    "slidesUrl": "/files/rmma-poster.pdf"
+  },
+  {
+    "title": "BD Open LULC Map: High-resolution land use land cover mapping & benchmarking for urban development in Dhaka, Bangladesh",
+    "venue": "ICIP 2025",
+    "location": "Anchorage, USA",
+    "date": "2025-09",
+    "type": "oral",
+    "slidesUrl": "/files/bolm-slides.pdf"
+  },
+  {
+    "title": "RGC-BENT: A Novel Dataset for BENT Radio Galaxy Classification",
+    "venue": "ICIP 2025",
+    "location": "Anchorage, USA",
+    "date": "2025-09",
+    "type": "oral",
+    "slidesUrl": "/files/rgc-bent-slides.pdf"
+  },
+  {
+    "title": "Lightweight Recurrent Network for Super-Resolution",
+    "venue": "ICIP 2024",
+    "location": "Abu Dhabi, UAE",
+    "date": "2024-10",
+    "type": "poster",
+    "posterUrl": "/files/super-resolution-icip2024-poster.pdf"
+  },
+  {
+    "title": "Group-Equivariant CNNs for Radio Galaxy Morphology",
+    "venue": "INNS-DLIA @ IJCNN 2023",
+    "location": "Online",
+    "date": "2023-08",
+    "type": "workshop",
+    "slidesUrl": "/files/rgc-inns-dlia-2023-presentation.pdf"
+  }
+]

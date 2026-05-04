@@ -1,0 +1,40 @@
+name: Update Publications
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"  # every Monday at 06:00 UTC
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install scholarly
+        run: pip install scholarly
+
+      - name: Fetch Scholar data and update publication data
+        run: python .github/scripts/update_publications.py
+        env:
+          SCHOLAR_AUTHOR_ID: HriPgEQAAAAJ
+
+      - name: Commit if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git diff --quiet src/data/publications.json src/data/scholar_stats.json || (
+            git add src/data/publications.json src/data/scholar_stats.json &&
+            git commit -m "chore: update publication stats [skip ci]"
+          )
+
+      - name: Push
+        run: git push

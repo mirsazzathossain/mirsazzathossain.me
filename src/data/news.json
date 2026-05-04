@@ -1,0 +1,97 @@
+[
+  {
+    "year": 2026,
+    "items": [
+      {
+        "kind": "paper",
+        "text": "Medical VQA paper accepted at ACL Findings 2026."
+      }
+    ]
+  },
+  {
+    "year": 2025,
+    "items": [
+      {
+        "kind": "paper",
+        "text": "Paper accepted at AAAI Bridge Program (AI for Medicine, 2026)."
+      },
+      {
+        "kind": "paper",
+        "text": "R-MMA accepted at WACV 2026."
+      },
+      {
+        "kind": "award",
+        "text": "DIALTSA-BN won Best Long Paper at BLP @ IJCNLP-AACL 2025."
+      },
+      {
+        "kind": "paper",
+        "text": "LP-FT-LoRA and DIALTSA-BN accepted at BLP @ IJCNLP-AACL 2025."
+      },
+      {
+        "kind": "paper",
+        "text": "CMBan accepted at IJCNLP-AACL 2025 Findings."
+      },
+      {
+        "kind": "paper",
+        "text": "Paper accepted in A&A (Q1)."
+      },
+      {
+        "kind": "paper",
+        "text": "Two papers at ICIP 2025: BD Open LULC Map, RGC-BENT."
+      },
+      {
+        "kind": "paper",
+        "text": "FedCTTA accepted at IJCNN 2025."
+      }
+    ]
+  },
+  {
+    "year": 2024,
+    "items": [
+      {
+        "kind": "award",
+        "text": "$1,000 IEEE SPS travel grant for ICIP 2024."
+      },
+      {
+        "kind": "paper",
+        "text": "ICIP 2024: Lightweight RNN for image super-resolution."
+      }
+    ]
+  },
+  {
+    "year": 2023,
+    "items": [
+      {
+        "kind": "paper",
+        "text": "First paper at IJCNN 2023 workshop."
+      }
+    ]
+  },
+  {
+    "year": 2022,
+    "items": [
+      {
+        "kind": "career",
+        "text": "Joined CCDS as Research Assistant."
+      }
+    ]
+  },
+  {
+    "year": 2021,
+    "items": [
+      {
+        "kind": "milestone",
+        "text": "Graduated (BSc in CSE, IUB)."
+      }
+    ]
+  },
+  {
+    "year": 2017,
+    "items": [
+      {
+        "kind": "milestone",
+        "text": "Started CSE at IUB."
+      }
+    ]
+  }
+]

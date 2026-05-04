@@ -11,11 +11,12 @@ import {
 import {
   buildBibtex,
   getCitationCount,
+  getAuthors,
+  getPublicationKeywords,
   getPublicationType,
   getVenueLong,
   getVenueShort,
   normalizeDoi,
-  parsePublicationAuthors,
   type Publication,
 } from "@/utils/publications";
 
@@ -27,13 +28,12 @@ export default function PublicationDetail({
   const venueShort = getVenueShort(publication);
   const kind = getPublicationType(publication);
   const venueLong = getVenueLong(publication);
-  const keywords = publication.keywords
-    ?.split(/[;,]/)
-    .map((keyword) => keyword.trim())
-    .filter(Boolean)
-    .slice(0, 8);
+  const keywords = getPublicationKeywords(publication).slice(0, 8);
   const citationCount = getCitationCount(publication);
-  const bibtex = publication.raw || buildBibtex(publication);
+  const bibtex = buildBibtex(publication);
+  const pdfHref = publication.pdf || publication.url;
+  const hasSecondaryLink =
+    publication.pdf && publication.url && publication.pdf !== publication.url;
 
   return (
     <article>
@@ -45,30 +45,30 @@ export default function PublicationDetail({
       </a>
 
       <p className="mb-2 font-mono text-[11px] tracking-[0.14em] uppercase text-ink-3">
-        {kind} - {venueShort} - {publication.year}
+        {kind} — {venueShort} — {publication.year}
       </p>
       <h1 className="m-0 mb-3.5 max-w-[900px] font-serif text-[clamp(24px,3.5vw,32px)] font-semibold leading-[1.18] tracking-[-0.018em] text-ink">
         {publication.title}
       </h1>
       <p className="m-0 mb-1.5 max-w-[900px] text-[14px] leading-[1.55] text-ink-2">
-        {formatAuthors(publication.author)}
+        <AuthorList publication={publication} />
       </p>
-      <div className="mb-2.5 max-w-[900px] border-l-2 border-link/30 pl-3 text-[12.5px] leading-[1.55] text-ink-2">
-        <span className="align-super font-mono text-[9px] text-link">1</span>
-        <span className="ml-1">
-          Center for Computational &amp; Data Sciences, Independent University,
-          Bangladesh
-        </span>
-      </div>
       <p className="m-0 mb-[18px] max-w-[900px] text-[13px] italic text-ink-3">
         {venueLong}
       </p>
 
       <div className="grid min-w-0 grid-cols-1 items-start gap-9 lg:grid-cols-[minmax(0,1fr)_240px]">
         <div className="min-w-0">
-          <div className="mb-[22px] flex aspect-video items-center justify-center rounded border border-dashed border-rule bg-[repeating-linear-gradient(45deg,var(--bg)_0_8px,var(--bg-3)_8px_16px)] font-mono text-[12px] text-ink-3">
-            [ teaser figure / system diagram ]
-          </div>
+          {publication.figure && (
+            <figure className="m-0 mb-[22px]">
+              <img
+                src={publication.figure}
+                alt=""
+                className="aspect-video w-full rounded border border-rule object-cover"
+                loading="lazy"
+              />
+            </figure>
+          )}
 
           <section className="my-[26px]">
             <h2 className="m-0 mb-2.5 border-b border-rule pb-1.5 font-mono text-[11px] font-semibold tracking-[0.14em] uppercase text-ink-3">
@@ -76,12 +76,11 @@ export default function PublicationDetail({
             </h2>
             <p className="m-0 max-w-[65ch] font-serif text-[16px] leading-[1.62] text-ink">
               {publication.abstract ||
-                publication.note ||
                 "Abstract will be added here once the final paper metadata is available."}
             </p>
           </section>
 
-          {keywords && keywords.length > 0 && (
+          {keywords.length > 0 && (
             <section className="my-[26px]">
               <h2 className="m-0 mb-2.5 border-b border-rule pb-1.5 font-mono text-[11px] font-semibold tracking-[0.14em] uppercase text-ink-3">
                 Topics
@@ -118,23 +117,54 @@ export default function PublicationDetail({
               Resources
             </h2>
             <div className="grid gap-1.5">
-              {publication.url && (
-                <SideLink href={publication.url} label="Paper PDF" icon={<FileIcon className="h-[11px] w-[11px]" />} />
+              {pdfHref && (
+                <SideLink
+                  href={pdfHref}
+                  label={pdfHref.includes("arxiv") ? "arXiv PDF" : "Paper PDF"}
+                  icon={<FileIcon className="h-[11px] w-[11px]" />}
+                />
+              )}
+              {hasSecondaryLink && (
+                <SideLink
+                  href={publication.url!}
+                  label="Paper Link"
+                  icon={<ExternalLinkIcon className="h-2.5 w-2.5" />}
+                />
               )}
               {publication.code && (
-                <SideLink href={publication.code} label="Code" icon={<CodeIcon className="h-[11px] w-[11px]" />} />
+                <SideLink
+                  href={publication.code}
+                  label="Code"
+                  icon={<CodeIcon className="h-[11px] w-[11px]" />}
+                />
               )}
               {publication.slides && (
-                <SideLink href={publication.slides} label="Slides" icon={<SlidesIcon className="h-[11px] w-[11px]" />} />
+                <SideLink
+                  href={publication.slides}
+                  label="Slides"
+                  icon={<SlidesIcon className="h-[11px] w-[11px]" />}
+                />
               )}
               {publication.poster && (
-                <SideLink href={publication.poster} label="Poster" icon={<PosterIcon className="h-[11px] w-[11px]" />} />
+                <SideLink
+                  href={publication.poster}
+                  label="Poster"
+                  icon={<PosterIcon className="h-[11px] w-[11px]" />}
+                />
               )}
               {publication.video && (
-                <SideLink href={publication.video} label="Talk video" icon={<VideoIcon className="h-[11px] w-[11px]" />} />
+                <SideLink
+                  href={publication.video}
+                  label="Talk video"
+                  icon={<VideoIcon className="h-[11px] w-[11px]" />}
+                />
               )}
               {publication.doi && (
-                <SideLink href={normalizeDoi(publication.doi)} label="DOI" icon={<ExternalLinkIcon className="h-2.5 w-2.5" />} />
+                <SideLink
+                  href={normalizeDoi(publication.doi)}
+                  label="DOI"
+                  icon={<ExternalLinkIcon className="h-2.5 w-2.5" />}
+                />
               )}
             </div>
           </div>
@@ -147,6 +177,12 @@ export default function PublicationDetail({
               <MetaItem label="Venue" value={venueShort} />
               <MetaItem label="Year" value={String(publication.year ?? "")} />
               <MetaItem label="Type" value={kind} />
+              {publication.status && publication.status !== "published" && (
+                <MetaItem
+                  label="Status"
+                  value={publication.status.replace(/_/g, " ")}
+                />
+              )}
               {publication.pages && publication.pages !== "To appear" && (
                 <MetaItem label="Pages" value={publication.pages} />
               )}
@@ -215,21 +251,22 @@ function MetaItem({
   );
 }
 
-function formatAuthors(authorList: string | undefined): React.ReactNode {
-  const authors = parsePublicationAuthors(authorList);
-  return authors.map((author, index) => {
-    return (
-      <React.Fragment key={`${author.name}-${index}`}>
-        {author.isHighlighted ? (
-          <span className="font-semibold text-ink">
-            {author.name}
-            <sup className="ml-0.5 font-mono text-[9px] text-link">1</sup>
-          </span>
-        ) : (
-          author.name
-        )}
-        {index < authors.length - 1 ? ", " : ""}
-      </React.Fragment>
-    );
-  });
+function AuthorList({
+  publication,
+}: {
+  publication: Publication;
+}): React.ReactNode {
+  const authors = getAuthors(publication);
+  return authors.map((author, index) => (
+    <React.Fragment key={`${author.name}-${index}`}>
+      {author.isHighlighted ? (
+        <span className="font-semibold text-ink">
+          {author.name}
+        </span>
+      ) : (
+        author.name
+      )}
+      {index < authors.length - 1 ? ", " : ""}
+    </React.Fragment>
+  ));
 }

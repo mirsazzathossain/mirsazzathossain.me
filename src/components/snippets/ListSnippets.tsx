@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { DiamondIcon, SearchIcon } from "@/components/Icons";
+import { DiamondIcon } from "@/components/Icons";
+import { SearchField } from "@/components/ui/SearchField";
 import type { SnippetEntry } from "@/utils/articles";
 import { getSnippetLanguageMeta } from "@/utils/snippets";
 
@@ -21,16 +22,12 @@ export default function ListSnippets({ snippets }: { snippets: SnippetEntry[] })
   return (
     <>
       <div className="mb-[22px]">
-        <label className="inline-flex items-center gap-[7px] py-1.5 px-3 border border-rule rounded-full bg-bg min-w-full sm:min-w-[260px] lg:min-w-[320px] text-ink-3">
-          <SearchIcon className="h-[13px] w-[13px] shrink-0" />
-          <span className="sr-only">Search snippets</span>
-          <input
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            placeholder="Search snippets…"
-            className="w-full border-0 outline-none bg-transparent font-sans text-[13px] text-ink placeholder:text-ink-3"
-          />
-        </label>
+        <SearchField
+          value={q}
+          onChange={setQ}
+          placeholder="Search snippets…"
+          label="Search snippets"
+        />
       </div>
 
       <div className="grid gap-[18px] [grid-template-columns:repeat(auto-fill,minmax(320px,1fr))]">
@@ -70,9 +67,6 @@ export default function ListSnippets({ snippets }: { snippets: SnippetEntry[] })
               </p>
               <div className="mt-1.5 flex flex-wrap gap-1.5">
                 <span className="rounded-full border border-link/25 bg-accent-soft px-3 py-[3px] text-[11.5px] font-medium text-link">
-                  Snippet
-                </span>
-                <span className="rounded-full border border-rule bg-bg-2 px-3 py-[3px] text-[11.5px] font-medium text-ink-2">
                   {meta.label}
                 </span>
               </div>

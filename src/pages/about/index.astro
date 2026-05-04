@@ -1,22 +1,23 @@
 ---
-import Layout from "@/layouts/Layout.astro";
 import AboutPage from "@/components/about/AboutPage";
+import Layout from "@/layouts/Layout.astro";
 import { readSiteJson } from "@/utils/json-data";
 
 const about = await readSiteJson("about.json");
 const educations = await readSiteJson("educations.json");
 const experiences = await readSiteJson("experiences.json");
-const awards = await readSiteJson("about_awards.json");
-const talks = await readSiteJson("about_talks.json");
-const service = await readSiteJson("about_service.json");
-const press = await readSiteJson("about_press.json");
-const availability = await readSiteJson("about_availability.json");
-const timeline = await readSiteJson("about_timeline.json");
+const awards = await readSiteJson("awards.json");
+const talks = await readSiteJson("talks.json");
+const service = await readSiteJson("service.json");
+const press = await readSiteJson("press.json");
+const availability = await readSiteJson("availability.json");
+const timeline = await readSiteJson("news.json");
 ---
 
 <Layout
   title="About"
-  description="About Mir Sazzat Hossain — Junior Research Scientist at CCDS, Independent University, Bangladesh. Research in computer vision, domain adaptation, and vision-language models."
+  name={about.name}
+  description={`About ${about.name} — Junior Research Scientist at CCDS, Independent University, Bangladesh. Research in computer vision, domain adaptation, and vision-language models.`}
 >
   <AboutPage
     client:load

@@ -1,62 +1,18 @@
-import React from 'react';
-import {
-  ACMIcon,
-  DBLPIcon,
-  GitHubIcon,
-  GoogleScholarIcon,
-  LinkedInIcon,
-  OrcidIcon,
-  ResearchGateIcon,
-  SemanticScholarIcon,
-  TwitterXIcon,
-  ACLIcon,
-  OpenReviewIcon,
-} from "@/components/Icons";
-
-function pickIcon(name: string) {
-  if (name === "github") return GitHubIcon;
-  if (name === "linkedin") return LinkedInIcon;
-  if (name === "twitter") return TwitterXIcon;
-  if (name === "google-scholar") return GoogleScholarIcon;
-  if (name === "semantic-scholar") return SemanticScholarIcon;
-  if (name === "dblp") return DBLPIcon;
-  if (name === "researchgate") return ResearchGateIcon;
-  if (name === "orcid") return OrcidIcon;
-  if (name === "acm-dl") return ACMIcon;
-  if (name === "acl") return ACLIcon;
-  if (name === "openreview") return OpenReviewIcon;
-  return null;
-}
-
-function formatLabel(name: string) {
-  const map: Record<string, string> = {
-    "google-scholar": "Google Scholar",
-    "semantic-scholar": "Semantic Scholar",
-    "dblp": "DBLP",
-    "acl": "ACL Anthology",
-    "openreview": "OpenReview",
-    "github": "GitHub",
-    "linkedin": "LinkedIn",
-    "twitter": "Twitter",
-    "researchgate": "ResearchGate",
-    "orcid": "ORCID",
-    "acm-dl": "ACM Digital Library"
-  };
-  return map[name] || name;
-}
+import { SocialIconLink } from "@/components/social/SocialIconLink";
 
 export default function ProfileSidebar({ about }: { about: any }) {
-  const researchInterests = [
+  const researchInterests: string[] = (about &&
+    (about.researchInterests || about.interests)) ?? [
     "Computer Vision",
     "Domain Adaptation",
-    "Astrophysical ML"
+    "Astrophysical ML",
   ];
 
   return (
     <aside className="self-start text-center flex flex-col items-center">
       <img
-        className="w-[132px] h-[132px] rounded-full object-cover shadow-[0_6px_20px_rgba(15,23,42,0.10)] block mx-auto mb-[18px]"
-        src="/images/user.png"
+        className="w-[132px] h-[132px] rounded-full object-cover shadow-lg shadow-slate-900/10 block mx-auto mb-[18px]"
+        src={about.photo || "/images/user.png"}
         alt={about.name}
       />
 
@@ -69,34 +25,32 @@ export default function ProfileSidebar({ about }: { about: any }) {
       </p>
 
       <p className="text-[12.5px] text-ink-3 m-0 mb-3 leading-[1.5] flex flex-col items-center">
-        <a href={about.company.url} className="text-link hover:text-link-hover underline decoration-link/35 underline-offset-[3px]">
+        <a
+          href={about.company.department?.url || about.company.url}
+          className="text-link hover:text-link-hover underline decoration-link/35 underline-offset-[3px]"
+        >
+          {about.company.department?.name || about.company.name}
+        </a>
+        <a
+          href={about.company.url}
+          className="text-ink-3 hover:text-link-hover"
+        >
           {about.company.name}
         </a>
-        <span className="text-ink-3">Independent University, Bangladesh</span>
       </p>
 
-      <span className="inline-flex items-center gap-[7px] py-1 pl-2 pr-[10px] border border-[#bbf7d0] bg-[#f0fdf4] dark:bg-[rgba(6,95,70,0.16)] dark:border-[rgba(16,185,129,0.3)] dark:text-[#6ee7b7] rounded-full text-[11.5px] text-[#065f46] font-mono mb-[14px]">
-        <span className="w-[6px] h-[6px] rounded-full bg-green shadow-[0_0_0_3px_rgba(16,185,129,0.18)]" />
-        Applying for Fall 2025 PhD
-      </span>
+      {about.availability && (
+        <span className="inline-flex items-center gap-[7px] py-1 pl-2 pr-[10px] border border-emerald-200 bg-emerald-50 dark:bg-emerald-900/20 dark:border-emerald-500/30 dark:text-emerald-300 rounded-full text-[11.5px] text-emerald-800 font-mono mb-[14px]">
+          <span className="w-[6px] h-[6px] rounded-full bg-emerald-500 shadow-[0_0_0_3px] shadow-emerald-500/20 animate-pulse" />
+          {about.availability}
+        </span>
+      )}
 
       <ul className="list-none p-0 m-0 mt-3 flex gap-1.5 justify-center flex-wrap">
-        {about.socialLinks.map((s: any) => {
-          const Icon = pickIcon(s.name);
-          if (!Icon) return null;
-          const label = formatLabel(s.name);
+        {about.academicLinks.map((s: any) => {
           return (
             <li key={s.name}>
-              <a
-                href={s.url}
-                aria-label={label}
-                title={label}
-                className="inline-flex items-center justify-center w-7 h-7 rounded-md text-ink-3 hover:text-link hover:bg-bg-2 hover:no-underline transition-colors"
-                target="_blank"
-                rel="noreferrer"
-              >
-                <Icon className="w-4 h-4" />
-              </a>
+              <SocialIconLink name={s.name} url={s.url} />
             </li>
           );
         })}
@@ -108,7 +62,10 @@ export default function ProfileSidebar({ about }: { about: any }) {
         </span>
         <div className="flex flex-wrap gap-[5px]">
           {researchInterests.map((t) => (
-            <span key={t} className="font-mono text-[10.5px] py-[2px] px-[7px] rounded bg-bg-2 border border-rule text-ink-2 whitespace-nowrap">
+            <span
+              key={t}
+              className="font-mono text-[9.3px] py-[2px] px-[7px] rounded bg-bg-2 border border-rule text-ink-2 whitespace-nowrap"
+            >
               {t}
             </span>
           ))}

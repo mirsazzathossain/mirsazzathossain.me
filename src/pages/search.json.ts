@@ -1,19 +1,28 @@
 import { getCollection } from 'astro:content';
 import publications from '@/data/publications.json';
+import publicationOverrides from '@/data/publications.override.json';
 import projects from '@/data/projects.json';
 import courses from '@/data/courses.json';
+import { mergePublicationOverrides } from '@/utils/publications';
 
 export async function GET() {
   const out: any[] = [];
+  const mergedPublications = mergePublicationOverrides(publications, publicationOverrides);
 
   // Publications
-  publications.forEach((p: any) => {
+  mergedPublications.forEach((p: any) => {
+    const authorNames = Array.isArray(p.authors)
+      ? p.authors.map((a: any) => a.name).join(' ')
+      : '';
+    const keywords = Array.isArray(p.keywords)
+      ? p.keywords.join(' ')
+      : (p.keywords || '');
     out.push({
       kind: 'Publication',
       title: p.title,
-      sub: `${p.journal || p.booktitle || ''} · ${p.year}`,
-      href: '/#publications',
-      keywords: `${p.title} ${p.author || ''} ${p.journal || p.booktitle || ''} ${p.keywords || ''}`.toLowerCase(),
+      sub: `${p.venue_short || p.venue || ''} · ${p.year}`,
+      href: `/publications/${p.id}`,
+      keywords: `${p.title} ${authorNames} ${p.venue || ''} ${keywords}`.toLowerCase(),
     });
   });
 

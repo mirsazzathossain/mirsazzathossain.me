@@ -1,34 +1,54 @@
+export type PublicationAuthor = {
+  name: string;
+};
+
+export type ScholarStats = {
+  paper_count?: number;
+  total_citations?: number;
+  h_index?: number;
+  h_index_5y?: number;
+  i10_index?: number;
+  cites_per_year?: Record<string, number>;
+  updated?: string;
+};
+
 export type Publication = {
   id?: string;
   type?: string;
+  status?: string;
+  featured?: boolean;
   title?: string;
-  author?: string;
-  journal?: string;
-  booktitle?: string;
+  authors?: PublicationAuthor[];
   year?: string | number;
   month?: string | number;
-  location?: string;
-  pages?: string;
+  venue?: string;
+  venue_short?: string;
+  venue_citation?: string;
+  rank?: string;
   volume?: string;
   issue?: string;
-  note?: string;
+  pages?: string;
   doi?: string;
-  issn?: string;
-  keywords?: string;
-  abstract?: string;
+  pdf?: string;
   url?: string;
   code?: string;
   slides?: string;
   poster?: string;
   video?: string;
   supplement?: string;
-  raw?: string;
-  citations?: number | string;
+  figure?: string;
+  keywords?: string | string[];
+  abstract?: string;
+  bibtex?: string;
   citation_count?: number | string;
-  citationCount?: number | string;
+  citation_updated?: string;
 };
 
-export type PublicationKind = "Conference" | "Journal" | "Preprint" | "Workshop";
+export type PublicationKind =
+  | "Conference"
+  | "Journal"
+  | "Preprint"
+  | "Workshop";
 export type PublicationFilter = PublicationKind | "All";
 
 export const PUBLICATION_FILTERS: PublicationFilter[] = [
@@ -40,29 +60,35 @@ export const PUBLICATION_FILTERS: PublicationFilter[] = [
 ];
 
 export function getPublicationType(publication: Publication): PublicationKind {
-  const text = [
-    publication.type,
-    publication.journal,
-    publication.booktitle,
-    publication.note,
-  ]
+  const status = publication.status?.toLowerCase() ?? "";
+  const type = publication.type?.toLowerCase() ?? "";
+
+  if (status === "preprint") return "Preprint";
+  if (status === "under_review") return "Preprint";
+  const venueText =
+    `${publication.venue ?? ""} ${publication.venue_short ?? ""}`.toLowerCase();
+  if (venueText.includes("workshop")) return "Workshop";
+  if (venueText.includes("arxiv")) return "Preprint";
+  if (type === "workshop") return "Workshop";
+  if (type === "preprint") return "Preprint";
+  if (type === "conference" || type === "inproceedings") return "Conference";
+
+  const text = [publication.venue, publication.venue_short, publication.type]
     .filter(Boolean)
     .join(" ")
     .toLowerCase();
 
-  if (text.includes("workshop") || text.includes("inns-dlia")) {
-    return "Workshop";
-  }
-  if (text.includes("preprint") || text.includes("under review")) {
-    return "Preprint";
-  }
+  if (text.includes("workshop") || text.includes("dlia")) return "Workshop";
+  if (text.includes("arxiv")) return "Preprint";
   if (
     publication.type === "inproceedings" ||
     text.includes("conference") ||
     text.includes("proceedings") ||
     text.includes("icip") ||
     text.includes("ijcnn") ||
-    text.includes("ijcai")
+    text.includes("ijcai") ||
+    text.includes("wacv") ||
+    text.includes("findings")
   ) {
     return "Conference";
   }
@@ -71,76 +97,94 @@ export function getPublicationType(publication: Publication): PublicationKind {
 }
 
 export function getVenueShort(publication: Publication): string {
-  const venue = publication.booktitle || publication.journal || "Preprint";
+  if (publication.venue_short) return publication.venue_short;
+
+  const venue =
+    publication.venue ||
+    publication.booktitle ||
+    publication.journal ||
+    "Preprint";
   const text = venue.toLowerCase();
 
   if (text.includes("icip")) return `ICIP ${publication.year ?? ""}`.trim();
   if (text.includes("ijcnn")) return `IJCNN ${publication.year ?? ""}`.trim();
   if (text.includes("ijcai")) return `IJCAI ${publication.year ?? ""}`.trim();
   if (text.includes("astronomy & astrophysics")) return "A&A";
-  if (text.includes("procedia computer science")) return "Procedia";
-  if (text === "to appear" && publication.journal) {
-    return getVenueShort({ ...publication, booktitle: publication.journal });
-  }
+  if (text.includes("procedia")) return "Procedia";
 
   return venue;
 }
 
 export function getVenueLong(publication: Publication): string {
-  const venue =
-    publication.booktitle && publication.booktitle !== "To appear"
-      ? publication.booktitle
-      : publication.journal || publication.booktitle || "Preprint";
-  const parts = [venue];
+  if (publication.venue_citation) return publication.venue_citation;
 
-  if (publication.location) parts.push(publication.location);
+  const venue =
+    publication.venue ||
+    (publication.booktitle && publication.booktitle !== "To appear"
+      ? publication.booktitle
+      : publication.journal || publication.booktitle || "");
+
+  const parts: string[] = [];
+  if (venue) parts.push(venue);
   if (publication.pages && publication.pages !== "To appear") {
     parts.push(`pp. ${publication.pages}`);
   }
-  if (publication.note) parts.push(publication.note);
 
-  return parts.join(" - ");
+  return parts.join(" — ") || "Preprint";
 }
 
 export function getPublicationRank(publication: Publication): string | null {
-  const venue = `${publication.journal ?? ""} ${publication.booktitle ?? ""}`.toLowerCase();
+  if (publication.rank) return publication.rank;
+
+  const venue =
+    `${publication.venue ?? ""} ${publication.venue_short ?? ""}`.toLowerCase();
 
   if (venue.includes("ijcai")) return "CORE A*";
   if (venue.includes("icip")) return "CORE B";
-  if (venue.includes("ijcnn")) return "CORE C";
+  if (venue.includes("ijcnn")) return "CORE B";
   if (venue.includes("astronomy & astrophysics")) return "Q1";
 
   return null;
 }
 
 export function hasCitationCount(publication: Publication): boolean {
-  return (
-    publication.citation_count !== undefined ||
-    publication.citations !== undefined ||
-    publication.citationCount !== undefined
-  );
+  return publication.citation_count !== undefined;
 }
 
 export function getCitationCount(publication: Publication): number {
-  const value =
-    publication.citation_count ??
-    publication.citations ??
-    publication.citationCount ??
-    0;
-  const parsed = Number(value);
-
+  const parsed = Number(publication.citation_count ?? 0);
   return Number.isFinite(parsed) ? parsed : 0;
 }
 
+export function getAuthors(
+  publication: Publication,
+): Array<PublicationAuthor & { isHighlighted: boolean }> {
+  if (publication.authors && publication.authors.length > 0) {
+    return publication.authors.map((a) => ({
+      ...a,
+      name: a.name,
+      isHighlighted:
+        (a.name.includes("M.S.") && a.name.includes("Hossain")) ||
+        a.name.includes("Mir Sazzat"),
+    }));
+  }
+  return [];
+}
+
 export function buildBibtex(publication: Publication): string {
-  const kind = publication.type === "inproceedings" ? "inproceedings" : "article";
+  if (publication.bibtex) return publication.bibtex;
+
+  const kind =
+    publication.type === "inproceedings" ? "inproceedings" : "article";
   const id = publication.id || `hossain${publication.year}`;
   const venueField = kind === "inproceedings" ? "booktitle" : "journal";
-  const venue = publication.booktitle || publication.journal || "";
+  const venue =
+    publication.venue || publication.booktitle || publication.journal || "";
+  const authorStr = publication.authors?.map((a) => a.name).join(" and ") ?? "";
 
   return `@${kind}{${id},
   title     = {${publication.title ?? ""}},
-  author    = {${publication.author ?? ""}},
+  author    = {${authorStr}},
   ${venueField} = {${venue}},
   year      = {${publication.year ?? ""}}
 }`;
@@ -150,26 +194,19 @@ export function normalizeDoi(doi: string): string {
   return doi.startsWith("http") ? doi : `https://doi.org/${doi}`;
 }
 
-export function parsePublicationAuthors(authorList: string | undefined): Array<{
-  name: string;
-  isHighlighted: boolean;
-}> {
-  if (!authorList) return [];
-
-  return authorList.split(" and ").map((author) => {
-    const name = author
-      .trim()
-      .replace(/\s+/g, " ")
-      .replace(/\s*,\s*$/, "");
-
-    return {
-      name,
-      isHighlighted: name.includes("M.S.") && name.includes("Hossain"),
-    };
-  });
+export function getPublicationKeywords(publication: Publication): string[] {
+  if (!publication.keywords) return [];
+  if (Array.isArray(publication.keywords)) return publication.keywords;
+  return publication.keywords
+    .split(/[;,]/)
+    .map((k) => k.trim())
+    .filter(Boolean);
 }
 
-export function getPublicationChartHeightClass(count: number, maxCount: number): string {
+export function getPublicationChartHeightClass(
+  count: number,
+  maxCount: number,
+): string {
   const ratio = maxCount > 0 ? count / maxCount : 0;
 
   if (ratio >= 0.9) return "h-full";
@@ -180,3 +217,31 @@ export function getPublicationChartHeightClass(count: number, maxCount: number):
   if (ratio >= 0.25) return "h-1/4";
   return "h-[12%]";
 }
+
+export function mergePublicationOverrides(
+  publications: Publication[],
+  overrides: Partial<Publication>[],
+): Publication[] {
+  const overrideMap = new Map(
+    overrides
+      .filter((override) => override.id)
+      .map((override) => [override.id, override]),
+  );
+  return publications.map((pub) => {
+    const override = overrideMap.get(pub.id);
+    return override ? { ...pub, ...override } : pub;
+  });
+}
+
+// Legacy support — kept only for the Astro page that still passes booktitle/journal
+export type LegacyPublication = Publication & {
+  author?: string;
+  journal?: string;
+  booktitle?: string;
+  note?: string;
+  raw?: string;
+  citations?: number | string;
+  citationCount?: number | string;
+  issn?: string;
+  location?: string;
+};

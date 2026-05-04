@@ -1,0 +1,48 @@
+{
+  "tz": "Asia/Dhaka · UTC+6",
+  "rangeLabel": "May 4 – 10, 2026",
+  "days": [
+    "Mon",
+    "Tue",
+    "Wed",
+    "Thu",
+    "Fri",
+    "Sat",
+    "Sun"
+  ],
+  "dates": [
+    "May 4",
+    "May 5",
+    "May 6",
+    "May 7",
+    "May 8",
+    "May 9",
+    "May 10"
+  ],
+  "hours": [
+    "8am",
+    "9am",
+    "10am",
+    "11am",
+    "12pm",
+    "1pm",
+    "2pm",
+    "3pm",
+    "9pm",
+    "10pm",
+    "11pm"
+  ],
+  "grid": [
+    "fffffff",
+    "fffffff",
+    "fffffff",
+    "bffffbf",
+    "bffbfbf",
+    "ffbbfff",
+    "ffbffff",
+    "bffffff",
+    "fffffff",
+    "bffffff",
+    "fffffff"
+  ]
+}

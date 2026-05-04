@@ -1,0 +1,17 @@
+[
+  {
+    "title": "Computational Biology Workshop at BRAC University",
+    "outlet": {
+      "name": "Bigganchinta",
+      "logo": "/images/logos/bigganchinta.svg"
+    },
+    "publisher": {
+      "name": "Prothom Alo",
+      "logo": "/images/logos/prothom-alo.svg"
+    },
+    "date": "2025-01-08",
+    "url": "https://www.bigganchinta.com/events/vx9ebdvprg",
+    "image": "/images/press/bigganchinta-workshop.png",
+    "desc": "Served as instructor at a 3-day national workshop on computational biology and ML for biological data analysis, organised by BRAC University."
+  }
+]

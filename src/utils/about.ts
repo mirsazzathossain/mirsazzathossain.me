@@ -10,7 +10,11 @@ export function getOrgLogo(name: string): LogoInfo {
     return { kind: "img", src: "/images/logos/iub.png", alt: "IUB" };
   }
   if (name.includes("Postex") || name.includes("Penta")) {
-    return { kind: "img", src: "/images/logos/penta-global.png", alt: "Penta Global" };
+    return {
+      kind: "img",
+      src: "/images/logos/penta-global.png",
+      alt: "Penta Global",
+    };
   }
 
   const words = name.trim().split(/\s+/);
@@ -22,32 +26,105 @@ export function getOrgLogo(name: string): LogoInfo {
   return { kind: "text", label };
 }
 
+export function formatDegree(
+  degree: string,
+  major: string,
+  minor?: string,
+): string {
+  const [full, abbr] = degree.split(" - ");
+  const base = abbr ? `${full} · ${abbr} in ${major}` : `${full} in ${major}`;
+
+  return minor ? `${base} · Minor in ${minor}` : base;
+}
+
+export function firstSentence(text: string): string {
+  const sentence = text.split(".")[0]?.trim();
+  return sentence ? `${sentence}.` : text;
+}
+
+export function getSocialLink(
+  socialLinks: Array<{ name: string; url: string }>,
+  name: string,
+  fallback = "#",
+): string {
+  return socialLinks.find((link) => link.name === name)?.url || fallback;
+}
+
 export function getTalkTypeClass(type: string): string {
   if (type === "oral") return "bg-accent-soft text-link";
-  if (type === "poster") return "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300";
-  if (type === "workshop") return "bg-pink-50 text-pink-800 dark:bg-pink-950 dark:text-pink-300";
+  if (type === "poster")
+    return "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300";
+  if (type === "workshop")
+    return "bg-pink-50 text-pink-800 dark:bg-pink-950 dark:text-pink-300";
   return "bg-bg-2 text-ink-3";
 }
 
 export function getTimelineKindClass(kind: string): string {
   if (kind === "paper") return "bg-accent-soft text-link";
-  if (kind === "award") return "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300";
-  if (kind === "career") return "bg-emerald-50 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300";
+  if (kind === "award")
+    return "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300";
+  if (kind === "career")
+    return "bg-emerald-50 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300";
   return "bg-slate-100 text-ink-2 dark:bg-bg-3";
 }
 
-export function getNewsTagFromTitle(title: string): { label: string; className: string } {
+export function getTagInfoFromKind(kind: string): {
+  label: string;
+  className: string;
+} {
+  switch (kind) {
+    case "paper":
+      return { label: "paper", className: "bg-accent-soft text-link" };
+    case "award":
+      return {
+        label: "award",
+        className:
+          "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300",
+      };
+    case "career":
+      return {
+        label: "career",
+        className:
+          "bg-emerald-50 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300",
+      };
+    case "talk":
+      return {
+        label: "talk",
+        className:
+          "bg-pink-50 text-pink-800 dark:bg-pink-950 dark:text-pink-300",
+      };
+    default:
+      return { label: "milestone", className: "bg-bg-3 text-ink-2" };
+  }
+}
+
+export function getNewsTagFromTitle(title: string): {
+  label: string;
+  className: string;
+} {
   const lower = title.toLowerCase();
 
-  if (lower.includes("paper")) return { label: "paper", className: "bg-accent-soft text-link" };
+  if (lower.includes("paper"))
+    return { label: "paper", className: "bg-accent-soft text-link" };
   if (lower.includes("grant") || lower.includes("award")) {
-    return { label: "award", className: "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300" };
+    return {
+      label: "award",
+      className:
+        "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300",
+    };
   }
   if (lower.includes("working") || lower.includes("role")) {
-    return { label: "career", className: "bg-emerald-50 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300" };
+    return {
+      label: "career",
+      className:
+        "bg-emerald-50 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300",
+    };
   }
   if (lower.includes("talk") || lower.includes("presentation")) {
-    return { label: "talk", className: "bg-pink-50 text-pink-800 dark:bg-pink-950 dark:text-pink-300" };
+    return {
+      label: "talk",
+      className: "bg-pink-50 text-pink-800 dark:bg-pink-950 dark:text-pink-300",
+    };
   }
 
   return { label: "milestone", className: "bg-bg-3 text-ink-2" };

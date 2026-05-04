@@ -1,4 +1,6 @@
 
+import { ExternalLinkIcon } from "@/components/Icons";
+import { getHostnameLabel } from "@/utils/url";
 
 export default function ResourceCard({
   resource,
@@ -13,8 +15,8 @@ export default function ResourceCard({
       rel="noreferrer"
     >
       <div className="font-mono text-[10.5px] text-ink-3 inline-flex items-center gap-1">
-        <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-        {new URL(resource.url).hostname.replace("www.", "")}
+        <ExternalLinkIcon className="w-3 h-3" />
+        {getHostnameLabel(resource.url)}
       </div>
       <h3 className="font-serif text-[14px] font-semibold text-ink leading-[1.3] m-[4px_0]">
         {resource.title}
