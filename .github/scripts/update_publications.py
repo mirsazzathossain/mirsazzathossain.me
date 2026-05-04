@@ -1,7 +1,7 @@
 """
 Weekly Scholar sync: rebuilds publications.json from Google Scholar and writes
-aggregate Scholar stats. Hand-managed display fields belong in
-src/data/publications.override.json, not here.
+aggregate Scholar stats. Routes through Tor to avoid GitHub Actions IP blocks.
+Hand-managed display fields belong in src/data/publications.override.json.
 """
 
 import json
@@ -10,12 +10,22 @@ import time
 from datetime import date
 from pathlib import Path
 
-from scholarly import scholarly
+from scholarly import ProxyGenerator, scholarly
 
 AUTHOR_ID = os.environ["SCHOLAR_AUTHOR_ID"]
 DATA_FILE = Path(__file__).parents[2] / "src" / "data" / "publications.json"
 STATS_FILE = Path(__file__).parents[2] / "src" / "data" / "scholar_stats.json"
 TODAY = date.today().isoformat()
+
+
+def setup_tor():
+    pg = ProxyGenerator()
+    ok = pg.Tor_External(tor_sock_port=9050, tor_control_port=9051)
+    if ok:
+        scholarly.use_proxy(pg)
+        print("Tor proxy active.")
+    else:
+        print("WARNING: Tor setup failed, proceeding without proxy.")
 
 
 def short_id(author_pub_id: str) -> str:
@@ -57,6 +67,8 @@ def make_entry(pub: dict) -> dict:
 
 
 def main():
+    setup_tor()
+
     print(f"Fetching Scholar profile {AUTHOR_ID} ...")
     author = scholarly.search_author_id(AUTHOR_ID)
     author = scholarly.fill(

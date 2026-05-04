@@ -19,8 +19,16 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install scholarly
-        run: pip install scholarly
+      - name: Install Tor
+        run: |
+          sudo apt-get install -y tor
+          echo "ControlPort 9051" | sudo tee -a /etc/tor/torrc
+          echo "CookieAuthentication 0" | sudo tee -a /etc/tor/torrc
+          sudo service tor restart
+          sleep 5
+
+      - name: Install dependencies
+        run: pip install scholarly stem
 
       - name: Fetch Scholar data and update publication data
         run: python .github/scripts/update_publications.py

@@ -25,15 +25,15 @@ jobs:
       - name: Sync availability from Google Calendar
         run: python .github/scripts/sync_availability.py
         env:
-          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
-          GOOGLE_CALENDAR_ID: ${{ secrets.GOOGLE_CALENDAR_ID }}
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          GOOGLE_CALENDAR_IDS: ${{ secrets.GOOGLE_CALENDAR_IDS }}
 
       - name: Commit if changed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git diff --quiet src/data/about_availability.json || (
-            git add src/data/about_availability.json &&
+          git diff --quiet src/data/availability.json || (
+            git add src/data/availability.json &&
             git commit -m "chore: sync weekly availability [skip ci]"
           )
 
