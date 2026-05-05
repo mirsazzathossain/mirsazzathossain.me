@@ -1,37 +1,25 @@
-import react from "@astrojs/react";
 import mdx from "@astrojs/mdx";
+import react from "@astrojs/react";
 import sitemap from "@astrojs/sitemap";
 import vercel from "@astrojs/vercel";
 import { defineConfig } from "astro/config";
 import rehypeKatex from "rehype-katex";
 import remarkMath from "remark-math";
 
-const DEFAULT_SITE_URL = "https://mirsazzathossain.me";
-const vercelHost =
-  process.env.VERCEL_PROJECT_PRODUCTION_URL ?? process.env.VERCEL_URL;
-const vercelSiteUrl = vercelHost
-  ? vercelHost.startsWith("http")
-    ? vercelHost
-    : `https://${vercelHost}`
-  : undefined;
-const resolvedSiteUrl = process.env.SITE_URL ?? vercelSiteUrl ?? DEFAULT_SITE_URL;
-
 export default defineConfig({
-  site: resolvedSiteUrl,
+  // ✅ MUST match your Vercel primary domain
+  site: "https://mirsazzathossain.me",
+
   output: "static",
   adapter: vercel(),
-  /** Pre-bundle CJS `react-dom/client` so `import { createRoot }` works in the browser for islands. */
+
   vite: {
     resolve: {
       dedupe: ["react", "react-dom"],
     },
     server: {
       watch: {
-        ignored: [
-          "**/.vercel/**",
-          "**/dist/**",
-          "**/.astro/**",
-        ],
+        ignored: ["**/.vercel/**", "**/dist/**", "**/.astro/**"],
       },
     },
     optimizeDeps: {
@@ -49,6 +37,7 @@ export default defineConfig({
       },
     },
   },
+
   integrations: [
     mdx({
       syntaxHighlight: "prism",
