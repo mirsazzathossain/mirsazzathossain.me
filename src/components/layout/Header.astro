@@ -1,0 +1,305 @@
+---
+const navigations = [
+  { href: "/", label: "Home" },
+  { href: "/about", label: "About" },
+  { href: "/cv", label: "CV" },
+  { href: "/publications", label: "Publications" },
+  { href: "/articles", label: "Posts" },
+  { href: "/projects", label: "Projects" },
+  { href: "/courses", label: "Courses" },
+  { href: "/snippets", label: "Snippets" },
+  { href: "/resources", label: "Resources" },
+];
+
+const raw = Astro.url.pathname.replace(/\/$/, "").replace(/\/index\.html$/i, "") || "/";
+
+function isActive(href: string) {
+  return raw === href || (href !== "/" && raw.startsWith(href));
+}
+---
+
+<header
+  id="site-header"
+  class="sticky top-0 z-40"
+  style="transition:none"
+>
+  <div class="bg-bg/80 backdrop-blur-[14px] backdrop-saturate-[180%] border-b border-rule">
+    <div class="max-w-[1100px] mx-auto px-[clamp(20px,4vw,36px)] py-[14px] grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-3">
+
+      {/* Brand */}
+      <a href="/" class="inline-flex items-center justify-self-start hover:no-underline">
+        <picture>
+          <source srcset="/images/user.webp" type="image/webp" />
+          <img src="/images/user.png" alt="Mir Sazzat Hossain" width="68" height="68"
+            class="w-[34px] h-[34px] rounded-full object-cover ring-1 ring-rule shadow-sm" />
+        </picture>
+      </a>
+
+      {/* Desktop nav pill */}
+      <div class="justify-self-center flex items-center">
+        <nav class="hidden lg:flex items-center gap-[2px] p-[5px_6px] border border-rule rounded-full bg-bg shadow-sm">
+          {navigations.map((l) => (
+            <a
+              href={l.href}
+              class={`text-[13px] font-medium px-[13px] py-[6px] rounded-full transition-colors whitespace-nowrap ${
+                isActive(l.href)
+                  ? "text-link bg-accent-soft"
+                  : "text-ink-2 hover:text-ink hover:bg-bg-2"
+              }`}
+            >
+              {l.label}
+            </a>
+          ))}
+        </nav>
+
+        {/* Mobile: search + rss only */}
+        <div class="flex lg:hidden items-center gap-1">
+          <button
+            id="search-btn-mobile"
+            aria-label="Search"
+            title="Search"
+            class="inline-flex w-[34px] h-[34px] items-center justify-center border border-transparent rounded-[8px] bg-transparent text-ink-3 transition-all duration-150 hover:bg-bg-2 hover:text-ink hover:border-rule"
+          >
+            <svg class="w-[15px] h-[15px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+          </button>
+          <a href="/rss.xml" aria-label="RSS Feed" title="RSS Feed" target="_blank" rel="noreferrer"
+            class="inline-flex w-[34px] h-[34px] items-center justify-center border border-transparent rounded-[8px] bg-transparent text-ink-3 transition-all duration-150 hover:bg-bg-2 hover:text-ink hover:border-rule">
+            <svg class="w-[15px] h-[15px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 11a9 9 0 0 1 9 9" /><path d="M4 4a16 16 0 0 1 16 16" /><circle cx="5" cy="19" r="1" />
+            </svg>
+          </a>
+          <button id="theme-btn" type="button" aria-label="Toggle dark mode"
+            class="w-[34px] h-[34px] inline-flex items-center justify-center border border-transparent rounded-[8px] bg-transparent text-ink-3 cursor-pointer transition-all duration-150 hover:bg-bg-2 hover:text-ink hover:border-rule">
+            <svg class="w-[16px] h-[16px] hidden dark:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="4" />
+              <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+            </svg>
+            <svg class="w-[16px] h-[16px] block dark:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      {/* Desktop tools */}
+      <div class="flex justify-end items-center gap-1 justify-self-end">
+        <div class="hidden lg:flex items-center gap-1">
+          <button id="search-btn-desktop" aria-label="Search" title="Search (⌘K)"
+            class="inline-flex w-[34px] h-[34px] items-center justify-center border border-transparent rounded-[8px] bg-transparent text-ink-3 transition-all duration-150 hover:bg-bg-2 hover:text-ink hover:border-rule">
+            <svg class="w-[15px] h-[15px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+          </button>
+          <a href="/rss.xml" aria-label="RSS Feed" title="RSS Feed" target="_blank" rel="noreferrer"
+            class="inline-flex w-[34px] h-[34px] items-center justify-center border border-transparent rounded-[8px] bg-transparent text-ink-3 transition-all duration-150 hover:bg-bg-2 hover:text-ink hover:border-rule">
+            <svg class="w-[15px] h-[15px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 11a9 9 0 0 1 9 9" /><path d="M4 4a16 16 0 0 1 16 16" /><circle cx="5" cy="19" r="1" />
+            </svg>
+          </a>
+          <button id="theme-btn-desktop" type="button" aria-label="Toggle dark mode"
+            class="w-[34px] h-[34px] inline-flex items-center justify-center border border-transparent rounded-[8px] bg-transparent text-ink-3 cursor-pointer transition-all duration-150 hover:bg-bg-2 hover:text-ink hover:border-rule">
+            <svg class="w-[16px] h-[16px] hidden dark:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="4" />
+              <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+            </svg>
+            <svg class="w-[16px] h-[16px] block dark:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Mobile nav hamburger */}
+        <div class="lg:hidden">
+          <button id="mobile-menu-btn" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-haspopup="dialog"
+            class="w-[34px] h-[34px] inline-flex items-center justify-center border border-transparent rounded-[8px] bg-transparent text-ink-3 cursor-pointer transition-all duration-150 hover:bg-bg-2 hover:text-ink hover:border-rule">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</header>
+
+{/* Mobile nav overlay */}
+<button id="mobile-overlay" type="button" aria-label="Close menu overlay"
+  class="fixed inset-0 z-50 bg-zinc-800/40 backdrop-blur-sm transition-opacity hidden"
+></button>
+<div id="mobile-dialog" role="dialog" aria-modal="true" aria-labelledby="mobile-nav-heading"
+  class="fixed inset-x-4 top-8 z-50 origin-top rounded-3xl bg-white p-8 ring-1 ring-zinc-900/5 dark:bg-zinc-900 dark:ring-zinc-800 hidden">
+  <div class="flex flex-row-reverse items-center justify-between">
+    <button id="mobile-close-btn" type="button" aria-label="Close menu"
+      class="h-8 w-8 flex items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-800">
+      <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+      </svg>
+    </button>
+    <h2 id="mobile-nav-heading" class="text-sm font-medium text-zinc-600 dark:text-zinc-400">Navigation</h2>
+  </div>
+  <nav class="mt-6">
+    <ul class="divide-y divide-zinc-100 dark:divide-zinc-800 text-base text-zinc-800 dark:text-zinc-300">
+      {navigations.map((l) => (
+        <li>
+          <a href={l.href} class="block py-2">{l.label}</a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+</div>
+
+{/* Search modal */}
+<div id="search-overlay" class="hidden fixed inset-0 z-[100] bg-ink/35 backdrop-blur-[4px] flex items-start justify-center pt-[12vh] px-5 pb-5">
+  <div id="search-box" class="w-full max-w-[640px] bg-bg border border-rule rounded-[14px] shadow-2xl overflow-hidden flex flex-col max-h-full">
+    <div class="flex items-center gap-[10px] p-[14px_16px] border-b border-rule">
+      <svg class="h-4 w-4 shrink-0 text-ink-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
+      </svg>
+      <input id="search-input" placeholder="Search publications, posts, snippets…"
+        class="flex-1 border-none outline-none bg-transparent font-inherit text-[15px] text-ink placeholder:text-ink-3" />
+      <kbd class="font-mono text-[10px] text-ink-3 bg-bg-2 border border-rule px-1.5 py-0.5 rounded-[4px] uppercase tracking-wider">Esc</kbd>
+    </div>
+    <div id="search-results" class="max-h-[50vh] overflow-y-auto p-[6px] flex flex-col gap-1">
+      <p id="search-hint" class="font-serif text-[13px] text-ink-3 p-[28px_16px] text-center m-0">
+        Try "equivariant", "federated", "LiteSRNet", "SSH tunnel", "poisson"…
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── Scroll hide/show ────────────────────────────────────────────────────────
+  const header = document.getElementById("site-header")!;
+  let lastY = 0, ticking = false;
+
+  // Defer adding transition so it doesn't fire on initial render
+  requestAnimationFrame(() => {
+    header.style.transition = "transform 1s ease-in-out";
+  });
+
+  window.addEventListener("scroll", () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      const y = window.scrollY;
+      if (y < 50) {
+        header.style.transform = "translateY(0)";
+      } else if (y > lastY + 5) {
+        header.style.transform = "translateY(-100%)";
+      } else if (y < lastY - 5) {
+        header.style.transform = "translateY(0)";
+      }
+      lastY = y;
+      ticking = false;
+    });
+  }, { passive: true });
+
+  // ── Theme toggle ────────────────────────────────────────────────────────────
+  function toggleTheme() {
+    const isDark = document.documentElement.classList.contains("dark");
+    // Suppress transitions briefly
+    document.documentElement.classList.add("**:transition-none!");
+    window.setTimeout(() => document.documentElement.classList.remove("**:transition-none!"), 0);
+    const next = !isDark;
+    try { localStorage.setItem("theme", next ? "dark" : "light"); } catch {}
+    document.documentElement.classList.toggle("dark", next);
+    window.dispatchEvent(new Event("colorschemechange"));
+  }
+  document.getElementById("theme-btn")?.addEventListener("click", toggleTheme);
+  document.getElementById("theme-btn-desktop")?.addEventListener("click", toggleTheme);
+
+  // ── Mobile nav ──────────────────────────────────────────────────────────────
+  const menuBtn  = document.getElementById("mobile-menu-btn")!;
+  const overlay  = document.getElementById("mobile-overlay")!;
+  const dialog   = document.getElementById("mobile-dialog")!;
+  const closeBtn = document.getElementById("mobile-close-btn")!;
+
+  function openMenu() {
+    overlay.classList.remove("hidden");
+    dialog.classList.remove("hidden");
+    menuBtn.setAttribute("aria-expanded", "true");
+    document.body.style.overflow = "hidden";
+  }
+  function closeMenu() {
+    overlay.classList.add("hidden");
+    dialog.classList.add("hidden");
+    menuBtn.setAttribute("aria-expanded", "false");
+    document.body.style.overflow = "";
+  }
+  menuBtn.addEventListener("click", openMenu);
+  overlay.addEventListener("click", closeMenu);
+  closeBtn.addEventListener("click", closeMenu);
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeMenu(); });
+
+  // ── Search ──────────────────────────────────────────────────────────────────
+  const searchOverlay = document.getElementById("search-overlay")!;
+  const searchInput   = document.getElementById("search-input") as HTMLInputElement;
+  const searchResults = document.getElementById("search-results")!;
+  const searchHint    = document.getElementById("search-hint")!;
+  const searchBox     = document.getElementById("search-box")!;
+
+  let searchData: any[] = [];
+  let dataFetched = false;
+
+  async function fetchSearchData() {
+    if (dataFetched) return;
+    dataFetched = true;
+    try {
+      const res = await fetch("/search.json");
+      searchData = await res.json();
+    } catch {}
+  }
+
+  function openSearch() {
+    searchOverlay.classList.remove("hidden");
+    fetchSearchData();
+    setTimeout(() => searchInput.focus(), 30);
+  }
+  function closeSearch() {
+    searchOverlay.classList.add("hidden");
+    searchInput.value = "";
+    renderResults("");
+  }
+
+  document.getElementById("search-btn-mobile")?.addEventListener("click", openSearch);
+  document.getElementById("search-btn-desktop")?.addEventListener("click", openSearch);
+  searchOverlay.addEventListener("click", closeSearch);
+  searchBox.addEventListener("click", (e) => e.stopPropagation());
+
+  document.addEventListener("keydown", (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+      e.preventDefault();
+      searchOverlay.classList.contains("hidden") ? openSearch() : closeSearch();
+    }
+    if (e.key === "Escape" && !searchOverlay.classList.contains("hidden")) closeSearch();
+  });
+
+  function renderResults(q: string) {
+    const needle = q.trim().toLowerCase();
+    if (!needle) {
+      searchResults.innerHTML = "";
+      searchResults.appendChild(searchHint);
+      return;
+    }
+    const results = searchData.filter((item) => item.keywords.includes(needle)).slice(0, 12);
+    if (!results.length) {
+      searchResults.innerHTML = `<p class="font-serif text-[13px] text-ink-3 p-[28px_16px] text-center m-0">No results.</p>`;
+      return;
+    }
+    searchResults.innerHTML = results.map((r) => `
+      <a class="grid grid-cols-[88px_1fr_auto] gap-3 items-center p-[10px_12px] rounded-[8px] cursor-pointer hover:bg-bg-2 hover:no-underline text-left" href="${r.href}">
+        <span class="font-mono text-[9.5px] tracking-[0.1em] uppercase text-ink-3 py-[3px] px-[7px] border border-rule rounded-[3px] bg-bg-2 justify-self-start">${r.kind}</span>
+        <div class="min-w-0">
+          <div class="text-[13.5px] text-ink leading-[1.35] truncate">${r.title}</div>
+          <div class="text-[11.5px] text-ink-3 mt-[2px] truncate">${r.sub}</div>
+        </div>
+        <svg class="h-4 w-4 text-ink-3 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>`).join("");
+    searchResults.querySelectorAll("a").forEach((a) => a.addEventListener("click", closeSearch));
+  }
+
+  searchInput.addEventListener("input", () => renderResults(searchInput.value));
+</script>

@@ -1,7 +1,7 @@
 ---
 import SpeedInsights from "@vercel/speed-insights/astro";
 import Footer from "@/components/layout/Footer.astro";
-import Header from "@/components/layout/Header";
+import Header from "@/components/layout/Header.astro";
 import BackToTop from "@/components/layout/BackToTop.astro";
 import "@/styles/globals.css";
 
@@ -142,7 +142,7 @@ const pageTitle = title
   </head>
   <body class="flex min-h-screen flex-col bg-bg text-ink-2 font-sans text-[14.5px] leading-[1.65] antialiased">
     <div class="relative flex min-h-screen flex-col">
-        <Header client:load pathname={Astro.url.pathname} />
+        <Header />
         <main class="flex-auto max-w-[1100px] w-full mx-auto px-[clamp(20px,4vw,36px)] pt-[clamp(28px,5vw,56px)] pb-[64px]">
           <slot />
         </main>
