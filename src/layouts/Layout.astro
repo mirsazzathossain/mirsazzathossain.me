@@ -34,7 +34,7 @@ const {
   ],
 } = Astro.props;
 
-const origin = Astro.site?.href ?? Astro.url.origin;
+const origin = (Astro.site?.href ?? Astro.url.origin).replace(/\/$/, "");
 const canonical = new URL(canonicalPath ?? Astro.url.pathname, origin).href;
 const ogImageUrl = new URL(ogImage, origin).href;
 const pageTitle = title

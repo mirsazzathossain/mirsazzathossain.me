@@ -61,8 +61,7 @@ function islandModulePreload() {
 }
 
 export default defineConfig({
-  // ✅ MUST match your Vercel primary domain
-  site: "https://www.mirsazzathossain.me",
+  site: "https://mirsazzathossain.me",
 
   output: "static",
   adapter: vercel(),
