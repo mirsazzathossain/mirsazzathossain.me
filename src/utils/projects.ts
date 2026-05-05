@@ -28,9 +28,10 @@ export function getProjectLinkMeta(project: Project): ProjectLinkMeta {
     host = "";
   }
 
-  const kind = host.includes("github.com")
+  const bare = host.replace(/^www\./, "");
+  const kind = bare === "github.com"
     ? "github"
-    : host.includes("drive.google.com") || host.includes("docs.google.com")
+    : bare === "drive.google.com" || bare === "docs.google.com"
       ? "drive"
       : "external";
 
