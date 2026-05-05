@@ -20,7 +20,7 @@ jobs:
           python-version: "3.11"
 
       - name: Install dependencies
-        run: pip install scholarly free-proxy
+        run: pip install scholarly free-proxy "httpx<0.28"
 
       - name: Fetch Scholar data and update publication data
         run: python .github/scripts/update_publications.py
