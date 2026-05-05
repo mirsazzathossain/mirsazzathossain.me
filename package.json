@@ -41,6 +41,7 @@
   "author": "mirsazzathossain <mirsazzathossain@gmail.com>",
   "license": "MIT",
   "overrides": {
-    "vite": "^7.3.2"
+    "vite": "^7.3.2",
+    "path-to-regexp": "6.3.0"
   }
 }
