@@ -36,7 +36,7 @@ export function PublicationItem({
   const rank = getPublicationRank(publication);
 
   return (
-    <article className="py-4 border-b border-rule-2 first:pt-0 last:border-b-0">
+    <article className="min-h-[142px] py-4 border-b border-rule-2 first:pt-0 last:border-b-0">
       <div className="flex flex-wrap gap-1.5 mb-[7px]">
         <PublicationBadge variant="venue">
           {getVenueShort(publication)}

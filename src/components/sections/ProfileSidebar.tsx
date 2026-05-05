@@ -12,10 +12,12 @@ export default function ProfileSidebar({ about }: { about: any }) {
     <aside className="self-start text-center flex flex-col items-center">
       <img
         className="w-[132px] h-[132px] rounded-full object-cover shadow-lg shadow-slate-900/10 block mx-auto mb-[18px]"
-        src={about.photo || "/images/user.webp"}
+        src={about.photo === "/images/user.webp" ? "/images/user-132.webp" : about.photo || "/images/user-132.webp"}
         alt={about.name}
-        width={264}
-        height={264}
+        width={132}
+        height={132}
+        loading="eager"
+        decoding="async"
       />
 
       <h1 className="font-serif text-[24px] leading-[1.15] m-0 mb-1 tracking-[-0.02em] text-ink font-semibold">
