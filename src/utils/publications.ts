@@ -17,6 +17,7 @@ export type Publication = {
   type?: string;
   status?: string;
   featured?: boolean;
+  award?: string;
   title?: string;
   authors?: PublicationAuthor[];
   year?: string | number;
@@ -135,15 +136,6 @@ export function getVenueLong(publication: Publication): string {
 
 export function getPublicationRank(publication: Publication): string | null {
   if (publication.rank) return publication.rank;
-
-  const venue =
-    `${publication.venue ?? ""} ${publication.venue_short ?? ""}`.toLowerCase();
-
-  if (venue.includes("ijcai")) return "CORE A*";
-  if (venue.includes("icip")) return "CORE B";
-  if (venue.includes("ijcnn")) return "CORE B";
-  if (venue.includes("astronomy & astrophysics")) return "Q1";
-
   return null;
 }
 
@@ -218,19 +210,47 @@ export function getPublicationChartHeightClass(
   return "h-[12%]";
 }
 
+export function sortPublicationsByDate(
+  publications: Publication[],
+): Publication[] {
+  return [...publications].sort((a, b) => {
+    const yearDiff = Number(b.year ?? 0) - Number(a.year ?? 0);
+    if (yearDiff !== 0) return yearDiff;
+
+    const monthDiff = getSortableMonth(b) - getSortableMonth(a);
+    if (monthDiff !== 0) return monthDiff;
+
+    return String(a.title ?? "").localeCompare(String(b.title ?? ""));
+  });
+}
+
+function getSortableMonth(publication: Publication): number {
+  return publication.month === undefined || publication.month === null
+    ? 0
+    : Number(publication.month);
+}
+
 export function mergePublicationOverrides(
   publications: Publication[],
   overrides: Partial<Publication>[],
 ): Publication[] {
+  const publicationIds = new Set(publications.map((publication) => publication.id));
   const overrideMap = new Map(
     overrides
       .filter((override) => override.id)
       .map((override) => [override.id, override]),
   );
-  return publications.map((pub) => {
+  const mergedPublications = publications.map((pub) => {
     const override = overrideMap.get(pub.id);
     return override ? { ...pub, ...override } : pub;
   });
+
+  const localPublications = overrides.filter(
+    (override): override is Publication =>
+      Boolean(override.id) && !publicationIds.has(override.id),
+  );
+
+  return [...mergedPublications, ...localPublications];
 }
 
 // Legacy support — kept only for the Astro page that still passes booktitle/journal

@@ -225,6 +225,22 @@
   padding-left: 1.25rem;
 }
 
+.post-body ul {
+  list-style-type: disc;
+}
+
+.post-body ol {
+  list-style-type: decimal;
+}
+
 .post-body li {
   margin: 0.35em 0;
+  padding-left: 0.15rem;
+}
+
+.post-body li::marker {
+  color: var(--ink-2);
+  font-family: inherit;
+  font-size: 1.02em;
+  font-weight: 600;
 }

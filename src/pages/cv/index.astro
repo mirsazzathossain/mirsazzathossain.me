@@ -1,0 +1,17 @@
+---
+import CVPage from "@/components/cv/CVPage";
+import Layout from "@/layouts/Layout.astro";
+import { readSiteJson } from "@/utils/json-data";
+
+const about = await readSiteJson("about.json");
+const cv = await readSiteJson("cv.json");
+---
+
+<Layout
+  title="CV"
+  name={about.name}
+  description={`Curriculum Vitae of ${about.name} — ${about.designation} at ${about.company.name}.`}
+  canonicalPath="/cv"
+>
+  <CVPage cv={cv} client:load />
+</Layout>

@@ -27,6 +27,11 @@ const authorSchema = z.object({
   avatar: imageSchema,
 });
 
+const referenceSchema = z.object({
+  text: z.string(),
+  href: z.string().optional(),
+});
+
 const articles = defineCollection({
   loader: glob({
     base: "./src/content/articles",
@@ -43,6 +48,7 @@ const articles = defineCollection({
     categories: z.array(categorySchema),
     author: authorSchema,
     covers: z.array(imageSchema),
+    references: z.array(referenceSchema).optional(),
   }),
 });
 

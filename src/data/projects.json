@@ -3,10 +3,7 @@
     "title": "RGC",
     "type": "Research",
     "glyph": "🔭",
-    "tags": [
-      "python",
-      "ml"
-    ],
+    "tags": ["python", "ml"],
     "stars": 3,
     "language": "Python",
     "languageColor": "#3572A5",
@@ -24,14 +21,11 @@
     "title": "Personal Website",
     "type": "Hobby",
     "glyph": "🌐",
-    "tags": [
-      "typescript",
-      "nextjs"
-    ],
+    "tags": ["typescript", "astro", "tailwind"],
     "stars": 289,
     "language": "TypeScript",
     "languageColor": "#3178C6",
-    "description": "My personal website built with Next.js, Tailwind CSS, and Contentlayer, deployed on Vercel.",
+    "description": "Personal academic website built with Astro, React islands, MDX, and Tailwind CSS.",
     "link": {
       "href": "https://github.com/mirsazzathossain/mirsazzathossain.me",
       "label": "mirsazzathossain.me"
@@ -45,10 +39,7 @@
     "title": "Restaurant USTGCN",
     "type": "Research",
     "glyph": "🍔",
-    "tags": [
-      "python",
-      "graph-ml"
-    ],
+    "tags": ["python", "graph-ml"],
     "stars": 0,
     "language": "Python",
     "languageColor": "#3572A5",
@@ -66,10 +57,7 @@
     "title": "Astro Labeller",
     "type": "Research",
     "glyph": "🛰️",
-    "tags": [
-      "django",
-      "python"
-    ],
+    "tags": ["django", "python"],
     "stars": 1,
     "language": "Python",
     "languageColor": "#3572A5",
@@ -87,9 +75,7 @@
     "title": "Spotify Playing Now",
     "type": "Hobby",
     "glyph": "🎵",
-    "tags": [
-      "javascript"
-    ],
+    "tags": ["javascript"],
     "stars": 2,
     "language": "JavaScript",
     "languageColor": "#f1e05a",
@@ -97,20 +83,13 @@
     "link": {
       "href": "https://github.com/mirsazzathossain/spotify-playing-now",
       "label": "spotify-playing-now"
-    },
-    "logo": {
-      "src": "project-logos/spotify-playing-now.png",
-      "alt": "Spotify Playing Now"
     }
   },
   {
     "title": "Food Judge",
     "type": "Course",
     "glyph": "🍽️",
-    "tags": [
-      "django",
-      "web"
-    ],
+    "tags": ["django", "web"],
     "stars": 0,
     "language": "Python",
     "languageColor": "#3572A5",
@@ -128,10 +107,7 @@
     "title": "SPMS",
     "type": "Course",
     "glyph": "🎓",
-    "tags": [
-      "django",
-      "education"
-    ],
+    "tags": ["django", "education"],
     "stars": 0,
     "language": "Python",
     "languageColor": "#3572A5",
@@ -149,10 +125,7 @@
     "title": "HAMS",
     "type": "Course",
     "glyph": "🏥",
-    "tags": [
-      "laravel",
-      "php"
-    ],
+    "tags": ["laravel", "php"],
     "stars": 0,
     "language": "PHP",
     "languageColor": "#777BB4",
@@ -170,10 +143,7 @@
     "title": "Pizza Roma",
     "type": "Course",
     "glyph": "🍕",
-    "tags": [
-      "django",
-      "web"
-    ],
+    "tags": ["django", "web"],
     "stars": 0,
     "language": "Python",
     "languageColor": "#3572A5",
@@ -191,10 +161,7 @@
     "title": "Bookshop Inventory",
     "type": "Course",
     "glyph": "📚",
-    "tags": [
-      "django",
-      "inventory"
-    ],
+    "tags": ["django", "inventory"],
     "stars": 0,
     "language": "Python",
     "languageColor": "#3572A5",
@@ -212,10 +179,7 @@
     "title": "Online Marketplace",
     "type": "Course",
     "glyph": "🛒",
-    "tags": [
-      "javascript",
-      "vanilla"
-    ],
+    "tags": ["javascript", "vanilla"],
     "stars": 0,
     "language": "JavaScript",
     "languageColor": "#f1e05a",
@@ -233,10 +197,7 @@
     "title": "CSMS",
     "type": "Course",
     "glyph": "🚗",
-    "tags": [
-      "php",
-      "web"
-    ],
+    "tags": ["php", "web"],
     "stars": 0,
     "language": "PHP",
     "languageColor": "#777BB4",

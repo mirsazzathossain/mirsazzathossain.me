@@ -1,7 +1,6 @@
 ---
 import mdxComponents from "@/components/mdx/mdx-map";
 import Layout from "@/layouts/Layout.astro";
-import { getSnippetLanguageMeta } from "@/utils/snippets";
 import { getCollection, getEntry, render } from "astro:content";
 
 export async function getStaticPaths() {
@@ -14,8 +13,6 @@ const entry = await getEntry("snippets", slug!);
 if (!entry) return Astro.redirect("/404");
 
 const { Content } = await render(entry);
-
-const meta = getSnippetLanguageMeta(entry.data.language);
 ---
 
 <Layout
@@ -36,8 +33,7 @@ const meta = getSnippetLanguageMeta(entry.data.language);
           {entry.data.description}
         </p>
         <div class="flex flex-wrap gap-1.5">
-          <span class="rounded-full border border-link/25 bg-accent-soft px-3 py-[3px] text-[11.5px] font-medium text-link">Snippet</span>
-          <span class="rounded-full border border-rule bg-bg-2 px-3 py-[3px] text-[11.5px] font-medium text-ink-2">{meta.label}</span>
+          <span class="rounded-full border border-link/25 bg-accent-soft px-3 py-[3px] text-[11.5px] font-medium text-link">{entry.data.language}</span>
         </div>
       </div>
       <span aria-hidden="true" class="relative inline-flex h-[50px] w-[50px] shrink-0 items-center justify-center text-ink-2">
@@ -48,7 +44,7 @@ const meta = getSnippetLanguageMeta(entry.data.language);
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round">
               <path d="M5 7.2 12 3l7 4.2v9.6L12 21l-7-4.2Z"/>
             </svg>
-            <span class:list={["absolute inset-0 flex items-center justify-center font-mono text-[11px] font-bold tracking-[-0.04em]", meta.glyphClassName]}>{meta.glyph}</span>
+            <span class="absolute inset-0 flex items-center justify-center font-mono text-[11px] font-bold tracking-[-0.04em] text-ink-3">{entry.data.language.slice(0, 3)}</span>
           </>
         )}
       </span>

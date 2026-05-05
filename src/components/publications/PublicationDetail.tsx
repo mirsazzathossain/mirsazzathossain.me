@@ -26,6 +26,7 @@ export default function PublicationDetail({
   publication: Publication;
 }): JSX.Element {
   const venueShort = getVenueShort(publication);
+  const detailVenueShort = removeTrailingYear(venueShort, publication.year);
   const kind = getPublicationType(publication);
   const venueLong = getVenueLong(publication);
   const keywords = getPublicationKeywords(publication).slice(0, 8);
@@ -45,7 +46,7 @@ export default function PublicationDetail({
       </a>
 
       <p className="mb-2 font-mono text-[11px] tracking-[0.14em] uppercase text-ink-3">
-        {kind} — {venueShort} — {publication.year}
+        {kind} — {detailVenueShort} — {publication.year}
       </p>
       <h1 className="m-0 mb-3.5 max-w-[900px] font-serif text-[clamp(24px,3.5vw,32px)] font-semibold leading-[1.18] tracking-[-0.018em] text-ink">
         {publication.title}
@@ -53,6 +54,11 @@ export default function PublicationDetail({
       <p className="m-0 mb-1.5 max-w-[900px] text-[14px] leading-[1.55] text-ink-2">
         <AuthorList publication={publication} />
       </p>
+      {publication.award && (
+        <p className="m-0 mb-2 max-w-[900px] font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-amber-800 dark:text-amber-300">
+          {publication.award}
+        </p>
+      )}
       <p className="m-0 mb-[18px] max-w-[900px] text-[13px] italic text-ink-3">
         {venueLong}
       </p>
@@ -183,6 +189,9 @@ export default function PublicationDetail({
                   value={publication.status.replace(/_/g, " ")}
                 />
               )}
+              {publication.award && (
+                <MetaItem label="Award" value={publication.award} />
+              )}
               {publication.pages && publication.pages !== "To appear" && (
                 <MetaItem label="Pages" value={publication.pages} />
               )}
@@ -269,4 +278,12 @@ function AuthorList({
       {index < authors.length - 1 ? ", " : ""}
     </React.Fragment>
   ));
+}
+
+function removeTrailingYear(
+  venueShort: string,
+  year: Publication["year"]
+): string {
+  if (!year) return venueShort;
+  return venueShort.replace(new RegExp(`\\s*${String(year)}\\s*$`), "").trim();
 }

@@ -42,6 +42,9 @@ export function PublicationItem({
           {getVenueShort(publication)}
         </PublicationBadge>
         <PublicationBadge>{getPublicationType(publication)}</PublicationBadge>
+        {publication.award && (
+          <PublicationBadge variant="award">{publication.award}</PublicationBadge>
+        )}
         {rank && <PublicationBadge variant="rank">{rank}</PublicationBadge>}
         {isNew && <PublicationBadge variant="new">New</PublicationBadge>}
         {publication.status === "accepted" && (
@@ -52,6 +55,9 @@ export function PublicationItem({
         )}
         {publication.status === "in_preparation" && (
           <PublicationBadge variant="status">In Preparation</PublicationBadge>
+        )}
+        {publication.status === "submitted" && (
+          <PublicationBadge variant="status">Submitted</PublicationBadge>
         )}
         {showCitations && hasCitationCount(publication) && citationCount > 0 && (
           <PublicationBadge variant="citation">
@@ -85,7 +91,7 @@ export function PublicationBadge({
   variant = "default",
 }: {
   children: React.ReactNode;
-  variant?: "default" | "venue" | "rank" | "new" | "citation" | "status";
+  variant?: "default" | "venue" | "rank" | "new" | "citation" | "status" | "award";
 }): JSX.Element {
   const variantClass = {
     default: "border-rule bg-bg-2 text-ink-2 font-medium",
@@ -94,6 +100,7 @@ export function PublicationBadge({
     new: "bg-emerald-50 text-emerald-800 border-emerald-200 font-medium dark:bg-emerald-950 dark:text-emerald-300 dark:border-emerald-900",
     citation: "bg-bg text-ink-3 border-rule font-medium",
     status: "bg-amber-50 text-amber-800 border-amber-200 font-medium dark:bg-amber-950 dark:text-amber-300 dark:border-amber-900",
+    award: "bg-amber-50 text-amber-900 border-amber-300 font-bold dark:bg-amber-950 dark:text-amber-200 dark:border-amber-800",
   }[variant];
 
   return (

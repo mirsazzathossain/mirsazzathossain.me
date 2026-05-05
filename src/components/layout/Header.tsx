@@ -9,12 +9,13 @@ import ThemeSelector from "./ThemeSelector";
 const navigations = [
   { href: "/", label: "Home" },
   { href: "/about", label: "About" },
+  { href: "/cv", label: "CV" },
   { href: "/publications", label: "Publications" },
+  { href: "/articles", label: "Posts" },
   { href: "/projects", label: "Projects" },
   { href: "/courses", label: "Courses" },
   { href: "/snippets", label: "Snippets" },
   { href: "/resources", label: "Resources" },
-  { href: "/articles", label: "Posts" },
 ];
 
 function normalizePathname(pathname: string): string {

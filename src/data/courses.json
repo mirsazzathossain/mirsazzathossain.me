@@ -1,69 +1,129 @@
 [
   {
-    "code": "CSC 100",
-    "slug": "csc100",
-    "title": "Introduction to Problem Solving with Python",
+    "code": "CSE 100T",
+    "slug": "cse100t",
+    "title": "Tutorial for Computer Programming I",
     "role": "TA Tutorial",
-    "term": "Spring 2026",
+    "term": "Summer 2026",
     "inst": "Independent University, Bangladesh",
     "lang": "Python",
     "description": "A structured tutorial sequence on Python fundamentals, control flow, functions, loops, and list-based problem solving.",
     "students": 36,
     "repo": "https://github.com/mirsazzathossain/CSC101-Introduction-to-Computer-Science",
-    "link": { "href": "/courses/csc100", "label": "View materials" },
+    "link": { "href": "/courses/cse100t", "label": "View materials" },
     "logo": { "src": "logos/python.png", "alt": "Python Logo" },
     "publishedDate": "2026-01-15",
     "totalDuration": "Approx. 12 weeks",
     "syllabus": "This tutorial stream is practice-first: each topic starts with a short concept pass, then coding drills, then problem solving. Focus is on clean logic, readable code, and debugging through code-tracing.",
     "outcome": "Students can solve beginner Python problems independently using conditionals, loops, functions, and list-processing patterns.",
     "schedule": [
-      { "week": "Tutorial 01–02", "topic": "Getting started: variables, basic I/O, and expressions" },
-      { "week": "Tutorial 03–04", "topic": "Numbers, variables, typed input, and arithmetic workflows" },
-      { "week": "Tutorial 05–06", "topic": "Boolean logic, operators, and nested conditional decision-making" },
-      { "week": "Tutorial 07–08", "topic": "Function decomposition, loops, and core numeric problem patterns" },
-      { "week": "Tutorial 09–10", "topic": "Lists, built-in list methods, and custom list-processing functions" }
+      {
+        "week": "Tutorial 01–02",
+        "topic": "Getting started: variables, basic I/O, and expressions"
+      },
+      {
+        "week": "Tutorial 03–04",
+        "topic": "Numbers, variables, typed input, and arithmetic workflows"
+      },
+      {
+        "week": "Tutorial 05–06",
+        "topic": "Boolean logic, operators, and nested conditional decision-making"
+      },
+      {
+        "week": "Tutorial 07–08",
+        "topic": "Function decomposition, loops, and core numeric problem patterns"
+      },
+      {
+        "week": "Tutorial 09–10",
+        "topic": "Lists, built-in list methods, and custom list-processing functions"
+      }
     ],
     "notebooks": [
-      { "n": "01", "title": "Getting started: variables, basic I/O, and expressions" },
-      { "n": "02", "title": "Print formatting in depth: sep, end, newline, and output control" },
-      { "n": "03", "title": "Numbers and understanding data through structured output" },
-      { "n": "04", "title": "Variable input, type-casting, and arithmetic workflows" },
-      { "n": "05", "title": "Boolean logic and arithmetic operators with truth-table reasoning" },
-      { "n": "06", "title": "Conditional statements, including nested conditionals" },
-      { "n": "07", "title": "Basic function decomposition and extended conditional problem-solving" },
-      { "n": "08", "title": "Loops: numeric series, factorial, prime tests, and Fibonacci" },
-      { "n": "09", "title": "Lists with loops and core list built-in functions" },
-      { "n": "10", "title": "Custom list-processing functions and integrated practice" }
+      {
+        "n": "01",
+        "title": "Getting started: variables, basic I/O, and expressions"
+      },
+      {
+        "n": "02",
+        "title": "Print formatting in depth: sep, end, newline, and output control"
+      },
+      {
+        "n": "03",
+        "title": "Numbers and understanding data through structured output"
+      },
+      {
+        "n": "04",
+        "title": "Variable input, type-casting, and arithmetic workflows"
+      },
+      {
+        "n": "05",
+        "title": "Boolean logic and arithmetic operators with truth-table reasoning"
+      },
+      {
+        "n": "06",
+        "title": "Conditional statements, including nested conditionals"
+      },
+      {
+        "n": "07",
+        "title": "Basic function decomposition and extended conditional problem-solving"
+      },
+      {
+        "n": "08",
+        "title": "Loops: numeric series, factorial, prime tests, and Fibonacci"
+      },
+      {
+        "n": "09",
+        "title": "Lists with loops and core list built-in functions"
+      },
+      {
+        "n": "10",
+        "title": "Custom list-processing functions and integrated practice"
+      }
     ],
     "resources": [
-      { "title": "Python 3 official documentation", "href": "https://docs.python.org/3/" },
-      { "title": "Think Python (Allen Downey)", "href": "https://greenteapress.com/wp/think-python-2e/" },
-      { "title": "Course GitHub repository", "href": "https://github.com/mirsazzathossain/CSC101-Introduction-to-Computer-Science" }
+      {
+        "title": "Python 3 official documentation",
+        "href": "https://docs.python.org/3/"
+      },
+      {
+        "title": "Think Python (Allen Downey)",
+        "href": "https://greenteapress.com/wp/think-python-2e/"
+      },
+      {
+        "title": "Course GitHub repository",
+        "href": "https://github.com/mirsazzathossain/CSC101-Introduction-to-Computer-Science"
+      }
     ]
   },
   {
-    "code": "CSC 101",
-    "slug": "csc101",
-    "title": "Introduction to Programming with Python",
+    "code": "CSE 200T",
+    "slug": "cse200t",
+    "title": "Tutorial for Computer Programming II",
     "role": "TA Tutorial",
-    "term": "Fall 2022 — Spring 2023",
+    "term": "Summer 2026",
     "inst": "Independent University, Bangladesh",
     "lang": "Python",
-    "description": "Step-by-step Python tutorials for beginners, focused on computational thinking and practical coding.",
-    "students": 42,
+    "description": "Intermideate Python tutorial covering built-in advanced data structures (dictionaries, sets), recursion, file I/O, and an introduction to object-oriented programming.",
+    "students": 30,
     "repo": "https://github.com/mirsazzathossain/CSC101-Introduction-to-Programming",
-    "link": { "href": "/courses/csc101", "label": "View materials" },
+    "link": { "href": "/courses/cse200t", "label": "View materials" },
     "logo": { "src": "logos/python.png", "alt": "Python Logo" },
     "publishedDate": "2023-07-20",
     "totalDuration": "Approx. 12 weeks",
     "syllabus": "A gentle introduction to Python covering core programming concepts. Students learn to think computationally and solve real-world problems step by step.",
     "outcome": "Students can write basic Python programs, use loops and conditionals, define functions, and work with lists and strings.",
     "schedule": [
-      { "week": "Week 01–02", "topic": "Python setup, variables, data types, and basic I/O" },
+      {
+        "week": "Week 01–02",
+        "topic": "Python setup, variables, data types, and basic I/O"
+      },
       { "week": "Week 03–04", "topic": "Conditionals and control flow" },
       { "week": "Week 05–06", "topic": "Loops: for, while, and nested loops" },
       { "week": "Week 07–08", "topic": "Functions and scope" },
-      { "week": "Week 09–10", "topic": "Lists, strings, and basic data manipulation" },
+      {
+        "week": "Week 09–10",
+        "topic": "Lists, strings, and basic data manipulation"
+      },
       { "week": "Week 11–12", "topic": "Review and problem solving practice" }
     ],
     "notebooks": [
@@ -75,22 +135,28 @@
       { "n": "06", "title": "Lists and string manipulation" }
     ],
     "resources": [
-      { "title": "Python 3 official documentation", "href": "https://docs.python.org/3/" },
-      { "title": "Course GitHub repository", "href": "https://github.com/mirsazzathossain/CSC101-Introduction-to-Programming" }
+      {
+        "title": "Python 3 official documentation",
+        "href": "https://docs.python.org/3/"
+      },
+      {
+        "title": "Course GitHub repository",
+        "href": "https://github.com/mirsazzathossain/CSC101-Introduction-to-Programming"
+      }
     ]
   },
   {
-    "code": "CSE 214",
-    "slug": "cse214",
-    "title": "Data Structures",
+    "code": "CSE 203T",
+    "slug": "cse203t",
+    "title": "Tutorial for Data Structures",
     "role": "TA Tutorial",
-    "term": "Autumn 2022",
+    "term": "Summer 2022",
     "inst": "Independent University, Bangladesh",
     "lang": "Python",
-    "description": "Tutorial sessions on foundational data structures — arrays, linked lists, stacks, queues, trees, and graphs — with problem solving in Python.",
+    "description": "Tutorial sessions on foundational data structures; arrays, linked lists, stacks, queues, trees, and graphs etc., with problem solving in Python.",
     "students": 30,
     "repo": "#",
-    "link": { "href": "/courses/cse214", "label": "View materials" },
+    "link": { "href": "/courses/cse203t", "label": "View materials" },
     "logo": { "src": "logos/python.png", "alt": "Python Logo" },
     "publishedDate": "2022-07-20",
     "totalDuration": "Approx. 12 weeks",
@@ -98,7 +164,10 @@
     "outcome": "Students can implement and use core data structures, analyze time/space complexity, and apply them to algorithmic problem solving.",
     "schedule": [
       { "week": "Week 01–02", "topic": "Arrays and dynamic arrays" },
-      { "week": "Week 03–04", "topic": "Linked lists: singly and doubly linked" },
+      {
+        "week": "Week 03–04",
+        "topic": "Linked lists: singly and doubly linked"
+      },
       { "week": "Week 05–06", "topic": "Stacks and queues" },
       { "week": "Week 07–08", "topic": "Trees and binary search trees" },
       { "week": "Week 09–10", "topic": "Heaps and priority queues" },
@@ -112,13 +181,19 @@
       { "n": "05", "title": "Graph traversal: BFS and DFS" }
     ],
     "resources": [
-      { "title": "Python Data Structures — Real Python", "href": "https://realpython.com/python-data-structures/" },
-      { "title": "Problem Solving with Algorithms and Data Structures", "href": "https://runestone.academy/runestone/books/published/pythonds/index.html" }
+      {
+        "title": "Python Data Structures — Real Python",
+        "href": "https://realpython.com/python-data-structures/"
+      },
+      {
+        "title": "Problem Solving with Algorithms and Data Structures",
+        "href": "https://runestone.academy/runestone/books/published/pythonds/index.html"
+      }
     ]
   },
   {
-    "code": "CSE 111",
-    "slug": "cse111",
+    "code": "CIS 101T",
+    "slug": "cis101t",
     "title": "Fundamentals of Computer Systems",
     "role": "TA Tutorial",
     "term": "Spring 2023",
@@ -127,23 +202,41 @@
     "description": "Tutorial sessions covering computer-system concepts and practical office-suite skills for academic and professional use.",
     "students": 38,
     "repo": "#",
-    "link": { "href": "/courses/cse111", "label": "View materials" },
+    "link": { "href": "/courses/cis101t", "label": "View materials" },
     "logo": { "src": "logos/office.png", "alt": "Office Logo" },
     "publishedDate": "2023-01-23",
     "totalDuration": "Approx. 12 weeks",
     "syllabus": "Covers the basics of computer hardware, software, operating systems, and essential Microsoft Office skills (Word, Excel, PowerPoint) needed for academic work.",
     "outcome": "Students understand fundamental computing concepts and can use office productivity tools effectively for academic reporting and presentations.",
     "schedule": [
-      { "week": "Week 01–02", "topic": "Computer hardware and software basics" },
-      { "week": "Week 03–04", "topic": "Operating systems and file management" },
-      { "week": "Week 05–06", "topic": "Microsoft Word: formatting and document design" },
-      { "week": "Week 07–08", "topic": "Microsoft Excel: formulas, charts, and data analysis" },
-      { "week": "Week 09–10", "topic": "Microsoft PowerPoint: presentations and design" },
+      {
+        "week": "Week 01–02",
+        "topic": "Computer hardware and software basics"
+      },
+      {
+        "week": "Week 03–04",
+        "topic": "Operating systems and file management"
+      },
+      {
+        "week": "Week 05–06",
+        "topic": "Microsoft Word: formatting and document design"
+      },
+      {
+        "week": "Week 07–08",
+        "topic": "Microsoft Excel: formulas, charts, and data analysis"
+      },
+      {
+        "week": "Week 09–10",
+        "topic": "Microsoft PowerPoint: presentations and design"
+      },
       { "week": "Week 11–12", "topic": "Integrated project" }
     ],
     "notebooks": [],
     "resources": [
-      { "title": "Microsoft Office Support Documentation", "href": "https://support.microsoft.com/en-us/office" }
+      {
+        "title": "Microsoft Office Support Documentation",
+        "href": "https://support.microsoft.com/en-us/office"
+      }
     ]
   },
   {
@@ -164,25 +257,52 @@
     "syllabus": "Lab sessions implement numerical algorithms from scratch using Python and NumPy, then validate results against SciPy. Focus is on understanding the algorithm, not just using a library.",
     "outcome": "Students can implement and analyze core numerical methods, understand their error characteristics, and apply them to scientific computing problems.",
     "schedule": [
-      { "week": "Lab 01–02", "topic": "Floating point arithmetic and error analysis" },
-      { "week": "Lab 03–04", "topic": "Root-finding: bisection, Newton-Raphson" },
+      {
+        "week": "Lab 01–02",
+        "topic": "Floating point arithmetic and error analysis"
+      },
+      {
+        "week": "Lab 03–04",
+        "topic": "Root-finding: bisection, Newton-Raphson"
+      },
       { "week": "Lab 05–06", "topic": "Polynomial interpolation and splines" },
-      { "week": "Lab 07–08", "topic": "Numerical differentiation and integration" },
-      { "week": "Lab 09–10", "topic": "Linear systems: Gaussian elimination and LU factorization" },
-      { "week": "Lab 11–12", "topic": "Ordinary differential equations: Euler and Runge-Kutta" }
+      {
+        "week": "Lab 07–08",
+        "topic": "Numerical differentiation and integration"
+      },
+      {
+        "week": "Lab 09–10",
+        "topic": "Linear systems: Gaussian elimination and LU factorization"
+      },
+      {
+        "week": "Lab 11–12",
+        "topic": "Ordinary differential equations: Euler and Runge-Kutta"
+      }
     ],
     "notebooks": [
       { "n": "01", "title": "Floating point and machine epsilon" },
       { "n": "02", "title": "Root-finding methods" },
       { "n": "03", "title": "Lagrange and Newton interpolation" },
-      { "n": "04", "title": "Numerical integration: trapezoidal and Simpson's rule" },
+      {
+        "n": "04",
+        "title": "Numerical integration: trapezoidal and Simpson's rule"
+      },
       { "n": "05", "title": "Solving linear systems" },
       { "n": "06", "title": "ODE solvers: Euler and RK4" }
     ],
     "resources": [
-      { "title": "Numerical Methods for Engineers — Chapra & Canale", "href": "https://www.mheducation.com/highered/product/numerical-methods-engineers-chapra-canale/M9780073397924.html" },
-      { "title": "SciPy documentation", "href": "https://docs.scipy.org/doc/scipy/" },
-      { "title": "Course GitHub repository", "href": "https://github.com/mirsazzathossain/CSE317-Lab-Numerical-Methods" }
+      {
+        "title": "Numerical Methods for Engineers — Chapra & Canale",
+        "href": "https://www.mheducation.com/highered/product/numerical-methods-engineers-chapra-canale/M9780073397924.html"
+      },
+      {
+        "title": "SciPy documentation",
+        "href": "https://docs.scipy.org/doc/scipy/"
+      },
+      {
+        "title": "Course GitHub repository",
+        "href": "https://github.com/mirsazzathossain/CSE317-Lab-Numerical-Methods"
+      }
     ]
   }
 ]

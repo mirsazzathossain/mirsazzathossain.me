@@ -1,17 +1,13 @@
 import { PublicationItem } from "@/components/publications/PublicationItem";
 import { SectionHeader } from "@/components/ui/SectionHeader";
-import type { Publication } from "@/utils/publications";
+import { sortPublicationsByDate, type Publication } from "@/utils/publications";
 
 export function HomePublications({
   publications,
 }: {
   publications: Publication[];
 }) {
-  const sorted = [...publications].sort((a, b) => {
-    const yearDiff = Number(b.year ?? 0) - Number(a.year ?? 0);
-    if (yearDiff !== 0) return yearDiff;
-    return Number(b.month ?? 0) - Number(a.month ?? 0);
-  });
+  const sorted = sortPublicationsByDate(publications);
   const selected = sorted.filter((publication) => publication.featured);
   const featured = selected.length ? selected : sorted.slice(0, 4);
   const latestIds = new Set(

@@ -31,6 +31,18 @@ declare type Resource = {
   category: string;
 };
 
+declare type ResourcePageData = {
+  title: string;
+  description: string;
+  canonicalPath: string;
+  eyebrow: string;
+  heading: string;
+  intro: string;
+  searchPlaceholder: string;
+  searchLabel: string;
+  emptyText: string;
+};
+
 declare type Project = {
   title: string;
   description: string;

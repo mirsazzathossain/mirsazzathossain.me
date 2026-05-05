@@ -57,7 +57,7 @@ const toc = Array.from(entry.body.matchAll(/^(#{2,3})\s+(.+)$/gm)).map(
     };
   },
 );
-const referenceItems: { text: string; href?: string }[] = [];
+const referenceItems = entry.data.references ?? [];
 ---
 
 <Layout
@@ -153,29 +153,31 @@ const referenceItems: { text: string; href?: string }[] = [];
 
     <ArticleShareRow client:load title={entry.data.title} url={articleUrl} />
 
-    <div class="my-8 rounded border border-rule bg-bg-2 px-4 py-3.5">
-      <h2 class="m-0 mb-2 font-mono text-[11px] font-semibold tracking-[0.12em] uppercase text-ink-3">
-        References
-      </h2>
-      <ol class="m-0 grid list-decimal gap-2 pl-5">
-        {
-          referenceItems.map((item) => (
-            <li class="text-[13px] leading-[1.55] text-ink-2">
-              {item.href ? (
-                <a
-                  href={item.href}
-                  class="break-words text-link underline decoration-link/30 underline-offset-4 hover:decoration-link"
-                >
-                  {item.text}
-                </a>
-              ) : (
-                item.text
-              )}
-            </li>
-          ))
-        }
-      </ol>
-    </div>
+    {
+      referenceItems.length > 0 && (
+        <div class="my-8 rounded border border-rule bg-bg-2 px-4 py-3.5">
+          <h2 class="m-0 mb-2 font-mono text-[11px] font-semibold tracking-[0.12em] uppercase text-ink-3">
+            References
+          </h2>
+          <ol class="m-0 grid list-decimal gap-2 pl-5">
+            {referenceItems.map((item) => (
+              <li class="text-[13px] leading-[1.55] text-ink-2">
+                {item.href ? (
+                  <a
+                    href={item.href}
+                    class="break-words text-link underline decoration-link/30 underline-offset-4 hover:decoration-link"
+                  >
+                    {item.text}
+                  </a>
+                ) : (
+                  item.text
+                )}
+              </li>
+            ))}
+          </ol>
+        </div>
+      )
+    }
 
     <div class="mt-8 flex items-center gap-3.5 rounded-[10px] border border-rule bg-bg-2 p-[22px]">
       <img

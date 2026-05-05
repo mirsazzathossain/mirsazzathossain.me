@@ -6,8 +6,10 @@ import { SearchField } from "@/components/ui/SearchField";
 
 export default function ListResources({
   resources,
+  page,
 }: {
   resources: Resource[];
+  page: ResourcePageData;
 }): JSX.Element {
   const [q, setQ] = useState("");
 
@@ -39,14 +41,14 @@ export default function ListResources({
         <SearchField
           value={q}
           onChange={setQ}
-          placeholder="Search resources…"
-          label="Search resources"
+          placeholder={page.searchPlaceholder}
+          label={page.searchLabel}
         />
       </div>
 
       {filteredResources.length === 0 && (
         <div className="text-[14px] text-ink-3 mt-4">
-          No resources match your search.
+          {page.emptyText}
         </div>
       )}
       {Object.keys(categorizedResources).map((category) => (

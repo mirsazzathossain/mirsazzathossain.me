@@ -5,20 +5,21 @@ import ListResources from "@/components/resources/ListResources";
 import { readSiteJson } from "@/utils/json-data";
 
 const resources = await readSiteJson<Resource[]>("resources.json");
+const page = await readSiteJson<ResourcePageData>("resources_page.json");
 ---
 
 <Layout
-  title="Resources"
-  description="These materials have been tremendously beneficial to me in my learning path. I hope you find these helpful as well!"
-  canonicalPath="/resources"
+  title={page.title}
+  description={page.description}
+  canonicalPath={page.canonicalPath}
 >
   <SimpleLayout
-    eyebrow="Curated"
-    title="Resources"
-    intro="Bookmarks, tutorials, and references I keep returning to. Organized by topic for easy scanning."
+    eyebrow={page.eyebrow}
+    title={page.heading}
+    intro={page.intro}
   >
     <div class="mt-8">
-      <ListResources client:load resources={resources} />
+      <ListResources client:load resources={resources} page={page} />
     </div>
   </SimpleLayout>
 </Layout>

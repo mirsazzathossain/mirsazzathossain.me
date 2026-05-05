@@ -1,11 +1,18 @@
 export type About = {
   name: string;
   designation: string;
-  company: { name: string; url: string };
+  company: {
+    name: string;
+    url: string;
+    department?: { name: string; url: string };
+  };
   description: string;
   location?: { name: string; url: string };
   email?: string;
   photo?: string;
+  availability?: string;
+  researchInterests?: string[];
+  academicLinks?: { name: string; url: string }[];
   socialLinks: { name: string; url: string; username?: string }[];
   resume: string;
 };

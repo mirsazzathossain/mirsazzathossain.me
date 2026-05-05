@@ -8,6 +8,7 @@ import {
   getPublicationKeywords,
   getPublicationType,
   PUBLICATION_FILTERS,
+  sortPublicationsByDate,
   type Publication,
   type PublicationFilter,
   type ScholarStats,
@@ -28,12 +29,7 @@ export default function Publications({
   const [page, setPage] = useState(1);
 
   const sortedPublications = useMemo(
-    () =>
-      [...publications].sort((a, b) => {
-        const yearDiff = Number(b.year ?? 0) - Number(a.year ?? 0);
-        if (yearDiff !== 0) return yearDiff;
-        return Number(b.month ?? 0) - Number(a.month ?? 0);
-      }),
+    () => sortPublicationsByDate(publications),
     [publications]
   );
 
@@ -116,7 +112,7 @@ export default function Publications({
   }, [paperYearCounts, stats?.cites_per_year]);
 
   const maxYearCount = Math.max(1, ...chartCounts.map(([, count]) => count));
-  const paperTotal = Number(stats?.paper_count ?? sortedPublications.length);
+  const paperTotal = sortedPublications.length;
   const citationTotal = Number(stats?.total_citations ?? 0);
   const h5Index = Number(stats?.h_index_5y ?? stats?.h_index ?? 0);
   const i10Index = Number(stats?.i10_index ?? 0);
