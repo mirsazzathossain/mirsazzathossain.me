@@ -21,12 +21,12 @@ const articles = await getSortedPublishedArticles();
 
 <Layout name={about.name}>
   <section class="grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-[clamp(28px,5vw,56px)] mb-12">
-    <ProfileSidebar client:load about={about} />
+    <ProfileSidebar about={about} />
     <div>
-      <HeroBio client:load about={about} />
-      <RecentNews client:load news={news} />
-      <HomePublications client:load publications={publications} />
-      <HomeArticles client:load articles={articles} />
+      <HeroBio about={about} />
+      <RecentNews news={news} />
+      <HomePublications publications={publications} />
+      <HomeArticles articles={articles} />
     </div>
   </section>
 </Layout>

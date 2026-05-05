@@ -10,11 +10,16 @@ export default function ProfileSidebar({ about }: { about: any }) {
 
   return (
     <aside className="self-start text-center flex flex-col items-center">
-      <img
-        className="w-[132px] h-[132px] rounded-full object-cover shadow-lg shadow-slate-900/10 block mx-auto mb-[18px]"
-        src={about.photo || "/images/user.png"}
-        alt={about.name}
-      />
+      <picture>
+        {!about.photo && <source srcSet="/images/user.webp" type="image/webp" />}
+        <img
+          className="w-[132px] h-[132px] rounded-full object-cover shadow-lg shadow-slate-900/10 block mx-auto mb-[18px]"
+          src={about.photo || "/images/user.png"}
+          alt={about.name}
+          width={264}
+          height={264}
+        />
+      </picture>
 
       <h1 className="font-serif text-[24px] leading-[1.15] m-0 mb-1 tracking-[-0.02em] text-ink font-semibold">
         {about.name}
@@ -27,13 +32,13 @@ export default function ProfileSidebar({ about }: { about: any }) {
       <p className="text-[12.5px] text-ink-3 m-0 mb-3 leading-[1.5] flex flex-col items-center">
         <a
           href={about.company.department?.url || about.company.url}
-          className="text-link hover:text-link-hover underline decoration-link/35 underline-offset-[3px]"
+          className="text-link hover:text-link-hover underline decoration-link/35 underline-offset-[3px] py-1"
         >
           {about.company.department?.name || about.company.name}
         </a>
         <a
           href={about.company.url}
-          className="text-ink-3 hover:text-link-hover"
+          className="text-ink-3 hover:text-link-hover py-1"
         >
           {about.company.name}
         </a>

@@ -8,7 +8,7 @@ import remarkMath from "remark-math";
 
 export default defineConfig({
   // ✅ MUST match your Vercel primary domain
-  site: "https://mirsazzathossain.me",
+  site: "https://www.mirsazzathossain.me",
 
   output: "static",
   adapter: vercel(),

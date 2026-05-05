@@ -98,11 +98,16 @@ export default function Header({
               href="/"
               className="inline-flex items-center justify-self-start hover:no-underline"
             >
-              <img
-                src="/images/user.png"
-                alt="Mir Sazzat Hossain"
-                className="w-[34px] h-[34px] rounded-full object-cover ring-1 ring-rule shadow-sm"
-              />
+              <picture>
+                <source srcSet="/images/user.webp" type="image/webp" />
+                <img
+                  src="/images/user.png"
+                  alt="Mir Sazzat Hossain"
+                  width={68}
+                  height={68}
+                  className="w-[34px] h-[34px] rounded-full object-cover ring-1 ring-rule shadow-sm"
+                />
+              </picture>
             </a>
 
             {/* Desktop nav pill */}

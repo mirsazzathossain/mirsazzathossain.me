@@ -32,6 +32,7 @@ export default function MobileNavigation({
     <div className={className}>
       <button
         type="button"
+        aria-label="Open navigation menu"
         aria-expanded={open}
         aria-haspopup="dialog"
         className="w-[34px] h-[34px] inline-flex items-center justify-center border border-transparent rounded-[8px] bg-transparent text-ink-3 cursor-pointer transition-all duration-150 hover:bg-bg-2 hover:text-ink hover:border-rule"
