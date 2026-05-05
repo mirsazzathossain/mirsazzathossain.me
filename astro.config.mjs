@@ -67,6 +67,10 @@ export default defineConfig({
   output: "static",
   adapter: vercel(),
 
+  build: {
+    inlineStylesheets: "always",
+  },
+
   vite: {
     resolve: {
       dedupe: ["react", "react-dom"],
