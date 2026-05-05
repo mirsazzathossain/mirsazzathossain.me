@@ -1,9 +1,8 @@
 ---
 import SpeedInsights from "@vercel/speed-insights/astro";
-import AnalyticsWrapper from "@/components/layout/analytics";
 import Footer from "@/components/layout/Footer.astro";
 import Header from "@/components/layout/Header";
-import BackToTop from "@/components/layout/BackToTop";
+import BackToTop from "@/components/layout/BackToTop.astro";
 import "@/styles/globals.css";
 
 interface Props {
@@ -147,9 +146,12 @@ const pageTitle = title
         <main class="flex-auto max-w-[1100px] w-full mx-auto px-[clamp(20px,4vw,36px)] pt-[clamp(28px,5vw,56px)] pb-[64px]">
           <slot />
         </main>
-        <AnalyticsWrapper client:only="react" />
         <Footer />
-        <BackToTop client:only="react" />
+        <BackToTop />
+        <script>
+          import { inject } from "@vercel/analytics";
+          inject();
+        </script>
         <SpeedInsights />
       </div>
     <script is:inline>

@@ -1,9 +1,25 @@
 ---
-import FooterLinks from "@/components/layout/FooterLinks.tsx";
+const navLinks = [
+  { href: "/articles", label: "Posts" },
+  { href: "/projects", label: "Projects" },
+  { href: "/courses", label: "Courses" },
+  { href: "/snippets", label: "Snippets" },
+  { href: "/resources", label: "Resources" },
+];
+const year = new Date().getFullYear();
 ---
 
 <footer class="mt-auto border-t border-rule py-[24px] text-ink-3 text-[13.5px]">
   <div class="max-w-[1100px] mx-auto px-[clamp(20px,4vw,36px)] flex flex-col gap-4">
-    <FooterLinks client:only="react" />
+    <div class="flex flex-col sm:flex-row justify-between items-center gap-4 flex-wrap">
+      <div class="flex gap-4 font-medium flex-wrap justify-center">
+        {navLinks.map((l) => (
+          <a href={l.href} class="text-ink-3 hover:text-ink transition-colors">{l.label}</a>
+        ))}
+      </div>
+      <div class="text-center sm:text-right">
+        <span>© {year} Mir Sazzat Hossain · all rights reserved.</span>
+      </div>
+    </div>
   </div>
 </footer>

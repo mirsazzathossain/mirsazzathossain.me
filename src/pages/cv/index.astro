@@ -13,5 +13,5 @@ const cv = await readSiteJson("cv.json");
   description={`Curriculum Vitae of ${about.name} — ${about.designation} at ${about.company.name}.`}
   canonicalPath="/cv"
 >
-  <CVPage cv={cv} client:load />
+  <CVPage cv={cv} />
 </Layout>
