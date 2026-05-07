@@ -23,7 +23,7 @@
     "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^2.0.0",
     "astro": "^6.2.2",
-    "react": "^19.2.5",
+    "react": "^19.2.6",
     "react-dom": "^19.2.5",
     "rehype-katex": "^7.0.1",
     "remark-math": "^6.0.0",
