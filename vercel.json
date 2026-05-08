@@ -7,6 +7,12 @@
       "has": [{ "type": "host", "value": "www.mirsazzathossain.me" }],
       "destination": "https://mirsazzathossain.me/:path*",
       "permanent": true
+    },
+    {
+      "source": "/:path*",
+      "has": [{ "type": "protocol", "value": "http" }],
+      "destination": "https://mirsazzathossain.me/:path*",
+      "permanent": true
     }
   ],
   "headers": [
