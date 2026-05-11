@@ -3,6 +3,7 @@ import react from "@astrojs/react";
 import sitemap from "@astrojs/sitemap";
 import vercel from "@astrojs/vercel";
 import { defineConfig } from "astro/config";
+import rehypeExternalLinks from "rehype-external-links";
 import rehypeKatex from "rehype-katex";
 import remarkMath from "remark-math";
 
@@ -99,7 +100,10 @@ export default defineConfig({
     mdx({
       syntaxHighlight: "prism",
       remarkPlugins: [remarkMath],
-      rehypePlugins: [rehypeKatex],
+      rehypePlugins: [
+        rehypeKatex,
+        [rehypeExternalLinks, { target: "_blank", rel: ["noopener", "noreferrer"] }],
+      ],
     }),
     react(),
     sitemap(),

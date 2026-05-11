@@ -38,7 +38,7 @@ export default function AboutPage({
             target="_blank"
             rel="noreferrer"
           >
-            {about.company.department.name}
+            {about.company.department?.name}
           </a>
           ,{" "}
           <a

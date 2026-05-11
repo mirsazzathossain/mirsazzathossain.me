@@ -14,6 +14,7 @@ export type ScholarStats = {
 
 export type Publication = {
   id?: string;
+  slug?: string;
   type?: string;
   status?: string;
   featured?: boolean;
@@ -43,6 +44,8 @@ export type Publication = {
   bibtex?: string;
   citation_count?: number | string;
   citation_updated?: string;
+  booktitle?: string;
+  journal?: string;
 };
 
 export type PublicationKind =

@@ -1,6 +1,6 @@
 ---
 import Layout from "@/layouts/Layout.astro";
-import PostsList from "@/components/articles/PostsList";
+import { ArticleListItem } from "@/components/articles/ArticleListItem";
 import { getSortedPublishedArticles } from "@/utils/articles";
 
 const articles = await getSortedPublishedArticles();
@@ -24,5 +24,124 @@ const articles = await getSortedPublishedArticles();
     </p>
   </header>
 
-  <PostsList client:load articles={articles} />
+  <label class="mb-[22px] max-w-[360px] inline-flex items-center gap-[7px] py-1.5 px-3 border border-rule rounded-full bg-bg text-ink-3">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="h-[13px] w-[13px] shrink-0">
+      <circle cx="11" cy="11" r="8" />
+      <line x1="21" y1="21" x2="16.65" y2="16.65" />
+    </svg>
+    <span class="sr-only">Search posts</span>
+    <input
+      id="articles-search"
+      type="text"
+      placeholder="Search posts..."
+      class="w-full border-0 outline-none bg-transparent font-sans text-[13px] text-ink placeholder:text-ink-3"
+    />
+  </label>
+
+  <ul class="m-0 list-none p-0">
+    {articles.map((article) => (
+      <ArticleListItem
+        article={article}
+        data-article=""
+        data-search={[
+          article.data.title,
+          article.data.description,
+          ...(article.data.tags?.map((t) => t.title) ?? []),
+          ...article.data.categories.map((c) => c.title),
+        ].join(" ").toLowerCase()}
+      />
+    ))}
+  </ul>
+
+  <div id="articles-empty" hidden class="rounded border border-dashed border-rule bg-bg-2 p-8 text-center font-serif text-[15px] text-ink-3">
+    No posts found.
+  </div>
+
+  <nav id="articles-pagination" hidden aria-label="Posts pagination" class="mt-4 flex items-center justify-between gap-3 border-t border-rule pt-4">
+    <button id="articles-prev" type="button" class="inline-flex items-center gap-1 rounded border border-rule bg-bg px-3 py-1.5 font-mono text-[11.5px] text-ink-2 transition-colors hover:border-link/35 hover:bg-accent-soft hover:text-link disabled:pointer-events-none disabled:opacity-40">
+      <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px">
+        <path d="M7.25 11.25 3.75 8m0 0 3.5-3.25M3.75 8h8.5" />
+      </svg>
+      <span>Previous</span>
+    </button>
+    <div id="articles-page-btns" class="flex items-center gap-1"></div>
+    <button id="articles-next" type="button" class="inline-flex items-center gap-1 rounded border border-rule bg-bg px-3 py-1.5 font-mono text-[11.5px] text-ink-2 transition-colors hover:border-link/35 hover:bg-accent-soft hover:text-link disabled:pointer-events-none disabled:opacity-40">
+      <span>Next</span>
+      <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px">
+        <path d="M8.75 4.75 12.25 8m0 0-3.5 3.25M12.25 8h-8.5" />
+      </svg>
+    </button>
+  </nav>
 </Layout>
+
+<script>
+  const PER_PAGE = 20;
+  let currentQuery = "";
+  let currentPage = 1;
+
+  function getVisible() {
+    const needle = currentQuery.trim().toLowerCase();
+    return Array.from(document.querySelectorAll<HTMLElement>("[data-article]")).filter(
+      (el) => !needle || el.dataset.search!.includes(needle)
+    );
+  }
+
+  function update() {
+    const visible = getVisible();
+    const totalPages = Math.max(1, Math.ceil(visible.length / PER_PAGE));
+    if (currentPage > totalPages) currentPage = totalPages;
+
+    const pageSet = new Set(
+      visible.slice((currentPage - 1) * PER_PAGE, currentPage * PER_PAGE)
+    );
+
+    document.querySelectorAll<HTMLElement>("[data-article]").forEach((el) => {
+      el.hidden = !pageSet.has(el);
+    });
+
+    (document.getElementById("articles-empty") as HTMLElement).hidden = visible.length > 0;
+
+    const paginationEl = document.getElementById("articles-pagination") as HTMLElement;
+    paginationEl.hidden = visible.length <= PER_PAGE;
+    if (!paginationEl.hidden) {
+      (document.getElementById("articles-prev") as HTMLButtonElement).disabled =
+        currentPage === 1;
+      (document.getElementById("articles-next") as HTMLButtonElement).disabled =
+        currentPage === totalPages;
+
+      const pageBtns = document.getElementById("articles-page-btns")!;
+      pageBtns.innerHTML = Array.from({ length: totalPages }, (_, i) => i + 1)
+        .map(
+          (n) =>
+            `<button type="button" data-page="${n}" class="${
+              n === currentPage
+                ? "h-8 min-w-8 rounded border border-ink bg-ink px-2 font-mono text-[11.5px] text-bg"
+                : "h-8 min-w-8 rounded border border-rule bg-bg px-2 font-mono text-[11.5px] text-ink-2 transition-colors hover:border-link/35 hover:bg-accent-soft hover:text-link"
+            }"${n === currentPage ? ' aria-current="page"' : ""}>${n}</button>`
+        )
+        .join("");
+    }
+  }
+
+  document.getElementById("articles-search")!.addEventListener("input", (e) => {
+    currentQuery = (e.target as HTMLInputElement).value;
+    currentPage = 1;
+    update();
+  });
+
+  document.getElementById("articles-prev")!.addEventListener("click", () => {
+    if (currentPage > 1) { currentPage--; update(); }
+  });
+
+  document.getElementById("articles-next")!.addEventListener("click", () => {
+    const totalPages = Math.max(1, Math.ceil(getVisible().length / PER_PAGE));
+    if (currentPage < totalPages) { currentPage++; update(); }
+  });
+
+  document.getElementById("articles-page-btns")!.addEventListener("click", (e) => {
+    const btn = (e.target as Element).closest<HTMLElement>("[data-page]");
+    if (btn) { currentPage = Number(btn.dataset.page); update(); }
+  });
+
+  update();
+</script>

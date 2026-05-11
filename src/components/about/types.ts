@@ -25,6 +25,7 @@ export type Education = {
   minor?: string;
   date: string;
   description: string;
+  activitiesandsocieties?: string[];
 };
 
 export type Experience = {

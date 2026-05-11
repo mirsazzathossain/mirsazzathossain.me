@@ -25,18 +25,19 @@ type PublicationItemProps = {
   publication: Publication;
   showCitations?: boolean;
   isNew?: boolean;
-};
+} & { [key: `data-${string}`]: string | undefined };
 
 export function PublicationItem({
   publication,
   showCitations = true,
   isNew = false,
+  ...dataAttrs
 }: PublicationItemProps): JSX.Element {
   const citationCount = getCitationCount(publication);
   const rank = getPublicationRank(publication);
 
   return (
-    <article className="min-h-[142px] py-4 border-b border-rule-2 first:pt-0 last:border-b-0">
+    <article className="min-h-[142px] py-4 border-b border-rule-2 first:pt-0 last:border-b-0" {...dataAttrs}>
       <div className="flex flex-wrap gap-1.5 mb-[7px]">
         <PublicationBadge variant="venue">
           {getVenueShort(publication)}
@@ -68,7 +69,7 @@ export function PublicationItem({
 
       <h3 className="font-serif text-[16.5px] leading-[1.32] m-0 mb-[5px] tracking-[-0.01em] font-semibold">
         <a
-          href={`/publications/${publication.id ?? ""}`}
+          href={`/publications/${publication.slug ?? publication.id ?? ""}`}
           className="text-ink hover:text-link hover:no-underline transition-colors"
         >
           {publication.title}

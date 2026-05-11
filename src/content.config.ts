@@ -65,4 +65,13 @@ const snippets = defineCollection({
   }),
 });
 
-export const collections = { articles, snippets };
+const publications = defineCollection({
+  loader: glob({
+    base: "./src/content/publications",
+    pattern: "**/*.mdx",
+    generateId: ({ entry }) => entry.replace(/\.[^.]+$/, ""),
+  }),
+  schema: z.object({}),
+});
+
+export const collections = { articles, snippets, publications };

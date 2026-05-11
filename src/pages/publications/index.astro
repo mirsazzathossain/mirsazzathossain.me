@@ -1,7 +1,17 @@
 ---
 import Layout from "@/layouts/Layout.astro";
-import Publications from "@/components/publications/Publications";
-import { mergePublicationOverrides, type Publication, type ScholarStats } from "@/utils/publications";
+import { PublicationItem } from "@/components/publications/PublicationItem";
+import {
+  mergePublicationOverrides,
+  sortPublicationsByDate,
+  getPublicationType,
+  getPublicationKeywords,
+  getPublicationChartHeightClass,
+  type Publication,
+  type PublicationFilter,
+  type ScholarStats,
+  PUBLICATION_FILTERS,
+} from "@/utils/publications";
 import base from "@/data/publications.json";
 import overrides from "@/data/publications.override.json";
 import stats from "@/data/scholar_stats.json";
@@ -10,6 +20,61 @@ const publications = mergePublicationOverrides(
   base as Publication[],
   overrides as Partial<Publication>[]
 );
+
+const sorted = sortPublicationsByDate(publications);
+
+const present = new Set(sorted.map(getPublicationType));
+const filters: PublicationFilter[] = PUBLICATION_FILTERS.filter(
+  (f) => f === "All" || present.has(f)
+);
+
+const latestIds = new Set(
+  sorted.slice(0, 3).map((p) => p.id).filter(Boolean)
+);
+
+const groups = new Map<string, Publication[]>();
+for (const pub of sorted) {
+  const year = String(pub.year ?? "Undated");
+  if (!groups.has(year)) groups.set(year, []);
+  groups.get(year)!.push(pub);
+}
+const groupEntries = [...groups.entries()].sort(
+  ([a], [b]) => Number(b) - Number(a)
+);
+
+const statsData = stats as ScholarStats;
+const citesPerYear = statsData.cites_per_year ?? {};
+const citeEntries = (
+  Object.entries(citesPerYear)
+    .map(([yr, c]) => [yr, Number(c)] as [string, number])
+    .filter(([, c]) => Number.isFinite(c))
+    .sort(([a], [b]) => Number(a) - Number(b))
+);
+
+const paperYearCounts: [string, number][] = [...groups.entries()]
+  .map(([yr, pubs]) => [yr, pubs.length])
+  .sort(([a], [b]) => Number(a) - Number(b));
+
+const chartCounts = citeEntries.length ? citeEntries : paperYearCounts;
+const maxCount = Math.max(1, ...chartCounts.map(([, c]) => c));
+
+const paperTotal = sorted.length;
+const citationTotal = Number(statsData.total_citations ?? 0);
+const h5Index = Number(statsData.h_index_5y ?? statsData.h_index ?? 0);
+const i10Index = Number(statsData.i10_index ?? 0);
+
+function buildSearchText(pub: Publication): string {
+  return [
+    pub.title,
+    pub.venue,
+    pub.venue_short,
+    ...(pub.authors?.map((a) => a.name) ?? []),
+    ...getPublicationKeywords(pub),
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+}
 ---
 
 <Layout
@@ -17,5 +82,224 @@ const publications = mergePublicationOverrides(
   description="Peer-reviewed papers, workshop contributions, and preprints by Mir Sazzat Hossain across computer vision, domain adaptation, and astrophysical machine learning."
   canonicalPath="/publications"
 >
-  <Publications client:load publications={publications} stats={stats as ScholarStats} />
+  <div>
+    <header class="mb-8 max-w-[720px]">
+      <p class="font-mono text-[11px] tracking-[0.14em] uppercase text-ink-3 m-0 mb-1.5">
+        Research
+      </p>
+      <h1 class="font-serif text-[clamp(28px,4.5vw,42px)] leading-[1.05] tracking-[-0.02em] text-ink font-semibold m-0">
+        Publications
+      </h1>
+      <p class="mt-3 mb-0 text-[15px] text-ink-2 max-w-[60ch]">
+        Peer-reviewed papers, workshop contributions, and preprints across
+        computer vision, domain adaptation, and astrophysical machine learning.
+      </p>
+    </header>
+
+    <section class="grid grid-cols-1 md:grid-cols-[1fr_1.4fr] gap-7 p-[18px_22px] border border-rule rounded-[10px] bg-bg-2 mb-[26px]">
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3.5 content-center">
+        {[
+          { value: paperTotal, label: "Papers" },
+          { value: citationTotal, label: "Citations" },
+          { value: h5Index, label: "h5-index" },
+          { value: i10Index, label: "i10-index" },
+        ].map(({ value, label }) => (
+          <div>
+            <span class="block font-serif text-[28px] leading-none text-ink">{value}</span>
+            <span class="block text-[10.5px] font-mono tracking-[0.08em] uppercase text-ink-3 mt-1">{label}</span>
+          </div>
+        ))}
+      </div>
+
+      <div class="grid grid-cols-[repeat(auto-fit,minmax(28px,1fr))] gap-[5px] items-end h-20 pt-3.5">
+        {chartCounts.map(([yr, count]) => (
+          <div class="flex flex-col items-center gap-[3px] h-full justify-end">
+            <span class="font-mono text-[9.5px] text-ink-2 leading-none">{count}</span>
+            <div
+              class={`w-full min-h-[3px] bg-link rounded-t-[3px] opacity-85 ${getPublicationChartHeightClass(count, maxCount)}`}
+              aria-hidden="true"
+            />
+            <span class="font-mono text-[9.5px] text-ink-3 leading-none">{yr.slice(-2)}</span>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <div class="flex items-start justify-between gap-4 flex-wrap mb-[24px] pb-4 border-b border-rule">
+      <div class="flex min-w-0 flex-1 items-center gap-2.5 flex-wrap">
+        <span class="font-mono text-[10.5px] tracking-[0.1em] uppercase text-ink-3">Type</span>
+        {filters.map((filter) => (
+          <button
+            type="button"
+            data-type-btn={filter}
+            class={filter === "All"
+              ? "font-mono text-[11px] py-[3px] px-[9px] rounded border border-ink bg-ink text-bg cursor-pointer transition-colors"
+              : "font-mono text-[11px] py-[3px] px-[9px] rounded border border-rule bg-bg text-ink-2 cursor-pointer transition-colors hover:border-ink-3"}
+          >
+            {filter}
+          </button>
+        ))}
+      </div>
+
+      <label class="inline-flex items-center gap-[7px] py-1.5 px-3 border border-rule rounded-full bg-bg min-w-full sm:min-w-[260px] lg:min-w-[320px] text-ink-3">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="h-[13px] w-[13px] shrink-0">
+          <circle cx="11" cy="11" r="8" />
+          <line x1="21" y1="21" x2="16.65" y2="16.65" />
+        </svg>
+        <span class="sr-only">Search publications</span>
+        <input
+          id="pub-search"
+          type="text"
+          placeholder="Search title, author, venue..."
+          class="w-full border-0 outline-none bg-transparent font-sans text-[13px] text-ink placeholder:text-ink-3"
+        />
+      </label>
+    </div>
+
+    <div id="pub-list">
+      {groupEntries.map(([year, pubs]) => (
+        <section data-year-group={year} class="mb-10">
+          <div class="flex items-baseline justify-between pb-2 border-b border-rule mb-4 gap-3 flex-wrap">
+            <h2 class="font-mono text-[11px] tracking-[0.16em] uppercase text-ink-3 font-semibold m-0">{year}</h2>
+            <span class="font-mono text-[11.5px] text-ink-3" data-year-count={year}>
+              {pubs.length} {pubs.length === 1 ? "paper" : "papers"}
+            </span>
+          </div>
+          <div class="flex flex-col">
+            {pubs.map((pub) => (
+              <PublicationItem
+                publication={pub}
+                isNew={latestIds.has(pub.id ?? "")}
+                data-pub=""
+                data-type={getPublicationType(pub)}
+                data-year={year}
+                data-search={buildSearchText(pub)}
+              />
+            ))}
+          </div>
+        </section>
+      ))}
+    </div>
+
+    <div id="pub-empty" hidden class="border border-dashed border-rule rounded-[10px] bg-bg-2 p-8 text-center font-serif text-[15px] text-ink-3">
+      No papers match your filters.
+    </div>
+
+    <nav id="pub-pagination" hidden aria-label="Publications pagination" class="mt-2 flex items-center justify-between gap-3 border-t border-rule pt-4">
+      <button id="pub-prev" type="button" class="inline-flex items-center gap-1 rounded border border-rule bg-bg px-3 py-1.5 font-mono text-[11.5px] text-ink-2 transition-colors hover:border-link/35 hover:bg-accent-soft hover:text-link disabled:pointer-events-none disabled:opacity-40">
+        <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" class="stroke-current" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px">
+          <path d="M7.25 11.25 3.75 8m0 0 3.5-3.25M3.75 8h8.5" />
+        </svg>
+        <span>Previous</span>
+      </button>
+      <div id="pub-page-btns" class="flex items-center gap-1"></div>
+      <button id="pub-next" type="button" class="inline-flex items-center gap-1 rounded border border-rule bg-bg px-3 py-1.5 font-mono text-[11.5px] text-ink-2 transition-colors hover:border-link/35 hover:bg-accent-soft hover:text-link disabled:pointer-events-none disabled:opacity-40">
+        <span>Next</span>
+        <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" class="stroke-current" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px">
+          <path d="M8.75 4.75 12.25 8m0 0-3.5 3.25M12.25 8h-8.5" />
+        </svg>
+      </button>
+    </nav>
+  </div>
 </Layout>
+
+<script>
+  const PER_PAGE = 30;
+  let currentFilter = "All";
+  let currentQuery = "";
+  let currentPage = 1;
+
+  function getVisible() {
+    const needle = currentQuery.trim().toLowerCase();
+    return Array.from(document.querySelectorAll<HTMLElement>("[data-pub]")).filter(
+      (el) => {
+        const typeMatch = currentFilter === "All" || el.dataset.type === currentFilter;
+        const searchMatch = !needle || el.dataset.search!.includes(needle);
+        return typeMatch && searchMatch;
+      }
+    );
+  }
+
+  function update() {
+    const visible = getVisible();
+    const totalPages = Math.max(1, Math.ceil(visible.length / PER_PAGE));
+    if (currentPage > totalPages) currentPage = totalPages;
+
+    const pageSet = new Set(
+      visible.slice((currentPage - 1) * PER_PAGE, currentPage * PER_PAGE)
+    );
+
+    document.querySelectorAll<HTMLElement>("[data-pub]").forEach((el) => {
+      el.hidden = !pageSet.has(el);
+    });
+
+    document.querySelectorAll<HTMLElement>("[data-year-group]").forEach((group) => {
+      const year = group.dataset.yearGroup!;
+      const yearVisible = visible.filter((el) => el.dataset.year === year);
+      const onPage = yearVisible.filter((el) => pageSet.has(el));
+      group.hidden = onPage.length === 0;
+      const countEl = group.querySelector<HTMLElement>("[data-year-count]");
+      if (countEl)
+        countEl.textContent = `${yearVisible.length} ${yearVisible.length === 1 ? "paper" : "papers"}`;
+    });
+
+    (document.getElementById("pub-empty") as HTMLElement).hidden = visible.length > 0;
+
+    const paginationEl = document.getElementById("pub-pagination") as HTMLElement;
+    paginationEl.hidden = visible.length <= PER_PAGE;
+    if (!paginationEl.hidden) {
+      (document.getElementById("pub-prev") as HTMLButtonElement).disabled =
+        currentPage === 1;
+      (document.getElementById("pub-next") as HTMLButtonElement).disabled =
+        currentPage === totalPages;
+
+      const pageBtns = document.getElementById("pub-page-btns")!;
+      pageBtns.innerHTML = Array.from({ length: totalPages }, (_, i) => i + 1)
+        .map(
+          (n) =>
+            `<button type="button" data-page="${n}" class="${
+              n === currentPage
+                ? "h-8 min-w-8 rounded border border-ink bg-ink px-2 font-mono text-[11.5px] text-bg"
+                : "h-8 min-w-8 rounded border border-rule bg-bg px-2 font-mono text-[11.5px] text-ink-2 transition-colors hover:border-link/35 hover:bg-accent-soft hover:text-link"
+            }"${n === currentPage ? ' aria-current="page"' : ""}>${n}</button>`
+        )
+        .join("");
+    }
+  }
+
+  document.querySelectorAll<HTMLElement>("[data-type-btn]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      currentFilter = btn.dataset.typeBtn!;
+      currentPage = 1;
+      document.querySelectorAll<HTMLElement>("[data-type-btn]").forEach((b) => {
+        const active = b.dataset.typeBtn === currentFilter;
+        b.className = active
+          ? "font-mono text-[11px] py-[3px] px-[9px] rounded border border-ink bg-ink text-bg cursor-pointer transition-colors"
+          : "font-mono text-[11px] py-[3px] px-[9px] rounded border border-rule bg-bg text-ink-2 cursor-pointer transition-colors hover:border-ink-3";
+      });
+      update();
+    });
+  });
+
+  document.getElementById("pub-search")!.addEventListener("input", (e) => {
+    currentQuery = (e.target as HTMLInputElement).value;
+    currentPage = 1;
+    update();
+  });
+
+  document.getElementById("pub-prev")!.addEventListener("click", () => {
+    if (currentPage > 1) { currentPage--; update(); }
+  });
+
+  document.getElementById("pub-next")!.addEventListener("click", () => {
+    const totalPages = Math.max(1, Math.ceil(getVisible().length / PER_PAGE));
+    if (currentPage < totalPages) { currentPage++; update(); }
+  });
+
+  document.getElementById("pub-page-btns")!.addEventListener("click", (e) => {
+    const btn = (e.target as Element).closest<HTMLElement>("[data-page]");
+    if (btn) { currentPage = Number(btn.dataset.page); update(); }
+  });
+
+  update();
+</script>

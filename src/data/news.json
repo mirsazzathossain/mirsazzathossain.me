@@ -4,6 +4,10 @@
     "items": [
       {
         "kind": "paper",
+        "text": "Paper accepted in Astronomy & Astrophysics (Q1) journal."
+      },
+      {
+        "kind": "paper",
         "text": "Medical VQA paper accepted at ACL Findings 2026."
       }
     ]

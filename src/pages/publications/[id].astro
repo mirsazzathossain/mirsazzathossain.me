@@ -1,6 +1,7 @@
 ---
+import { getCollection, render } from "astro:content";
 import Layout from "@/layouts/Layout.astro";
-import PublicationDetail from "@/components/publications/PublicationDetail";
+import PublicationLayout from "@/components/publications/PublicationLayout.astro";
 import { mergePublicationOverrides, type Publication } from "@/utils/publications";
 import base from "@/data/publications.json";
 import overrides from "@/data/publications.override.json";
@@ -12,28 +13,33 @@ export async function getStaticPaths() {
   );
 
   return publications
-    .filter((publication) => publication.id)
-    .map((publication) => ({
-      params: { id: publication.id },
-      props: { publication },
+    .filter((p) => p.id)
+    .map((p) => ({
+      params: { id: p.slug || p.id },
+      props: { publication: p },
     }));
 }
 
 const { publication } = Astro.props;
-const mergedPublications = mergePublicationOverrides(
-  base as Publication[],
-  overrides as Partial<Publication>[]
-);
-const currentPublication =
-  mergedPublications.find((item) => item.id === Astro.params.id) ?? publication;
+const urlSlug = publication.slug || publication.id;
+
+const allMdx = await getCollection("publications");
+const mdxEntry = allMdx.find((e) => e.id === urlSlug);
+const Content = mdxEntry ? (await render(mdxEntry)).Content : null;
 ---
 
 <Layout
-  title={currentPublication.title}
-  description={currentPublication.abstract ?? currentPublication.title}
-  canonicalPath={`/publications/${currentPublication.id}`}
+  title={publication.title}
+  description={publication.abstract ?? publication.title}
+  canonicalPath={`/publications/${urlSlug}`}
 >
-  <PublicationDetail publication={currentPublication} />
+  {Content ? (
+    <PublicationLayout publication={publication} hasMdx={true}>
+      <Content />
+    </PublicationLayout>
+  ) : (
+    <PublicationLayout publication={publication} />
+  )}
 </Layout>
 
 <script is:inline>

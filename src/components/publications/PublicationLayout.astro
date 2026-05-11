@@ -1,0 +1,297 @@
+---
+import type { Publication } from "@/utils/publications";
+import {
+  buildBibtex,
+  getCitationCount,
+  getAuthors,
+  getPublicationKeywords,
+  getPublicationType,
+  getVenueLong,
+  getVenueShort,
+  normalizeDoi,
+} from "@/utils/publications";
+
+interface Props {
+  publication: Publication;
+  hasMdx?: boolean;
+}
+
+const { publication, hasMdx = false } = Astro.props;
+
+const venueShort = getVenueShort(publication);
+const detailVenueShort = publication.year
+  ? venueShort.replace(new RegExp(`\\s*${String(publication.year)}\\s*$`), "").trim()
+  : venueShort;
+const kind = getPublicationType(publication);
+const venueLong = getVenueLong(publication);
+const keywords = getPublicationKeywords(publication).slice(0, 8);
+const citationCount = getCitationCount(publication);
+const bibtex = buildBibtex(publication);
+const pdfHref = publication.pdf || publication.url;
+const hasSecondaryLink =
+  publication.pdf && publication.url && publication.pdf !== publication.url;
+const authors = getAuthors(publication);
+
+---
+
+<article>
+  <a
+    href="/publications"
+    class="mb-3.5 inline-block font-mono text-[12px] text-ink-3 transition-colors hover:text-link hover:no-underline"
+  >
+    &larr; All publications
+  </a>
+
+  <p class="mb-2 font-mono text-[11px] tracking-[0.14em] uppercase text-ink-3">
+    {kind} — {detailVenueShort} — {publication.year}
+  </p>
+  <h1 class="m-0 mb-3.5 max-w-[900px] font-serif text-[clamp(24px,3.5vw,32px)] font-semibold leading-[1.18] tracking-[-0.018em] text-ink">
+    {publication.title}
+  </h1>
+  <p class="m-0 mb-1.5 max-w-[900px] text-[14px] leading-[1.55] text-ink-2">
+    {authors.map((author, i) => (
+      <Fragment>
+        {author.isHighlighted
+          ? <strong class="font-semibold text-ink">{author.name}</strong>
+          : author.name
+        }{i < authors.length - 1 ? ", " : ""}
+      </Fragment>
+    ))}
+  </p>
+  {publication.award && (
+    <p class="m-0 mb-2 max-w-[900px] font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-amber-800 dark:text-amber-300">
+      {publication.award}
+    </p>
+  )}
+  <p class="m-0 mb-[18px] max-w-[900px] text-[13px] italic text-ink-3">
+    {venueLong}
+  </p>
+
+  <div class="grid min-w-0 grid-cols-1 items-start gap-9 lg:grid-cols-[minmax(0,1fr)_240px]">
+    <div class="min-w-0">
+      {publication.figure && (
+        <figure class="m-0 mb-[22px]">
+          <img
+            src={publication.figure}
+            alt=""
+            class="aspect-video w-full rounded border border-rule object-cover"
+            loading="lazy"
+          />
+        </figure>
+      )}
+
+      {/* MDX body or static abstract */}
+      <div class={hasMdx ? "pub-content" : undefined}>
+        <slot>
+          {/* Default: static abstract */}
+          <section class="my-[26px]">
+            <h2 class="m-0 mb-2.5 border-b border-rule pb-1.5 font-mono text-[11px] font-semibold tracking-[0.14em] uppercase text-ink-3">
+              Abstract
+            </h2>
+            <p class="m-0 pr-12 font-serif text-[16px] leading-[1.62] text-ink">
+              {publication.abstract ||
+                "Abstract will be added here once the final paper metadata is available."}
+            </p>
+          </section>
+        </slot>
+      </div>
+
+      {keywords.length > 0 && (
+        <section class="my-[26px]">
+          <h2 class="m-0 mb-2.5 border-b border-rule pb-1.5 font-mono text-[11px] font-semibold tracking-[0.14em] uppercase text-ink-3">
+            Topics
+          </h2>
+          <div class="flex flex-wrap gap-1.5">
+            {keywords.map((kw) => (
+              <span class="rounded border border-rule bg-bg-2 px-[7px] py-[2px] font-mono text-[10.5px] text-ink-2">
+                {kw}
+              </span>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <section class="my-[26px]">
+        <h2 class="m-0 mb-2.5 border-b border-rule pb-1.5 font-mono text-[11px] font-semibold tracking-[0.14em] uppercase text-ink-3">
+          Cite
+        </h2>
+        <div class="block-code group relative my-4 min-w-0 max-w-full">
+          <button
+            type="button"
+            class="absolute right-2 top-2 inline-flex items-center gap-1 rounded border border-rule bg-bg px-2 py-1 font-mono text-[10.5px] text-ink-3 transition-colors hover:border-link/35 hover:bg-accent-soft hover:text-link"
+            data-copy-cite
+            aria-label="Copy citation"
+          >
+            <svg class="h-[11px] w-[11px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="9" y="9" width="13" height="13" rx="2"/>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+            </svg>
+            <span data-copy-label>Copy</span>
+          </button>
+          <pre class="m-0 max-w-full overflow-x-auto whitespace-pre rounded-[var(--r)] border border-rule bg-bg-2 p-[12px_60px_12px_14px] font-mono text-[12.5px] leading-[1.55] text-ink">{bibtex.trim()}</pre>
+        </div>
+      </section>
+    </div>
+
+    <aside class="grid min-w-0 gap-3.5 self-start lg:sticky lg:top-20">
+      <div class="rounded border border-rule bg-bg-2 px-4 py-3.5">
+        <h2 class="m-0 mb-2.5 font-mono text-[10.5px] font-semibold tracking-[0.12em] uppercase text-ink-3">
+          Resources
+        </h2>
+        <div class="grid gap-1.5">
+          {pdfHref && (
+            <a
+              href={pdfHref}
+              target="_blank"
+              rel="noreferrer"
+              class="flex items-center justify-between gap-3 rounded border border-rule bg-bg px-2.5 py-2 font-mono text-[12px] text-ink transition-colors hover:border-link hover:text-link hover:no-underline"
+            >
+              <span>{pdfHref.includes("arxiv") ? "arXiv PDF" : "Paper PDF"}</span>
+              <svg class="h-[11px] w-[11px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+              </svg>
+            </a>
+          )}
+          {hasSecondaryLink && (
+            <a
+              href={publication.url!}
+              target="_blank"
+              rel="noreferrer"
+              class="flex items-center justify-between gap-3 rounded border border-rule bg-bg px-2.5 py-2 font-mono text-[12px] text-ink transition-colors hover:border-link hover:text-link hover:no-underline"
+            >
+              <span>Paper Link</span>
+              <svg class="h-2.5 w-2.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                <polyline points="15 3 21 3 21 9"/>
+                <line x1="10" y1="14" x2="21" y2="3"/>
+              </svg>
+            </a>
+          )}
+          {publication.code && (
+            <a
+              href={publication.code}
+              target="_blank"
+              rel="noreferrer"
+              class="flex items-center justify-between gap-3 rounded border border-rule bg-bg px-2.5 py-2 font-mono text-[12px] text-ink transition-colors hover:border-link hover:text-link hover:no-underline"
+            >
+              <span>Code</span>
+              <svg class="h-[11px] w-[11px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="16 18 22 12 16 6"/>
+                <polyline points="8 6 2 12 8 18"/>
+              </svg>
+            </a>
+          )}
+          {publication.slides && (
+            <a
+              href={publication.slides}
+              target="_blank"
+              rel="noreferrer"
+              class="flex items-center justify-between gap-3 rounded border border-rule bg-bg px-2.5 py-2 font-mono text-[12px] text-ink transition-colors hover:border-link hover:text-link hover:no-underline"
+            >
+              <span>Slides</span>
+              <svg class="h-[11px] w-[11px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="2" y="3" width="20" height="14" rx="2"/>
+                <line x1="8" y1="21" x2="16" y2="21"/>
+                <line x1="12" y1="17" x2="12" y2="21"/>
+              </svg>
+            </a>
+          )}
+          {publication.poster && (
+            <a
+              href={publication.poster}
+              target="_blank"
+              rel="noreferrer"
+              class="flex items-center justify-between gap-3 rounded border border-rule bg-bg px-2.5 py-2 font-mono text-[12px] text-ink transition-colors hover:border-link hover:text-link hover:no-underline"
+            >
+              <span>Poster</span>
+              <svg class="h-[11px] w-[11px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="3" width="18" height="18" rx="2"/>
+                <line x1="3" y1="9" x2="21" y2="9"/>
+              </svg>
+            </a>
+          )}
+          {publication.video && (
+            <a
+              href={publication.video}
+              target="_blank"
+              rel="noreferrer"
+              class="flex items-center justify-between gap-3 rounded border border-rule bg-bg px-2.5 py-2 font-mono text-[12px] text-ink transition-colors hover:border-link hover:text-link hover:no-underline"
+            >
+              <span>Talk video</span>
+              <svg class="h-[11px] w-[11px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polygon points="23 7 16 12 23 17 23 7"/>
+                <rect x="1" y="5" width="15" height="14" rx="2"/>
+              </svg>
+            </a>
+          )}
+          {publication.doi && (
+            <a
+              href={normalizeDoi(publication.doi)}
+              target="_blank"
+              rel="noreferrer"
+              class="flex items-center justify-between gap-3 rounded border border-rule bg-bg px-2.5 py-2 font-mono text-[12px] text-ink transition-colors hover:border-link hover:text-link hover:no-underline"
+            >
+              <span>DOI</span>
+              <svg class="h-2.5 w-2.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                <polyline points="15 3 21 3 21 9"/>
+                <line x1="10" y1="14" x2="21" y2="3"/>
+              </svg>
+            </a>
+          )}
+        </div>
+      </div>
+
+      <div class="rounded border border-rule bg-bg-2 px-4 py-3.5">
+        <h2 class="m-0 mb-2.5 font-mono text-[10.5px] font-semibold tracking-[0.12em] uppercase text-ink-3">
+          Metadata
+        </h2>
+        <dl class="m-0 grid gap-1 text-[12.5px] leading-[1.7] text-ink-2">
+          <div class="grid grid-cols-[72px_1fr] gap-2">
+            <dt class="font-semibold text-ink">Venue</dt>
+            <dd class="m-0 text-ink-2">{venueShort}</dd>
+          </div>
+          <div class="grid grid-cols-[72px_1fr] gap-2">
+            <dt class="font-semibold text-ink">Year</dt>
+            <dd class="m-0 text-ink-2">{String(publication.year ?? "")}</dd>
+          </div>
+          <div class="grid grid-cols-[72px_1fr] gap-2">
+            <dt class="font-semibold text-ink">Type</dt>
+            <dd class="m-0 text-ink-2">{kind}</dd>
+          </div>
+          {publication.status && publication.status !== "published" && (
+            <div class="grid grid-cols-[72px_1fr] gap-2">
+              <dt class="font-semibold text-ink">Status</dt>
+              <dd class="m-0 text-ink-2">{publication.status.replace(/_/g, " ")}</dd>
+            </div>
+          )}
+          {publication.award && (
+            <div class="grid grid-cols-[72px_1fr] gap-2">
+              <dt class="font-semibold text-ink">Award</dt>
+              <dd class="m-0 text-ink-2">{publication.award}</dd>
+            </div>
+          )}
+          {publication.pages && publication.pages !== "To appear" && (
+            <div class="grid grid-cols-[72px_1fr] gap-2">
+              <dt class="font-semibold text-ink">Pages</dt>
+              <dd class="m-0 text-ink-2">{publication.pages}</dd>
+            </div>
+          )}
+          {publication.volume && publication.volume !== "To appear" && (
+            <div class="grid grid-cols-[72px_1fr] gap-2">
+              <dt class="font-semibold text-ink">Volume</dt>
+              <dd class="m-0 text-ink-2">{publication.volume}</dd>
+            </div>
+          )}
+          {citationCount > 0 && (
+            <div class="grid grid-cols-[72px_1fr] gap-2">
+              <dt class="font-semibold text-ink">Citations</dt>
+              <dd class="m-0 text-ink-2">{String(citationCount)}</dd>
+            </div>
+          )}
+        </dl>
+      </div>
+    </aside>
+  </div>
+</article>

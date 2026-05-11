@@ -1,9 +1,19 @@
 ---
-import ListProjects from "@/components/projects/ListProjects";
 import Layout from "@/layouts/Layout.astro";
+import ProjectCard from "@/components/projects/ProjectCard";
 import { readSiteJson } from "@/utils/json-data";
 
 const projects = await readSiteJson<Project[]>("projects.json");
+
+const PROJECT_TYPE_ORDER = ["Research", "Course", "Hobby", "Tool", "Other"];
+
+const normalized = projects.map((p) => ({
+  ...p,
+  type: (p.type?.trim() || "Other") as string,
+}));
+
+const present = new Set(normalized.map((p) => p.type));
+const filters = ["All", ...PROJECT_TYPE_ORDER.filter((t) => present.has(t))];
 ---
 
 <Layout
@@ -17,8 +27,70 @@ const projects = await readSiteJson<Project[]>("projects.json");
       <h1 class="m-0 font-serif text-[clamp(28px,4.5vw,42px)] font-bold leading-[1.05] tracking-[-0.02em] text-ink">Projects</h1>
       <p class="m-0 mt-3 max-w-[60ch] text-[15px] text-ink-2">Open-source code I've shipped, contributed to, or maintained — research work, course projects, hobby builds, and small utilities.</p>
     </header>
+
     <div>
-      <ListProjects client:load projects={projects} />
+      <div class="mb-5 flex flex-wrap items-center justify-between gap-3 border-b border-rule pb-4">
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="font-mono text-[10.5px] tracking-[0.1em] uppercase text-ink-3">Type</span>
+          {filters.map((filter) => (
+            <button
+              type="button"
+              data-type-btn={filter}
+              class={filter === "All"
+                ? "rounded border border-ink bg-ink px-3 py-1 text-[11px] font-mono text-bg transition-colors"
+                : "rounded border border-rule bg-bg px-3 py-1 text-[11px] font-mono text-ink-2 transition-colors hover:border-ink-3 hover:text-ink"}
+            >
+              {filter}
+            </button>
+          ))}
+        </div>
+        <p id="project-count" class="m-0 font-mono text-[11px] text-ink-3">
+          {normalized.length} {normalized.length === 1 ? "project" : "projects"}
+        </p>
+      </div>
+
+      <ul
+        role="list"
+        class="m-0 grid list-none gap-[14px] p-0 [grid-template-columns:repeat(auto-fill,minmax(290px,1fr))]"
+      >
+        {normalized.map((project) => (
+          <li data-project="" data-type={project.type} class="min-w-0">
+            <ProjectCard project={project} />
+          </li>
+        ))}
+      </ul>
+
+      <div id="projects-empty" hidden class="mt-6 rounded-[10px] border border-dashed border-rule bg-bg-2 p-6 text-center font-serif text-[15px] text-ink-3">
+        No projects match this type.
+      </div>
     </div>
   </div>
 </Layout>
+
+<script>
+  let currentType = "All";
+
+  document.querySelectorAll<HTMLElement>("[data-type-btn]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      currentType = btn.dataset.typeBtn!;
+
+      document.querySelectorAll<HTMLElement>("[data-type-btn]").forEach((b) => {
+        const active = b.dataset.typeBtn === currentType;
+        b.className = active
+          ? "rounded border border-ink bg-ink px-3 py-1 text-[11px] font-mono text-bg transition-colors"
+          : "rounded border border-rule bg-bg px-3 py-1 text-[11px] font-mono text-ink-2 transition-colors hover:border-ink-3 hover:text-ink";
+      });
+
+      let visible = 0;
+      document.querySelectorAll<HTMLElement>("[data-project]").forEach((el) => {
+        const show = currentType === "All" || el.dataset.type === currentType;
+        el.hidden = !show;
+        if (show) visible++;
+      });
+
+      (document.getElementById("project-count") as HTMLElement).textContent =
+        `${visible} ${visible === 1 ? "project" : "projects"}`;
+      (document.getElementById("projects-empty") as HTMLElement).hidden = visible > 0;
+    });
+  });
+</script>

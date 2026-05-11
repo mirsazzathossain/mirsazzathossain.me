@@ -34,6 +34,7 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "postcss": "^8.5.14",
+    "rehype-external-links": "^3.0.0",
     "typescript": "^6.0.3"
   },
   "main": "index.js",

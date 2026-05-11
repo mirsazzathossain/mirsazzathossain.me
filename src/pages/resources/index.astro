@@ -1,11 +1,17 @@
 ---
 import Layout from "@/layouts/Layout.astro";
-import SimpleLayout from "@/components/layout/SimpleLayout";
-import ListResources from "@/components/resources/ListResources";
+import ResourceCard from "@/components/resources/ResourceCard";
 import { readSiteJson } from "@/utils/json-data";
 
 const resources = await readSiteJson<Resource[]>("resources.json");
 const page = await readSiteJson<ResourcePageData>("resources_page.json");
+
+const categorized: Record<string, Resource[]> = {};
+for (const r of resources) {
+  if (!categorized[r.category]) categorized[r.category] = [];
+  categorized[r.category].push(r);
+}
+const categories = Object.keys(categorized);
 ---
 
 <Layout
@@ -13,13 +19,82 @@ const page = await readSiteJson<ResourcePageData>("resources_page.json");
   description={page.description}
   canonicalPath={page.canonicalPath}
 >
-  <SimpleLayout
-    eyebrow={page.eyebrow}
-    title={page.heading}
-    intro={page.intro}
-  >
+  <div class="mb-8">
+    <header class="max-w-[720px] mb-8">
+      {page.eyebrow && (
+        <p class="font-mono text-[11px] tracking-[0.14em] uppercase text-ink-3 m-0 mb-1.5 font-semibold">
+          {page.eyebrow}
+        </p>
+      )}
+      <h1 class="font-serif text-[clamp(28px,4.5vw,42px)] leading-[1.05] tracking-[-0.02em] m-0 text-ink font-bold">
+        {page.heading}
+      </h1>
+      {page.intro && (
+        <p class="mt-3 text-[15px] text-ink-2 max-w-[60ch] m-0">{page.intro}</p>
+      )}
+    </header>
+
     <div class="mt-8">
-      <ListResources client:load resources={resources} page={page} />
+      <div class="mb-[24px] pb-4 border-b border-rule">
+        <label class="inline-flex items-center gap-[7px] py-1.5 px-3 border border-rule rounded-full bg-bg min-w-full sm:min-w-[260px] lg:min-w-[320px] text-ink-3">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="h-[13px] w-[13px] shrink-0">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+          <span class="sr-only">{page.searchLabel}</span>
+          <input
+            id="resources-search"
+            type="text"
+            placeholder={page.searchPlaceholder}
+            class="w-full border-0 outline-none bg-transparent font-sans text-[13px] text-ink placeholder:text-ink-3"
+          />
+        </label>
+      </div>
+
+      <div id="resources-empty" hidden class="text-[14px] text-ink-3 mt-4">
+        {page.emptyText}
+      </div>
+
+      {categories.map((category) => (
+        <section data-category={category} class="mb-[30px]">
+          <h2 class="font-serif text-[18px] pb-1.5 border-b-2 border-ink m-[0_0_14px] inline-block font-semibold text-ink">
+            {category}
+          </h2>
+          <div class="grid grid-cols-[repeat(auto-fill,minmax(260px,1fr))] gap-3">
+            {categorized[category].map((resource) => (
+              <div
+                data-resource=""
+                data-search={`${resource.title} ${resource.description} ${resource.category}`.toLowerCase()}
+              >
+                <ResourceCard resource={resource} />
+              </div>
+            ))}
+          </div>
+        </section>
+      ))}
     </div>
-  </SimpleLayout>
+  </div>
 </Layout>
+
+<script>
+  const input = document.getElementById("resources-search") as HTMLInputElement;
+  const emptyEl = document.getElementById("resources-empty") as HTMLElement;
+
+  input.addEventListener("input", () => {
+    const needle = input.value.trim().toLowerCase();
+    let totalVisible = 0;
+
+    document.querySelectorAll<HTMLElement>("[data-category]").forEach((section) => {
+      let sectionVisible = 0;
+      section.querySelectorAll<HTMLElement>("[data-resource]").forEach((card) => {
+        const show = !needle || card.dataset.search!.includes(needle);
+        card.hidden = !show;
+        if (show) sectionVisible++;
+      });
+      section.hidden = sectionVisible === 0;
+      totalVisible += sectionVisible;
+    });
+
+    emptyEl.hidden = totalVisible > 0;
+  });
+</script>

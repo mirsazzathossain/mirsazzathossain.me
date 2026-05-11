@@ -30,7 +30,7 @@ export default function ProjectCard({ project }: { project: Project }) {
         <span className="min-w-0 flex-1 truncate font-mono text-[13.5px] font-semibold text-ink">
           {project.title}
         </span>
-        {project.stars > 0 && (
+        {(project.stars ?? 0) > 0 && (
           <span className="ml-auto inline-flex items-center gap-[3px] font-mono text-[11px] text-ink-3">
             ★ {project.stars}
           </span>

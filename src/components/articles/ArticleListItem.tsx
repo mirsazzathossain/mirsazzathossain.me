@@ -6,16 +6,17 @@ export function ArticleListItem({
   article,
   dateStyle = "long",
   showTaxonomy = true,
+  ...dataAttrs
 }: {
   article: ArticleEntry;
   dateStyle?: "short" | "long";
   showTaxonomy?: boolean;
-}) {
+} & { [key: `data-${string}`]: string | undefined }) {
   const published = formatPublishedDate(article, dateStyle);
-  const rt = readingTime(article.body);
+  const rt = readingTime(article.body ?? "");
 
   return (
-    <li className="border-b border-rule-2 py-6 first:pt-0 last:border-b-0">
+    <li className="border-b border-rule-2 py-6 first:pt-0 last:border-b-0" {...dataAttrs}>
       <div className="mb-1.5 flex items-center gap-2 font-mono text-[11px] tracking-[0.04em] text-ink-3">
         <span>{published}</span>
         <span aria-hidden="true">·</span>
