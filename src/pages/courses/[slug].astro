@@ -28,7 +28,7 @@ const { course } = Astro.props;
 
 <Layout
   title={course.title}
-  description={course.syllabus ?? course.description}
+  description={course.summary}
   canonicalPath={`/courses/${course.slug}`}
 >
   <div class="grid grid-cols-1 lg:grid-cols-[220px_1fr] gap-9 mt-2">
@@ -50,7 +50,7 @@ const { course } = Astro.props;
       <div class="p-[14px_16px] border border-rule rounded-[6px] bg-bg-2">
         <div class="font-mono text-[10.5px] tracking-[0.1em] uppercase text-ink-3 mb-2">On this page</div>
         <ul class="list-none p-0 m-0 flex flex-col gap-[6px]">
-          {course.syllabus && <li><a href="#syllabus" class="text-[12.5px] text-ink-2 hover:text-link transition-colors">Syllabus</a></li>}
+          {course.summary && <li><a href="#summary" class="text-[12.5px] text-ink-2 hover:text-link transition-colors">Summary</a></li>}
           {course.schedule && course.schedule.length > 0 && <li><a href="#schedule" class="text-[12.5px] text-ink-2 hover:text-link transition-colors">Weekly schedule</a></li>}
           {course.notebooks && course.notebooks.length > 0 && <li><a href="#notebooks" class="text-[12.5px] text-ink-2 hover:text-link transition-colors">Tutorial notebooks</a></li>}
           {course.resources && course.resources.length > 0 && <li><a href="#resources" class="text-[12.5px] text-ink-2 hover:text-link transition-colors">Resources</a></li>}
@@ -88,11 +88,11 @@ const { course } = Astro.props;
         )}
       </div>
 
-      {/* Syllabus section */}
-      {course.syllabus && (
-        <section id="syllabus" class="mb-[26px]">
-          <h2 class="font-mono text-[11px] tracking-[0.14em] uppercase text-ink-3 m-0 mb-[10px] pb-[6px] border-b border-rule">Syllabus</h2>
-          <p class="font-serif text-[16px] leading-[1.62] text-ink m-0 mb-3 max-w-[65ch]">{course.syllabus}</p>
+      {/* Summary section */}
+      {course.summary && (
+        <section id="summary" class="mb-[26px]">
+          <h2 class="font-mono text-[11px] tracking-[0.14em] uppercase text-ink-3 m-0 mb-[10px] pb-[6px] border-b border-rule">Summary</h2>
+          <p class="font-serif text-[16px] leading-[1.62] text-ink m-0 mb-3 max-w-[65ch]">{course.summary}</p>
           {course.outcome && (
             <div class="p-[14px_16px] border border-rule rounded-[6px] bg-bg-2">
               <div class="font-mono text-[10.5px] tracking-[0.1em] uppercase text-ink-3 mb-1">Learning outcome</div>
@@ -126,8 +126,8 @@ const { course } = Astro.props;
               <div class="grid grid-cols-[36px_1fr_auto] items-center gap-3 rounded-[6px] border border-rule bg-bg p-[10px_12px]">
                 <span class="font-mono text-[11px] text-ink-3">#{nb.n}</span>
                 <span class="text-[13.5px] text-ink">{nb.title}</span>
-                {course.repo && course.repo !== "#" ? (
-                  <a href={course.repo} target="_blank" rel="noreferrer" class="font-mono text-[11.5px] text-link hover:underline whitespace-nowrap inline-flex items-center gap-1">
+                {nb.href ? (
+                  <a href={nb.href} target="_blank" rel="noreferrer" class="font-mono text-[11.5px] text-link hover:underline whitespace-nowrap inline-flex items-center gap-1">
                     <DownloadIcon className="h-[10px] w-[10px] shrink-0" />
                     .ipynb
                   </a>

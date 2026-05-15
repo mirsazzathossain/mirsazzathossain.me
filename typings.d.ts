@@ -74,6 +74,7 @@ declare type Project = {
 declare type CourseNotebook = {
   n: string;
   title: string;
+  href?: string;
 };
 
 declare type CourseResource = {
@@ -94,7 +95,7 @@ declare type Course = {
   term: string;
   inst: string;
   lang: string;
-  description: string;
+  summary: string;
   students?: number;
   repo?: string;
   link: {
@@ -107,7 +108,6 @@ declare type Course = {
   };
   publishedDate: string;
   totalDuration: string;
-  syllabus?: string;
   outcome?: string;
   schedule?: CourseScheduleItem[];
   notebooks?: CourseNotebook[];

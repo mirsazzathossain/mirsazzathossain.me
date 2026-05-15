@@ -7,14 +7,13 @@
     "term": "Summer 2026",
     "inst": "Independent University, Bangladesh",
     "lang": "Python",
-    "description": "A structured tutorial sequence on Python fundamentals, control flow, functions, loops, and list-based problem solving.",
+    "summary":"A structured tutorial sequence on Python fundamentals, control flow, functions, loops, and list-based problem solving.",
     "students": 36,
     "repo": "https://github.com/mirsazzathossain/CSC101-Introduction-to-Computer-Science",
     "link": { "href": "/courses/cse100t", "label": "View materials" },
     "logo": { "src": "logos/python.png", "alt": "Python Logo" },
     "publishedDate": "2026-01-15",
     "totalDuration": "Approx. 12 weeks",
-    "syllabus": "This tutorial stream is practice-first: each topic starts with a short concept pass, then coding drills, then problem solving. Focus is on clean logic, readable code, and debugging through code-tracing.",
     "outcome": "Students can solve beginner Python problems independently using conditionals, loops, functions, and list-processing patterns.",
     "schedule": [
       {
@@ -103,14 +102,13 @@
     "term": "Summer 2026",
     "inst": "Independent University, Bangladesh",
     "lang": "Python",
-    "description": "Intermideate Python tutorial covering built-in advanced data structures (dictionaries, sets), recursion, file I/O, and an introduction to object-oriented programming.",
+    "summary":"Intermideate Python tutorial covering built-in advanced data structures (dictionaries, sets), recursion, file I/O, and an introduction to object-oriented programming.",
     "students": 30,
     "repo": "https://github.com/mirsazzathossain/CSC101-Introduction-to-Programming",
     "link": { "href": "/courses/cse200t", "label": "View materials" },
     "logo": { "src": "logos/python.png", "alt": "Python Logo" },
     "publishedDate": "2023-07-20",
     "totalDuration": "Approx. 12 weeks",
-    "syllabus": "A gentle introduction to Python covering core programming concepts. Students learn to think computationally and solve real-world problems step by step.",
     "outcome": "Students can write basic Python programs, use loops and conditionals, define functions, and work with lists and strings.",
     "schedule": [
       {
@@ -148,46 +146,103 @@
   {
     "code": "CSE 203T",
     "slug": "cse203t",
-    "title": "Tutorial for Data Structures",
+    "title": "Tutorial for Data Structure",
     "role": "TA Tutorial",
-    "term": "Summer 2022",
+    "term": "Summer 2026",
     "inst": "Independent University, Bangladesh",
     "lang": "Python",
-    "description": "Tutorial sessions on foundational data structures; arrays, linked lists, stacks, queues, trees, and graphs etc., with problem solving in Python.",
+    "summary":"Tutorial sessions on data representation and storage using elementary data structures — arrays, linked lists, stacks, queues, trees, heaps, and graphs — with implementation and problem solving in Python.",
     "students": 30,
-    "repo": "#",
+    "repo": "https://github.com/mirsazzathossain/CSC203-Tutorial-for-Data-Structure",
     "link": { "href": "/courses/cse203t", "label": "View materials" },
     "logo": { "src": "logos/python.png", "alt": "Python Logo" },
-    "publishedDate": "2022-07-20",
-    "totalDuration": "Approx. 12 weeks",
-    "syllabus": "Tutorial sessions reinforce the lecture concepts through implementation exercises. Each session implements a data structure from scratch and benchmarks it against Python built-ins.",
-    "outcome": "Students can implement and use core data structures, analyze time/space complexity, and apply them to algorithmic problem solving.",
+    "publishedDate": "2026-05-16",
+    "totalDuration": "Approx. 13 weeks",
+    "outcome": "Students can implement and use core data structures (linked lists, stacks, queues, BSTs, heaps, graphs, hash tables), analyze time/space complexity, apply recursion to algorithmic problem solving, and select appropriate data structures for engineering problems.",
     "schedule": [
-      { "week": "Week 01–02", "topic": "Arrays and dynamic arrays" },
       {
-        "week": "Week 03–04",
-        "topic": "Linked lists: singly and doubly linked"
+        "week": "Tutorial 01",
+        "topic": "Python review: loops, conditionals, functions, lists, tuples, sets, dicts, classes"
       },
-      { "week": "Week 05–06", "topic": "Stacks and queues" },
-      { "week": "Week 07–08", "topic": "Trees and binary search trees" },
-      { "week": "Week 09–10", "topic": "Heaps and priority queues" },
-      { "week": "Week 11–12", "topic": "Graphs: BFS and DFS" }
+      {
+        "week": "Tutorial 02",
+        "topic": "Pointers, nodes, and singly linked list"
+      },
+      {
+        "week": "Tutorial 03",
+        "topic": "Stack and queue using linked list"
+      },
+      {
+        "week": "Tutorial 04",
+        "topic": "Doubly linked list"
+      },
+      {
+        "week": "Tutorial 05",
+        "topic": "Recursion"
+      },
+      {
+        "week": "Tutorial 06",
+        "topic": "Midterm Exam week"
+      },
+      {
+        "week": "Tutorial 07",
+        "topic": "Recursion continued"
+      },
+      {
+        "week": "Tutorial 08",
+        "topic": "Binary search tree — operations and complexity"
+      },
+      {
+        "week": "Tutorial 09",
+        "topic": "Binary search tree — traversal and applications"
+      },
+      {
+        "week": "Tutorial 10",
+        "topic": "Heap and priority queue"
+      },
+      {
+        "week": "Tutorial 11",
+        "topic": "Heap and priority queue — applications"
+      },
+      {
+        "week": "Tutorial 12",
+        "topic": "Graph: directed, undirected, connectivity"
+      },
+      {
+        "week": "Tutorial 13",
+        "topic": "Review and exam preparation"
+      }
     ],
     "notebooks": [
-      { "n": "01", "title": "Arrays and list operations" },
-      { "n": "02", "title": "Linked list implementation" },
-      { "n": "03", "title": "Stack and queue using Python lists" },
-      { "n": "04", "title": "Binary search tree implementation" },
-      { "n": "05", "title": "Graph traversal: BFS and DFS" }
+      { "n": "01", "title": "Python review: data types, control flow, functions, OOP" },
+      { "n": "02", "title": "Pointers, nodes, and singly linked list" },
+      { "n": "03", "title": "Stack and queue using linked list" },
+      { "n": "04", "title": "Doubly linked list implementation" },
+      { "n": "05", "title": "Recursion: base cases, call stack, and recursive problem solving" },
+      { "n": "06", "title": "Binary search tree: insertion, deletion, search" },
+      { "n": "07", "title": "Heap and priority queue" },
+      { "n": "08", "title": "Graph: representation, BFS, and DFS" }
     ],
     "resources": [
       {
-        "title": "Python Data Structures — Real Python",
-        "href": "https://realpython.com/python-data-structures/"
+        "title": "Course outline (PDF)",
+        "href": "https://github.com/mirsazzathossain/CSC203-Tutorial-for-Data-Structure/blob/main/Course%20Outline.pdf"
       },
       {
-        "title": "Problem Solving with Algorithms and Data Structures",
+        "title": "Course GitHub repository",
+        "href": "https://github.com/mirsazzathossain/CSC203-Tutorial-for-Data-Structure"
+      },
+      {
+        "title": "Problem Solving with Algorithms and Data Structures using Python — Miller & Ranum",
         "href": "https://runestone.academy/runestone/books/published/pythonds/index.html"
+      },
+      {
+        "title": "Python Data Structures and Algorithms — Benjamin Baka",
+        "href": "https://www.packtpub.com/product/python-data-structures-and-algorithms/9781786467355"
+      },
+      {
+        "title": "Data Structures and Algorithms in Python — Goodrich, Tamassia & Goldwasser",
+        "href": "https://www.wiley.com/en-us/Data+Structures+and+Algorithms+in+Python-p-9781118290279"
       }
     ]
   },
@@ -199,14 +254,13 @@
     "term": "Spring 2023",
     "inst": "Independent University, Bangladesh",
     "lang": "Office",
-    "description": "Tutorial sessions covering computer-system concepts and practical office-suite skills for academic and professional use.",
+    "summary":"Tutorial sessions covering computer-system concepts and practical office-suite skills for academic and professional use.",
     "students": 38,
     "repo": "#",
     "link": { "href": "/courses/cis101t", "label": "View materials" },
     "logo": { "src": "logos/office.png", "alt": "Office Logo" },
     "publishedDate": "2023-01-23",
     "totalDuration": "Approx. 12 weeks",
-    "syllabus": "Covers the basics of computer hardware, software, operating systems, and essential Microsoft Office skills (Word, Excel, PowerPoint) needed for academic work.",
     "outcome": "Students understand fundamental computing concepts and can use office productivity tools effectively for academic reporting and presentations.",
     "schedule": [
       {
@@ -247,14 +301,13 @@
     "term": "Autumn 2022",
     "inst": "Independent University, Bangladesh",
     "lang": "Python",
-    "description": "Lab worksheets and assignments for numerical methods — root-finding, interpolation, numerical integration, and ODEs — implemented in Python.",
+    "summary":"Lab worksheets and assignments for numerical methods — root-finding, interpolation, numerical integration, and ODEs — implemented in Python.",
     "students": 28,
     "repo": "https://github.com/mirsazzathossain/CSE317-Lab-Numerical-Methods",
     "link": { "href": "/courses/cse317", "label": "View materials" },
     "logo": { "src": "logos/python.png", "alt": "Python Logo" },
     "publishedDate": "2022-07-20",
     "totalDuration": "Approx. 12 weeks",
-    "syllabus": "Lab sessions implement numerical algorithms from scratch using Python and NumPy, then validate results against SciPy. Focus is on understanding the algorithm, not just using a library.",
     "outcome": "Students can implement and analyze core numerical methods, understand their error characteristics, and apply them to scientific computing problems.",
     "schedule": [
       {
