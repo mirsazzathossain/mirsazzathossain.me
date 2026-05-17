@@ -106,7 +106,9 @@ export default defineConfig({
       ],
     }),
     react(),
-    sitemap(),
+    sitemap({
+      filter: (page) => !page.includes("/articles/list"),
+    }),
     islandModulePreload(),
   ],
 });
