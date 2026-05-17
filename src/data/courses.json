@@ -214,7 +214,7 @@
       }
     ],
     "notebooks": [
-      { "n": "01", "title": "Python review: data types, control flow, functions, OOP" },
+      { "n": "01", "title": "Python review: data types, control flow, functions, OOP", "href": "https://github.com/mirsazzathossain/CSC203-Tutorial-for-Data-Structure/blob/main/CSC203_Tutorial_01.ipynb" },
       { "n": "02", "title": "Pointers, nodes, and singly linked list" },
       { "n": "03", "title": "Stack and queue using linked list" },
       { "n": "04", "title": "Doubly linked list implementation" },
@@ -224,14 +224,6 @@
       { "n": "08", "title": "Graph: representation, BFS, and DFS" }
     ],
     "resources": [
-      {
-        "title": "Course outline (PDF)",
-        "href": "https://github.com/mirsazzathossain/CSC203-Tutorial-for-Data-Structure/blob/main/Course%20Outline.pdf"
-      },
-      {
-        "title": "Course GitHub repository",
-        "href": "https://github.com/mirsazzathossain/CSC203-Tutorial-for-Data-Structure"
-      },
       {
         "title": "Problem Solving with Algorithms and Data Structures using Python — Miller & Ranum",
         "href": "https://runestone.academy/runestone/books/published/pythonds/index.html"
