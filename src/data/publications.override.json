@@ -335,6 +335,20 @@
     "slug": "rgc-radio-agn-classifier-2026"
   },
   {
+    "id": "M05iB0D1s5AC",
+    "type": "conference",
+    "month": 12,
+    "venue": "2025 28th International Conference on Computer and Information Technology (ICCIT)",
+    "venue_short": "ICCIT 2025",
+    "venue_citation": "2025 28th International Conference on Computer and Information Technology (ICCIT), pp. 3518-3523.",
+    "pages": "3518-3523",
+    "doi": "10.1109/ICCIT68739.2025.11491496",
+    "url": "https://ieeexplore.ieee.org/abstract/document/11491496/",
+    "abstract": "ADHD is a prevalent neurodevelopmental problem, but in Bangladesh, early recognition is not only minimized due to low awareness but also because of limited diagnostic accessibility. This study seeks to close that gap by constructing a DSM-5-informed questionnaire designed to identify behavioral, familial, and socioeconomic antecedents of ADHD in childhood. Participants were school-aged children from various schools, ranging from 4 to 17 years old, and aggregated for a systematized machine learning pipeline. The most predictive variables were tagged using feature selection through inception of classical classifiers like Random Forest, Support Vector Machine, Logistic Regression, and Decision Tree. The study shows demographical and attentional features of importance in predicting the risk of ADHD. Ensemble techniques were the most stable among all models, suggesting that the screening questionnaire may offer useful classification. Although the findings suggest potential for using surveys and machine learning to provide a cost-effective early screen, this research is limited by a small sample size, imbalanced demographics, and a reliance on parent/caregiver/teacher reports. In the future, increasing and including gender-sensitive tools will be crucial to scale up culturally sensitive ADHD detection in Bangladesh.",
+    "bibtex": "@INPROCEEDINGS{11491496,\n  author={Panday, Sharbany and Bairagi, Sourish and Rahman, Sinthia Sayma and Hossain, Mir Sazzat and Rahman, Md. Rashedur and Islam, Ashraful and Sarker, Farhana},\n  booktitle={2025 28th International Conference on Computer and Information Technology (ICCIT)},\n  title={Machine Learning-Based Prediction of ADHD in Bangladeshi Children Using Behavioral and Demographic Insights},\n  year={2025},\n  volume={},\n  number={},\n  pages={3518-3523},\n  doi={10.1109/ICCIT68739.2025.11491496}\n}",
+    "slug": "adhd-ml-prediction-iccit-2025"
+  },
+  {
     "id": "isC4tDSrTZIC",
     "slug": "e-pcn-jet-tagging-2025"
   },
