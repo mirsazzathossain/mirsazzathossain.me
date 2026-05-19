@@ -1,0 +1,29 @@
+name: Retry Update Publications On Failure
+
+on:
+  workflow_run:
+    workflows: ["Update Publications"]
+    types: [completed]
+
+jobs:
+  retry:
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+
+    steps:
+      - name: Wait 1 hour
+        run: sleep 3600
+
+      - name: Trigger retry
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'update-publications.yml',
+              ref: '${{ github.event.workflow_run.head_branch }}',
+            });
