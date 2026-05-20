@@ -102,44 +102,56 @@
     "term": "Summer 2026",
     "inst": "Independent University, Bangladesh",
     "lang": "Python",
-    "summary":"Intermideate Python tutorial covering built-in advanced data structures (dictionaries, sets), recursion, file I/O, and an introduction to object-oriented programming.",
+    "summary": "Intermediate Python tutorial covering nested conditionals, loops, functions, recursion, built-in data structures (List, Tuple, Set, Dictionary), modularization, file I/O, exception handling, and object-oriented programming.",
     "students": 30,
-    "repo": "https://github.com/mirsazzathossain/CSC101-Introduction-to-Programming",
+    "repo": "https://github.com/mirsazzathossain/CSE200-Tutorial-for-Computer-Programming-II",
     "link": { "href": "/courses/cse200t", "label": "View materials" },
     "logo": { "src": "logos/python.png", "alt": "Python Logo" },
-    "publishedDate": "2023-07-20",
-    "totalDuration": "Approx. 12 weeks",
-    "outcome": "Students can write basic Python programs, use loops and conditionals, define functions, and work with lists and strings.",
+    "publishedDate": "2026-05-16",
+    "totalDuration": "Approx. 13 weeks",
+    "outcome": "Students can formulate and implement solutions to real-life engineering problems using advanced Python — applying OOP principles (class, object, methods, inheritance, polymorphism), built-in data structures, recursion, exception handling, and file I/O to build comprehensive, well-structured programs.",
     "schedule": [
-      {
-        "week": "Week 01–02",
-        "topic": "Python setup, variables, data types, and basic I/O"
-      },
-      { "week": "Week 03–04", "topic": "Conditionals and control flow" },
-      { "week": "Week 05–06", "topic": "Loops: for, while, and nested loops" },
-      { "week": "Week 07–08", "topic": "Functions and scope" },
-      {
-        "week": "Week 09–10",
-        "topic": "Lists, strings, and basic data manipulation"
-      },
-      { "week": "Week 11–12", "topic": "Review and problem solving practice" }
+      { "week": "Tutorial 01", "topic": "Conditional statements (nested): if-else, if-elif-else, nested if" },
+      { "week": "Tutorial 02–03", "topic": "Loops (nested): while, for, nested loops, break, continue, pass" },
+      { "week": "Tutorial 03–04", "topic": "Functions: calls, parameters, scope of variables, generators" },
+      { "week": "Tutorial 05–06", "topic": "Built-in data types: List and 2D List" },
+      { "week": "Tutorial 06", "topic": "Midterm week" },
+      { "week": "Tutorial 07", "topic": "Recursion" },
+      { "week": "Tutorial 08–09", "topic": "Built-in types: List, Tuple, Set, Dictionary" },
+      { "week": "Tutorial 10", "topic": "Modularization and introduction to pygame" },
+      { "week": "Tutorial 11", "topic": "Exception handling: try-catch" },
+      { "week": "Tutorial 12", "topic": "Files (File I/O) — text mode" },
+      { "week": "Tutorial 12–13", "topic": "Python — Class, Object, attributes, methods" },
+      { "week": "Tutorial 14", "topic": "Review" }
     ],
     "notebooks": [
-      { "n": "01", "title": "Python basics and Hello World" },
-      { "n": "02", "title": "Variables, data types, and operators" },
-      { "n": "03", "title": "Conditionals and branching logic" },
-      { "n": "04", "title": "Loops and iteration" },
-      { "n": "05", "title": "Functions and modular programming" },
-      { "n": "06", "title": "Lists and string manipulation" }
+      {
+        "n": "01",
+        "title": "Conditional statements (nested)",
+        "href": "https://github.com/mirsazzathossain/CSE200-Tutorial-for-Computer-Programming-II/blob/main/CSE200_Tutorial_01.ipynb"
+      },
+      { "n": "02", "title": "Loops (nested)" },
+      { "n": "03", "title": "Functions: parameters, scope, generators" },
+      { "n": "04", "title": "Built-in data types: List and 2D List" },
+      { "n": "05", "title": "Recursion" },
+      { "n": "06", "title": "Built-in types: Tuple, Set, Dictionary" },
+      { "n": "07", "title": "Modularization and pygame" },
+      { "n": "08", "title": "Exception handling" },
+      { "n": "09", "title": "File I/O — text mode" },
+      { "n": "10", "title": "Object-oriented programming: Class and Object" }
     ],
     "resources": [
       {
-        "title": "Python 3 official documentation",
-        "href": "https://docs.python.org/3/"
+        "title": "Course outline (PDF)",
+        "href": "https://github.com/mirsazzathossain/CSE200-Tutorial-for-Computer-Programming-II/blob/main/Course%20Outline.pdf"
       },
       {
         "title": "Course GitHub repository",
-        "href": "https://github.com/mirsazzathossain/CSC101-Introduction-to-Programming"
+        "href": "https://github.com/mirsazzathossain/CSE200-Tutorial-for-Computer-Programming-II"
+      },
+      {
+        "title": "Python 3 official documentation",
+        "href": "https://docs.python.org/3/"
       }
     ]
   },
