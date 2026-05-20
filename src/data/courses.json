@@ -7,7 +7,7 @@
     "term": "Summer 2026",
     "inst": "Independent University, Bangladesh",
     "lang": "Python",
-    "summary":"A structured tutorial sequence on Python fundamentals, control flow, functions, loops, and list-based problem solving.",
+    "summary": "A structured tutorial sequence on Python fundamentals, control flow, functions, loops, and list-based problem solving.",
     "students": 36,
     "repo": "https://github.com/mirsazzathossain/CSC101-Introduction-to-Computer-Science",
     "link": { "href": "/courses/cse100t", "label": "View materials" },
@@ -111,17 +111,38 @@
     "totalDuration": "Approx. 13 weeks",
     "outcome": "Students can formulate and implement solutions to real-life engineering problems using advanced Python — applying OOP principles (class, object, methods, inheritance, polymorphism), built-in data structures, recursion, exception handling, and file I/O to build comprehensive, well-structured programs.",
     "schedule": [
-      { "week": "Tutorial 01", "topic": "Conditional statements (nested): if-else, if-elif-else, nested if" },
-      { "week": "Tutorial 02–03", "topic": "Loops (nested): while, for, nested loops, break, continue, pass" },
-      { "week": "Tutorial 03–04", "topic": "Functions: calls, parameters, scope of variables, generators" },
-      { "week": "Tutorial 05–06", "topic": "Built-in data types: List and 2D List" },
+      {
+        "week": "Tutorial 01",
+        "topic": "Conditional statements (nested): if-else, if-elif-else, nested if"
+      },
+      {
+        "week": "Tutorial 02",
+        "topic": "Loops (nested): while, for, nested loops, break, continue, pass"
+      },
+      {
+        "week": "Tutorial 03",
+        "topic": "Functions: calls, parameters, scope of variables, generators"
+      },
+      {
+        "week": "Tutorial 04–05",
+        "topic": "Built-in data types: List and 2D List"
+      },
       { "week": "Tutorial 06", "topic": "Midterm week" },
       { "week": "Tutorial 07", "topic": "Recursion" },
-      { "week": "Tutorial 08–09", "topic": "Built-in types: List, Tuple, Set, Dictionary" },
-      { "week": "Tutorial 10", "topic": "Modularization and introduction to pygame" },
+      {
+        "week": "Tutorial 08–09",
+        "topic": "Built-in types: List, Tuple, Set, Dictionary"
+      },
+      {
+        "week": "Tutorial 10",
+        "topic": "Modularization and introduction to pygame"
+      },
       { "week": "Tutorial 11", "topic": "Exception handling: try-catch" },
       { "week": "Tutorial 12", "topic": "Files (File I/O) — text mode" },
-      { "week": "Tutorial 12–13", "topic": "Python — Class, Object, attributes, methods" },
+      {
+        "week": "Tutorial 13",
+        "topic": "Python — Class, Object, attributes, methods"
+      },
       { "week": "Tutorial 14", "topic": "Review" }
     ],
     "notebooks": [
@@ -163,7 +184,7 @@
     "term": "Summer 2026",
     "inst": "Independent University, Bangladesh",
     "lang": "Python",
-    "summary":"Tutorial sessions on data representation and storage using elementary data structures — arrays, linked lists, stacks, queues, trees, heaps, and graphs — with implementation and problem solving in Python.",
+    "summary": "Tutorial sessions on data representation and storage using elementary data structures — arrays, linked lists, stacks, queues, trees, heaps, and graphs — with implementation and problem solving in Python.",
     "students": 30,
     "repo": "https://github.com/mirsazzathossain/CSC203-Tutorial-for-Data-Structure",
     "link": { "href": "/courses/cse203t", "label": "View materials" },
@@ -226,11 +247,18 @@
       }
     ],
     "notebooks": [
-      { "n": "01", "title": "Python review: data types, control flow, functions, OOP", "href": "https://github.com/mirsazzathossain/CSC203-Tutorial-for-Data-Structure/blob/main/CSC203_Tutorial_01.ipynb" },
+      {
+        "n": "01",
+        "title": "Python review: data types, control flow, functions, OOP",
+        "href": "https://github.com/mirsazzathossain/CSC203-Tutorial-for-Data-Structure/blob/main/CSC203_Tutorial_01.ipynb"
+      },
       { "n": "02", "title": "Pointers, nodes, and singly linked list" },
       { "n": "03", "title": "Stack and queue using linked list" },
       { "n": "04", "title": "Doubly linked list implementation" },
-      { "n": "05", "title": "Recursion: base cases, call stack, and recursive problem solving" },
+      {
+        "n": "05",
+        "title": "Recursion: base cases, call stack, and recursive problem solving"
+      },
       { "n": "06", "title": "Binary search tree: insertion, deletion, search" },
       { "n": "07", "title": "Heap and priority queue" },
       { "n": "08", "title": "Graph: representation, BFS, and DFS" }
@@ -258,7 +286,7 @@
     "term": "Spring 2023",
     "inst": "Independent University, Bangladesh",
     "lang": "Office",
-    "summary":"Tutorial sessions covering computer-system concepts and practical office-suite skills for academic and professional use.",
+    "summary": "Tutorial sessions covering computer-system concepts and practical office-suite skills for academic and professional use.",
     "students": 38,
     "repo": "#",
     "link": { "href": "/courses/cis101t", "label": "View materials" },
@@ -305,7 +333,7 @@
     "term": "Autumn 2022",
     "inst": "Independent University, Bangladesh",
     "lang": "Python",
-    "summary":"Lab worksheets and assignments for numerical methods — root-finding, interpolation, numerical integration, and ODEs — implemented in Python.",
+    "summary": "Lab worksheets and assignments for numerical methods — root-finding, interpolation, numerical integration, and ODEs — implemented in Python.",
     "students": 28,
     "repo": "https://github.com/mirsazzathossain/CSE317-Lab-Numerical-Methods",
     "link": { "href": "/courses/cse317", "label": "View materials" },
