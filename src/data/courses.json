@@ -142,16 +142,16 @@
     ],
     "resources": [
       {
-        "title": "Course outline (PDF)",
-        "href": "https://github.com/mirsazzathossain/CSE200-Tutorial-for-Computer-Programming-II/blob/main/Course%20Outline.pdf"
+        "title": "Python Crash Course, 2nd Edition — Eric Matthes",
+        "href": "https://nostarch.com/pythoncrashcourse2e"
       },
       {
-        "title": "Course GitHub repository",
-        "href": "https://github.com/mirsazzathossain/CSE200-Tutorial-for-Computer-Programming-II"
+        "title": "Learning Python, 5th Edition — Mark Lutz",
+        "href": "https://www.oreilly.com/library/view/learning-python-5th/9781449355722/"
       },
       {
-        "title": "Python 3 official documentation",
-        "href": "https://docs.python.org/3/"
+        "title": "Automate the Boring Stuff with Python, 2nd Edition — Al Sweigart",
+        "href": "https://automatetheboringstuff.com/"
       }
     ]
   },
