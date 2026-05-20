@@ -36,7 +36,7 @@ export default function CourseCard({
       <p className="m-0 text-xs text-ink-3">{course.inst}</p>
 
       <p className="m-0 flex-1 text-[12.5px] leading-[1.55] text-ink-2">
-        {course.summary}
+        {course.tagline ?? course.summary}
       </p>
 
       <div className="flex items-center justify-between border-t border-rule-2 pt-2.5">

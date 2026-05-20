@@ -96,6 +96,7 @@ declare type Course = {
   inst: string;
   lang: string;
   summary: string;
+  tagline?: string;
   students?: number;
   repo?: string;
   link: {
