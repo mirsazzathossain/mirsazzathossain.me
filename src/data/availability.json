@@ -1,6 +1,6 @@
 {
   "tz": "Asia/Dhaka · UTC+6",
-  "rangeLabel": "May 18 – 24, 2026",
+  "rangeLabel": "May 25 – 31, 2026",
   "days": [
     "Mon",
     "Tue",
@@ -11,13 +11,13 @@
     "Sun"
   ],
   "dates": [
-    "May 18",
-    "May 19",
-    "May 20",
-    "May 21",
-    "May 22",
-    "May 23",
-    "May 24"
+    "May 25",
+    "May 26",
+    "May 27",
+    "May 28",
+    "May 29",
+    "May 30",
+    "May 31"
   ],
   "hours": [
     "8am",
@@ -36,8 +36,8 @@
     "fffffff",
     "fffffff",
     "fffffff",
-    "fffffbf",
-    "fffffbf",
+    "bffffbf",
+    "bffffbf",
     "ffbffff",
     "ffbffff",
     "fffffff",
