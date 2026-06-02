@@ -15,7 +15,7 @@ const courses = await readSiteJson<Course[]>("courses.json");
   <SimpleLayout
     eyebrow="Teaching"
     title="Courses"
-    intro="Tutorial sessions, lab worksheets, and tutorial materials I've prepared as a teaching assistant at IUB. Click any course for full syllabus, weekly schedule, and notebooks."
+    intro="Tutorial sessions, lab worksheets, and tutorial materials I've prepared as a teaching assistant at IUB. Click any course for full syllabus, weekly schedule, and tutorial content."
   >
     <div class="mt-8">
       <ListCourses courses={courses} />

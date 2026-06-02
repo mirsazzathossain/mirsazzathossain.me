@@ -52,7 +52,7 @@ const { course } = Astro.props;
         <ul class="list-none p-0 m-0 flex flex-col gap-[6px]">
           {course.summary && <li><a href="#summary" class="text-[12.5px] text-ink-2 hover:text-link transition-colors">Summary</a></li>}
           {course.schedule && course.schedule.length > 0 && <li><a href="#schedule" class="text-[12.5px] text-ink-2 hover:text-link transition-colors">Weekly schedule</a></li>}
-          {course.notebooks && course.notebooks.length > 0 && <li><a href="#notebooks" class="text-[12.5px] text-ink-2 hover:text-link transition-colors">Tutorial notebooks</a></li>}
+          {course.content && course.content.length > 0 && <li><a href="#content" class="text-[12.5px] text-ink-2 hover:text-link transition-colors">Tutorial content</a></li>}
           {course.resources && course.resources.length > 0 && <li><a href="#resources" class="text-[12.5px] text-ink-2 hover:text-link transition-colors">Resources</a></li>}
         </ul>
       </div>
@@ -118,18 +118,18 @@ const { course } = Astro.props;
       )}
 
       {/* Notebooks section */}
-      {course.notebooks && course.notebooks.length > 0 && (
-        <section id="notebooks" class="mb-[26px]">
-          <h2 class="font-mono text-[11px] tracking-[0.14em] uppercase text-ink-3 m-0 mb-[10px] pb-[6px] border-b border-rule">Tutorial notebooks</h2>
+      {course.content && course.content.length > 0 && (
+        <section id="content" class="mb-[26px]">
+          <h2 class="font-mono text-[11px] tracking-[0.14em] uppercase text-ink-3 m-0 mb-[10px] pb-[6px] border-b border-rule">Tutorial content</h2>
           <div class="grid gap-2">
-            {course.notebooks.map((nb) => (
+            {course.content.map((nb) => (
               <div class="grid grid-cols-[36px_1fr_auto] items-center gap-3 rounded-[6px] border border-rule bg-bg p-[10px_12px]">
                 <span class="font-mono text-[11px] text-ink-3">#{nb.n}</span>
                 <span class="text-[13.5px] text-ink">{nb.title}</span>
                 {nb.href ? (
                   <a href={nb.href} target="_blank" rel="noreferrer" class="font-mono text-[11.5px] text-link hover:underline whitespace-nowrap inline-flex items-center gap-1">
                     <DownloadIcon className="h-[10px] w-[10px] shrink-0" />
-                    .ipynb
+                    {`.${nb.href.split('.').pop()}`}
                   </a>
                 ) : (
                   <span class="font-mono text-[11.5px] text-ink-3 whitespace-nowrap">coming soon</span>
