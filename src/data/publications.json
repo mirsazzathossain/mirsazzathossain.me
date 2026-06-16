@@ -661,31 +661,6 @@
     "url": "https://arxiv.org/abs/2510.22190"
   },
   {
-    "id": "pqnbT2bcN3wC",
-    "type": "article",
-    "title": "CEKALA: CKA-Guided Layer Selection for Efficient Vision–Language Adaptation",
-    "authors": [
-      {
-        "name": "Tasnimul Hossain Tomal"
-      },
-      {
-        "name": "Md Fahim"
-      },
-      {
-        "name": "Mir Sazzat Hossain"
-      },
-      {
-        "name": "Md Farhad Alam Bhuiyan"
-      }
-    ],
-    "year": null,
-    "venue": "",
-    "citation_count": 0,
-    "citation_updated": "2026-06-08",
-    "abstract": "Pre-trained vision-language models (VLMs) such as CLIP offer strong generalization but face challenges in few-shot adaptation, particularly in identifying which layers to adapt and how to align cross-modal representations effectively. Existing multimodal adaptation methods uniformly apply adapters across fixed layers, assuming homogeneous layer importance and implicit depth-wise alignment between vision and text encoders. This assumption neglects layer-wise heterogeneity and cross-modal semantic misalignment. To overcome these limitations, we propose Centered Kernel Alignment based Layer Adapter (CEKALA), a representation measurement framework that leverages CKA to guide selective layer adaptation and cross-modal alignment. CEKALA first computes layer-wise CKA scores to quantify each layer’s contribution to downstream performance, then identifies semantically aligned vision–text layer pairs based on CKA scores. Shared cross-modal adapters are injected only into aligned layer pairs, while unpaired layers receive modality-specific adapters, ensuring both semantic consistency and efficient parameter usage. CEKALA enables fine-grained, interpretable, and performance-aware layer selection for vision-language models. Empirical results demonstrate that CEKALA improves few-shot generalization and cross-modal alignment while maintaining strong parameter efficiency.",
-    "url": "https://mirsazzathossain.me/files/cekala-colm-2026.pdf"
-  },
-  {
     "id": "g5m5HwL7SMYC",
     "type": "article",
     "title": "Evaluating Large Vision Language Models on Bangla Medical Visual Question Answering",
