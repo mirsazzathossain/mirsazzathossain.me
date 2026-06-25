@@ -152,16 +152,18 @@ export default function Publications({
           {chartCounts.map(([year, count]) => (
             <div
               key={year}
-              className="flex flex-col items-center gap-[3px] h-full justify-end"
+              className="flex flex-col items-center gap-[3px] h-full"
             >
               <span className="font-mono text-[9.5px] text-ink-2 leading-none">
                 {count}
               </span>
-              <div
-                className="w-full min-h-[3px] bg-link rounded-t-[3px] opacity-85"
-                style={{ height: `${Math.max(3, (count / maxYearCount) * 100)}%` }}
-                aria-hidden="true"
-              />
+              <div className="flex-1 flex items-end w-full overflow-hidden">
+                <div
+                  className="w-full min-h-[3px] bg-link rounded-t-[3px] opacity-85"
+                  style={{ height: `${Math.max(4, (count / maxYearCount) * 100)}%` }}
+                  aria-hidden="true"
+                />
+              </div>
               <span className="font-mono text-[9.5px] text-ink-3 leading-none">
                 {year.slice(-2)}
               </span>

@@ -112,13 +112,15 @@ function buildSearchText(pub: Publication): string {
 
       <div class="grid grid-cols-[repeat(auto-fit,minmax(28px,1fr))] gap-[5px] items-end h-20 pt-3.5">
         {chartCounts.map(([yr, count]) => (
-          <div class="flex flex-col items-center gap-[3px] h-full justify-end">
+          <div class="flex flex-col items-center gap-[3px] h-full">
             <span class="font-mono text-[9.5px] text-ink-2 leading-none">{count}</span>
-            <div
-              class="w-full min-h-[3px] bg-link rounded-t-[3px] opacity-85"
-              style={`height: ${Math.max(3, (count / maxCount) * 100)}%`}
-              aria-hidden="true"
-            />
+            <div class="flex-1 flex items-end w-full overflow-hidden">
+              <div
+                class="w-full min-h-[3px] bg-link rounded-t-[3px] opacity-85"
+                style={`height: ${Math.max(4, (count / maxCount) * 100)}%`}
+                aria-hidden="true"
+              />
+            </div>
             <span class="font-mono text-[9.5px] text-ink-3 leading-none">{yr.slice(-2)}</span>
           </div>
         ))}
