@@ -190,10 +190,9 @@
   {
     "id": "banglamedqa-acl-findings-2026",
     "type": "conference",
-    "status": "accepted",
     "rank": "CORE: A*",
     "featured": true,
-    "month": 9,
+    "month": 7,
     "title": "Evaluating Large Vision Language Models on Bangla Medical Visual Question Answering",
     "authors": [
       {
@@ -224,10 +223,14 @@
     "year": 2026,
     "venue": "Findings of the Association for Computational Linguistics: ACL 2026",
     "venue_short": "ACL Findings 2026",
-    "venue_citation": "Accepted to Findings of the Association for Computational Linguistics: ACL 2026.",
-    "pdf": "/files/banglamedqa-acl2026.pdf",
-    "abstract": "Recent advancements in Large Language Models (LLMs) and Large Vision Language Models (LVLMs) have enabled general-purpose systems to demonstrate promising capabilities in complex reasoning tasks, including those in the medical domain. However, their evaluation has predominantly focused on high-resource languages, leaving low-resource contexts like Bangla underexplored. To address this gap, we introduce BanglaMedVQA, a multilingual Medical Visual Question Answering (VQA) dataset comprising clinically validated image-question-answer pairs, along with a comprehensive evaluation of current LVLMs on this resource. We rigorously evaluate nine state-of-the-art LVLMs using zero-shot, Chain-of-Thought (CoT), and LoRA fine-tuning strategies. Our results reveal a clear performance disparity: models perform well on generalized visual tasks but struggle with fine-grained diagnostic reasoning, achieving surprisingly low accuracy in specialized categories. While fine-tuning significantly improves overall accuracy, especially for Qwen2.5-VL and MedGemma 4B, limitations in specialized medical reasoning persist. Our work provides a foundation for future research in Bangla medical VQA. The code and dataset are available at https://ahmedrafid023.github.io/med-vqa-page/.",
-    "bibtex": "@inproceedings{ahmed-etal-2026-banglamedqa,\n    title = {Evaluating Large Vision Language Models on Bangla Medical Visual Question Answering},\n    author = {Rafid Ahmed and Intesar Tahmid and Mir Sazzat Hossain and Tasnimul Hossain Tomal and Md Mahir Jawad and Anam Borhan Uddin and Md Fahim and Md Farhad Alam Bhuiyan},\n    booktitle = {Findings of the Association for Computational Linguistics: ACL 2026},\n    year = {2026},\n    note = {Accepted}\n}"
+    "venue_citation": "Findings of the Association for Computational Linguistics: ACL 2026.",
+    "pages": "37362--37378",
+    "url": "https://aclanthology.org/2026.findings-acl.1862/",
+    "pdf": "https://aclanthology.org/2026.findings-acl.1862.pdf",
+    "doi": "10.18653/v1/2026.findings-acl.1862",
+    "abstract": "Recent advancements in Large Language Models (LLMs) and Large Vision Language Models (LVLMs) have enabled general-purpose systems to demonstrate promising capabilities in complex reasoning tasks, including those in the medical domain. However, their evaluation has predominantly focused on high-resource languages, leaving low-resource contexts like Bangla underexplored. To address this gap, we introduce BanglaMedVQA, a multilingual Medical Visual Question Answering (VQA) dataset comprising clinically validated image–question–answer pairs, along with a comprehensive evaluation of current LVLMs on this resource. We rigorously evaluate nine state-of-the-art LVLMs using zero-shot, Chain-of-Thought (CoT), and LoRA fine-tuning strategies. Our results reveal a clear performance disparity: models perform well on generalized visual tasks but struggle with fine-grained diagnostic reasoning, achieving surprisingly low accuracy in specialized categories. While fine-tuning significantly improves overall accuracy, especially for Qwen2.5-VL and MedGemma 4B, limitations in specialized medical reasoning persist. Our work provides a foundation for future research in Bangla medical VQA.",
+    "bibtex": "@inproceedings{ahmed-etal-2026-evaluating,\n    title = \"Evaluating Large Vision Language Models on {B}angla Medical Visual Question Answering\",\n    author = \"Ahmed, Rafid  and\n      Tahmid, Intesar  and\n      Hossain, Mir Sazzat  and\n      Tomal, Tasnimul Hossain  and\n      Jawad, Md Mahir  and\n      Uddin, Anam Borhan  and\n      Fahim, Md  and\n      Bhuiyan, Md Farhad Alam\",\n    editor = \"Liakata, Maria  and\n      Moreira, Viviane P.  and\n      Zhang, Jiajun  and\n      Jurgens, David\",\n    booktitle = \"Findings of the {A}ssociation for {C}omputational {L}inguistics: {ACL} 2026\",\n    month = jul,\n    year = \"2026\",\n    address = \"San Diego, California, United States\",\n    publisher = \"Association for Computational Linguistics\",\n    url = \"https://aclanthology.org/2026.findings-acl.1862/\",\n    doi = \"10.18653/v1/2026.findings-acl.1862\",\n    pages = \"37362--37378\",\n    ISBN = \"979-8-89176-395-1\",\n    abstract = \"Recent advancements in Large Language Models (LLMs) and Large Vision Language Models (LVLMs) have enabled general-purpose systems to demonstrate promising capabilities in complex reasoning tasks, including those in the medical domain. However, their evaluation has predominantly focused on high-resource languages, leaving low-resource contexts like Bangla underexplored. To address this gap, we introduce BanglaMedVQA, a multilingual Medical Visual Question Answering (VQA) dataset comprising clinically validated image{--}question{--}answer pairs, along with a comprehensive evaluation of current LVLMs on this resource. We rigorously evaluate nine state-of-the-art LVLMs using zero-shot, Chain-of-Thought (CoT), and LoRA fine-tuning strategies. Our results reveal a clear performance disparity: models perform well on generalized visual tasks but struggle with fine-grained diagnostic reasoning, achieving surprisingly low accuracy in specialized categories. While fine-tuning significantly improves overall accuracy, especially for Qwen2.5-VL and MedGemma 4B, limitations in specialized medical reasoning persist. Our work provides a foundation for future research in Bangla medical VQA.\"\n}",
+    "slug": "banglamedqa-acl-findings-2026"
   },
   {
     "id": "2P1L_qKh6hAC",
