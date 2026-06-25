@@ -57,7 +57,11 @@ export default function Comments(): JSX.Element {
           reactionsEnabled="1"
           emitMetadata="0"
           inputPosition="top"
-          theme={giscusTheme === "dark" ? "dark" : "light"}
+          theme={
+            giscusTheme === "dark"
+              ? "https://mirsazzathossain.me/giscus-dark.css"
+              : "https://mirsazzathossain.me/giscus-light.css"
+          }
           lang="en"
           loading="lazy"
         />
