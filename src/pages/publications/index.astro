@@ -6,7 +6,6 @@ import {
   sortPublicationsByDate,
   getPublicationType,
   getPublicationKeywords,
-  getPublicationChartHeightClass,
   type Publication,
   type PublicationFilter,
   type ScholarStats,
@@ -116,7 +115,8 @@ function buildSearchText(pub: Publication): string {
           <div class="flex flex-col items-center gap-[3px] h-full justify-end">
             <span class="font-mono text-[9.5px] text-ink-2 leading-none">{count}</span>
             <div
-              class={`w-full min-h-[3px] bg-link rounded-t-[3px] opacity-85 ${getPublicationChartHeightClass(count, maxCount)}`}
+              class="w-full min-h-[3px] bg-link rounded-t-[3px] opacity-85"
+              style={`height: ${Math.max(3, (count / maxCount) * 100)}%`}
               aria-hidden="true"
             />
             <span class="font-mono text-[9.5px] text-ink-3 leading-none">{yr.slice(-2)}</span>

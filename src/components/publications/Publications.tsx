@@ -4,7 +4,6 @@ import { Pagination } from "@/components/ui/Pagination";
 import { SearchField } from "@/components/ui/SearchField";
 import {
   getCitationCount,
-  getPublicationChartHeightClass,
   getPublicationKeywords,
   getPublicationType,
   PUBLICATION_FILTERS,
@@ -159,10 +158,8 @@ export default function Publications({
                 {count}
               </span>
               <div
-                className={`w-full min-h-[3px] bg-link rounded-t-[3px] opacity-85 ${getPublicationChartHeightClass(
-                  count,
-                  maxYearCount
-                )}`}
+                className="w-full min-h-[3px] bg-link rounded-t-[3px] opacity-85"
+                style={{ height: `${Math.max(3, (count / maxYearCount) * 100)}%` }}
                 aria-hidden="true"
               />
               <span className="font-mono text-[9.5px] text-ink-3 leading-none">

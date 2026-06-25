@@ -198,20 +198,6 @@ export function getPublicationKeywords(publication: Publication): string[] {
     .filter(Boolean);
 }
 
-export function getPublicationChartHeightClass(
-  count: number,
-  maxCount: number,
-): string {
-  const ratio = maxCount > 0 ? count / maxCount : 0;
-
-  if (ratio >= 0.9) return "h-full";
-  if (ratio >= 0.75) return "h-3/4";
-  if (ratio >= 0.6) return "h-3/5";
-  if (ratio >= 0.5) return "h-1/2";
-  if (ratio >= 0.33) return "h-1/3";
-  if (ratio >= 0.25) return "h-1/4";
-  return "h-[12%]";
-}
 
 export function sortPublicationsByDate(
   publications: Publication[],
