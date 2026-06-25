@@ -5,7 +5,7 @@ import sitemap from "@astrojs/sitemap";
 import vercel from "@astrojs/vercel";
 import { defineConfig } from "astro/config";
 import tailwindcss from "@tailwindcss/vite";
-import { katexPlugin, externalLinksPlugin } from "./src/lib/satteri-plugins.mjs";
+import { prismPlugin, katexPlugin, externalLinksPlugin } from "./src/lib/satteri-plugins.mjs";
 
 import { readFileSync, readdirSync, writeFileSync } from "fs";
 import { join } from "path";
@@ -69,8 +69,9 @@ export default defineConfig({
 
   markdown: {
     processor: satteri({
+      syntaxHighlight: false,
       features: { math: true },
-      hastPlugins: [katexPlugin, externalLinksPlugin],
+      hastPlugins: [prismPlugin, katexPlugin, externalLinksPlugin],
     }),
   },
 
@@ -106,7 +107,7 @@ export default defineConfig({
 
   integrations: [
     mdx({
-      syntaxHighlight: "prism",
+      syntaxHighlight: false,
     }),
     react(),
     sitemap({
