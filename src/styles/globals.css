@@ -77,6 +77,27 @@
   }
 }
 
+/* Consistent scrollbar for all scrollable pre elements site-wide */
+pre {
+  scrollbar-width: thin;
+  scrollbar-color: var(--ink-4) var(--bg-2);
+}
+
+pre::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+  background: var(--bg-2);
+}
+
+pre::-webkit-scrollbar-thumb {
+  background: var(--ink-4);
+  border-radius: 3px;
+}
+
+pre::-webkit-scrollbar-track {
+  background: var(--bg-2);
+}
+
 @utility no-scrollbar {
   &::-webkit-scrollbar {
     display: none;
@@ -213,22 +234,6 @@
   line-height: 1.55;
   color: var(--ink);
   white-space: pre;
-  scrollbar-width: thin;
-  scrollbar-color: var(--ink-4) var(--bg-2);
-}
-
-.post-body pre::-webkit-scrollbar {
-  height: 6px;
-  background: var(--bg-2);
-}
-
-.post-body pre::-webkit-scrollbar-thumb {
-  background: var(--ink-4);
-  border-radius: 3px;
-}
-
-.post-body pre::-webkit-scrollbar-track {
-  background: var(--bg-2);
 }
 
 .post-body pre code {
