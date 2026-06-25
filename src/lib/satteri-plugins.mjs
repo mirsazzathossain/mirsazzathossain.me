@@ -13,8 +13,9 @@ function wrapHtml(html, ctx) {
 }
 
 /**
- * Prism syntax highlighting — runs on <pre> elements and skips math blocks.
- * Must come BEFORE katexPlugin so it doesn't steal display-math <pre> nodes.
+ * Handles both display math AND Prism syntax highlighting at the <pre> level.
+ * By handling display math here, the entire <pre> is replaced — preventing
+ * CodeBlock component substitution from wrapping KaTeX output with a copy button.
  */
 export const prismPlugin = defineHastPlugin({
   name: "prism-highlight",
@@ -27,9 +28,23 @@ export const prismPlugin = defineHastPlugin({
       if (!codeChild || codeChild.type !== "element") return;
 
       const classes = codeChild.properties?.className ?? [];
-      // Skip math display blocks — katexPlugin handles these
-      if (classes.includes("math-display") || classes.includes("math-inline")) return;
 
+      // Display math — render with KaTeX and replace the whole <pre>
+      if (classes.includes("math-display")) {
+        const latex = ctx.textContent(codeChild);
+        const rendered = katex.renderToString(latex, {
+          displayMode: true,
+          throwOnError: false,
+          output: "html",
+          strict: "ignore",
+        });
+        return wrapHtml(rendered, ctx);
+      }
+
+      // Skip inline math (handled by katexPlugin on <code> nodes)
+      if (classes.includes("math-inline")) return;
+
+      // Regular code block — apply Prism
       const lang = codeChild.data?.lang ?? "plaintext";
       const code = ctx.textContent(codeChild).replace(/\n$/, "");
 
@@ -44,26 +59,23 @@ export const prismPlugin = defineHastPlugin({
   },
 });
 
+/** Handles inline math only — display math is handled by prismPlugin at <pre> level. */
 export const katexPlugin = defineHastPlugin({
   name: "katex",
   element: {
     filter: ["code"],
     async visit(node, ctx) {
       const classes = node.properties?.className ?? [];
-      const isInline = classes.includes("math-inline");
-      const isDisplay = classes.includes("math-display");
-      if (!isInline && !isDisplay) return;
+      if (!classes.includes("math-inline")) return;
 
       const latex = ctx.textContent(node);
       const rendered = katex.renderToString(latex, {
-        displayMode: isDisplay,
+        displayMode: false,
         throwOnError: false,
         output: "html",
         strict: "ignore",
       });
 
-      // For display math, the <code> is inside a <pre> — the <pre> parent
-      // will be replaced when this <code> node is replaced. Wrap appropriately.
       return wrapHtml(rendered, ctx);
     },
   },
