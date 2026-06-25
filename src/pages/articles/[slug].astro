@@ -286,4 +286,24 @@ const referenceItems = entry.data.references ?? [];
       heading.id = slugifyHeading(heading.textContent || "");
     }
   });
+
+  // Wrap bare <pre> blocks with a copy-button container
+  document.querySelectorAll(".post-body pre").forEach((pre) => {
+    if (pre.closest(".block-code")) return;
+    const wrapper = document.createElement("div");
+    wrapper.className = "block-code group relative my-4";
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.dataset.copyCode = "";
+    btn.className =
+      "copy-code-button not-prose absolute right-2 top-2 z-10 inline-flex items-center gap-1 rounded border border-rule bg-bg-2 px-2 py-1 font-mono text-[10.5px] leading-none text-ink-3 transition-colors hover:border-link/35 hover:bg-accent-soft hover:text-link";
+    btn.setAttribute("aria-label", "Copy code");
+    btn.innerHTML =
+      '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span data-copy-label>Copy</span>';
+    pre.parentNode.insertBefore(wrapper, pre);
+    wrapper.appendChild(btn);
+    wrapper.appendChild(pre);
+    // Give <pre> room for the button
+    pre.style.paddingRight = "60px";
+  });
 </script>

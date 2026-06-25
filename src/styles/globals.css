@@ -200,6 +200,37 @@
   color: var(--ink);
 }
 
+.post-body pre {
+  position: relative;
+  margin: 1em 0;
+  overflow-x: auto;
+  border-radius: var(--r);
+  border: 1px solid var(--rule);
+  background: var(--bg-2);
+  padding: 12px 52px 12px 14px;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--ink);
+  white-space: pre;
+  scrollbar-width: thin;
+  scrollbar-color: var(--ink-4) var(--bg-2);
+}
+
+.post-body pre::-webkit-scrollbar {
+  height: 6px;
+  background: var(--bg-2);
+}
+
+.post-body pre::-webkit-scrollbar-thumb {
+  background: var(--ink-4);
+  border-radius: 3px;
+}
+
+.post-body pre::-webkit-scrollbar-track {
+  background: var(--bg-2);
+}
+
 .post-body pre code {
   border: 0;
   background: transparent;

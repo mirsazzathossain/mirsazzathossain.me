@@ -12,29 +12,27 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/mdx": "^6.0.3",
+    "@astrojs/mdx": "^7.0.0",
     "@astrojs/prism": "^4.0.2",
     "@astrojs/react": "^6.0.0",
     "@astrojs/rss": "^4.0.18",
     "@astrojs/sitemap": "^3.7.3",
-    "@astrojs/vercel": "^10.0.8",
+    "@astrojs/vercel": "^11.0.0",
     "@giscus/react": "^3.1.0",
     "@tailwindcss/typography": "^0.5.20",
     "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^2.0.0",
-    "astro": "^6.4.8",
+    "astro": "^7.0.2",
     "react": "^19.2.5",
     "react-dom": "^19.2.7",
-    "rehype-katex": "^7.0.1",
-    "remark-math": "^6.0.0",
+    "katex": "^0.16.21",
     "tailwindcss": "^4.3.1"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.3.1",
+    "@tailwindcss/vite": "^4.3.1",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "postcss": "^8.5.15",
-    "rehype-external-links": "^3.0.0",
     "typescript": "^6.0.3"
   },
   "main": "index.js",
@@ -42,7 +40,7 @@
   "author": "mirsazzathossain <mirsazzathossain@gmail.com>",
   "license": "MIT",
   "overrides": {
-    "vite": "^7.3.2",
+    "vite": "^8.0.0",
     "path-to-regexp": "6.3.0",
     "fast-xml-builder": ">=1.1.6"
   }

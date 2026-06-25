@@ -1,11 +1,11 @@
 import mdx from "@astrojs/mdx";
+import { satteri } from "@astrojs/markdown-satteri";
 import react from "@astrojs/react";
 import sitemap from "@astrojs/sitemap";
 import vercel from "@astrojs/vercel";
 import { defineConfig } from "astro/config";
-import rehypeExternalLinks from "rehype-external-links";
-import rehypeKatex from "rehype-katex";
-import remarkMath from "remark-math";
+import tailwindcss from "@tailwindcss/vite";
+import { prismPlugin, katexPlugin, externalLinksPlugin } from "./src/lib/satteri-plugins.mjs";
 
 import { readFileSync, readdirSync, writeFileSync } from "fs";
 import { join } from "path";
@@ -67,11 +67,20 @@ export default defineConfig({
   output: "static",
   adapter: vercel(),
 
+  markdown: {
+    processor: satteri({
+      syntaxHighlight: false,
+      features: { math: true },
+      hastPlugins: [prismPlugin, katexPlugin, externalLinksPlugin],
+    }),
+  },
+
   build: {
     inlineStylesheets: "always",
   },
 
   vite: {
+    plugins: [tailwindcss()],
     resolve: {
       dedupe: ["react", "react-dom"],
     },
@@ -98,12 +107,7 @@ export default defineConfig({
 
   integrations: [
     mdx({
-      syntaxHighlight: "prism",
-      remarkPlugins: [remarkMath],
-      rehypePlugins: [
-        rehypeKatex,
-        [rehypeExternalLinks, { target: "_blank", rel: ["noopener", "noreferrer"] }],
-      ],
+      syntaxHighlight: false,
     }),
     react(),
     sitemap({
