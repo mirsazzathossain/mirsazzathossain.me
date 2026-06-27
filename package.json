@@ -9,7 +9,24 @@
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,astro}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{js,mjs,cjs}": [
+      "prettier --write"
+    ],
+    "*.{json,md,css}": [
+      "prettier --write"
+    ]
   },
   "dependencies": {
     "@astrojs/mdx": "^7.0.0",
@@ -23,17 +40,29 @@
     "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^2.0.0",
     "astro": "^7.0.3",
+    "katex": "^0.17.0",
     "react": "^19.2.5",
     "react-dom": "^19.2.7",
-    "katex": "^0.17.0",
     "tailwindcss": "^4.3.1"
   },
   "devDependencies": {
+    "@eslint/js": "^9",
     "@tailwindcss/vite": "^4.3.1",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
+    "eslint": "^9",
+    "eslint-plugin-astro": "^2.1.1",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.0.8",
     "postcss": "^8.5.15",
-    "typescript": "^6.0.3"
+    "prettier": "^3.9.0",
+    "prettier-plugin-astro": "^0.14.1",
+    "prettier-plugin-tailwindcss": "^0.8.0",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.62.0"
   },
   "main": "index.js",
   "repository": "git@github.com:mirsazzathossain/mirsazzathossain.me.git",
@@ -42,6 +71,7 @@
   "overrides": {
     "vite": "^8.0.0",
     "path-to-regexp": "6.3.0",
-    "fast-xml-builder": ">=1.1.6"
+    "fast-xml-builder": ">=1.1.6",
+    "eslint": "^9"
   }
 }

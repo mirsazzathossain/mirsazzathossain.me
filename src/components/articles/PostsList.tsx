@@ -1,7 +1,7 @@
 "use client";
 
 import type { ArticleEntry } from "@/utils/articles";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { ArticleListItem } from "@/components/articles/ArticleListItem";
 import { Pagination } from "@/components/ui/Pagination";
 import { SearchField } from "@/components/ui/SearchField";
@@ -37,24 +37,19 @@ export default function PostsList({
   }, [articles, query]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / POSTS_PER_PAGE));
-  const pageArticles = filtered.slice(
-    (page - 1) * POSTS_PER_PAGE,
-    page * POSTS_PER_PAGE,
-  );
+  const safePage = Math.min(page, totalPages);
+  const pageArticles = filtered.slice((safePage - 1) * POSTS_PER_PAGE, safePage * POSTS_PER_PAGE);
 
-  useEffect(() => {
+  const handleQueryChange = (q: string) => {
+    setQuery(q);
     setPage(1);
-  }, [query]);
-
-  useEffect(() => {
-    if (page > totalPages) setPage(totalPages);
-  }, [page, totalPages]);
+  };
 
   return (
     <div>
       <SearchField
         value={query}
-        onChange={setQuery}
+        onChange={handleQueryChange}
         placeholder="Search posts..."
         label="Search posts"
         className="mb-[22px] max-w-[360px]"
@@ -67,14 +62,14 @@ export default function PostsList({
       </ul>
 
       {filtered.length === 0 && (
-        <div className="rounded border border-dashed border-rule bg-bg-2 p-8 text-center font-serif text-[15px] text-ink-3">
+        <div className="border-rule bg-bg-2 text-ink-3 rounded border border-dashed p-8 text-center font-serif text-[15px]">
           No posts found.
         </div>
       )}
 
       {filtered.length > POSTS_PER_PAGE && (
         <Pagination
-          page={page}
+          page={safePage}
           totalPages={totalPages}
           onPageChange={setPage}
           label="Posts pagination"

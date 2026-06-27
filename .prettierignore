@@ -1,0 +1,6 @@
+dist
+.astro
+.vercel
+node_modules
+public
+*.min.js

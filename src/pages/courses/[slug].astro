@@ -26,46 +26,100 @@ interface Props {
 const { course } = Astro.props;
 ---
 
-<Layout
-  title={course.title}
-  description={course.summary}
-  canonicalPath={`/courses/${course.slug}`}
->
-  <div class="grid grid-cols-1 lg:grid-cols-[220px_1fr] gap-9 mt-2">
-
+<Layout title={course.title} description={course.summary} canonicalPath={`/courses/${course.slug}`}>
+  <div class="mt-2 grid grid-cols-1 gap-9 lg:grid-cols-[220px_1fr]">
     {/* Sidebar */}
-    <aside class="lg:sticky lg:top-[80px] lg:self-start flex flex-col gap-0">
-      <a href="/courses" class="font-mono text-[12px] text-ink-2 hover:text-link mb-[14px] inline-flex items-center gap-1 transition-colors">
+    <aside class="flex flex-col gap-0 lg:sticky lg:top-[80px] lg:self-start">
+      <a
+        href="/courses"
+        class="text-ink-2 hover:text-link mb-[14px] inline-flex items-center gap-1 font-mono text-[12px] transition-colors"
+      >
         <ArrowLeftIcon className="h-[10px] w-[10px] shrink-0" />
         All courses
       </a>
 
       {/* Course code callout */}
-      <div class="p-[14px_16px] border border-rule rounded-[6px] bg-bg-2 mb-3">
-        <div class="font-mono text-[10.5px] tracking-[0.1em] uppercase text-ink-3 mb-1">Course code</div>
-        <div class="font-mono text-[16px] text-ink font-semibold">{course.code}</div>
+      <div class="border-rule bg-bg-2 mb-3 rounded-[6px] border p-[14px_16px]">
+        <div class="text-ink-3 mb-1 font-mono text-[10.5px] tracking-[0.1em] uppercase">
+          Course code
+        </div>
+        <div class="text-ink font-mono text-[16px] font-semibold">{course.code}</div>
       </div>
 
       {/* On this page */}
-      <div class="p-[14px_16px] border border-rule rounded-[6px] bg-bg-2">
-        <div class="font-mono text-[10.5px] tracking-[0.1em] uppercase text-ink-3 mb-2">On this page</div>
-        <ul class="list-none p-0 m-0 flex flex-col gap-[6px]">
-          {course.summary && <li><a href="#summary" class="text-[12.5px] text-ink-2 hover:text-link transition-colors">Summary</a></li>}
-          {course.schedule && course.schedule.length > 0 && <li><a href="#schedule" class="text-[12.5px] text-ink-2 hover:text-link transition-colors">Weekly schedule</a></li>}
-          {course.content && course.content.length > 0 && <li><a href="#content" class="text-[12.5px] text-ink-2 hover:text-link transition-colors">Tutorial content</a></li>}
-          {course.resources && course.resources.length > 0 && <li><a href="#resources" class="text-[12.5px] text-ink-2 hover:text-link transition-colors">Resources</a></li>}
+      <div class="border-rule bg-bg-2 rounded-[6px] border p-[14px_16px]">
+        <div class="text-ink-3 mb-2 font-mono text-[10.5px] tracking-[0.1em] uppercase">
+          On this page
+        </div>
+        <ul class="m-0 flex list-none flex-col gap-[6px] p-0">
+          {
+            course.summary && (
+              <li>
+                <a
+                  href="#summary"
+                  class="text-ink-2 hover:text-link text-[12.5px] transition-colors"
+                >
+                  Summary
+                </a>
+              </li>
+            )
+          }
+          {
+            course.schedule && course.schedule.length > 0 && (
+              <li>
+                <a
+                  href="#schedule"
+                  class="text-ink-2 hover:text-link text-[12.5px] transition-colors"
+                >
+                  Weekly schedule
+                </a>
+              </li>
+            )
+          }
+          {
+            course.content && course.content.length > 0 && (
+              <li>
+                <a
+                  href="#content"
+                  class="text-ink-2 hover:text-link text-[12.5px] transition-colors"
+                >
+                  Tutorial content
+                </a>
+              </li>
+            )
+          }
+          {
+            course.resources && course.resources.length > 0 && (
+              <li>
+                <a
+                  href="#resources"
+                  class="text-ink-2 hover:text-link text-[12.5px] transition-colors"
+                >
+                  Resources
+                </a>
+              </li>
+            )
+          }
         </ul>
       </div>
     </aside>
 
     {/* Main content */}
     <main>
-      <p class="font-mono text-[11px] tracking-[0.14em] uppercase text-ink-3 m-0 mb-[6px]">{course.role} · {course.term}</p>
-      <h1 class="font-serif text-[clamp(22px,3.5vw,28px)] leading-[1.15] tracking-[-0.018em] m-0 mb-2 text-ink">{course.title}</h1>
-      <p class="text-[13px] text-ink-3 m-0 mb-[14px]">{course.inst}</p>
+      <p class="text-ink-3 m-0 mb-[6px] font-mono text-[11px] tracking-[0.14em] uppercase">
+        {course.role} · {course.term}
+      </p>
+      <h1
+        class="text-ink m-0 mb-2 font-serif text-[clamp(22px,3.5vw,28px)] leading-[1.15] tracking-[-0.018em]"
+      >
+        {course.title}
+      </h1>
+      <p class="text-ink-3 m-0 mb-[14px] text-[13px]">{course.inst}</p>
 
       {/* Meta strip */}
-      <div class="flex flex-wrap gap-[14px] py-[14px] border-t border-b border-rule mb-[22px] font-mono text-[12px] text-ink-2">
+      <div
+        class="border-rule text-ink-2 mb-[22px] flex flex-wrap gap-[14px] border-t border-b py-[14px] font-mono text-[12px]"
+      >
         <span class="inline-flex items-center gap-[5px]">
           <CalendarIcon className="h-[11px] w-[11px] shrink-0" />
           {course.term}
@@ -74,89 +128,132 @@ const { course } = Astro.props;
           <PinIcon className="h-[11px] w-[11px] shrink-0" />
           {course.inst}
         </span>
-        {course.students && (
-          <span class="inline-flex items-center gap-[5px]">
-            <UsersIcon className="h-[11px] w-[11px] shrink-0" />
-            {course.students} students
-          </span>
-        )}
-        {course.repo && course.repo !== "#" && (
-          <span class="inline-flex items-center gap-[5px] leading-none">
-            <GitHubIcon className="h-[12px] w-[12px] shrink-0" />
-            <a href={course.repo} class="text-link hover:underline" target="_blank" rel="noreferrer">Course repository</a>
-          </span>
-        )}
+        {
+          course.students && (
+            <span class="inline-flex items-center gap-[5px]">
+              <UsersIcon className="h-[11px] w-[11px] shrink-0" />
+              {course.students} students
+            </span>
+          )
+        }
+        {
+          course.repo && course.repo !== "#" && (
+            <span class="inline-flex items-center gap-[5px] leading-none">
+              <GitHubIcon className="h-[12px] w-[12px] shrink-0" />
+              <a
+                href={course.repo}
+                class="text-link hover:underline"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Course repository
+              </a>
+            </span>
+          )
+        }
       </div>
 
       {/* Summary section */}
-      {course.summary && (
-        <section id="summary" class="mb-[26px]">
-          <h2 class="font-mono text-[11px] tracking-[0.14em] uppercase text-ink-3 m-0 mb-[10px] pb-[6px] border-b border-rule">Summary</h2>
-          <p class="font-serif text-[16px] leading-[1.62] text-ink m-0 mb-3 max-w-[65ch]">{course.summary}</p>
-          {course.outcome && (
-            <div class="p-[14px_16px] border border-rule rounded-[6px] bg-bg-2">
-              <div class="font-mono text-[10.5px] tracking-[0.1em] uppercase text-ink-3 mb-1">Learning outcome</div>
-              <div class="text-[13.5px] text-ink-2 leading-[1.55]">{course.outcome}</div>
-            </div>
-          )}
-        </section>
-      )}
+      {
+        course.summary && (
+          <section id="summary" class="mb-[26px]">
+            <h2 class="text-ink-3 border-rule m-0 mb-[10px] border-b pb-[6px] font-mono text-[11px] tracking-[0.14em] uppercase">
+              Summary
+            </h2>
+            <p class="text-ink m-0 mb-3 max-w-[65ch] font-serif text-[16px] leading-[1.62]">
+              {course.summary}
+            </p>
+            {course.outcome && (
+              <div class="border-rule bg-bg-2 rounded-[6px] border p-[14px_16px]">
+                <div class="text-ink-3 mb-1 font-mono text-[10.5px] tracking-[0.1em] uppercase">
+                  Learning outcome
+                </div>
+                <div class="text-ink-2 text-[13.5px] leading-[1.55]">{course.outcome}</div>
+              </div>
+            )}
+          </section>
+        )
+      }
 
       {/* Schedule section */}
-      {course.schedule && course.schedule.length > 0 && (
-        <section id="schedule" class="mb-[26px]">
-          <h2 class="font-mono text-[11px] tracking-[0.14em] uppercase text-ink-3 m-0 mb-[10px] pb-[6px] border-b border-rule">Weekly schedule</h2>
-          <ol class="list-none p-0 m-0">
-            {course.schedule.map((item, i) => (
-              <li class="grid grid-cols-[140px_1fr] gap-[14px] border-b border-rule-2 py-[9px] text-[13.5px] last:border-b-0">
-                <span class="font-mono text-[11.5px] text-link">{item.week}</span>
-                <span class="text-ink-2">{item.topic}</span>
-              </li>
-            ))}
-          </ol>
-        </section>
-      )}
+      {
+        course.schedule && course.schedule.length > 0 && (
+          <section id="schedule" class="mb-[26px]">
+            <h2 class="text-ink-3 border-rule m-0 mb-[10px] border-b pb-[6px] font-mono text-[11px] tracking-[0.14em] uppercase">
+              Weekly schedule
+            </h2>
+            <ol class="m-0 list-none p-0">
+              {course.schedule.map((item) => (
+                <li class="border-rule-2 grid grid-cols-[140px_1fr] gap-[14px] border-b py-[9px] text-[13.5px] last:border-b-0">
+                  <span class="text-link font-mono text-[11.5px]">{item.week}</span>
+                  <span class="text-ink-2">{item.topic}</span>
+                </li>
+              ))}
+            </ol>
+          </section>
+        )
+      }
 
       {/* Notebooks section */}
-      {course.content && course.content.length > 0 && (
-        <section id="content" class="mb-[26px]">
-          <h2 class="font-mono text-[11px] tracking-[0.14em] uppercase text-ink-3 m-0 mb-[10px] pb-[6px] border-b border-rule">Tutorial content</h2>
-          <div class="grid gap-2">
-            {course.content.map((nb) => (
-              <div class="grid grid-cols-[36px_1fr_auto] items-center gap-3 rounded-[6px] border border-rule bg-bg p-[10px_12px]">
-                <span class="font-mono text-[11px] text-ink-3">#{nb.n}</span>
-                <span class="text-[13.5px] text-ink">{nb.title}</span>
-                {nb.href ? (
-                  <a href={nb.href} target="_blank" rel="noreferrer" class="font-mono text-[11.5px] text-link hover:underline whitespace-nowrap inline-flex items-center gap-1">
-                    <DownloadIcon className="h-[10px] w-[10px] shrink-0" />
-                    {`.${nb.href.split('.').pop()}`}
-                  </a>
-                ) : (
-                  <span class="font-mono text-[11.5px] text-ink-3 whitespace-nowrap">coming soon</span>
-                )}
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
+      {
+        course.content && course.content.length > 0 && (
+          <section id="content" class="mb-[26px]">
+            <h2 class="text-ink-3 border-rule m-0 mb-[10px] border-b pb-[6px] font-mono text-[11px] tracking-[0.14em] uppercase">
+              Tutorial content
+            </h2>
+            <div class="grid gap-2">
+              {course.content.map((nb) => (
+                <div class="border-rule bg-bg grid grid-cols-[36px_1fr_auto] items-center gap-3 rounded-[6px] border p-[10px_12px]">
+                  <span class="text-ink-3 font-mono text-[11px]">#{nb.n}</span>
+                  <span class="text-ink text-[13.5px]">{nb.title}</span>
+                  {nb.href ? (
+                    <a
+                      href={nb.href}
+                      target="_blank"
+                      rel="noreferrer"
+                      class="text-link inline-flex items-center gap-1 font-mono text-[11.5px] whitespace-nowrap hover:underline"
+                    >
+                      <DownloadIcon className="h-[10px] w-[10px] shrink-0" />
+                      {`.${nb.href.split(".").pop()}`}
+                    </a>
+                  ) : (
+                    <span class="text-ink-3 font-mono text-[11.5px] whitespace-nowrap">
+                      coming soon
+                    </span>
+                  )}
+                </div>
+              ))}
+            </div>
+          </section>
+        )
+      }
 
       {/* Resources section */}
-      {course.resources && course.resources.length > 0 && (
-        <section id="resources" class="mb-[26px]">
-          <h2 class="font-mono text-[11px] tracking-[0.14em] uppercase text-ink-3 m-0 mb-[10px] pb-[6px] border-b border-rule">Resources &amp; references</h2>
-          <ul class="list-none p-0 m-0 grid gap-2">
-            {course.resources.map((r) => (
-              <li class="flex justify-between items-center p-[10px_12px] border border-rule rounded-[6px] text-[13.5px]">
-                <span class="text-ink">{r.title}</span>
-                <a href={r.href} class="font-mono text-[11.5px] text-link hover:underline ml-4 shrink-0 inline-flex items-center gap-1" target="_blank" rel="noreferrer">
-                  <ExternalLinkIcon className="h-[10px] w-[10px] shrink-0" />
-                  open
-                </a>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
+      {
+        course.resources && course.resources.length > 0 && (
+          <section id="resources" class="mb-[26px]">
+            <h2 class="text-ink-3 border-rule m-0 mb-[10px] border-b pb-[6px] font-mono text-[11px] tracking-[0.14em] uppercase">
+              Resources &amp; references
+            </h2>
+            <ul class="m-0 grid list-none gap-2 p-0">
+              {course.resources.map((r) => (
+                <li class="border-rule flex items-center justify-between rounded-[6px] border p-[10px_12px] text-[13.5px]">
+                  <span class="text-ink">{r.title}</span>
+                  <a
+                    href={r.href}
+                    class="text-link ml-4 inline-flex shrink-0 items-center gap-1 font-mono text-[11.5px] hover:underline"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <ExternalLinkIcon className="h-[10px] w-[10px] shrink-0" />
+                    open
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )
+      }
     </main>
   </div>
 </Layout>

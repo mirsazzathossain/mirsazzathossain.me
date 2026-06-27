@@ -6,11 +6,7 @@ import ProjectCard from "@/components/projects/ProjectCard";
 
 const PROJECT_TYPE_ORDER = ["Research", "Course", "Hobby", "Tool", "Other"];
 
-export default function ListProjects({
-  projects,
-}: {
-  projects: Project[];
-}): JSX.Element {
+export default function ListProjects({ projects }: { projects: Project[] }): JSX.Element {
   const [type, setType] = useState("All");
 
   const normalizedProjects = useMemo(
@@ -38,9 +34,9 @@ export default function ListProjects({
 
   return (
     <div>
-      <div className="mb-5 flex flex-wrap items-center justify-between gap-3 border-b border-rule pb-4">
+      <div className="border-rule mb-5 flex flex-wrap items-center justify-between gap-3 border-b pb-4">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="font-mono text-[10.5px] tracking-[0.1em] uppercase text-ink-3">
+          <span className="text-ink-3 font-mono text-[10.5px] tracking-[0.1em] uppercase">
             Type
           </span>
           {filters.map((filter) => (
@@ -50,8 +46,8 @@ export default function ListProjects({
               onClick={() => setType(filter)}
               className={
                 type === filter
-                  ? "rounded border border-ink bg-ink px-3 py-1 text-[11px] font-mono text-bg transition-colors"
-                  : "rounded border border-rule bg-bg px-3 py-1 text-[11px] font-mono text-ink-2 transition-colors hover:border-ink-3 hover:text-ink"
+                  ? "border-ink bg-ink text-bg rounded border px-3 py-1 font-mono text-[11px] transition-colors"
+                  : "border-rule bg-bg text-ink-2 hover:border-ink-3 hover:text-ink rounded border px-3 py-1 font-mono text-[11px] transition-colors"
               }
             >
               {filter}
@@ -59,16 +55,12 @@ export default function ListProjects({
           ))}
         </div>
 
-        <p className="m-0 font-mono text-[11px] text-ink-3">
-          {filteredProjects.length}{" "}
-          {filteredProjects.length === 1 ? "project" : "projects"}
+        <p className="text-ink-3 m-0 font-mono text-[11px]">
+          {filteredProjects.length} {filteredProjects.length === 1 ? "project" : "projects"}
         </p>
       </div>
 
-      <ul
-        role="list"
-        className="m-0 grid list-none gap-[14px] p-0 [grid-template-columns:repeat(auto-fill,minmax(290px,1fr))]"
-      >
+      <ul className="m-0 grid list-none [grid-template-columns:repeat(auto-fill,minmax(290px,1fr))] gap-[14px] p-0">
         {filteredProjects.map((project) => (
           <li key={project.title} className="min-w-0">
             <ProjectCard project={project} />
@@ -77,7 +69,7 @@ export default function ListProjects({
       </ul>
 
       {filteredProjects.length === 0 && (
-        <div className="mt-6 rounded-[10px] border border-dashed border-rule bg-bg-2 p-6 text-center font-serif text-[15px] text-ink-3">
+        <div className="border-rule bg-bg-2 text-ink-3 mt-6 rounded-[10px] border border-dashed p-6 text-center font-serif text-[15px]">
           No projects match this type.
         </div>
       )}
