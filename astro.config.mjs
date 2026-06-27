@@ -34,7 +34,10 @@ function islandModulePreload() {
         function patchDir(dirPath) {
           for (const entry of readdirSync(dirPath, { withFileTypes: true })) {
             const full = join(dirPath, entry.name);
-            if (entry.isDirectory()) { patchDir(full); continue; }
+            if (entry.isDirectory()) {
+              patchDir(full);
+              continue;
+            }
             if (!entry.name.endsWith(".html")) continue;
 
             let html = readFileSync(full, "utf8");
@@ -66,6 +69,7 @@ export default defineConfig({
 
   output: "static",
   adapter: vercel(),
+  compressHTML: true,
 
   markdown: {
     processor: satteri({
