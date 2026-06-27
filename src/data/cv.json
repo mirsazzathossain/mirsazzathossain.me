@@ -22,6 +22,18 @@
       ]
     }
   ],
+  "work": [
+    {
+      "title": "AI/ML Engineer (Part-time)",
+      "org": "Penta Global Limited",
+      "date": "Aug 2025 – Present",
+      "location": "Dhaka, Bangladesh",
+      "bullets": [
+        "Developed a conversational AI plugin for Autodesk Revit that connects natural-language chat with custom Revit tools for interacting with and modifying 3D Building Information Modeling (BIM) models.",
+        "Working on a PDF-to-Revit workflow for generating downloadable Revit family files from design PDFs."
+      ]
+    }
+  ],
   "research": [
     {
       "title": "Post-baccalaureate Research Assistant",
@@ -31,7 +43,7 @@
       "bullets": [
         "**Research Interests:** Vision–language models, domain adaptation, federated learning, and medical imaging. Working on and co-supervising undergraduate theses and center-led projects in these areas.",
         "**Teaching Support:** Introduction to Programming, Data Structures, AI, ML, and Image Processing.",
-        "**Publications:** Q1 Journals ×2, ACL (A*), WACV (A), ICIP ×3 (B), AACL (B), IJCNN (B), and multiple workshop papers, including one in AAAI."
+        "**Publications:** Q1 Journals ×3, ACL (A*), WACV (A), ICIP ×3 (B), AACL (B), IJCNN (B), and multiple workshop papers, including one in AAAI."
       ]
     }
   ],
@@ -40,7 +52,7 @@
       "type": "C",
       "authors": ["Rafid Ahmed", "Intesar Tahmid", "Mir Sazzat Hossain", "Tasnimul Hossain Tomal", "Md Mahir Jawad", "Anam Borhan Uddin", "Md Fahim", "Md Farhad Alam Bhuiyan"],
       "title": "Evaluating Large Vision Language Models on Bangla Medical Visual Question Answering",
-      "venue": "In *Proceedings of the 64th Annual Meeting of the Association for Computational Linguistics (ACL)*, 2026.",
+      "venue": "In *Findings of the Association for Computational Linguistics: ACL 2026*, pages 37362–37378, San Diego, California, United States. Association for Computational Linguistics.",
       "rank": "CORE Rank: A*",
       "links": [{ "label": "Paper", "href": "/publications/banglamedqa-acl-findings-2026" }]
     },
@@ -100,6 +112,14 @@
     },
     {
       "type": "J",
+      "authors": ["Mir Sazzat Hossain", "Md Shahadat Hossain Shahal", "K M B Asad", "Payaswini Saikia", "Adrita Khan", "Fatema Akter", "Amin Ahsan Ali", "Md. Ashraful Amin", "Arshad Momen", "A K M Mahbubur Rahman"],
+      "title": "RGC: A Radio AGN Classifier Based on Deep Learning: I. A Semi-Supervised Model for the VLA Images of Bent Radio AGNs",
+      "venue": "accepted to *Astronomy & Astrophysics (A&A)*.",
+      "rank": "Q1 Journal",
+      "links": [{ "label": "Paper", "href": "/publications/_Qo2XoVZTnwC" }]
+    },
+    {
+      "type": "J",
       "authors": ["Fahim Mahafuz Ruhad", "Md Fahim", "Mir Sazzat Hossain", "Md Fahad Monir", "Md. Ashraful Amin", "Ashraful Islam"],
       "title": "Beyond Classification: Benchmarking Object Detection Models for Efficient Tomato Leaf Disease Identification on a Real-World Dataset",
       "venue": "in *Elsevier Smart Agricultural Technology*, vol. 12, pp. 101336, 2025, DOI: 10.1016/j.atech.2025.101336.",
@@ -150,49 +170,66 @@
   "underReview": [
     {
       "type": "C",
-      "authors": ["Md Akil Raihan Iftee", "Mir Sazzat Hossain", "Rakibul Hasan Rajib", "A K M Mahbubur Rahman", "Tariq Iqbal", "Md Mofijul Islam", "Md. Ashraful Amin", "Amin Ahsan Ali"],
-      "title": "SloMo-Fast: Slow-Momentum and Fast-Adaptive Teachers for Source-Free Continual Test-Time Adaptation",
-      "venue": "submitted to the *European Conference on Computer Vision (ECCV 2026)*.",
-      "rank": "CORE Rank: A*",
-      "links": [{ "label": "Paper", "href": "/publications/hC7cP41nSMkC" }]
+      "authors": ["Mir Sazzat Hossain", "Tasnimul Hossain Tomal", "Anam Borhan Uddin", "Md Fahim", "Md. Zakir Hossan", "Md Farhad Alam Bhuiyan"],
+      "title": "MOMA: Mixture of Multimodal Adapters for Vision Language Models",
+      "venue": "submitted to the *2026 Conference on Empirical Methods in Natural Language Processing (EMNLP 2026)*.",
+      "rank": "CORE Rank: A*"
     },
     {
       "type": "C",
-      "authors": ["Tasnimul Hossain Tomal", "Md Fahim", "Mir Sazzat Hossain", "Md Farhad Alam Bhuiyan"],
-      "title": "CEKALA: CKA-Guided Layer Selection for Efficient Vision–Language Adaptation",
-      "venue": "submitted to the *3rd Conference on Language Modeling (COLM 2026)*.",
-      "links": [{ "label": "Paper", "href": "/publications/cekala-colm-2026" }]
+      "authors": ["Md Mahir Jawad", "Galib Mahmud Jim", "Rafid Ahmed", "Mir Sazzat Hossain", "Md Fahim", "Md Farhad Alam Bhuiyan"],
+      "title": "5-DIALECTS-BN: Unmasking the Impact of Transliteration on Bangla Dialectal LLMs",
+      "venue": "submitted to the *2026 Conference on Empirical Methods in Natural Language Processing (EMNLP 2026)*.",
+      "rank": "CORE Rank: A*"
     },
     {
-      "type": "J",
-      "authors": ["Ezharuddin Jubaer", "Sumaiya Karim Katha", "Mir Sazzat Hossain", "Fahim Shahriar", "Amin Ahsan Ali", "AKM Mahbubur Rahman"],
-      "title": "TRoPE-TUL: Trajectory-User Linking via Spatio-Temporal Rotary Position Embedding",
-      "venue": "submitted to *Information Science*.",
-      "rank": "Q1 Journal"
+      "type": "C",
+      "authors": ["Rafid Ahmed", "Md. Faiyaz Abdullah Sayeedi", "Fariha Anjum Shifa", "Mir Sazzat Hossain", "Faria Iffat Reshma", "Mahbub E Sobhani", "Md Fahim", "Md Farhad Alam Bhuiyan"],
+      "title": "BANGLATMEDQA: A Multimodal Benchmark for Open Ended Bangla Medical Question Answering",
+      "venue": "submitted to the *2026 Conference on Empirical Methods in Natural Language Processing (EMNLP 2026)*.",
+      "rank": "CORE Rank: A*"
+    },
+    {
+      "type": "C",
+      "authors": ["Rafid Ahmed", "Mir Sazzat Hossain", "Intesar Tahmid", "Md Fahim", "Md Farhad Alam Bhuiyan"],
+      "title": "Pretrained VLM Projectors are Efficient Adapters for Vision Transformers",
+      "venue": "submitted to the *Winter Conference on Applications of Computer Vision (WACV 2027)*.",
+      "rank": "CORE Rank: A"
+    },
+    {
+      "type": "C",
+      "authors": ["Tasnimul Hossain Tomal", "Mir Sazzat Hossain", "Rafid Ahmed", "Md Fahim", "Md Farhad Alam Bhuiyan"],
+      "title": "CEKALA: CKA-Guided Layer Selection for Efficient Vision–Language Adaptation",
+      "venue": "submitted to the *Winter Conference on Applications of Computer Vision (WACV 2027)*.",
+      "rank": "CORE Rank: A"
+    },
+    {
+      "type": "C",
+      "authors": ["Md Akil Raihan Iftee", "Mir Sazzat Hossain", "Rakibul Hasan Rajib", "A K M Mahbubur Rahman", "Tariq Iqbal", "Md Mofijul Islam", "Md. Ashraful Amin", "Amin Ahsan Ali"],
+      "title": "SloMo-Fast: Slow-Momentum and Fast-Adaptive Teachers for Source-Free Continual Test-Time Adaptation",
+      "venue": "submitted to the *Winter Conference on Applications of Computer Vision (WACV 2027)*.",
+      "rank": "CORE Rank: A"
     },
     {
       "type": "J",
       "authors": ["Md Akil Raihan Iftee", "Syed Md. Ahnaf Hasan", "Mir Sazzat Hossain", "Rakibul Hasan Rajib", "Amin Ahsan Ali", "AKM Mahbubur Rahman", "Sajib Mistry", "Monowar Bhuyan"],
       "title": "pFedBBN: Personalized Federated Test-Time Adaptation with Balanced Batch Normalization for Class-Imbalanced Data",
       "venue": "submitted to *IEEE Transactions on Artificial Intelligence*.",
-      "rank": "Q1 Journal",
-      "links": [{ "label": "Paper", "href": "/publications/iH-uZ7U-co4C" }]
+      "rank": "Q1 Journal"
     },
     {
       "type": "J",
-      "authors": ["Mir Sazzat Hossain", "Md Shahadat Hossain Shahal", "K M B Asad", "Payaswini Saikia", "Adrita Khan", "Fatema Akter", "Amin Ahsan Ali", "Md. Ashraful Amin", "Arshad Momen", "A K M Mahbubur Rahman"],
-      "title": "RGC: A Radio AGN Classifier Based on Deep Learning: I. A Semi-Supervised Model for the VLA Images of Bent Radio AGNs",
-      "venue": "submitted to *Astronomy & Astrophysics (A&A)*.",
-      "rank": "Q1 Journal",
-      "links": [{ "label": "Paper", "href": "/publications/_Qo2XoVZTnwC" }]
+      "authors": ["Ezharuddin Jubaer", "Sumaiya Karim Katha", "Mir Sazzat Hossain", "Fahim Shahriar", "Amin Ahsan Ali", "AKM Mahbubur Rahman"],
+      "title": "TRoPE-TUL: Trajectory-User Linking via Spatio-Temporal Rotary Position Embedding",
+      "venue": "submitted to *Pattern Recognition*.",
+      "rank": "Q1 Journal"
     },
     {
       "type": "J",
       "authors": ["Md Raqibul Islam", "Adrita Khan", "Mir Sazzat Hossain", "Choudhury Ben Yamin Siddiqui", "Md. Zakir Hossan", "Tanjib Khan", "M. Arshad Momen", "Amin Ahsan Ali", "AKM Mahbubur Rahman"],
-      "title": "E-PCN: Jet Tagging with Explainable Particle Chebyshev Networks Using Kinematic Features.",
-      "venue": "submitted to the *Journal of High Energy Physics*.",
-      "rank": "Q1 Journal",
-      "links": [{ "label": "Paper", "href": "/publications/isC4tDSrTZIC" }]
+      "title": "KIGNet: Physics-Motivated Multi-Graph Representation Learning for Explainable Jet Tagging",
+      "venue": "submitted to the *American Physical Society (APS) Journals*.",
+      "rank": "Q1 Journal"
     }
   ],
   "teaching": [
@@ -290,6 +327,15 @@
       "websiteUrl": "https://iub.ac.bd/faculties/akmmrahman"
     },
     {
+      "name": "Md Ashraful Amin, PhD",
+      "title": "Professor",
+      "dept": "Dept. of Computer Science & Engineering",
+      "org": "Independent University, Bangladesh",
+      "email": "aminmdashraful@iub.edu.bd",
+      "website": "iub.ac.bd/faculties/aminmdashraful",
+      "websiteUrl": "https://iub.ac.bd/faculties/aminmdashraful"
+    },
+    {
       "name": "Amin Ahsan Ali, PhD",
       "title": "Professor",
       "dept": "Dept. of Computer Science & Engineering",
@@ -297,6 +343,15 @@
       "email": "aminali@iub.edu.bd",
       "website": "iub.ac.bd/faculties/aminali",
       "websiteUrl": "https://iub.ac.bd/faculties/aminali"
+    },
+    {
+      "name": "Md Farhad Alam Bhuiyan",
+      "title": "Head of R & D",
+      "dept": "Penta Global Limited",
+      "org": "Penta Global Limited",
+      "email": "pdcsedu@gmail.com",
+      "website": "pdfarhad.github.io",
+      "websiteUrl": "https://pdfarhad.github.io"
     }
   ]
 }

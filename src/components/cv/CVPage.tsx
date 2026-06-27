@@ -18,6 +18,7 @@ type CVData = {
     date: string; degree: string; location?: string;
     details?: string[];
   }[];
+  work?: Experience[];
   research: Experience[];
   publications: Publication[];
   underReview: Publication[];
@@ -93,6 +94,17 @@ export default function CVPage({ cv }: { cv: CVData }) {
             </Entry>
           ))}
         </S>
+
+        {/* Work Experience */}
+        {cv.work && cv.work.length > 0 && (
+          <S title="Work Experience">
+            {cv.work.map((w) => (
+              <Entry key={w.title} title={w.title} date={w.date} sub={w.org} loc={w.location}>
+                <Bullets items={w.bullets} />
+              </Entry>
+            ))}
+          </S>
+        )}
 
         {/* Research Experience */}
         <S title="Research Experience">
