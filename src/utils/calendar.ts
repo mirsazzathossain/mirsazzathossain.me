@@ -2,6 +2,10 @@ export const getEvents = async (start: Date, end: Date) => {
   const API_KEY = process.env.GOOGLE_CALENDAR_API_KEY;
   const CALENDER_ID = process.env.GOOGLE_CALENDAR_ID;
 
+  if (!API_KEY || !CALENDER_ID) {
+    throw new Error("GOOGLE_CALENDAR_API_KEY and GOOGLE_CALENDAR_ID must be set");
+  }
+
   const EVENTS_ENDPOINT = `https://www.googleapis.com/calendar/v3/calendars/${CALENDER_ID}/events?`;
 
   const COLORS_ENDPOINT = `https://www.googleapis.com/calendar/v3/colors?key=${API_KEY}`;
@@ -13,39 +17,55 @@ export const getEvents = async (start: Date, end: Date) => {
   const endISO = apiEnd.toISOString();
 
   const finalUrl = `${EVENTS_ENDPOINT}timeMin=${startISO}&timeMax=${endISO}&singleEvents=true&key=${API_KEY}`;
-  const events = await fetch(finalUrl);
-  const colors = await fetch(COLORS_ENDPOINT);
 
-  const events_response = await events.json();
-  const colors_response = await colors.json();
+  const [eventsRes, colorsRes] = await Promise.all([fetch(finalUrl), fetch(COLORS_ENDPOINT)]);
 
-  const filteredEvents: CalEvent[] = events_response.items.map((event: any) => {
-    // check if the event has a colorId
-    // if it doesn't, use the default color
-    if (!event.colorId) {
-      event.colorId = "1";
-    }
-    const color = colors_response.event[event.colorId];
-    const newEvent: CalEvent = {
-      title: event.summary,
-      description: event.description,
-      location: event.location,
-      date: event.start.date || event.start.dateTime.split("T")[0],
-      startTime: event.start.dateTime
-        ? event.start.dateTime.split("T")[1].split("-")[0]
-        : "",
-      endTime: event.end.dateTime
-        ? event.end.dateTime.split("T")[1].split("-")[0]
-        : "",
-      color: {
-        id: event.colorId,
-        foreground: color.foreground,
-        background: color.background,
-      },
-      link: event.htmlLink,
-    };
-    return newEvent;
-  });
+  if (!eventsRes.ok) {
+    throw new Error(
+      `Google Calendar events API error: ${eventsRes.status} ${eventsRes.statusText}`,
+    );
+  }
+  if (!colorsRes.ok) {
+    throw new Error(
+      `Google Calendar colors API error: ${colorsRes.status} ${colorsRes.statusText}`,
+    );
+  }
+
+  const events_response = await eventsRes.json();
+  const colors_response = await colorsRes.json();
+
+  const items: unknown[] = events_response.items ?? [];
+  const eventColors = colors_response.event ?? {};
+
+  const filteredEvents: CalEvent[] = items
+    .filter((item): item is Record<string, unknown> => typeof item === "object" && item !== null)
+    .map((event) => {
+      const colorId = typeof event.colorId === "string" ? event.colorId : "1";
+      const color = (eventColors[colorId] as
+        { foreground: string; background: string } | undefined) ?? {
+        foreground: "#000000",
+        background: "#ffffff",
+      };
+
+      const start = event.start as { date?: string; dateTime?: string } | undefined;
+      const end = event.end as { date?: string; dateTime?: string } | undefined;
+
+      const newEvent: CalEvent = {
+        title: typeof event.summary === "string" ? event.summary : "",
+        description: typeof event.description === "string" ? event.description : undefined,
+        location: typeof event.location === "string" ? event.location : undefined,
+        date: start?.date ?? start?.dateTime?.split("T")[0] ?? "",
+        startTime: start?.dateTime ? start.dateTime.split("T")[1].split("-")[0] : "",
+        endTime: end?.dateTime ? end.dateTime.split("T")[1].split("-")[0] : "",
+        color: {
+          id: colorId,
+          foreground: color.foreground,
+          background: color.background,
+        },
+        link: typeof event.htmlLink === "string" ? event.htmlLink : "",
+      };
+      return newEvent;
+    });
 
   const response: Day[] = [];
 

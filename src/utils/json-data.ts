@@ -7,5 +7,9 @@ const dataDir = path.join(process.cwd(), "src", "data");
 export async function readSiteJson<T>(filename: string): Promise<T> {
   const filePath = path.join(dataDir, filename);
   const raw = await readFile(filePath, "utf-8");
-  return JSON.parse(raw) as T;
+  try {
+    return JSON.parse(raw) as T;
+  } catch {
+    throw new Error(`Failed to parse JSON from ${filename}`);
+  }
 }
