@@ -6,7 +6,10 @@ function propsForReactDom(props: Record<string, unknown>) {
   return out;
 }
 
-export default function CodeBlock({ children, ...props }: any): JSX.Element {
+export default function CodeBlock({
+  children,
+  ...props
+}: React.HTMLAttributes<HTMLPreElement> & { children?: React.ReactNode }): JSX.Element {
   const domProps = propsForReactDom(props);
 
   return (
@@ -14,7 +17,7 @@ export default function CodeBlock({ children, ...props }: any): JSX.Element {
       <button
         type="button"
         data-copy-code
-        className="copy-code-button not-prose absolute right-2 top-2 z-10 inline-flex items-center gap-1 rounded border border-rule bg-bg-2 px-2 py-1 font-mono text-[10.5px] leading-none text-ink-3 transition-colors hover:border-link/35 hover:bg-accent-soft hover:text-link"
+        className="copy-code-button not-prose border-rule bg-bg-2 text-ink-3 hover:border-link/35 hover:bg-accent-soft hover:text-link absolute top-2 right-2 z-10 inline-flex items-center gap-1 rounded border px-2 py-1 font-mono text-[10.5px] leading-none transition-colors"
         aria-label="Copy code"
       >
         <svg
@@ -35,7 +38,7 @@ export default function CodeBlock({ children, ...props }: any): JSX.Element {
       </button>
       <pre
         {...domProps}
-        className="m-0 overflow-x-auto whitespace-pre rounded-[var(--r)] border border-rule bg-bg-2 p-[12px_60px_12px_14px] font-mono text-[12.5px] leading-[1.55] text-ink"
+        className="border-rule bg-bg-2 text-ink m-0 overflow-x-auto rounded-[var(--r)] border p-[12px_60px_12px_14px] font-mono text-[12.5px] leading-[1.55] whitespace-pre"
       >
         {children}
       </pre>

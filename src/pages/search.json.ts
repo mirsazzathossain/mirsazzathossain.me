@@ -1,70 +1,84 @@
-import { getCollection } from 'astro:content';
-import publications from '@/data/publications.json';
-import publicationOverrides from '@/data/publications.override.json';
-import projects from '@/data/projects.json';
-import courses from '@/data/courses.json';
-import { mergePublicationOverrides } from '@/utils/publications';
+import { getCollection } from "astro:content";
+import publications from "@/data/publications.json";
+import publicationOverrides from "@/data/publications.override.json";
+import projects from "@/data/projects.json";
+import courses from "@/data/courses.json";
+import { mergePublicationOverrides } from "@/utils/publications";
+import type { Publication } from "@/utils/publications";
+
+type Project = { title: string; description: string };
+type Course = {
+  title: string;
+  tagline?: string;
+  inst?: string;
+  totalDuration?: string;
+  publishedDate?: string;
+};
+
+type SearchEntry = {
+  kind: string;
+  title: string;
+  sub: string;
+  href: string;
+  keywords: string;
+};
 
 export async function GET() {
-  const out: any[] = [];
+  const out: SearchEntry[] = [];
   const mergedPublications = mergePublicationOverrides(publications, publicationOverrides);
 
   // Publications
-  mergedPublications.forEach((p: any) => {
-    const authorNames = Array.isArray(p.authors)
-      ? p.authors.map((a: any) => a.name).join(' ')
-      : '';
-    const keywords = Array.isArray(p.keywords)
-      ? p.keywords.join(' ')
-      : (p.keywords || '');
+  (mergedPublications as Publication[]).forEach((p) => {
+    const authorNames = Array.isArray(p.authors) ? p.authors.map((a) => a.name).join(" ") : "";
+    const keywords = Array.isArray(p.keywords) ? p.keywords.join(" ") : (p.keywords ?? "");
     out.push({
-      kind: 'Publication',
-      title: p.title,
-      sub: `${p.venue_short || p.venue || ''} · ${p.year}`,
+      kind: "Publication",
+      title: p.title ?? "",
+      sub: `${p.venue_short || p.venue || ""} · ${p.year}`,
       href: `/publications/${p.id}`,
-      keywords: `${p.title} ${authorNames} ${p.venue || ''} ${keywords}`.toLowerCase(),
+      keywords: `${p.title} ${authorNames} ${p.venue || ""} ${keywords}`.toLowerCase(),
     });
   });
 
   // Projects
-  projects.forEach((p: any) => {
+  (projects as Project[]).forEach((p) => {
     out.push({
-      kind: 'Project',
+      kind: "Project",
       title: p.title,
       sub: p.description,
-      href: '/projects',
+      href: "/projects",
       keywords: `${p.title} ${p.description}`.toLowerCase(),
     });
   });
 
   // Courses
-  courses.forEach((c: any) => {
+  (courses as Course[]).forEach((c) => {
     out.push({
-      kind: 'Course',
+      kind: "Course",
       title: c.title,
-      sub: `${c.totalDuration} · ${c.publishedDate}`,
-      href: '/courses',
-      keywords: `${c.title} ${c.description} ${c.author}`.toLowerCase(),
+      sub: `${c.totalDuration ?? ""} · ${c.publishedDate ?? ""}`,
+      href: "/courses",
+      keywords: `${c.title} ${c.tagline ?? ""} ${c.inst ?? ""}`.toLowerCase(),
     });
   });
 
   // Articles
-  const articles = await getCollection('articles');
+  const articles = await getCollection("articles");
   articles.forEach((a) => {
     out.push({
-      kind: 'Post',
+      kind: "Post",
       title: a.data.title,
-      sub: a.data.publishedAt ? `${new Date(a.data.publishedAt).toISOString().split('T')[0]}` : '',
+      sub: a.data.publishedAt ? `${new Date(a.data.publishedAt).toISOString().split("T")[0]}` : "",
       href: `/articles/${a.id}`,
       keywords: `${a.data.title} ${a.data.description}`.toLowerCase(),
     });
   });
 
   // Snippets
-  const snippets = await getCollection('snippets');
+  const snippets = await getCollection("snippets");
   snippets.forEach((s) => {
     out.push({
-      kind: 'Snippet',
+      kind: "Snippet",
       title: s.data.title,
       sub: s.data.language,
       href: `/snippets/${s.id}`,
@@ -74,7 +88,7 @@ export async function GET() {
 
   return new Response(JSON.stringify(out), {
     headers: {
-      'content-type': 'application/json',
+      "content-type": "application/json",
     },
   });
 }
