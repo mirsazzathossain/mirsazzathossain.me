@@ -1,6 +1,6 @@
 {
   "tz": "Asia/Dhaka · UTC+6",
-  "rangeLabel": "Jun 22 – 28, 2026",
+  "rangeLabel": "Jun 29 – Jul 5, 2026",
   "days": [
     "Mon",
     "Tue",
@@ -11,13 +11,13 @@
     "Sun"
   ],
   "dates": [
-    "Jun 22",
-    "Jun 23",
-    "Jun 24",
-    "Jun 25",
-    "Jun 26",
-    "Jun 27",
-    "Jun 28"
+    "Jun 29",
+    "Jun 30",
+    "Jul 1",
+    "Jul 2",
+    "Jul 3",
+    "Jul 4",
+    "Jul 5"
   ],
   "hours": [
     "8am",
@@ -33,16 +33,16 @@
     "11pm"
   ],
   "grid": [
-    "fffffff",
-    "fffffff",
-    "fffffff",
+    "bffffff",
+    "bffffff",
+    "bffffff",
     "bfffbbf",
     "bffffbf",
-    "ffbffff",
-    "ffbffff",
-    "fffffff",
-    "fffffff",
-    "fffffff",
-    "fffffff"
+    "bfbffff",
+    "bfbffff",
+    "bffffff",
+    "bffffff",
+    "bffffff",
+    "bffffff"
   ]
 }
