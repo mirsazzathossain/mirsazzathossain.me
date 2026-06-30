@@ -58,7 +58,7 @@
     "husky": "^9.1.7",
     "lint-staged": "^17.0.8",
     "postcss": "^8.5.16",
-    "prettier": "^3.9.1",
+    "prettier": "^3.9.4",
     "prettier-plugin-astro": "^0.14.1",
     "prettier-plugin-tailwindcss": "^0.8.0",
     "typescript": "^6.0.3",
