@@ -8,6 +8,7 @@ import {
   OpenReviewIcon,
   OrcidIcon,
   ResearchGateIcon,
+  ScopusIcon,
   SemanticScholarIcon,
   TwitterXIcon,
 } from "@/components/Icons";
@@ -23,6 +24,7 @@ const SOCIAL_ICONS = {
   openreview: OpenReviewIcon,
   orcid: OrcidIcon,
   researchgate: ResearchGateIcon,
+  scopus: ScopusIcon,
   "semantic-scholar": SemanticScholarIcon,
   twitter: TwitterXIcon,
 };
@@ -44,11 +46,11 @@ export function SocialIconLink({
       href={url}
       aria-label={label}
       title={label}
-      className="inline-flex items-center justify-center w-7 h-7 rounded-md text-ink-3 hover:text-link hover:bg-bg-2 hover:no-underline transition-colors"
+      className="text-ink-3 hover:text-link hover:bg-bg-2 inline-flex h-7 w-7 items-center justify-center rounded-md transition-colors hover:no-underline"
       target="_blank"
       rel="noreferrer"
     >
-      <Icon className="w-4 h-4" />
+      <Icon className="h-4 w-4" />
     </a>
   );
 }
