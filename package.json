@@ -32,7 +32,7 @@
     "@astrojs/mdx": "^7.0.0",
     "@astrojs/prism": "^4.0.2",
     "@astrojs/react": "^6.0.0",
-    "@astrojs/rss": "^4.0.18",
+    "@astrojs/rss": "^4.0.19",
     "@astrojs/sitemap": "^3.7.3",
     "@astrojs/vercel": "^11.0.0",
     "@giscus/react": "^3.1.0",
