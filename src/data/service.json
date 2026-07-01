@@ -1,1 +1,4 @@
-[{ "venue": "ICIP", "year": 2025, "role": "Reviewer" }]
+[
+  { "venue": "Astronomy and Computing", "year": 2026, "role": "Reviewer" },
+  { "venue": "ICIP", "year": 2025, "role": "Reviewer" }
+]
