@@ -721,13 +721,13 @@ export function ScopusIcon(props: SvgProps) {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth="1.5"
+      strokeWidth="2"
       strokeLinecap="round"
+      strokeLinejoin="round"
       aria-hidden="true"
       {...props}
     >
-      <circle cx="12" cy="12" r="10" />
-      <path d="M15.5 8.5c0-1.38-1.57-2.5-3.5-2.5S8.5 7.12 8.5 8.5c0 1.5 1.5 2 3.5 2.5 2 .5 3.5 1.2 3.5 2.5 0 1.38-1.57 2.5-3.5 2.5S8.5 16.88 8.5 15.5" />
+      <path d="M17 9c0-2.21-2.24-4-5-4S7 6.79 7 9s2.24 4 5 4 5 1.79 5 4-2.24 4-5 4-5-1.79-5-4" />
     </svg>
   );
 }
