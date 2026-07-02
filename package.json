@@ -29,7 +29,7 @@
     ]
   },
   "dependencies": {
-    "@astrojs/mdx": "^7.0.0",
+    "@astrojs/mdx": "^7.0.1",
     "@astrojs/prism": "^4.0.2",
     "@astrojs/react": "^6.0.0",
     "@astrojs/rss": "^4.0.19",
