@@ -39,7 +39,7 @@
     "@tailwindcss/typography": "^0.5.20",
     "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^2.0.0",
-    "astro": "^7.0.5",
+    "astro": "^7.0.6",
     "katex": "^0.17.0",
     "react": "^19.2.5",
     "react-dom": "^19.2.7",
