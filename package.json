@@ -34,7 +34,7 @@
     "@astrojs/react": "^6.0.0",
     "@astrojs/rss": "^4.0.19",
     "@astrojs/sitemap": "^3.7.3",
-    "@astrojs/vercel": "^11.0.1",
+    "@astrojs/vercel": "^11.0.2",
     "@giscus/react": "^3.1.0",
     "@tailwindcss/typography": "^0.5.20",
     "@vercel/analytics": "^2.0.1",
