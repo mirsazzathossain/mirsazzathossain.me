@@ -44,7 +44,7 @@ export const prismPlugin = defineHastPlugin({
       const { html, classLanguage } = await runHighlighterWithAstro(lang, code);
       const highlighted = `<pre class="${classLanguage}" data-language="${lang}"><code class="${classLanguage}">${html}</code></pre>`;
 
-      return wrapHtml(highlighted, ctx);
+      return wrapHtml(highlighted);
     },
   },
 });
