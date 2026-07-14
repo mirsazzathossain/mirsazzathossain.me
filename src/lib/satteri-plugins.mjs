@@ -1,15 +1,9 @@
 import { defineHastPlugin } from "satteri";
-import { satteriMakeFragmentNode } from "@astrojs/markdown-satteri";
+import { fromHtml } from "hast-util-from-html";
 import katex from "katex";
 
-function makeRawNode(html) {
-  return { type: "raw", value: html };
-}
-
-function wrapHtml(html, ctx) {
-  return ctx.fileURL?.pathname?.endsWith(".mdx")
-    ? satteriMakeFragmentNode(html)
-    : makeRawNode(html);
+function wrapHtml(html) {
+  return fromHtml(html, { fragment: true }).children[0];
 }
 
 /**
@@ -22,9 +16,7 @@ export const prismPlugin = defineHastPlugin({
   element: {
     filter: ["pre"],
     async visit(node, ctx) {
-      const codeChild = node.children?.find(
-        (c) => c.type === "element" && c.tagName === "code",
-      );
+      const codeChild = node.children?.find((c) => c.type === "element" && c.tagName === "code");
       if (!codeChild || codeChild.type !== "element") return;
 
       const classes = codeChild.properties?.className ?? [];
@@ -38,7 +30,7 @@ export const prismPlugin = defineHastPlugin({
           output: "html",
           strict: "ignore",
         });
-        return wrapHtml(rendered, ctx);
+        return wrapHtml(rendered);
       }
 
       // Skip inline math (handled by katexPlugin on <code> nodes)
@@ -48,9 +40,7 @@ export const prismPlugin = defineHastPlugin({
       const lang = codeChild.data?.lang ?? "plaintext";
       const code = ctx.textContent(codeChild).replace(/\n$/, "");
 
-      const { runHighlighterWithAstro } = await import(
-        "@astrojs/prism/dist/highlighter"
-      );
+      const { runHighlighterWithAstro } = await import("@astrojs/prism/dist/highlighter");
       const { html, classLanguage } = await runHighlighterWithAstro(lang, code);
       const highlighted = `<pre class="${classLanguage}" data-language="${lang}"><code class="${classLanguage}">${html}</code></pre>`;
 
@@ -76,7 +66,7 @@ export const katexPlugin = defineHastPlugin({
         strict: "ignore",
       });
 
-      return wrapHtml(rendered, ctx);
+      return wrapHtml(rendered);
     },
   },
 });
