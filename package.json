@@ -43,7 +43,7 @@
     "katex": "^0.17.0",
     "react": "^19.2.5",
     "react-dom": "^19.2.7",
-    "tailwindcss": "^4.3.2"
+    "tailwindcss": "^4.3.3"
   },
   "devDependencies": {
     "@eslint/js": "^10",
