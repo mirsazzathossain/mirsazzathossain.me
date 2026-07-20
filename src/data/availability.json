@@ -1,6 +1,6 @@
 {
   "tz": "Asia/Dhaka · UTC+6",
-  "rangeLabel": "Jul 13 – 19, 2026",
+  "rangeLabel": "Jul 20 – 26, 2026",
   "days": [
     "Mon",
     "Tue",
@@ -11,13 +11,13 @@
     "Sun"
   ],
   "dates": [
-    "Jul 13",
-    "Jul 14",
-    "Jul 15",
-    "Jul 16",
-    "Jul 17",
-    "Jul 18",
-    "Jul 19"
+    "Jul 20",
+    "Jul 21",
+    "Jul 22",
+    "Jul 23",
+    "Jul 24",
+    "Jul 25",
+    "Jul 26"
   ],
   "hours": [
     "8am",
@@ -36,8 +36,8 @@
     "fffffff",
     "fffffff",
     "fffffff",
-    "fffbbbf",
-    "fffffbf",
+    "bffbbbf",
+    "bffffbf",
     "ffbffff",
     "ffbffff",
     "fffffff",
