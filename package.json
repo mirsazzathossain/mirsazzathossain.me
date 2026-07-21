@@ -40,7 +40,7 @@
     "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^2.0.0",
     "astro": "^7.1.0",
-    "katex": "^0.17.0",
+    "katex": "^0.18.1",
     "react": "^19.2.5",
     "react-dom": "^19.2.7",
     "tailwindcss": "^4.3.3"
