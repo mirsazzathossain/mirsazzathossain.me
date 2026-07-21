@@ -56,7 +56,7 @@
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.1.1",
     "husky": "^9.1.7",
-    "lint-staged": "^17.0.8",
+    "lint-staged": "^17.1.0",
     "postcss": "^8.5.20",
     "prettier": "^3.9.5",
     "prettier-plugin-astro": "^0.14.1",
