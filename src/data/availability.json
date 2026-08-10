@@ -1,6 +1,6 @@
 {
   "tz": "Asia/Dhaka · UTC+6",
-  "rangeLabel": "Aug 3 – 9, 2026",
+  "rangeLabel": "Aug 10 – 16, 2026",
   "days": [
     "Mon",
     "Tue",
@@ -11,13 +11,13 @@
     "Sun"
   ],
   "dates": [
-    "Aug 3",
-    "Aug 4",
-    "Aug 5",
-    "Aug 6",
-    "Aug 7",
-    "Aug 8",
-    "Aug 9"
+    "Aug 10",
+    "Aug 11",
+    "Aug 12",
+    "Aug 13",
+    "Aug 14",
+    "Aug 15",
+    "Aug 16"
   ],
   "hours": [
     "8am",
@@ -36,8 +36,8 @@
     "fffffff",
     "fffffff",
     "fffbfff",
-    "bffbbff",
-    "bffffff",
+    "bffbbbf",
+    "bffffbf",
     "ffbffff",
     "ffbffff",
     "fffffff",
