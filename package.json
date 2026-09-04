@@ -33,7 +33,7 @@
     "@astrojs/prism": "^4.0.2",
     "@astrojs/react": "^6.0.4",
     "@astrojs/rss": "^4.0.19",
-    "@astrojs/sitemap": "^3.7.3",
+    "@astrojs/sitemap": "^3.7.4",
     "@astrojs/vercel": "^11.0.8",
     "@giscus/react": "^3.1.0",
     "@tailwindcss/typography": "^0.5.20",
