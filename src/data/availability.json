@@ -1,6 +1,6 @@
 {
   "tz": "Asia/Dhaka · UTC+6",
-  "rangeLabel": "Sep 7 – 13, 2026",
+  "rangeLabel": "Sep 14 – 20, 2026",
   "days": [
     "Mon",
     "Tue",
@@ -11,13 +11,13 @@
     "Sun"
   ],
   "dates": [
-    "Sep 7",
-    "Sep 8",
-    "Sep 9",
-    "Sep 10",
-    "Sep 11",
-    "Sep 12",
-    "Sep 13"
+    "Sep 14",
+    "Sep 15",
+    "Sep 16",
+    "Sep 17",
+    "Sep 18",
+    "Sep 19",
+    "Sep 20"
   ],
   "hours": [
     "8am",
@@ -35,8 +35,8 @@
   "grid": [
     "fffffff",
     "fffffff",
-    "ffffbff",
-    "bfbfbbf",
+    "fffbfff",
+    "bfbbbbf",
     "bffffbf",
     "ffbffff",
     "ffbffff",
