@@ -9,6 +9,7 @@ import { prismPlugin, katexPlugin, externalLinksPlugin } from "./src/lib/satteri
 
 import { readFileSync, readdirSync, writeFileSync } from "fs";
 import { join } from "path";
+import { fileURLToPath } from "url";
 
 /** Injects <link rel="modulepreload"> for transitive island dependencies. */
 function islandModulePreload() {
@@ -16,7 +17,7 @@ function islandModulePreload() {
     name: "island-modulepreload",
     hooks: {
       "astro:build:done"({ dir }) {
-        const distPath = dir.pathname.replace(/\/$/, "");
+        const distPath = fileURLToPath(dir).replace(/\/$/, "");
         const astroPath = join(distPath, "_astro");
 
         // Build a map of chunk -> direct imports from the _astro directory
