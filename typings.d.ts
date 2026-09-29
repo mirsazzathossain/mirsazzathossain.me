@@ -1,11 +1,11 @@
 // Restore global JSX namespace removed in React 19
 declare namespace JSX {
-  type Element = import('react').JSX.Element;
-  interface ElementClass extends import('react').Component<any> {}
-  interface IntrinsicElements extends import('react').JSX.IntrinsicElements {}
-  type ElementAttributesProperty = import('react').JSX.ElementAttributesProperty;
-  type ElementChildrenAttribute = import('react').JSX.ElementChildrenAttribute;
-  type LibraryManagedAttributes<C, P> = import('react').JSX.LibraryManagedAttributes<C, P>;
+  type Element = import("react").JSX.Element;
+  interface ElementClass extends React.Component<any> {}
+  interface IntrinsicElements extends React.JSX.IntrinsicElements {}
+  type ElementAttributesProperty = import("react").JSX.ElementAttributesProperty;
+  type ElementChildrenAttribute = import("react").JSX.ElementChildrenAttribute;
+  type LibraryManagedAttributes<C, P> = import("react").JSX.LibraryManagedAttributes<C, P>;
 }
 
 // declare type for experience
@@ -123,8 +123,8 @@ declare type Color = {
 
 declare type CalEvent = {
   title: string;
-  description: string;
-  location: string;
+  description?: string;
+  location?: string;
   date: string;
   startTime: string;
   endTime: string;

@@ -20,7 +20,7 @@ export type ProjectLinkMeta = {
 
 export function getProjectLinkMeta(project: Project): ProjectLinkMeta {
   const href = project.link?.href ?? "";
-  let host = "";
+  let host: string;
 
   try {
     host = new URL(href).hostname;
@@ -29,11 +29,12 @@ export function getProjectLinkMeta(project: Project): ProjectLinkMeta {
   }
 
   const bare = host.replace(/^www\./, "");
-  const kind = bare === "github.com"
-    ? "github"
-    : bare === "drive.google.com" || bare === "docs.google.com"
-      ? "drive"
-      : "external";
+  const kind =
+    bare === "github.com"
+      ? "github"
+      : bare === "drive.google.com" || bare === "docs.google.com"
+        ? "drive"
+        : "external";
 
   return {
     href,
@@ -43,11 +44,7 @@ export function getProjectLinkMeta(project: Project): ProjectLinkMeta {
   };
 }
 
-function getProjectLinkLabel(
-  href: string,
-  host: string,
-  kind: ProjectLinkMeta["kind"]
-): string {
+function getProjectLinkLabel(href: string, host: string, kind: ProjectLinkMeta["kind"]): string {
   try {
     const url = new URL(href);
 
