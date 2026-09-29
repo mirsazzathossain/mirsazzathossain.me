@@ -2,7 +2,7 @@ import { SocialIconLink } from "@/components/social/SocialIconLink";
 import type { About } from "@/components/about/types";
 
 export default function ProfileSidebar({ about }: { about: About }) {
-  const researchInterests: string[] = (about && (about.researchInterests || about.interests)) ?? [
+  const researchInterests: string[] = (about && about.researchInterests) ?? [
     "Computer Vision",
     "Domain Adaptation",
     "Astrophysical ML",
