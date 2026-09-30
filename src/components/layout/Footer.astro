@@ -14,10 +14,26 @@ const year = new Date().getFullYear();
     <div class="flex flex-col sm:flex-row justify-between items-center gap-4 flex-wrap">
       <div class="flex gap-4 font-medium flex-wrap justify-center">
         {navLinks.map((l) => (
-          <a href={l.href} class="text-ink-3 hover:text-ink transition-colors">{l.label}</a>
+          <a href={l.href} class="text-ink-3 hover:text-ink transition-colors">
+            {l.label}
+          </a>
         ))}
       </div>
-      <div class="text-center sm:text-right">
+      <div class="flex items-center gap-4 text-center sm:text-right">
+        <a
+          href="https://destroy.spritefusion.com/?from=badge"
+          target="_blank"
+          rel="noopener"
+          class="hidden md:inline-flex"
+        >
+          <img
+            src="https://destroy.spritefusion.com/badge.svg"
+            alt="Destroy this website"
+            width="180"
+            height="40"
+            loading="lazy"
+          />
+        </a>
         <span>© {year} Mir Sazzat Hossain · all rights reserved.</span>
       </div>
     </div>
