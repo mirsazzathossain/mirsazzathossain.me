@@ -66,7 +66,7 @@
     "prettier-plugin-astro": "^1.1.0",
     "prettier-plugin-tailwindcss": "^0.8.1",
     "typescript": "npm:@typescript/typescript6@^6.0.2",
-    "typescript-eslint": "^8.71.0"
+    "typescript-eslint": "^8.71.1"
   },
   "main": "index.js",
   "repository": "git@github.com:mirsazzathossain/mirsazzathossain.me.git",
