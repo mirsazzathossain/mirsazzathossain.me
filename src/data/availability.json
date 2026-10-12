@@ -1,6 +1,6 @@
 {
   "tz": "Asia/Dhaka · UTC+6",
-  "rangeLabel": "Oct 5 – 11, 2026",
+  "rangeLabel": "Oct 12 – 18, 2026",
   "days": [
     "Mon",
     "Tue",
@@ -11,13 +11,13 @@
     "Sun"
   ],
   "dates": [
-    "Oct 5",
-    "Oct 6",
-    "Oct 7",
-    "Oct 8",
-    "Oct 9",
-    "Oct 10",
-    "Oct 11"
+    "Oct 12",
+    "Oct 13",
+    "Oct 14",
+    "Oct 15",
+    "Oct 16",
+    "Oct 17",
+    "Oct 18"
   ],
   "hours": [
     "8am",
@@ -36,7 +36,7 @@
     "fffffff",
     "fffffff",
     "fffbfff",
-    "bfbbbbf",
+    "bfbbfbf",
     "bffffbf",
     "ffbffff",
     "ffbffff",
