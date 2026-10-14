@@ -30,7 +30,7 @@
   },
   "dependencies": {
     "@astrojs/markdown-satteri": "^0.4.2",
-    "@astrojs/mdx": "^8.0.2",
+    "@astrojs/mdx": "^8.0.3",
     "@astrojs/prism": "^4.0.2",
     "@astrojs/react": "^7.0.0",
     "@astrojs/rss": "^4.0.19",
