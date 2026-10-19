@@ -1,14 +1,14 @@
 {
   "paper_count": 19,
-  "total_citations": 50,
+  "total_citations": 51,
   "h_index": 4,
   "h_index_5y": 4,
-  "i10_index": 1,
+  "i10_index": 2,
   "cites_per_year": {
     "2023": 2,
     "2024": 4,
     "2025": 8,
-    "2026": 35
+    "2026": 36
   },
-  "updated": "2026-10-10"
+  "updated": "2026-10-19"
 }
