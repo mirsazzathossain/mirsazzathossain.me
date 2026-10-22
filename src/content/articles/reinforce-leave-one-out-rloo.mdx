@@ -1,0 +1,256 @@
+---
+title: "REINFORCE Leave-One-Out (RLOO)"
+tags:
+  - title: RLOO
+  - title: REINFORCE Leave-One-Out
+  - title: REINFORCE
+  - title: Policy Gradient
+  - title: RLHF
+  - title: PPO
+  - title: GRPO
+  - title: Baseline
+  - title: Variance Reduction
+  - title: Reinforcement Learning
+  - title: Policy Optimization
+  - title: LLM
+categories:
+  - title: Machine Learning
+  - title: Reinforcement Learning
+  - title: Large Language Models
+author:
+  name: Mir Sazzat Hossain
+  designation: Research Assistant
+  url: https://mirsazzathossain.me
+  avatar:
+    url: user.png
+    alt: Mir Sazzat Hossain
+description: "How RLOO replaces PPO in RLHF with the simplest policy gradient: treating the whole response as one action, using REINFORCE, and comparing each response with the average reward of the other responses to the same prompt."
+seoDescription: "RLOO explained: how REINFORCE with a leave-one-out baseline replaces PPO's value model, GAE, and clipping in RLHF, and why it works better for LLMs."
+covers:
+  - url: content/reinforce-leave-one-out-rloo/cover.jpg
+    alt: "RLOO cover: each response's reward compared with the average reward of the other responses to the same prompt"
+status: published
+publishedAt: 2026-06-20
+---
+
+<img
+  src="/images/content/reinforce-leave-one-out-rloo/cover.jpg"
+  alt="RLOO cover: each response's reward compared with the average reward of the other responses to the same prompt"
+  sizes="100vw"
+  width="100%"
+  height="auto"
+  placeholder="blur"
+  blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="
+/>
+
+## Introduction
+
+When RLHF made language models follow instructions, it did so with **PPO** [[1]](#ref-1), and PPO came with everything it had been built with: a value model as large as the policy, Generalized Advantage Estimation, a clipped objective, and several epochs over each batch. All of these were designed for classical reinforcement learning, where a policy starts from random weights, learns to play games or control robots, and its gradient estimates are extremely noisy. Each piece of PPO exists to reduce that noise or to keep the noisy updates safe.
+
+In 2024, a team at Cohere asked whether fine-tuning a language model is that kind of problem at all [[2]](#ref-2). A language model in RLHF does not start from random weights. It starts from a strong pre-trained and fine-tuned model that already writes good responses. If that changes how noisy the gradients are, then many of PPO's components may be solving a problem RLHF does not have. They tested this by taking PPO apart, one component at a time, and found that the simplest policy gradient method, **REINFORCE** [[3]](#ref-3), did better than PPO. Their recommended method, **REINFORCE Leave-One-Out (RLOO)**, samples several responses to each prompt and compares each one with the average reward of the others. It beat PPO, DPO, and other baselines, with no value model at all.
+
+In this post, we follow their argument. We first see why PPO's components are less useful in RLHF, and why the whole response can be treated as a single action. We then derive REINFORCE and its baseline step by step, build the leave-one-out baseline, and see how it relates to GRPO. Finally, we look at the results and the limitations.
+
+## Why PPO Was Built the Way It Was
+
+PPO's design reflects the problem it was made for. In classical deep RL, the policy starts from random weights, and the actions it takes early on are close to random. The rewards it collects vary enormously from one episode to the next, so a gradient estimated from them has a very high **variance**. As we saw in the [PPO post](/articles/proximal-policy-optimization-ppo#generalized-advantage-estimation), PPO reduces this variance with a value model and GAE, accepting some **bias** in return, and it clips its updates so that a single noisy gradient cannot damage the policy.
+
+RLHF is different in one important way: the policy starts from a model that already knows the language and already answers prompts well. Given a prompt and the tokens so far, such a model puts almost all of its probability on a few likely next tokens, even though its vocabulary contains tens of thousands. The responses it samples are therefore far less random than the actions of a policy trained from scratch, and the gradients computed from them are far less noisy [[2]](#ref-2). If the variance is already low, then reducing it further at the cost of bias is no longer a good trade.
+
+The authors tested this directly on PPO. The parameter $\lambda$ of GAE, from [Eq. (8) in the PPO post](/articles/proximal-policy-optimization-ppo#eq-gae), controls this trade: a small $\lambda$ relies more on the value model, with less variance and more bias, while $\lambda = 1$ uses only the real rewards, with no bias and the most variance. In their RLHF experiments, $\lambda = 1$ trained best [[2]](#ref-2). They then looked at clipping, and found that PPO's loss was clipped less than $5\%$ of the time per batch, on average, throughout training. Removing clipping altogether did not hurt, and if anything slightly helped. The updates were already small, because the policy changes slowly from one iteration to the next.
+
+## One Action, Not Many Tokens
+
+PPO also makes a modeling choice that the authors questioned: it treats every token as a separate action, with its own advantage. In RLHF, this choice brings little. The reward model scores only the finished response, so the only reward that carries information about quality arrives at the last token; the rewards of all the other tokens are just the per-token KL penalties of [Eq. (11) in the RLHF post](/articles/reinforcement-learning-from-human-feedback-rlhf#eq-token-reward). And the "environment" is completely predictable: after the model picks a token, the next state is simply the old state with that token appended.
+
+So the problem can be simplified. Instead of a long sequence of token-level decisions, we treat the **whole response as a single action**: the model receives a prompt $x$, produces a response $y$, and receives one reward for it. This is called a **bandit** formulation. The reward of the response is the reward model's score minus the KL penalty of the whole response, the same quantity whose expectation RLHF maximizes in [Eq. (9) of the RLHF post](/articles/reinforcement-learning-from-human-feedback-rlhf#eq-kl-objective):
+
+$$
+R(x, y) = r_\psi(x, y) - \beta \log \frac{\pi_\theta(y \mid x)}{\pi_{\text{ref}}(y \mid x)} \tag{1} \label{sequence-reward}
+$$
+
+With one reward per response, there is nothing for a value model to estimate token by token, and no need for GAE to spread the reward across tokens. What remains is the oldest policy gradient method of all.
+
+## REINFORCE
+
+The goal is to maximize the expected reward of the responses the policy writes:
+
+$$
+J(\theta) = \mathbb{E}_{x \sim \mathcal{D}, \, y \sim \pi_\theta(\cdot \mid x)} \big[ R(x, y) \big]
+$$
+
+To improve it with gradient ascent, we need its gradient, and the expectation is over responses sampled from the very policy we are changing. For a single prompt, we first write the expectation out by its definition: the average of the reward over all possible responses, each weighted by its probability:
+
+$$
+\mathbb{E}_{y \sim \pi_\theta} \big[ R(x, y) \big] = \sum_y \pi_\theta(y \mid x) \, R(x, y)
+$$
+
+The reward of a fixed response does not depend on $\theta$, since it is just a score of a given text, so the gradient acts only on the probabilities:
+
+$$
+\nabla_\theta \sum_y \pi_\theta(y \mid x) \, R(x, y) = \sum_y R(x, y) \, \nabla_\theta \pi_\theta(y \mid x)
+$$
+
+This sum runs over every possible response, which we cannot compute. Normally, we would estimate such an average by sampling responses from the policy, but this sum is no longer an expectation: the weight $\pi_\theta(y \mid x)$ in front of each term has disappeared. To bring it back, we multiply and divide each term by $\pi_\theta(y \mid x)$, which does not change its value:
+
+$$
+\nabla_\theta \pi_\theta(y \mid x) = \pi_\theta(y \mid x) \cdot \frac{\nabla_\theta \pi_\theta(y \mid x)}{\pi_\theta(y \mid x)}
+$$
+
+The fraction on the right has a simpler form. By the chain rule, the derivative of a logarithm is one over its argument times the derivative of the argument:
+
+$$
+\nabla_\theta \log \pi_\theta(y \mid x) = \frac{1}{\pi_\theta(y \mid x)} \, \nabla_\theta \pi_\theta(y \mid x) = \frac{\nabla_\theta \pi_\theta(y \mid x)}{\pi_\theta(y \mid x)}
+$$
+
+So the fraction is the gradient of the log-probability, and the product becomes:
+
+$$
+\nabla_\theta \pi_\theta(y \mid x) = \pi_\theta(y \mid x) \, \nabla_\theta \log \pi_\theta(y \mid x)
+$$
+
+This is known as the **log-derivative trick**. Substituting it into the sum puts the weight $\pi_\theta(y \mid x)$ back in front of every term, which turns the sum back into an expectation:
+
+$$
+\begin{aligned}
+\sum_y R(x, y) \, \nabla_\theta \pi_\theta(y \mid x) &= \sum_y \pi_\theta(y \mid x) \, R(x, y) \, \nabla_\theta \log \pi_\theta(y \mid x) \\
+&= \mathbb{E}_{y \sim \pi_\theta} \big[ R(x, y) \, \nabla_\theta \log \pi_\theta(y \mid x) \big]
+\end{aligned}
+$$
+
+An expectation can be estimated by sampling: generate responses, and average $R \, \nabla_\theta \log \pi_\theta$ over them. The log-probability is also easy to compute, since it is the sum of the log-probabilities of the response's tokens, which the model already outputs.
+
+This is the **REINFORCE** estimator [[3]](#ref-3), the policy gradient from the [reinforcement learning for LLMs post](/articles/reinforcement-learning-for-llms#eq-policy-gradient) applied to a whole response at once:
+
+$$
+\nabla_\theta J(\theta) = \mathbb{E}_{x \sim \mathcal{D}, \, y \sim \pi_\theta(\cdot \mid x)} \big[ R(x, y) \, \nabla_\theta \log \pi_\theta(y \mid x) \big] \tag{2} \label{reinforce}
+$$
+
+Sample a response, compute its reward, and push up the log-probability of the response in proportion to that reward.
+
+### The Baseline
+
+On its own, [Eq. (2)](#eq-reinforce) is noisy for the reason we saw in the [reinforcement learning for LLMs post](/articles/reinforcement-learning-for-llms#rl-in-llm-terms): every response is pushed in the direction of its reward, without any sense of whether that reward is good or bad for this prompt. The standard fix is to subtract a **baseline** $b$ from the reward [[3]](#ref-3):
+
+$$
+\nabla_\theta J(\theta) = \mathbb{E}_{x \sim \mathcal{D}, \, y \sim \pi_\theta(\cdot \mid x)} \big[ \big( R(x, y) - b \big) \, \nabla_\theta \log \pi_\theta(y \mid x) \big] \tag{3} \label{reinforce-baseline}
+$$
+
+Subtracting a baseline, as in [Eq. (3)](#eq-reinforce-baseline), does not change the gradient on average, as long as $b$ does not depend on the sampled response. The extra term has expectation zero, which we can see by reversing the identity above and using the fact that the probabilities of all responses add up to $1$:
+
+$$
+\mathbb{E}_{y \sim \pi_\theta} \big[ b \, \nabla_\theta \log \pi_\theta(y \mid x) \big] = b \sum_y \nabla_\theta \pi_\theta(y \mid x) = b \, \nabla_\theta \sum_y \pi_\theta(y \mid x) = b \, \nabla_\theta 1 = 0
+$$
+
+So the baseline keeps the estimator **unbiased**, while a good choice of $b$, close to the reward the policy usually gets, reduces its variance considerably. The simplest choice needs no extra model: a **moving average** of the rewards seen during training [[2]](#ref-2), [[3]](#ref-3). The authors call REINFORCE with this baseline simply "REINFORCE", and it already beat PPO in their experiments. But a single average over all prompts is a crude estimate of what to expect from any particular prompt, some of which are much easier than others.
+
+## The Leave-One-Out Baseline
+
+A better baseline would be the reward the policy expects for **this** prompt. RLOO estimates it by sampling, an idea proposed by Kool, van Hoof, and Welling [[4]](#ref-4). For each prompt $x$, the policy samples $k$ responses $y_1, \dots, y_k$ and scores them with [Eq. (1)](#eq-sequence-reward), giving rewards $R_1, \dots, R_k$. Each response then uses the average reward of the **other** $k - 1$ responses as its baseline:
+
+$$
+b_i = \frac{1}{k - 1} \sum_{j \ne i} R_j \tag{4} \label{loo-baseline}
+$$
+
+The response's own reward is left out of [Eq. (4)](#eq-loo-baseline) for a reason. The proof that a baseline keeps the gradient unbiased required $b$ not to depend on the sampled response. If $b_i$ included $R_i$, it would depend on $y_i$, and the estimator would become biased. The other responses are sampled independently of $y_i$, so their average is a valid baseline. Averaging the gradient over all $k$ responses, each with its own leave-one-out baseline, gives the **RLOO** estimator [[2]](#ref-2), [[4]](#ref-4):
+
+$$
+\nabla_\theta J(\theta) \approx \frac{1}{k} \sum_{i=1}^{k} \Big( R_i - \frac{1}{k - 1} \sum_{j \ne i} R_j \Big) \nabla_\theta \log \pi_\theta(y_i \mid x) \tag{5} \label{rloo}
+$$
+
+In [Eq. (5)](#eq-rloo), every sampled response is used twice: once as a sample whose gradient is computed, and once as part of the baseline for the others. The baseline acts like a value function for the prompt, but one that is estimated fresh at every step from the responses themselves, with no model to train. In the authors' experiments, RLOO used $k = 2$ or $k = 4$ samples per prompt.
+
+### How RLOO Relates to GRPO
+
+The leave-one-out advantage looks different from GRPO's group advantage, but the two are closely related. Write the mean reward of all $k$ responses, including response $i$, as
+
+$$
+\bar{R} = \frac{1}{k} \sum_{j=1}^{k} R_j
+$$
+
+The sum of the other rewards is the total, $k \bar{R}$, minus $R_i$:
+
+$$
+\sum_{j \ne i} R_j = k \bar{R} - R_i
+$$
+
+Putting this into the leave-one-out advantage and bringing everything over the common denominator $k - 1$:
+
+$$
+\begin{aligned}
+R_i - \frac{1}{k - 1} \sum_{j \ne i} R_j &= R_i - \frac{k \bar{R} - R_i}{k - 1} \\
+&= \frac{(k - 1) R_i - k \bar{R} + R_i}{k - 1} \\
+&= \frac{k}{k - 1} \big( R_i - \bar{R} \big)
+\end{aligned}
+$$
+
+So the RLOO advantage is the reward minus the group mean, exactly the numerator of GRPO's advantage in [Eq. (3) of the GRPO post](/articles/group-relative-policy-optimization-grpo#eq-group-advantage), scaled by the constant $k / (k - 1)$. The two methods compare each response with its group in the same way. They differ in what they add around it: GRPO also divides by the standard deviation of the group, assigns the advantage to every token, and keeps PPO's ratio and clipping, while RLOO uses the plain policy gradient on the whole response.
+
+| | PPO | RLOO | GRPO |
+| --- | --- | --- | --- |
+| Unit of action | Each token | The whole response | Each token, same advantage |
+| Baseline | Value model | Mean reward of the other responses | Mean reward of the group |
+| Normalization | None | None | Divide by the group's standard deviation |
+| Clipping | Yes | No | Yes |
+| LLMs in memory | Four | Three | Three, or two with a checker |
+
+## The RLOO Algorithm
+
+Put together, RLOO is a short loop. The policy and the reference model start from the SFT model, and the reward model is trained beforehand, as in RLHF:
+
+<div className="algorithm">
+
+<span className="algorithm-label"><b>Algorithm 1</b> REINFORCE Leave-One-Out</span>
+
+$$
+\begin{array}{rl}
+{\scriptsize 1:} & \text{Initialize the policy } \pi_\theta \leftarrow \pi_{\text{SFT}} \text{ and freeze } \pi_{\text{ref}} \leftarrow \pi_{\text{SFT}} \\
+{\scriptsize 2:} & \textbf{for } \text{step} = 1, 2, \dots \textbf{ do} \\
+{\scriptsize 3:} & \quad \text{sample a batch of prompts and generate } k \text{ responses for each with } \pi_\theta \\
+{\scriptsize 4:} & \quad \text{compute the reward } R_i \text{ of every response with Eq. (1)} \\
+{\scriptsize 5:} & \quad \text{compute the baseline } b_i \text{ of every response with Eq. (4)} \\
+{\scriptsize 6:} & \quad \text{update } \pi_\theta \text{ with the gradient of Eq. (5)}
+\end{array}
+$$
+
+</div>
+
+There is no value model to train, no GAE, no ratio to an old policy, and no clipping. Without the ratio, the estimator assumes that the responses come from the current policy, so every update uses responses generated for it.
+
+## How Well It Works
+
+The authors compared these methods on two RLHF tasks: summarizing Reddit posts (**TL;DR**) [[5]](#ref-5) and the **Anthropic Helpful and Harmless** dialogue dataset (**HH**) [[6]](#ref-6), with **Pythia-6.9B** [[7]](#ref-7) and **Llama-7B** [[8]](#ref-8) as base models. They measured the **win rate** against reference responses, judged by GPT-4 following the AlpacaFarm framework [[9]](#ref-9) [[2]](#ref-2):
+
+| Method | TL;DR | HH (Pythia) | HH (Llama) |
+| --- | --- | --- | --- |
+| RLOO ($k = 4$) | **77.9** | 43.7 | **64.1** |
+| RLOO ($k = 2$) | 74.2 | **47.6** | 62.2 |
+| RAFT ($k = 4$) | 73.2 | 42.1 | 63.3 |
+| REINFORCE with baseline | 70.7 | 37.9 | 55.3 |
+| Vanilla policy gradient | 70.4 | 36.4 | 52.3 |
+| PPO | 67.6 | 29.2 | 32.0 |
+| DPO | 66.6 | 39.0 | 61.9 |
+
+Three things stand out. Even the simplest methods beat PPO: the vanilla policy gradient, which is PPO with GAE's $\lambda = 1$, no clipping, and no ratio, won by $3.2$ to $20.3$ points across the three settings. Treating the whole response as one action, as REINFORCE does, worked as well as or better than modeling every token. And RLOO, with its per-prompt baseline, did best overall, ahead of DPO [[10]](#ref-10) and of **RAFT** [[11]](#ref-11), a method that also samples $k$ responses but trains only on the best one. RLOO with $k = 2$ matched or beat RAFT with $k = 4$, because RLOO learns from every sample, not just the best.
+
+## Limitations of RLOO
+
+RLOO's simplicity rests on the argument that variance is low in RLHF, and that argument has limits. It holds because the policy starts from a strong model; for a weak starting model, or for tasks where the model's responses vary much more, the case for variance reduction comes back. RLOO also needs $k$ responses per prompt, which multiplies the cost of generation, the most expensive part of RL for language models. And by giving one reward to the whole response, it cannot tell which parts of a response were good, which matters more as responses grow longer, for example in step-by-step reasoning. The authors themselves note that they did not study reward over-optimization, that their win rates come from an LLM judge rather than from human evaluation, and that they did not test leave-one-out baselines with token-level rewards [[2]](#ref-2).
+
+> RLOO showed that in RLHF, much of PPO is not needed: a policy that starts from a strong model can be trained well by the simplest policy gradient, as long as each response is compared with the right baseline.
+
+## References
+
+<ol>
+  <li id="ref-1">Schulman, J., Wolski, F., Dhariwal, P., Radford, A., & Klimov, O. (2017). <a href="https://arxiv.org/abs/1707.06347">Proximal Policy Optimization Algorithms</a>. <em>arXiv:1707.06347</em>.</li>
+  <li id="ref-2">Ahmadian, A., Cremer, C., Gallé, M., Fadaee, M., Kreutzer, J., Pietquin, O., Üstün, A., & Hooker, S. (2024). <a href="https://arxiv.org/abs/2402.14740">Back to Basics: Revisiting REINFORCE Style Optimization for Learning from Human Feedback in LLMs</a>. <em>ACL</em>.</li>
+  <li id="ref-3">Williams, R. J. (1992). <a href="https://doi.org/10.1007/BF00992696">Simple Statistical Gradient-Following Algorithms for Connectionist Reinforcement Learning</a>. <em>Machine Learning</em>, 8, 229–256.</li>
+  <li id="ref-4">Kool, W., van Hoof, H., & Welling, M. (2019). <a href="https://www.semanticscholar.org/paper/afdfb0de8796b271d4bf3c85ce7ff9e052a5045d">Buy 4 REINFORCE Samples, Get a Baseline for Free!</a> <em>ICLR Workshop on Deep RL Meets Structured Prediction</em>.</li>
+  <li id="ref-5">Stiennon, N., Ouyang, L., Wu, J., et al. (2020). <a href="https://arxiv.org/abs/2009.01325">Learning to Summarize from Human Feedback</a>. <em>NeurIPS</em>.</li>
+  <li id="ref-6">Bai, Y., Jones, A., Ndousse, K., et al. (2022). <a href="https://arxiv.org/abs/2204.05862">Training a Helpful and Harmless Assistant with Reinforcement Learning from Human Feedback</a>. <em>arXiv:2204.05862</em>.</li>
+  <li id="ref-7">Biderman, S., Schoelkopf, H., Anthony, Q., et al. (2023). <a href="https://arxiv.org/abs/2304.01373">Pythia: A Suite for Analyzing Large Language Models Across Training and Scaling</a>. <em>ICML</em>.</li>
+  <li id="ref-8">Touvron, H., Lavril, T., Izacard, G., et al. (2023). <a href="https://arxiv.org/abs/2302.13971">LLaMA: Open and Efficient Foundation Language Models</a>. <em>arXiv:2302.13971</em>.</li>
+  <li id="ref-9">Dubois, Y., Li, X., Taori, R., et al. (2023). <a href="https://arxiv.org/abs/2305.14387">AlpacaFarm: A Simulation Framework for Methods that Learn from Human Feedback</a>. <em>NeurIPS</em>.</li>
+  <li id="ref-10">Rafailov, R., Sharma, A., Mitchell, E., Ermon, S., Manning, C. D., & Finn, C. (2023). <a href="https://arxiv.org/abs/2305.18290">Direct Preference Optimization: Your Language Model is Secretly a Reward Model</a>. <em>NeurIPS</em>.</li>
+  <li id="ref-11">Dong, H., Xiong, W., Goyal, D., et al. (2023). <a href="https://arxiv.org/abs/2304.06767">RAFT: Reward rAnked FineTuning for Generative Foundation Model Alignment</a>. <em>TMLR</em>.</li>
+</ol>

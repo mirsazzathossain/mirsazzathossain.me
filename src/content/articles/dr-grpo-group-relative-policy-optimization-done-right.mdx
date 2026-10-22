@@ -1,0 +1,172 @@
+---
+title: "Dr. GRPO: Group Relative Policy Optimization Done Right"
+tags:
+  - title: Dr. GRPO
+  - title: GRPO
+  - title: Group Relative Policy Optimization
+  - title: R1-Zero
+  - title: Reasoning Models
+  - title: Length Bias
+  - title: Policy Gradient
+  - title: PPO
+  - title: Reinforcement Learning
+  - title: Policy Optimization
+  - title: RLVR
+  - title: LLM
+categories:
+  - title: Machine Learning
+  - title: Reinforcement Learning
+  - title: Large Language Models
+author:
+  name: Mir Sazzat Hossain
+  designation: Research Assistant
+  url: https://mirsazzathossain.me
+  avatar:
+    url: user.png
+    alt: Mir Sazzat Hossain
+description: "How Dr. GRPO fixes two biases in GRPO: dividing by the response length makes long wrong answers cheap, and dividing by the group's standard deviation overweights questions that are too easy or too hard. Removing both recovers the unbiased policy gradient and stops responses from growing needlessly long."
+seoDescription: "Dr. GRPO explained: how GRPO's length and difficulty biases inflate response length, and how removing two normalizations gives an unbiased objective."
+covers:
+  - url: content/dr-grpo-group-relative-policy-optimization-done-right/cover.jpg
+    alt: "Dr. GRPO cover: a long wrong response and a short one receiving the same penalty per token once the length normalization is removed"
+status: published
+publishedAt: 2026-08-16
+---
+
+<img
+  src="/images/content/dr-grpo-group-relative-policy-optimization-done-right/cover.jpg"
+  alt="Dr. GRPO cover: a long wrong response and a short one receiving the same penalty per token once the length normalization is removed"
+  sizes="100vw"
+  width="100%"
+  height="auto"
+  placeholder="blur"
+  blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="
+/>
+
+## Introduction
+
+**DeepSeek-R1-Zero** [[1]](#ref-1) was trained with reinforcement learning directly from a pre-trained base model, using **GRPO** [[2]](#ref-2) and a checker that rewards correct final answers. As training went on, two things grew together: the accuracy of the model, and the length of its responses. The longer responses were widely read as a sign of reasoning emerging on its own, with the model learning to think for longer, to check its work, and to reconsider its steps.
+
+In 2025, a team from Sea AI Lab and the National University of Singapore took a critical look at this kind of training [[3]](#ref-3). They studied its two ingredients, the base model and the RL algorithm, and found that part of the story was not what it seemed. On the algorithm side, they showed that GRPO's objective contains two biases. One of them makes long incorrect responses cost less than short ones, so the model is pushed toward longer responses whenever it is wrong. Part of the growth in length, in other words, comes from the optimizer and not from better reasoning. Their fix, **Dr. GRPO** (GRPO Done Right), removes two normalization terms from GRPO, recovers the unbiased policy gradient, and keeps responses from growing longer than they need to.
+
+In this post, we start from the GRPO objective and the policy gradient it is meant to follow, find where the two biases come from, and derive Dr. GRPO by removing them. We then look at the results, at what the paper found about base models, and at the limitations. The [GRPO post](/articles/group-relative-policy-optimization-grpo) covers everything this one builds on.
+
+## The Starting Point: GRPO
+
+For each prompt $x$, GRPO samples a group of $G$ responses $y_1, \dots, y_G$, scores each one with a reward $r_i$, and gives response $i$ the group-relative advantage from [Eq. (3) of the GRPO post](/articles/group-relative-policy-optimization-grpo#eq-group-advantage):
+
+$$
+\hat{A}_i = \frac{r_i - \text{mean}(\mathbf{r})}{\text{std}(\mathbf{r})}
+$$
+
+Every token of response $i$ gets this advantage, and the policy is updated with PPO's clipped objective, averaged first over the tokens of each response and then over the group, as in [Eq. (7) of the GRPO post](/articles/group-relative-policy-optimization-grpo#eq-grpo-objective). Leaving out the KL penalty, which plays no part in what follows, the objective is:
+
+$$
+\mathcal{J}^{\text{GRPO}}(\theta) = \mathbb{E} \left[ \frac{1}{G} \sum_{i=1}^{G} \frac{1}{|y_i|} \sum_{t=1}^{|y_i|} \min\Big( \rho_{i,t}(\theta) \, \hat{A}_{i}, \; \text{clip}\big( \rho_{i,t}(\theta), 1 - \epsilon, 1 + \epsilon \big) \, \hat{A}_{i} \Big) \right] \tag{1} \label{grpo}
+$$
+
+where $\rho_{i,t}(\theta)$ is the probability ratio of token $t$ of response $i$ between the current policy and the policy that generated the group. Two terms in this objective are divisions: $1/|y_i|$, by the length of each response, and $1/\text{std}(\mathbf{r})$, inside the advantage. Neither of them comes from the policy gradient itself. To see what they change, we first need the objective they were added to.
+
+## What the Objective Should Be
+
+The goal of RL training is to maximize the expected reward of the responses the policy writes. As derived in the [RLOO post](/articles/reinforce-leave-one-out-rloo#reinforce), the gradient of this goal, with a baseline $b$ subtracted from the reward, is:
+
+$$
+\nabla_\theta J(\theta) = \mathbb{E}_{x \sim \mathcal{D}, \, y \sim \pi_\theta(\cdot \mid x)} \big[ \big( r(x, y) - b \big) \, \nabla_\theta \log \pi_\theta(y \mid x) \big]
+$$
+
+The log-probability of a response is the sum of the log-probabilities of its tokens, so its gradient is a **sum** over tokens:
+
+$$
+\nabla_\theta \log \pi_\theta(y \mid x) = \sum_{t=1}^{|y|} \nabla_\theta \log \pi_\theta(y_t \mid x, y_{<t})
+$$
+
+Putting the two together, every token of a response is pushed with the same weight, the response's advantage, and nothing is divided by the length:
+
+$$
+\nabla_\theta J(\theta) = \mathbb{E} \left[ \sum_{t=1}^{|y|} \big( r(x, y) - b \big) \, \nabla_\theta \log \pi_\theta(y_t \mid x, y_{<t}) \right] \tag{2} \label{unbiased-gradient}
+$$
+
+With the group mean as the baseline, $b = \text{mean}(\mathbf{r})$, the advantage of response $i$ is simply $r_i - \text{mean}(\mathbf{r})$, again with no division by the standard deviation. This is the gradient that PPO's objective follows when its advantage is the Monte Carlo return minus a baseline [[3]](#ref-3). GRPO's objective adds two divisions to it, and each one changes the weight that some tokens receive.
+
+## Two Biases in GRPO
+
+The two divisions in [Eq. (1)](#eq-grpo) bias the update in different ways. Dividing by the response length changes how much each token counts, depending on how long its response is. Dividing by the standard deviation changes how much each question counts, depending on how hard it is.
+
+### Response-Level Length Bias
+
+In [Eq. (1)](#eq-grpo), each token of response $i$ enters the objective with the weight
+
+$$
+\frac{\hat{A}_i}{G \, |y_i|}
+$$
+
+so the same advantage is spread more thinly over a longer response. For a correct response, with $\hat{A}_i > 0$, this means a short response is pushed up more strongly per token than a long one, so among correct answers the model learns to prefer short ones. For an incorrect response, with $\hat{A}_i < 0$, it means the opposite: a long response is pushed down less strongly per token than a short one. Take two wrong responses with the same advantage $\hat{A} = -1$, one of $100$ tokens and one of $1{,}000$ tokens. Ignoring the common factor $G$, the penalty on each of their tokens is:
+
+$$
+\frac{-1}{100} = -0.01, \qquad \frac{-1}{1{,}000} = -0.001
+$$
+
+Each token of the long wrong answer is penalized ten times less than each token of the short one. Among wrong answers, the model is therefore pushed toward longer ones [[3]](#ref-3). As the model fails on hard questions, its wrong answers grow longer, and the average response length grows with them, whether or not the extra tokens help.
+
+The length normalization is not specific to GRPO either. The authors found that popular open-source implementations of PPO for language models also divided the loss of each response by its length, even though the PPO objective does not [[3]](#ref-3). They suggest that the habit comes from pre-training, where averaging the loss over tokens is natural because every token is a prediction target of equal standing.
+
+### Question-Level Difficulty Bias
+
+The second division, by $\text{std}(\mathbf{r})$, is done separately for each question, and it makes the advantages of every question the same size, whatever its rewards look like. This matters because the rewards of a question that the model almost always solves barely vary, so its standard deviation is small, and dividing by a small number makes its advantages large.
+
+Take two questions, each answered $G = 4$ times, with a reward of $1$ for a correct answer and $0$ for a wrong one. The model solves the first one half of the time and the second one three times out of four:
+
+| Question | Rewards | Advantages before dividing | Advantages after dividing by std |
+| --- | --- | --- | --- |
+| Medium | $(1, 1, 0, 0)$ | $+0.5, \, +0.5, \, -0.5, \, -0.5$ | $+1, \, +1, \, -1, \, -1$ |
+| Almost solved | $(1, 1, 1, 0)$ | $+0.25, \, +0.25, \, +0.25, \, -0.75$ | $+0.58, \, +0.58, \, +0.58, \, -1.73$ |
+
+Before dividing, the almost solved question gives smaller advantages, which is what we want: there is less left to learn from it. After dividing, its one wrong answer gets $-1.73$, a larger push than any answer to the medium question. The division inflates questions that are almost always solved, or almost never solved, until they weigh as much as or more than questions of medium difficulty [[3]](#ref-3). This is the **difficulty bias**. Normalizing advantages is a common technique in RL, but it is normally done across a whole batch [[4]](#ref-4), where every advantage is divided by the same number, so the scale of the update changes but the relative weight of each question does not.
+
+## Dr. GRPO
+
+The fix follows directly from the analysis: remove both divisions [[3]](#ref-3). The advantage becomes the reward minus the group mean, with no standard deviation:
+
+$$
+\tilde{A}_i = r_i - \text{mean}(\mathbf{r}) \tag{3} \label{drgrpo-advantage}
+$$
+
+and the tokens of each response are summed instead of averaged:
+
+$$
+\mathcal{J}^{\text{Dr.GRPO}}(\theta) = \mathbb{E} \left[ \frac{1}{G} \sum_{i=1}^{G} \sum_{t=1}^{|y_i|} \min\Big( \rho_{i,t}(\theta) \, \tilde{A}_{i}, \; \text{clip}\big( \rho_{i,t}(\theta), 1 - \epsilon, 1 + \epsilon \big) \, \tilde{A}_{i} \Big) \right] \tag{4} \label{drgrpo}
+$$
+
+Now every token of every response gets the same weight, $\tilde{A}_i / G$, whatever the length of its response, and every question is weighted by the actual spread of its rewards. At the start of each update, where the ratio is $1$, the gradient of [Eq. (4)](#eq-drgrpo) is exactly the unbiased gradient of [Eq. (2)](#eq-unbiased-gradient) with the group mean as the baseline. In practice, the sum over tokens is still divided by a number to keep the gradient at a convenient scale, but by a **constant**, such as the maximum generation length, which is the same for every response and every batch [[3]](#ref-3). A constant only rescales the gradient, like a change in the learning rate, and does not change which tokens count more.
+
+The advantage of [Eq. (3)](#eq-drgrpo-advantage) is also the one RLOO uses, up to a constant. As shown in the [RLOO post](/articles/reinforce-leave-one-out-rloo#how-rloo-relates-to-grpo), the leave-one-out advantage equals $\frac{G}{G-1} \big( r_i - \text{mean}(\mathbf{r}) \big)$. With both normalizations removed, GRPO's advantage becomes the same comparison with the group that RLOO makes, while keeping PPO's ratio and clipping.
+
+It is also worth comparing Dr. GRPO with the **token-level loss** of [DAPO](/articles/decoupled-clip-dynamic-sampling-policy-optimization-dapo#token-level-loss-weighting-every-token-equally), which addresses the same length bias. DAPO divides the sum over all tokens by the total number of tokens in the group, so within a group every token has the same weight, but the divisor still changes from group to group. Dr. GRPO divides by a constant, so every token has the same weight across the whole batch.
+
+## What Changed in Training
+
+The authors compared GRPO and Dr. GRPO by training Qwen2.5-1.5B, a base model, on math questions from the **MATH** dataset [[5]](#ref-5), with a reward of $1$ for a correct final answer and $0$ otherwise [[3]](#ref-3). With both algorithms, the response length grew along with the reward early in training, as in DeepSeek-R1-Zero. But with GRPO, the length kept growing even after the reward stopped improving. With Dr. GRPO, it did not. On the evaluation benchmarks, the difference was largest for incorrect responses: Dr. GRPO's wrong answers were much shorter than GRPO's, while its accuracy stayed comparable. The extra length that GRPO produced was largely spent on answers that were wrong anyway.
+
+Combining Dr. GRPO with their findings about base models, the authors proposed a minimal recipe: train **Qwen2.5-Math-7B** [[6]](#ref-6) with Dr. GRPO on MATH questions of difficulty levels 3 to 5. The resulting model reached $43.3\%$ on AIME 2024, a new state of the art for a model of this size trained this way, using about $27$ hours on $8$ A100 GPUs [[3]](#ref-3).
+
+## What the Paper Found About Base Models
+
+The other half of the paper questions the base models, and it puts the length story in context. The authors found that the prompt template matters a great deal: without one, a base model tends to continue the text instead of answering the question. They also found that Qwen2.5 base models answer about $60\%$ better without any template, which suggests they may have been pre-trained on text that already pairs questions with answers [[3]](#ref-3). And most strikingly, nearly all the base models they examined, including **DeepSeek-V3-Base**, the model R1-Zero was trained from, already show the "aha moment" of self-reflection before any RL. Self-reflection, in other words, is not created from nothing by RL. RL strengthens a behavior the base model already has, and the optimizer's bias makes responses longer on top of it.
+
+## Limitations of Dr. GRPO
+
+Dr. GRPO removes two biases, but not every problem of GRPO. Without the division by the standard deviation, the size of the update depends on the scale of the rewards, which matters when rewards are not simply $0$ or $1$; normalizing across a whole batch instead of per question avoids the bias while keeping a stable scale. Summing over tokens instead of averaging makes long responses contribute more to the gradient in total, which is what the unbiased objective prescribes, but which can make the gradient larger and noisier when responses vary a lot in length. And Dr. GRPO keeps the rest of GRPO's design: it still samples a group of responses per prompt, and every token of a response still gets the same advantage. The paper's experiments are also mostly on math and on models of a few billion parameters.
+
+> Dr. GRPO showed that part of the growth in response length in R1-Zero-like training came from the optimizer, not from reasoning, and that removing two normalizations is enough to fix it.
+
+## References
+
+<ol>
+  <li id="ref-1">DeepSeek-AI (2025). <a href="https://arxiv.org/abs/2501.12948">DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning</a>. <em>arXiv:2501.12948</em>.</li>
+  <li id="ref-2">Shao, Z., Wang, P., Zhu, Q., et al. (2024). <a href="https://arxiv.org/abs/2402.03300">DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open Language Models</a>. <em>arXiv:2402.03300</em>.</li>
+  <li id="ref-3">Liu, Z., Chen, C., Li, W., Qi, P., Pang, T., Du, C., Lee, W. S., & Lin, M. (2025). <a href="https://arxiv.org/abs/2503.20783">Understanding R1-Zero-Like Training: A Critical Perspective</a>. <em>arXiv:2503.20783</em>.</li>
+  <li id="ref-4">Andrychowicz, M., Raichuk, A., Stańczyk, P., et al. (2021). <a href="https://arxiv.org/abs/2006.05990">What Matters in On-Policy Reinforcement Learning? A Large-Scale Empirical Study</a>. <em>ICLR</em>.</li>
+  <li id="ref-5">Hendrycks, D., Burns, C., Kadavath, S., et al. (2021). <a href="https://arxiv.org/abs/2103.03874">Measuring Mathematical Problem Solving With the MATH Dataset</a>. <em>NeurIPS</em>.</li>
+  <li id="ref-6">Yang, A., Zhang, B., Hui, B., et al. (2024). <a href="https://arxiv.org/abs/2409.12122">Qwen2.5-Math Technical Report: Toward Mathematical Expert Model via Self-Improvement</a>. <em>arXiv:2409.12122</em>.</li>
+</ol>
