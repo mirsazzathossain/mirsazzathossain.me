@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 300" role="img" aria-label="The actor and the critic are both LLMs reading the same text. The actor has a language-model head that outputs a probability for every token. The critic has a value head that outputs a single number, the estimated future reward." font-family="var(--font-sans)">
+<defs><marker id="a-ink" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--ink-3)"/></marker></defs>
+<rect x="20" y="115" width="120" height="70" rx="8" fill="var(--ink-3)" fill-opacity="0.06" stroke="var(--ink-3)" stroke-width="1.8"/>
+<text x="80" y="145" fill="var(--ink)" font-size="13" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">State s</text><text x="80" y="165" fill="var(--ink-3)" font-size="10" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">prompt + tokens so far</text>
+<line x1="140" y1="150" x2="200" y2="80" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<rect x="205" y="30" width="180" height="100" rx="8" fill="var(--link)" fill-opacity="0.1" stroke="var(--link)" stroke-width="1.8"/>
+<text x="295" y="58" fill="var(--link)" font-size="14" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">Actor π<tspan baseline-shift="sub" font-size="10">θ</tspan></text>
+<text x="295" y="82" fill="var(--ink)" font-size="12" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">LLM backbone</text>
+<text x="295" y="102" fill="var(--ink-3)" font-size="10" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">(transformer layers)</text>
+<line x1="385" y1="80" x2="425" y2="80" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<rect x="430" y="55" width="90" height="50" rx="8" fill="var(--link)" fill-opacity="0.18" stroke="var(--link)" stroke-width="1.8"/>
+<text x="475" y="85" fill="var(--link)" font-size="12" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">LM head</text>
+<line x1="520" y1="80" x2="545" y2="80" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<text x="550" y="76" fill="var(--ink)" font-size="11" font-weight="600" text-anchor="start" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">a probability for</text>
+<text x="550" y="92" fill="var(--ink)" font-size="11" font-weight="400" text-anchor="start" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">every next token</text>
+<line x1="140" y1="150" x2="200" y2="220" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<rect x="205" y="170" width="180" height="100" rx="8" fill="var(--green)" fill-opacity="0.1" stroke="var(--green)" stroke-width="1.8"/>
+<text x="295" y="198" fill="var(--green)" font-size="14" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">Critic V<tspan baseline-shift="sub" font-size="10">φ</tspan></text>
+<text x="295" y="222" fill="var(--ink)" font-size="12" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">LLM backbone</text>
+<text x="295" y="242" fill="var(--ink-3)" font-size="10" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">(transformer layers)</text>
+<line x1="385" y1="220" x2="425" y2="220" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<rect x="430" y="195" width="90" height="50" rx="8" fill="var(--green)" fill-opacity="0.18" stroke="var(--green)" stroke-width="1.8"/>
+<text x="475" y="225" fill="var(--green)" font-size="12" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">value head</text>
+<line x1="520" y1="220" x2="545" y2="220" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<text x="550" y="216" fill="var(--ink)" font-size="11" font-weight="600" text-anchor="start" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">one number</text>
+<text x="550" y="232" fill="var(--ink)" font-size="11" font-weight="400" text-anchor="start" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">the estimated future reward</text>
+<text x="360" y="292" fill="var(--ink-3)" font-size="11" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">Same kind of network, different last layer</text>
+</svg>

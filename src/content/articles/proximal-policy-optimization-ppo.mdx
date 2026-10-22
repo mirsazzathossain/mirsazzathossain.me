@@ -1,0 +1,534 @@
+---
+title: "Proximal Policy Optimization (PPO) Explained for LLMs"
+tags:
+  - title: PPO
+  - title: Proximal Policy Optimization
+  - title: Policy Optimization
+  - title: Reinforcement Learning
+  - title: LLM
+  - title: RLHF
+  - title: Clipped Objective
+  - title: Probability Ratio
+  - title: Advantage Function
+  - title: Value Function
+  - title: Actor-Critic
+  - title: Generalized Advantage Estimation
+  - title: GAE
+  - title: Monte Carlo
+  - title: Temporal Difference
+categories:
+  - title: Machine Learning
+  - title: Reinforcement Learning
+  - title: Large Language Models
+author:
+  name: Mir Sazzat Hossain
+  designation: Research Assistant
+  url: https://mirsazzathossain.me
+  avatar:
+    url: user.png
+    alt: Mir Sazzat Hossain
+description: "How Proximal Policy Optimization (PPO) achieves the stability of TRPO with a simple clipped objective and first-order optimization, explained step by step: the advantage function, the value model, Monte Carlo and temporal difference estimates, GAE, the probability ratio, and clipping. Part 3 of a series on policy optimization for LLMs."
+seoDescription: "PPO explained for LLMs: the clipped surrogate objective, probability ratio, value model, and GAE, and why PPO replaced TRPO for training language models."
+series:
+  title: Policy Optimization in LLMs
+  order: 3
+covers:
+  - url: content/proximal-policy-optimization-ppo/cover.jpg
+    alt: "PPO cover: the clipped surrogate objective rising and then flattening at the clipping boundary"
+status: published
+publishedAt: 2026-10-01
+---
+
+import ActorCritic from "@/assets/articles/proximal-policy-optimization-ppo/actor-critic.svg";
+import Clip from "@/assets/articles/proximal-policy-optimization-ppo/clip.svg";
+
+<img
+  src="/images/content/proximal-policy-optimization-ppo/cover.jpg"
+  alt="PPO cover: the clipped surrogate objective rising and then flattening at the clipping boundary"
+  sizes="100vw"
+  width="100%"
+  height="auto"
+  placeholder="blur"
+  blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="
+/>
+
+## Introduction
+
+[Part 2](/articles/trust-region-policy-optimization-trpo) ended with an open question. TRPO made policy updates stable by keeping every step inside a trust region, but it achieved this stability with **second-order** optimization methods: the Fisher matrix, conjugate gradient, and a line search. All of this made each update expensive, hard to implement, and a poor fit for the way LLMs are usually trained. The question was whether we could get the same stability with ordinary **first-order** gradient descent.
+
+In 2017, **Proximal Policy Optimization (PPO)** [[1]](#ref-1) answered yes. Instead of solving a constrained problem, PPO changes the objective itself so that the model gains nothing from moving too far. This idea is expressed in a single equation, the **clipped surrogate objective**, and it can be optimized with the same tools used to pre-train and fine-tune LLMs: mini-batches, a few epochs, and the **Adam optimizer** [[2]](#ref-2). PPO matched or outperformed TRPO on standard benchmarks while being considerably simpler [[1]](#ref-1), and a few years later it became the algorithm behind the first instruction-following chat assistants [[3]](#ref-3).
+
+To understand PPO properly, though, we first need to examine the quantity on which everything depends: the **advantage** $A_t$. In [Part 1](/articles/reinforcement-learning-for-llms) we used a simple version of it, and in [Part 2](/articles/trust-region-policy-optimization-trpo) we assumed it was given. This post therefore starts by examining where it comes from. We first see why reinforcement learning needs a scaling factor at all, and why that factor is the advantage. Computing the advantage then leads us, one problem at a time, to the **value model**, **Monte Carlo** returns, **temporal difference (TD) bootstrapping**, and finally **Generalized Advantage Estimation (GAE)**. With the advantage in hand, we return to TRPO's question: how to reuse the same samples for several updates with the **probability ratio**, and how PPO's **clipping** keeps those updates safe. We end with the full PPO objective and algorithm, and how PPO is used to train language models.
+
+## From Supervised Learning to Scaled Updates
+
+We start from what we already know. In **supervised learning**, every input comes with the correct answer. For an LLM, this is SFT: given a state $s_t$ (the prompt and the tokens so far), we know the correct next token $y_t^*$, and we make it more likely by maximizing its log-probability, as in [Eq. (1) in Part 1](/articles/reinforcement-learning-for-llms#eq-sft-loss):
+
+$$
+\text{SFT:} \quad \log \pi_\theta(y_t^* \mid s_t)
+$$
+
+In reinforcement learning, there is no correct answer to copy. The model picks a token $y_t$ by itself, finishes its response, and only then receives a **reward** telling it how good the whole response was. It does not know whether a different token would have been better. All it knows is how things turned out.
+
+The **policy gradient** handles this with a small change: keep the same log-probability, but multiply it by a number that says how good the outcome was. The simplest choice is the reward $R$ itself:
+
+$$
+\text{Policy gradient:} \quad \log \pi_\theta(y_t \mid s_t) \cdot R
+$$
+
+When $R$ is positive, this behaves exactly like SFT: the sampled token becomes more likely. When $R$ is negative, it does the opposite and makes the token less likely. In other words, the reward acts as a **scaling factor**: it decides how strongly, and in which direction, the probability of the sampled token is pushed. The bigger the scaling factor, the bigger the push.
+
+Using the raw reward as the scaling factor has a serious problem, though: it does not tell us whether the outcome was _better than usual_.
+
+<div className="example">
+
+<span className="example-label">Example: why the raw reward is a bad scaling factor</span>
+
+Think of an exam. If you score 50, is that good or bad? If the class average is 30, it is good (+20). If the class average is 80, it is bad (−30). The score alone does not tell you; only the comparison with what was expected does.
+
+The same happens in RL. Suppose that in an easy situation, any action earns 1000 points, while in a hard situation, almost every action earns 0, and the model manages to earn 10. With the raw reward as the scaling factor, the model would strongly reinforce every action in the easy situation (scale 1000) and barely reinforce the genuinely good action in the hard situation (scale 10). If we subtract what was expected instead, the easy situation gives $1000 - 1000 = 0$: nothing special happened. The hard situation gives $10 - 0 = +10$: a real success.
+
+</div>
+
+So instead of the raw reward, we scale by how much **better or worse than expected** the outcome was. That quantity is the **advantage** $A_t$, and it gives the policy gradient we already met in [Eq. (2) in Part 1](/articles/reinforcement-learning-for-llms#eq-policy-gradient):
+
+$$
+\text{Advantage policy gradient:} \quad \log \pi_\theta(y_t \mid s_t) \cdot A_t \tag{1} \label{pg-advantage}
+$$
+
+Subtracting the expected outcome does not change the direction of learning on average, but it makes the scaling factor much less noisy, an idea known as using a **baseline** [[4]](#ref-4). The next section answers one question: how do we actually compute $A_t$?
+
+## The Advantage Function
+
+The advantage is the scaling factor that tells the model how strongly to push each token up or down, so everything PPO does depends on how well it is computed. In this section, we build it step by step. We first make "better than expected" precise, which shows that we need two quantities: what actually happened after a token, and what was expected to happen. We then see how each of them is measured, and how combining them gives three ways of estimating the advantage, each fixing a weakness of the previous one.
+
+### What "Better Than Expected" Means
+
+To compute the advantage, we need to make "better than expected" precise. It compares two quantities, both measured as the total future reward from time step $t$ onward, called the **return**:
+
+- $Q(s_t, y_t)$, the **action value**: the expected return if, in state $s_t$, we pick the specific token $y_t$ and then continue as usual. This is "how well things went with this token", like your own exam score.
+- $V(s_t)$, the **state value**: the expected return from state $s_t$ on average, over all the tokens the model might pick there. This is "how well things usually go from here", like the class average.
+
+The advantage is their difference:
+
+$$
+A(s_t, y_t) = Q(s_t, y_t) - V(s_t) \tag{2} \label{advantage-qv}
+$$
+
+If picking $y_t$ leads to a better outcome than the average from $s_t$, the advantage is positive and the token is pushed up. If it leads to a worse outcome, the advantage is negative and the token is pushed down. If it is exactly average, the advantage is zero and nothing changes.
+
+For example, in the state _"What is 2 + 2? The answer is"_, the average outcome is already good, because most tokens the model would pick here lead to a correct answer, so $V(s_t)$ is high. Picking the token _"4"_ is even better than that average, so its advantage is positive. In a state like _"What is 2 + 2? beep boop"_, the response has already gone wrong, so $V(s_t)$ is low.
+
+The problem is that we know neither $Q$ nor $V$. We have to estimate both, and the rest of this section follows that search step by step. We start with the more concrete half: what actually happened after the model picked $y_t$.
+
+### Measuring What Actually Happened: The Return
+
+What happened after a token depends on the **rewards** the model received afterward. At each step $t$, the model receives an **immediate reward** $r_t$. PPO itself does not specify where these rewards come from; it only needs a number for each step. In the original PPO paper, the rewards came directly from the environment, such as the score in a game. For LLMs, they usually come from one of three sources:
+
+- **Sparse rewards from a checker.** Every token gets $r_t = 0$, except the last one, which gets the reward for the whole response, for example $+1$ if a math answer is correct and $0$ otherwise. This is the most common case.
+- **A reward model.** When the goal is to follow human preferences and no automatic checker exists, a separate LLM trained on those preferences scores the finished response [[3]](#ref-3). Its score is again given at the last token. This combination of PPO with a reward model is **Reinforcement Learning from Human Feedback (RLHF)**, the topic of [Part 4](/articles/reinforcement-learning-from-human-feedback-rlhf).
+- **A process reward model.** For step-by-step reasoning, a model can score each intermediate step, giving rewards in the middle of the response as well [[5]](#ref-5).
+
+In the most common cases, the reward only arrives at the very end. So to find out what a single token led to, we have to **wait until the model finishes the full response**, collect all the rewards, and add them up. This sum is the **return**, and each future reward is multiplied by a **discount factor** $\gamma$ (between $0$ and $1$) once for every step it lies in the future:
+
+$$
+G_t = r_t + \gamma \, r_{t+1} + \gamma^2 \, r_{t+2} + \dots + \gamma^{T-t} \, r_T \tag{3} \label{return}
+$$
+
+With $\gamma = 0.9$, for example, the reward one step ahead counts $0.9$, two steps ahead $0.81$, three steps ahead $0.729$, and so on: the further away a reward is, the less it counts now. This is the **decay**. For LLM training, $\gamma$ is often set to $1$, so that the final reward counts fully for every token.
+
+$G_t$ is the outcome that actually followed the token $y_t$, so it is a direct sample of $Q(s_t, y_t)$. That gives us the first half of the advantage. For the second half, $V(s_t)$, a single response is not enough: we need the _average_ outcome from $s_t$.
+
+### Measuring What Was Expected: The Value Model
+
+In principle, we could get $V(s_t)$ by stopping at state $s_t$, letting the model finish the response many times in different ways, and averaging the returns. But we would have to do this for every state of every response, which would multiply the cost of generation many times over. So instead of computing the average directly, we **train a model to predict it**. This model is the **value model** $V_\phi$, also called the **critic**. The model that generates text, $\pi_\theta$, is then called the **actor**, and together they form an **actor-critic** setup [[6]](#ref-6).
+
+For LLMs, the value model is itself an LLM. It reads the same text as the actor, but its last layer is different ([Figure 1](#fig-actor-critic)). The actor ends with a **language-model head**, which outputs a probability for every token in the vocabulary. The value model replaces it with a **value head**, a single linear layer that outputs one number: the estimate $V_\phi(s_t)$.
+
+<figure id="fig-actor-critic">
+  <ActorCritic />
+  <figcaption>**Figure 1.** The actor and the critic. Both are LLMs that read the same state, the prompt and the tokens generated so far. The actor's language-model head outputs a probability for every next token, while the critic's value head outputs a single number, the estimated future reward $V_\phi(s_t)$.</figcaption>
+</figure>
+
+The value model does not start from scratch. Its backbone is usually initialized from an existing model, such as the SFT model or the reward model (InstructGPT, for example, initialized it from the reward model [[3]](#ref-3)), so it already understands language. What it still has to learn is how much reward each state tends to lead to, and the returns we just computed are exactly what it needs. Every time the actor finishes a response, we know the real return $G_t$ for every step, and we train the value model to predict it with a **mean squared error** loss:
+
+$$
+L^{\text{VF}}(\phi) = \mathbb{E}_t \Big[ \big( V_\phi(s_t) - G_t \big)^2 \Big] \tag{4} \label{value-loss}
+$$
+
+Each individual $G_t$ is the outcome of one particular response, but over many responses, the prediction that minimizes this loss is the **average** return from each kind of state:
+
+$$
+V(s_t) = \mathbb{E}\big[ G_t \mid s_t \big] \tag{5} \label{value-expectation}
+$$
+
+This also answers a natural question: how can the value model predict the future reward from a state like _"The"_, when it does not even know how many tokens are still to come? It does not need to. A strong chess player can look at a board and say "white wins this about 80% of the time" without knowing whether the game will last 10 or 50 more moves. They have seen many similar positions. In the same way, the value model has seen many responses that started like this one. And because it learns to predict $G_t$, which is already discounted, its estimates carry the same decay.
+
+We now have both halves of [Eq. (2)](#eq-advantage-qv): a sample of $Q$ from the return, and an estimate of $V$ from the value model. Putting them together gives our first estimate of the advantage.
+
+### First Estimate: Monte Carlo
+
+The most direct estimate takes the definition of the advantage in [Eq. (2)](#eq-advantage-qv) and replaces $Q(s_t, y_t)$ with the return $G_t$ that actually followed, from [Eq. (3)](#eq-return), and $V(s_t)$ with the value model's estimate $V_\phi(s_t)$. Since $G_t$ adds up the rewards of all the remaining tokens, it can only be computed after the model has generated every token of the response:
+
+$$
+\hat{A}_t^{\text{MC}} = G_t - V_\phi(s_t) \tag{6} \label{adv-mc}
+$$
+
+This is called the **Monte Carlo** estimate. The name comes from the Monte Carlo casino in Monaco. In the 1940s, mathematicians began solving hard problems by running many random trials and averaging the results instead of deriving an exact formula, and the method was named after the casino because it relies on chance, like games of chance [[7]](#ref-7). Here, every finished response is one random trial.
+
+Because $G_t$ uses only real rewards, this estimate has **low bias**: on average it is correct. But it has two problems. First, we still have to wait until the response is finished before we can compute anything. Second, and more importantly, it has **high variance**. $G_t$ depends on every random token sampled _after_ step $t$, so a single unlucky choice later in the response changes it completely. If the model writes a perfectly good _"The answer is"_ and then samples _"5"_ instead of _"4"_, the return is $0$, and the good tokens at the start are blamed for a mistake they did not make. Over many responses this averages out, but each individual estimate is very noisy.
+
+This raises a natural idea. We already have a model that predicts the future: the value model. Instead of waiting for the real future, which is noisy, why not ask the value model about it?
+
+### Second Estimate: TD Bootstrapping
+
+**Temporal difference (TD) bootstrapping** does exactly that. To see how, write the Monte Carlo advantage with the return fully expanded:
+
+$$
+\hat{A}_t^{\text{MC}} = r_t + \underbrace{\gamma \, r_{t+1} + \gamma^2 \, r_{t+2} + \dots + \gamma^{T-t} \, r_T}_{\text{replaced by } \gamma \, V_\phi(s_{t+1})} - V_\phi(s_t)
+$$
+
+Everything after the first reward is the return from the next step onward, multiplied by $\gamma$, that is, $\gamma \, G_{t+1}$. And the average of $G_{t+1}$ is exactly what the value model predicts for the next state, $V_\phi(s_{t+1})$. So TD bootstrapping keeps only the immediate reward $r_t$, which is observed right away, and replaces the rest of the future with $\gamma \, V_\phi(s_{t+1})$. This gives the TD estimate of the advantage. Because it is used so often, it has its own symbol, $\delta_t$, and its own name, the **TD error**:
+
+$$
+\hat{A}_t^{\text{TD}} = \delta_t = r_t + \gamma \, V_\phi(s_{t+1}) - V_\phi(s_t) \tag{7} \label{td-error}
+$$
+
+Two names describe this idea. It is a **temporal difference** because it compares the value model's estimates at two consecutive times, $t$ and $t + 1$ [[8]](#ref-8). And it is called **bootstrapping**, from the phrase "to pull yourself up by your own bootstraps", because the value model uses one of its own estimates, $V_\phi(s_{t+1})$, to improve another one, $V_\phi(s_t)$, without waiting for the real outcome.
+
+This fixes both problems of Monte Carlo. We no longer need to wait for the response to finish, and since only one random step is involved, the TD error has **low variance**: an unlucky token later in the response no longer affects the advantage of _"The"_ directly. But it introduces a new problem. The TD estimate is only as good as the value model: if $V_\phi(s_{t+1})$ is wrong, for example if it predicts $0.9$ when the true average is $0.6$, then $\delta_t$ is off by the same amount, and the advantage pushes the token in the wrong direction or by the wrong amount. A systematic error of this kind is called **bias**, so TD bootstrapping has **high bias**.
+
+A daily-life comparison, adapted from Sutton and Barto [[4]](#ref-4), makes the trade-off concrete. Suppose you want to learn how long your commute home takes. With Monte Carlo, you only learn once you arrive: it took 45 minutes. One accident on the road makes that day's number very different (high variance). With TD bootstrapping, you update along the way: you expected 30 minutes in total, and after 10 minutes you encounter heavy traffic and now expect 25 more. Your new estimate is $10 + 25 = 35$, five minutes more than before, and you can learn from that difference immediately. But if your "25 more minutes" guess is wrong, you learn the wrong thing (bias).
+
+| | Monte Carlo | TD bootstrapping |
+| --- | --- | --- |
+| How much future is observed | The whole response | One step |
+| How the rest is filled in | Nothing to fill in | With $V_\phi(s_{t+1})$ |
+| Must wait for the response to finish | Yes | No |
+| Bias | Low | High |
+| Variance | High | Low |
+
+So each estimate fixes the other's weakness, and neither is good enough on its own. But they are not the only two options. They are the two ends of a whole range of estimates. TD bootstrapping trusts the real reward for one step and the value model for everything after it. Monte Carlo trusts the real rewards for every step. In between, we can trust the real rewards for $n$ steps and the value model after that, which gives the **n-step** estimates of $Q$:
+
+$$
+\begin{aligned}
+\hat{Q}^{(1)}(s_t, y_t) &= r_t + \gamma \, V_\phi(s_{t+1}) \quad {\small \text{(TD: low variance, high bias)}} \\
+\hat{Q}^{(2)}(s_t, y_t) &= r_t + \gamma \, r_{t+1} + \gamma^2 \, V_\phi(s_{t+2}) \\
+\hat{Q}^{(3)}(s_t, y_t) &= r_t + \gamma \, r_{t+1} + \gamma^2 \, r_{t+2} + \gamma^3 \, V_\phi(s_{t+3}) \\
+&\;\;\vdots \\
+\hat{Q}^{\text{MC}}(s_t, y_t) &= r_t + \gamma \, r_{t+1} + \dots + \gamma^{T-t} \, r_T \quad {\small \text{(MC: high variance, low bias)}}
+\end{aligned}
+$$
+
+Moving down the list, each estimate uses one more real reward and relies one step less on the value model. That reduces the bias, but every extra real reward depends on one more randomly sampled token, which increases the variance. Subtracting $V_\phi(s_t)$ from each of these gives the **n-step advantages**:
+
+$$
+\begin{aligned}
+\hat{A}_t^{(1)} &= r_t + \gamma \, V_\phi(s_{t+1}) - V_\phi(s_t) \\
+\hat{A}_t^{(2)} &= r_t + \gamma \, r_{t+1} + \gamma^2 \, V_\phi(s_{t+2}) - V_\phi(s_t) \\
+\hat{A}_t^{(3)} &= r_t + \gamma \, r_{t+1} + \gamma^2 \, r_{t+2} + \gamma^3 \, V_\phi(s_{t+3}) - V_\phi(s_t) \\
+&\;\;\vdots \\
+\hat{A}_t^{\text{MC}} &= r_t + \gamma \, r_{t+1} + \dots + \gamma^{T-t} \, r_T - V_\phi(s_t)
+\end{aligned}
+$$
+
+The first one is the TD error $\delta_t$ from [Eq. (7)](#eq-td-error), and the last one is the Monte Carlo advantage. The question is which $n$ to choose. A small $n$ is stable but trusts the value model too much; a large $n$ is accurate on average but noisy. The best choice depends on how good the value model is, and that changes during training. So instead of committing to a single $n$, what if we could use all of them at once, giving most weight to the stable short estimates while still letting the longer, more accurate ones contribute? This is exactly what **Generalized Advantage Estimation (GAE)** does.
+
+### Generalized Advantage Estimation
+
+GAE [[9]](#ref-9) does not pick one $n$. Instead, it takes an **exponential moving average (EMA)** of all the n-step advantages. The 1-step advantage gets weight $1$, and each longer one gets $\lambda$ times the weight of the previous one, for a parameter $\lambda$ between $0$ and $1$. As in any weighted average, we multiply each estimate by its weight, add them up, and divide by the sum of the weights:
+
+$$
+\hat{A}_t^{\text{GAE}} = \frac{\hat{A}_t^{(1)} + \lambda \, \hat{A}_t^{(2)} + \lambda^2 \, \hat{A}_t^{(3)} + \dots}{1 + \lambda + \lambda^2 + \dots}
+$$
+
+The denominator is a geometric series, $1 + \lambda + \lambda^2 + \dots = \frac{1}{1 - \lambda}$, so dividing by it is the same as multiplying by $(1 - \lambda)$:
+
+$$
+\hat{A}_t^{\text{GAE}} = (1 - \lambda) \Big( \hat{A}_t^{(1)} + \lambda \, \hat{A}_t^{(2)} + \lambda^2 \, \hat{A}_t^{(3)} + \dots \Big)
+$$
+
+Written this way, we would have to compute every n-step advantage separately. But each of them can be written using only TD errors. The 1-step advantage is the TD error itself, $\hat{A}_t^{(1)} = \delta_t$. For the 2-step advantage, we add and subtract $\gamma \, V_\phi(s_{t+1})$ and group the terms into two TD errors:
+
+$$
+\begin{aligned}
+\hat{A}_t^{(2)} &= r_t + \gamma \, r_{t+1} + \gamma^2 \, V_\phi(s_{t+2}) - V_\phi(s_t) \\
+&= \big( r_t + \gamma \, V_\phi(s_{t+1}) - V_\phi(s_t) \big) + \gamma \big( r_{t+1} + \gamma \, V_\phi(s_{t+2}) - V_\phi(s_{t+1}) \big) \\
+&= \delta_t + \gamma \, \delta_{t+1}
+\end{aligned}
+$$
+
+Doing the same for the longer estimates, each extra step adds one more TD error. So the list of n-step advantages becomes:
+
+$$
+\begin{aligned}
+\hat{A}_t^{(1)} &= \delta_t \\
+\hat{A}_t^{(2)} &= \delta_t + \gamma \, \delta_{t+1} \\
+\hat{A}_t^{(3)} &= \delta_t + \gamma \, \delta_{t+1} + \gamma^2 \, \delta_{t+2} \\
+&\;\;\vdots \\
+\hat{A}_t^{\text{MC}} &= \delta_t + \gamma \, \delta_{t+1} + \dots + \gamma^{T-t} \, \delta_T
+\end{aligned}
+$$
+
+Putting these into the EMA:
+
+$$
+\begin{aligned}
+\hat{A}_t^{\text{GAE}} = (1 - \lambda) \Big( & \delta_t \\
++ \, & \lambda \big( \delta_t + \gamma \, \delta_{t+1} \big) \\
++ \, & \lambda^2 \big( \delta_t + \gamma \, \delta_{t+1} + \gamma^2 \, \delta_{t+2} \big) + \dots \Big)
+\end{aligned}
+$$
+
+Now we collect the terms for each TD error. $\delta_t$ appears in every estimate, $\gamma \, \delta_{t+1}$ in every estimate from the second one on, and $\gamma^2 \, \delta_{t+2}$ from the third one on. Each sum of weights is a geometric series like the one above:
+
+$$
+\begin{aligned}
+\hat{A}_t^{\text{GAE}} &= (1 - \lambda) \, \delta_t \, (1 + \lambda + \lambda^2 + \dots) \\
+&\quad + (1 - \lambda) \, \gamma \, \delta_{t+1} \, (\lambda + \lambda^2 + \dots) \\
+&\quad + (1 - \lambda) \, \gamma^2 \, \delta_{t+2} \, (\lambda^2 + \dots) + \dots \\
+&= (1 - \lambda) \, \delta_t \, \frac{1}{1 - \lambda} \\
+&\quad + (1 - \lambda) \, \gamma \, \delta_{t+1} \, \frac{\lambda}{1 - \lambda} \\
+&\quad + (1 - \lambda) \, \gamma^2 \, \delta_{t+2} \, \frac{\lambda^2}{1 - \lambda} + \dots \\
+&= \delta_t + \gamma \lambda \, \delta_{t+1} + (\gamma \lambda)^2 \, \delta_{t+2} + \dots
+\end{aligned}
+$$
+
+The $(1 - \lambda)$ cancels completely. After the last token there are no more TD errors, so the sum ends with $\delta_T$. This is the form of GAE used in practice: a sum of the TD errors of all future steps, where each one gets a weight that shrinks by a factor of $\gamma \lambda$ for every step it lies ahead:
+
+$$
+\hat{A}_t^{\text{GAE}} = \sum_{l=0}^{T-t} (\gamma \lambda)^l \, \delta_{t+l} \tag{8} \label{gae}
+$$
+
+The parameter $\lambda$ decides how far into the future we trust the real rewards, and its two extremes are exactly the two estimates we started with:
+
+- With $\lambda = 0$, only the first term remains: $\hat{A}_t = \delta_t$, the pure **TD bootstrapping** estimate.
+- With $\lambda = 1$, every TD error until the end of the response is kept with weight $\gamma^l$. This is exactly $\hat{A}_t^{\text{MC}}$ from the list above, $G_t - V_\phi(s_t)$, the pure **Monte Carlo** estimate.
+
+Values in between trade a small increase in bias for a large reduction in variance. A common choice is $\lambda = 0.95$. In practice, GAE is computed backward from the last token with a simple recursion, $\hat{A}_t = \delta_t + \gamma \lambda \, \hat{A}_{t+1}$, starting from $\hat{A}_T = \delta_T$.
+
+<div className="example">
+
+<span className="example-label">Example: computing the advantage for one sentence</span>
+
+Take the prompt _"What is 2 + 2?"_, and suppose the model writes _"The answer is 4 ."_, five tokens in total. The reward is sparse: $0$ for every token, and $+1$ at the end because the answer is correct. Use $\gamma = 1$. The value model gives these estimates for each state:
+
+| Step $t$ | State $s_t$ (prompt + …) | Token $y_t$ | $r_t$ | $V_\phi(s_t)$ |
+| --- | --- | --- | --- | --- |
+| 0 | (prompt only) | The | 0 | 0.40 |
+| 1 | The | answer | 0 | 0.50 |
+| 2 | The answer | is | 0 | 0.60 |
+| 3 | The answer is | 4 | 0 | 0.80 |
+| 4 | The answer is 4 | . | 1 | 0.95 |
+
+After the last token, the response is over, so $V_\phi(s_5) = 0$. Using [Eq. (7)](#eq-td-error), the TD error for the token _"4"_ is:
+
+$$
+\delta_3 = r_3 + V_\phi(s_4) - V_\phi(s_3) = 0 + 0.95 - 0.80 = 0.15
+$$
+
+Doing the same for every token, and then computing the Monte Carlo and GAE advantages:
+
+| Token | TD error $\delta_t$ | Monte Carlo $G_t - V_\phi(s_t)$ | GAE ($\lambda = 0.95$) |
+| --- | --- | --- | --- |
+| The | 0.10 | 0.60 | 0.54 |
+| answer | 0.10 | 0.50 | 0.47 |
+| is | 0.20 | 0.40 | 0.39 |
+| 4 | 0.15 | 0.20 | 0.20 |
+| . | 0.05 | 0.05 | 0.05 |
+
+For the token _"4"_, GAE gives $\hat{A}_3 = \delta_3 + 0.95 \cdot \delta_4 = 0.15 + 0.95 \cdot 0.05 \approx 0.20$. All three advantages are positive: writing _"4"_ after _"The answer is"_ went better than the value model expected, so this token will be pushed up. Notice that GAE sits between the two other estimates, as expected.
+
+</div>
+
+## Reusing Samples: The Probability Ratio
+
+We now know how to compute the advantage for every token, so we can put the pieces together. Training the policy with the policy gradient from [Eq. (1)](#eq-pg-advantage) and the value model with the loss from [Eq. (4)](#eq-value-loss) looks like Algorithm 1:
+
+<div className="algorithm">
+
+<span className="algorithm-label"><b>Algorithm 1</b> Vanilla policy gradient</span>
+
+$$
+\begin{array}{rl}
+{\scriptsize 1:} & \text{Initialize the policy } \theta_0 \text{ and the value model } \phi_0 \\
+{\scriptsize 2:} & \textbf{for } n = 0, 1, 2, \dots \textbf{ do} \\
+{\scriptsize 3:} & \quad \text{generate a batch of responses } \mathcal{D}_n \text{ with } \pi_{\theta_n} \\
+{\scriptsize 4:} & \quad \text{compute the returns } G_t \text{ and the advantages } \hat{A}_t \text{ using } V_{\phi_n} \\
+{\scriptsize 5:} & \quad \text{update the policy and the value model once}
+\end{array}
+$$
+
+</div>
+
+Each pass through this loop is called an **iteration**. In every iteration, the batch $\mathcal{D}_n$ is used for a single update and then thrown away, because the policy gradient needs responses from the current model. This is wasteful, since generating responses token by token is the most expensive part of RL for LLMs.
+
+Does this sound familiar? We faced the same problem in [Part 2](/articles/trust-region-policy-optimization-trpo#reusing-old-samples-importance-sampling), and there we did not generate new samples after every update. We reused the old ones with **importance sampling**: each token is reweighted by the **probability ratio** between the model being trained and the old model that generated it, as in [Eq. (5) in Part 2](/articles/trust-region-policy-optimization-trpo#eq-ratio):
+
+$$
+\rho_t(\theta) = \frac{\pi_\theta(y_t \mid s_t)}{\pi_{\theta_{\text{old}}}(y_t \mid s_t)} \tag{9} \label{ratio}
+$$
+
+This gave us the surrogate objective from [Eq. (6) in Part 2](/articles/trust-region-policy-optimization-trpo#eq-surrogate):
+
+$$
+L(\theta) = \mathbb{E}_t \big[ \rho_t(\theta) \, \hat{A}_t \big] \tag{10} \label{surrogate}
+$$
+
+(The PPO paper [[1]](#ref-1) calls this $L^{\text{CPI}}$ and writes the ratio as $r_t(\theta)$. We keep $\rho_t$ to avoid confusion with the reward $r_t$.)
+
+We can do exactly the same here. The model that generated the batch, $\pi_{\theta_n}$, becomes $\pi_{\theta_{\text{old}}}$, and the ratio takes care of the fact that the model being trained is no longer the one that generated the batch. So we no longer have to throw the batch away after one update. We can train on it the way we train on any supervised dataset: go over it several times, where each pass is called an **epoch**, taking one gradient step per **mini-batch**, as in Algorithm 2:
+
+<div className="algorithm">
+
+<span className="algorithm-label"><b>Algorithm 2</b> Reusing each batch for several epochs</span>
+
+$$
+\begin{array}{rl}
+{\scriptsize 1:} & \text{Initialize the policy } \theta_0 \text{ and the value model } \phi_0 \\
+{\scriptsize 2:} & \textbf{for } n = 0, 1, 2, \dots \textbf{ do} \\
+{\scriptsize 3:} & \quad \text{generate a batch of responses } \mathcal{D}_n \text{ with } \pi_{\theta_n} \\
+{\scriptsize 4:} & \quad \text{compute the returns } G_t \text{ and the advantages } \hat{A}_t \text{ using } V_{\phi_n} \\
+{\scriptsize 5:} & \quad \textbf{for } \text{epoch} = 1, 2, \dots, K \textbf{ do} \\
+{\scriptsize 6:} & \quad \quad \textbf{for } \text{each mini-batch of } \mathcal{D}_n \textbf{ do} \\
+{\scriptsize 7:} & \quad \quad \quad \text{update the policy and the value model}
+\end{array}
+$$
+
+</div>
+
+With $4$ epochs of $8$ mini-batches, one batch now gives $32$ updates instead of $1$. At the first update, $\pi_\theta$ and $\pi_{\theta_{\text{old}}}$ are the same model, so every ratio is $1$. Over the epochs, the ratios drift away from $1$, and at the next iteration they return to $1$. But as we saw in [Part 2](/articles/trust-region-policy-optimization-trpo), the surrogate is only trustworthy while the ratios stay close to $1$. Maximizing it freely would push the ratios of good tokens up without limit and break the policy. TRPO prevented this with a KL constraint and second-order optimization. PPO prevents it with a much simpler modification of the objective.
+
+## The Clipped Surrogate Objective
+
+PPO keeps the surrogate objective, but removes the incentive to move the ratio far from $1$. It does this by **clipping** the ratio to the range $[1 - \epsilon, 1 + \epsilon]$, where $\epsilon$ is a small number, typically $0.2$:
+
+$$
+L^{\text{CLIP}}(\theta) = \mathbb{E}_t \Big[ \min\big( \rho_t(\theta) \, \hat{A}_t, \; \text{clip}\big(\rho_t(\theta), 1 - \epsilon, 1 + \epsilon\big) \, \hat{A}_t \big) \Big] \tag{11} \label{clip}
+$$
+
+Here $\text{clip}(\rho, 1 - \epsilon, 1 + \epsilon)$ means: if $\rho$ is below $1 - \epsilon$, use $1 - \epsilon$; if it is above $1 + \epsilon$, use $1 + \epsilon$; otherwise, use $\rho$ itself. With $\epsilon = 0.2$, the clipped ratio always stays between $0.8$ and $1.2$.
+
+The objective takes the **minimum** of two terms: the normal surrogate $\rho_t \hat{A}_t$ and its clipped version. Taking the smaller of the two makes $L^{\text{CLIP}}$ a **pessimistic** estimate, a lower bound on the normal surrogate [[1]](#ref-1). The model is never rewarded for pushing the ratio beyond the clipping range, but it is still penalized if a change makes things worse. [Figure 2](#fig-clip) shows what this looks like for a single token.
+
+<figure id="fig-clip">
+  <Clip />
+  <figcaption>**Figure 2.** The clipped objective for one token, as a function of the probability ratio $\rho$. Left: for a good token ($\hat{A} > 0$), the objective grows as $\rho$ increases, but only until $1 + \epsilon$; beyond that it is flat. Right: for a bad token ($\hat{A} < 0$), the objective grows as $\rho$ decreases, but only until $1 - \epsilon$. In the flat regions (orange), the gradient is zero, so the model has no reason to move further. The dot marks the starting point, $\rho = 1$.</figcaption>
+</figure>
+
+For each sign of the advantage, the figure has three regions, depending on which way the ratio has moved and how far:
+
+| | Harmful direction | Helpful direction, inside the range | Helpful direction, beyond the range |
+| --- | --- | --- | --- |
+| $\hat{A}_t > 0$ (good token) | $\rho_t < 1$: not clipped, gradient pushes $\rho_t$ back up | $1 \le \rho_t \le 1 + \epsilon$: not clipped, gradient keeps pushing $\rho_t$ up | $\rho_t > 1 + \epsilon$: clipped, gradient is zero |
+| $\hat{A}_t < 0$ (bad token) | $\rho_t > 1$: not clipped, gradient pushes $\rho_t$ back down | $1 - \epsilon \le \rho_t \le 1$: not clipped, gradient keeps pushing $\rho_t$ down | $\rho_t < 1 - \epsilon$: clipped, gradient is zero |
+
+Inside the range, the model learns exactly as with the normal surrogate, for good and bad tokens alike. Clipping only stops **improvements** that have already gone far enough, and it never stops the model from undoing a change that hurt. This is the sense in which PPO is "proximal": the new model has no incentive to move more than about $\epsilon$ away from the old one on any token.
+
+<div className="example">
+
+<span className="example-label">Example: clipping the update for "4"</span>
+
+Continue with the token _"4"_ from the previous example, whose advantage is $\hat{A}_3 \approx 0.1975$. The old model gave it probability $0.40$. After a few gradient updates on the same batch, the new model gives it $0.50$, so the ratio is:
+
+$$
+\rho_3(\theta) = \frac{0.50}{0.40} = 1.25
+$$
+
+With $\epsilon = 0.2$, the clipping range is $[0.8, 1.2]$, so the ratio is outside it. The two terms of [Eq. (11)](#eq-clip) are:
+
+$$
+\begin{aligned}
+\rho_3 \, \hat{A}_3 &= 1.25 \cdot 0.1975 \approx 0.247 \\
+\text{clip}(1.25, 0.8, 1.2) \cdot \hat{A}_3 &= 1.20 \cdot 0.1975 \approx 0.237
+\end{aligned}
+$$
+
+PPO takes the smaller one, $0.237$, which is the clipped term. Since the clipped term does not depend on $\theta$ anymore, its gradient is zero: the model has already made _"4"_ $25\%$ more likely, and PPO stops pushing it further on this batch. Without clipping, the gradient would keep increasing the probability of _"4"_ with every epoch, even though the advantage was estimated for the old model.
+
+</div>
+
+<div className="derivation">
+
+<span className="derivation-label">Details: why the gradient is zero in the flat regions</span>
+
+Take a token with $\hat{A}_t > 0$ and $\rho_t(\theta) > 1 + \epsilon$. Then $\text{clip}(\rho_t, 1 - \epsilon, 1 + \epsilon) = 1 + \epsilon$, and since $\rho_t > 1 + \epsilon$ and $\hat{A}_t > 0$:
+
+$$
+\min\big( \rho_t \, \hat{A}_t, \; (1 + \epsilon) \, \hat{A}_t \big) = (1 + \epsilon) \, \hat{A}_t
+$$
+
+This value is a constant: $\epsilon$ is fixed, and $\hat{A}_t$ was computed from the old samples and does not depend on $\theta$. The derivative of a constant is zero, so this token contributes nothing to the gradient. The same argument applies to a token with $\hat{A}_t < 0$ and $\rho_t < 1 - \epsilon$, where the minimum is the constant $(1 - \epsilon) \, \hat{A}_t$.
+
+In every other case, the minimum is $\rho_t \, \hat{A}_t$, whose gradient is $\hat{A}_t \, \nabla_\theta \rho_t(\theta)$. At $\theta = \theta_{\text{old}}$, where $\rho_t = 1$, this is exactly the policy gradient. So for small changes, PPO behaves like the ordinary policy gradient, and it only differs once a token's ratio leaves the clipping range in the helpful direction.
+
+</div>
+
+## The Full PPO Objective
+
+The clipped objective improves the actor, but it relies on advantages that come from the critic. Since the actor changes after every batch, the returns it produces change too, so the critic must keep learning alongside it. PPO therefore trains the actor and the critic at the same time, and they can even share the same LLM backbone. TRPO could not handle this kind of parameter sharing, but PPO can, because everything is combined into a single loss minimized with gradient descent [[1]](#ref-1). The full objective combines three terms:
+
+$$
+L^{\text{CLIP+VF+S}}(\theta) = \mathbb{E}_t \Big[ L_t^{\text{CLIP}}(\theta) - c_1 \, L_t^{\text{VF}}(\theta) + c_2 \, S\big[\pi_\theta\big](s_t) \Big] \tag{12} \label{ppo-full}
+$$
+
+- $L_t^{\text{CLIP}}$ is the clipped surrogate from [Eq. (11)](#eq-clip), which improves the policy.
+- $L_t^{\text{VF}}$ is the value loss from [Eq. (4)](#eq-value-loss), which teaches the critic to predict returns. It is subtracted because the value error should be minimized while the rest is maximized.
+- $S[\pi_\theta](s_t)$ is the **entropy** of the model's next-token distribution, a measure of how spread out it is. Adding it as a bonus keeps the model from becoming too certain too early, which encourages **exploration** [[6]](#ref-6).
+
+The coefficients $c_1$ and $c_2$ balance the three terms. The value loss is written with $\theta$ here because, when the actor and the critic share a backbone, the critic's parameters are part of $\theta$. When they are separate LLMs, the value loss from [Eq. (4)](#eq-value-loss) is minimized separately for $\phi$.
+
+## The PPO Algorithm, Step by Step
+
+Putting everything together, we can fill in the details of Algorithm 2. PPO alternates between collecting data and optimizing on it [[1]](#ref-1):
+
+1. **Sample.** Generate responses to a batch of prompts with the current model $\pi_{\theta_{\text{old}}}$, and store each token's probability under that model.
+2. **Score.** Compute the rewards $r_t$, for example with a checker or a reward model.
+3. **Estimate advantages.** Run the value model on every state, compute the TD errors with [Eq. (7)](#eq-td-error), and the advantages with GAE, [Eq. (8)](#eq-gae). Compute the returns $G_t$ as targets for the value model.
+4. **Optimize.** For $K$ epochs, split the batch into mini-batches and take gradient steps on the full objective in [Eq. (12)](#eq-ppo-full), using the Adam optimizer.
+5. **Repeat.** Set $\theta_{\text{old}} \leftarrow \theta$ and go back to step 1.
+
+Step 4 is where PPO differs most from the vanilla policy gradient in Algorithm 1. The same batch is reused for several epochs, and clipping is what makes that safe. Typical settings are $\epsilon = 0.2$, $\gamma = 0.99$ (or $1$ for LLMs), $\lambda = 0.95$, and a few epochs per batch [[1]](#ref-1).
+
+PPO was not designed for LLMs. Its original paper tested it on simulated robotic control and Atari games, where it performed better than other online policy gradient methods such as TRPO and A2C (a synchronous version of A3C [[6]](#ref-6)), while being much simpler to implement [[1]](#ref-1).
+
+## PPO for Language Models
+
+Moving from games and robots to language models changes the scale of the problem. When PPO is used to fine-tune an LLM, as in InstructGPT [[3]](#ref-3), every model involved is itself a large language model. In the RLHF setup, where rewards come from a reward model, up to four of them are needed at the same time:
+
+| Model | Role | Trained during PPO? |
+| --- | --- | --- |
+| Policy (actor) $\pi_\theta$ | Generates responses | Yes |
+| Value model (critic) $V_\phi$ | Estimates $V(s_t)$ for the advantage | Yes |
+| Reward model | Scores finished responses | No |
+| Reference model $\pi_{\text{ref}}$ | Frozen SFT model, used to keep the policy from drifting too far | No |
+
+Only the first two belong to PPO itself. The reward model and the reference model are added by RLHF, and they are the subject of the next part. With a checker instead of a reward model, PPO needs only the policy, the value model, and optionally the reference model. For now, the important point is that the value model is a full-size LLM of its own. It roughly doubles the memory and compute needed for training, and it has to learn alongside the policy.
+
+## Limitations of PPO
+
+PPO is considerably simpler than TRPO, but it still has important limitations:
+
+- **The value model is expensive.** For LLMs, the critic is as large as the policy, and its estimates are only as good as its training. A poor value model gives noisy or biased advantages.
+- **Clipping is only an approximate trust region.** It removes the incentive to move far on each token, but it does not strictly bound the KL divergence between the old and new models. In practice, the policy can still drift further than $\epsilon$ suggests [[10]](#ref-10).
+- **Many details matter.** Studies of PPO have found that its performance depends heavily on implementation choices, such as how advantages are normalized and how the value loss is handled, sometimes more than on the clipping itself [[10]](#ref-10), [[11]](#ref-11).
+
+> PPO showed that a simple clipped objective, optimized with ordinary gradient descent, is enough to keep policy updates stable. The question it left behind was where the reward comes from when we want a model to follow human preferences.
+
+This is the question RLHF answers, and it is the topic of [Part 4](/articles/reinforcement-learning-from-human-feedback-rlhf).
+
+## References
+
+<ol>
+  <li id="ref-1">Schulman, J., Wolski, F., Dhariwal, P., Radford, A., & Klimov, O. (2017). <a href="https://arxiv.org/abs/1707.06347">Proximal Policy Optimization Algorithms</a>. <em>arXiv:1707.06347</em>.</li>
+  <li id="ref-2">Kingma, D. P., & Ba, J. (2015). <a href="https://arxiv.org/abs/1412.6980">Adam: A Method for Stochastic Optimization</a>. <em>ICLR</em>.</li>
+  <li id="ref-3">Ouyang, L., Wu, J., Jiang, X., et al. (2022). <a href="https://arxiv.org/abs/2203.02155">Training language models to follow instructions with human feedback</a>. <em>NeurIPS</em>.</li>
+  <li id="ref-4">Sutton, R. S., & Barto, A. G. (2018). <a href="http://incompleteideas.net/book/the-book-2nd.html">Reinforcement Learning: An Introduction</a> (2nd ed.). MIT Press.</li>
+  <li id="ref-5">Lightman, H., Kosaraju, V., Burda, Y., et al. (2023). <a href="https://arxiv.org/abs/2305.20050">Let's Verify Step by Step</a>. <em>arXiv:2305.20050</em>.</li>
+  <li id="ref-6">Mnih, V., Badia, A. P., Mirza, M., et al. (2016). <a href="https://arxiv.org/abs/1602.01783">Asynchronous Methods for Deep Reinforcement Learning</a>. <em>ICML</em>.</li>
+  <li id="ref-7">Metropolis, N., & Ulam, S. (1949). <a href="https://doi.org/10.1080/01621459.1949.10483310">The Monte Carlo Method</a>. <em>Journal of the American Statistical Association</em>, 44(247), 335–341.</li>
+  <li id="ref-8">Sutton, R. S. (1988). <a href="https://doi.org/10.1007/BF00115009">Learning to Predict by the Methods of Temporal Differences</a>. <em>Machine Learning</em>, 3, 9–44.</li>
+  <li id="ref-9">Schulman, J., Moritz, P., Levine, S., Jordan, M. I., & Abbeel, P. (2016). <a href="https://arxiv.org/abs/1506.02438">High-Dimensional Continuous Control Using Generalized Advantage Estimation</a>. <em>ICLR</em>.</li>
+  <li id="ref-10">Engstrom, L., Ilyas, A., Santurkar, S., et al. (2020). <a href="https://arxiv.org/abs/2005.12729">Implementation Matters in Deep Policy Gradients: A Case Study on PPO and TRPO</a>. <em>ICLR</em>.</li>
+  <li id="ref-11">Huang, S., Noukhovitch, M., Hosseini, A., Rasul, K., Wang, W., & Tunstall, L. (2024). <a href="https://arxiv.org/abs/2403.17031">The N+ Implementation Details of RLHF with PPO: A Case Study on TL;DR Summarization</a>. <em>arXiv:2403.17031</em>.</li>
+</ol>

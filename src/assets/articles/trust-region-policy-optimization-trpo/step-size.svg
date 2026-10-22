@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 340" role="img" aria-label="Reward curve with three update sizes from the same starting point: a tiny step that barely improves, a medium step that reaches the peak inside the trust region, and a large step that overshoots off a cliff where reward collapses." font-family="var(--font-sans)">
+    <defs>
+      <marker id="arrow-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--ink-3)" /></marker>
+      <marker id="arrow-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--green)" /></marker>
+      <marker id="arrow-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#ef4444" /></marker>
+    </defs>
+    <rect x="116" y="30" width="291" height="220" fill="var(--link)" fill-opacity="0.08" />
+    <text x="124" y="48" fill="var(--link)" font-size="13px" font-weight="600">trust region (safe zone)</text>
+    <line x1="60" y1="250" x2="620" y2="250" stroke="var(--ink-3)" stroke-width="1" />
+    <line x1="60" y1="250" x2="60" y2="30" stroke="var(--ink-3)" stroke-width="1" />
+    <text x="626" y="254" fill="var(--ink-3)" font-size="13px" font-style="italic">θ</text>
+    <text x="0" y="0" transform="translate(48 140) rotate(-90)" text-anchor="middle" fill="var(--ink-3)" font-size="12px">reward</text>
+    <polyline points="60,229 65,229 69,228 74,228 79,227 83,226 88,226 93,225 97,224 102,223 107,222 111,222 116,220 121,219 125,218 130,217 135,216 139,214 144,213 149,211 153,209 158,207 163,205 167,203 172,201 177,199 181,197 186,194 191,192 195,189 200,186 205,183 209,180 214,177 219,174 223,171 228,168 233,164 237,161 242,157 247,153 251,149 256,146 261,142 265,138 270,134 275,130 279,126 284,122 289,118 293,114 298,110 303,106 307,102 312,99 317,95 321,91 326,88 331,84 335,81 340,78 345,75 349,72 354,70 359,67 363,65 368,63 373,61 377,60 382,58 387,57 391,56 396,55 401,55 405,55 410,55 415,55 419,56 424,56 429,57 433,59 438,61 443,63 447,66 452,71 455,75 457,79 459,84 461,91 463,97 465,103 467,115 470,130 472,139 474,156 476,164 479,180 481,194 484,205 487,214 490,220 494,226 498,229 503,231 508,232 520,233 540,233 560,233 580,233 600,233 620,233" fill="none" stroke="var(--ink)" stroke-width="2.5" />
+    <line x1="228" y1="168" x2="228" y2="318" stroke="var(--ink-3)" stroke-width="1" stroke-dasharray="3 3" />
+    <line x1="250" y1="150" x2="250" y2="278" stroke="var(--ink-3)" stroke-width="1" stroke-dasharray="3 3" />
+    <line x1="385" y1="57" x2="385" y2="298" stroke="var(--green)" stroke-width="1" stroke-dasharray="3 3" />
+    <line x1="542" y1="233" x2="542" y2="318" stroke="#ef4444" stroke-width="1" stroke-dasharray="3 3" />
+    <circle cx="228" cy="168" r="5.5" fill="var(--ink)" />
+    <text x="220" y="160" text-anchor="end" fill="var(--ink)" font-size="13px" font-weight="600">start θ<tspan baseline-shift="sub" font-size="10">old</tspan></text>
+    <circle cx="250" cy="150" r="5" fill="var(--ink-3)" />
+    <circle cx="385" cy="57" r="5" fill="var(--green)" />
+    <circle cx="542" cy="233" r="5" fill="#ef4444" />
+    <text x="550" y="222" fill="#ef4444" font-size="13px" font-weight="600">collapse!</text>
+    <line x1="228" y1="278" x2="248" y2="278" marker-end="url(#arrow-gray)" stroke="var(--ink-3)" stroke-width="2" />
+    <line x1="228" y1="298" x2="383" y2="298" marker-end="url(#arrow-green)" stroke="var(--green)" stroke-width="2" />
+    <line x1="228" y1="318" x2="540" y2="318" marker-end="url(#arrow-red)" stroke="#ef4444" stroke-width="2" />
+    <text x="218" y="282" text-anchor="end" fill="var(--ink-3)" font-size="12px">too small: slow</text>
+    <text x="218" y="302" text-anchor="end" fill="var(--green)" font-size="12px" font-weight="600">just right</text>
+    <text x="218" y="322" text-anchor="end" fill="#ef4444" font-size="12px" font-weight="600">too large: collapse</text>
+  </svg>

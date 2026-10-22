@@ -1,0 +1,685 @@
+---
+title: "Trust Region Policy Optimization (TRPO) Explained for LLMs"
+tags:
+  - title: TRPO
+  - title: Trust Region Policy Optimization
+  - title: Policy Optimization
+  - title: Reinforcement Learning
+  - title: LLM
+  - title: KL Divergence
+  - title: Importance Sampling
+  - title: Surrogate Objective
+  - title: Fisher Information Matrix
+  - title: Natural Gradient
+  - title: Conjugate Gradient
+  - title: Line Search
+  - title: Policy Gradient
+categories:
+  - title: Machine Learning
+  - title: Reinforcement Learning
+  - title: Large Language Models
+author:
+  name: Mir Sazzat Hossain
+  designation: Research Assistant
+  url: https://mirsazzathossain.me
+  avatar:
+    url: user.png
+    alt: Mir Sazzat Hossain
+description: "How Trust Region Policy Optimization (TRPO) keeps policy updates stable by limiting how much a model's behavior can change, explained step by step with KL divergence, importance sampling, the Fisher information matrix, and the natural gradient. Part 2 of a series on policy optimization for LLMs."
+seoDescription: "TRPO explained step by step for LLMs: KL divergence, importance sampling, the surrogate objective, Fisher information matrix, natural gradient, and limits."
+series:
+  title: Policy Optimization in LLMs
+  order: 2
+covers:
+  - url: content/trust-region-policy-optimization-trpo/cover.jpg
+    alt: "TRPO cover: a policy update step kept inside a trust region around the current model"
+status: published
+publishedAt: 2026-09-24
+---
+
+import StepSize from "@/assets/articles/trust-region-policy-optimization-trpo/step-size.svg";
+import Taylor from "@/assets/articles/trust-region-policy-optimization-trpo/taylor.svg";
+import Edge from "@/assets/articles/trust-region-policy-optimization-trpo/edge.svg";
+
+<img
+  src="/images/content/trust-region-policy-optimization-trpo/cover.jpg"
+  alt="TRPO cover: a policy update step kept inside a trust region around the current model"
+  sizes="100vw"
+  width="100%"
+  height="auto"
+  placeholder="blur"
+  blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="
+/>
+
+## Introduction
+
+[Part 1](/articles/reinforcement-learning-for-llms) ended with a problem. The policy gradient tells us which _direction_ to move the model, but not _how far_. If the step is too small, learning crawls. If it is too large, the model starts writing bad answers, learns from those bad answers, and falls into a **death spiral** from which it does not recover. So before anything else, we need an answer to a simple question: _how large can an update be before it becomes dangerous?_
+
+The obvious answer is to turn down the **learning rate**. But the learning rate only controls how much the **weights** move, and the weights are not what we care about. What matters is how much the model's **output** changes: the probabilities it assigns to each next token. In a large network, the two are only loosely connected. Moving one weight by $0.1$ may barely change the output, while moving another by just $0.001$ may change which token the model picks. A learning rate that is safe for the sensitive weights is painfully slow for all the others, and one that is fast enough for the others is dangerous for the sensitive ones. There is no single right value.
+
+In 2015, **Trust Region Policy Optimization (TRPO)** [[1]](#ref-1) took a different route: instead of limiting how far the weights move, it limits how far the output moves. Before each update, TRPO fixes the maximum amount by which the model's next-token probabilities are allowed to change. Every new model within that limit is considered safe, and together they form the **trust region**: the neighborhood around the current model where we can trust our estimate of whether an update helps. [Figure 1](#fig-step-size) shows the idea, with three steps in the same direction from the current parameters $\theta_{\text{old}}$, but of different sizes:
+
+<figure id="fig-step-size">
+  <StepSize />
+  <figcaption>**Figure 1.** Same direction, three step sizes. A small step improves the reward only slightly. A step within the trust region reaches the peak. A step that is too large overshoots the peak and the reward collapses.</figcaption>
+</figure>
+
+The small step is safe but barely helps. The large step overshoots the peak, and the reward collapses. The step that stays inside the trust region is the one we want, and the rest of this post is about how TRPO finds it.
+
+Throughout this post, $\theta_{\text{old}}$ are the current parameters and $\pi_{\theta_{\text{old}}}$ is the model before the update, while $\theta$ and $\pi_\theta$ are the parameters and the model after it. To find the right step, TRPO has to answer three questions. First, how do we **measure** how much the output has changed? This is the job of the [KL divergence](#measuring-how-far-kl-divergence). Second, how do we **evaluate** a new model without generating new answers for it? This is where [importance sampling](#reusing-old-samples-importance-sampling) comes in. And third, how do we **find** the best update inside the trust region? This question takes us from [the TRPO objective](#the-trpo-objective), through the Fisher information matrix and the natural gradient, all the way to [conjugate gradient and line search](#computing-the-update-for-large-models).
+
+## Measuring "How Far": KL Divergence
+
+At every step, an LLM outputs a probability distribution over its vocabulary. So to measure how much the model has changed, we need to compare two distributions: the old model's and the new model's. The standard tool for this is the **Kullback–Leibler (KL) divergence** [[2]](#ref-2):
+
+$$
+D_{\text{KL}}(P \,\|\, Q) = \sum_{i} P(i) \log \frac{P(i)}{Q(i)} \tag{1} \label{kl}
+$$
+
+Here $P$ is the old model's distribution, $Q$ is the new model's, and $i$ runs over every token in the vocabulary. For each token, the ratio $\frac{P(i)}{Q(i)}$ compares its probability under the two models: if they agree, the ratio is $1$, $\log 1 = 0$, and the token adds nothing. Each term is weighted by $P(i)$, so tokens the old model picks often count more. The total is $0$ when the two distributions are identical and grows as they become more different. (The KL is not symmetric, $D_{\text{KL}}(P \,\|\, Q) \neq D_{\text{KL}}(Q \,\|\, P)$, which is why it is called a **divergence** rather than a distance.)
+
+<div className="example">
+
+<span className="example-label">Example: comparing two updates</span>
+
+For the prompt _"The cat sat on the"_, suppose the old model and two possible updates assign these next-token probabilities:
+
+| Next token | Old model | Update A | Update B |
+| --- | --- | --- | --- |
+| mat | 0.70 | 0.65 | 0.10 |
+| sofa | 0.20 | 0.24 | 0.20 |
+| roof | 0.10 | 0.11 | 0.70 |
+
+Update A changes the probabilities slightly, while Update B makes _"roof"_ the top choice instead of _"mat"_. Using [Eq. (1)](#eq-kl):
+
+$$
+D_{\text{KL}}(\text{Old} \,\|\, A) = 0.7 \log\tfrac{0.70}{0.65} + 0.2 \log\tfrac{0.20}{0.24} + 0.1 \log\tfrac{0.10}{0.11} \approx 0.006
+$$
+
+$$
+D_{\text{KL}}(\text{Old} \,\|\, B) = 0.7 \log\tfrac{0.70}{0.10} + 0.2 \log\tfrac{0.20}{0.20} + 0.1 \log\tfrac{0.10}{0.70} \approx 1.17
+$$
+
+Update B is about **200 times** farther from the old model than Update A, which matches our intuition. And we got this number without looking at a single weight: the KL only depends on the outputs.
+
+</div>
+
+That was one prediction. An LLM makes a prediction at every token of every response, so TRPO averages the KL over all the states $s_t$ the old model visits:
+
+$$
+\bar{D}_{\text{KL}}(\theta_{\text{old}}, \theta) = \mathbb{E}_{s_t \sim \pi_{\theta_{\text{old}}}} \Big[ D_{\text{KL}}\big(\pi_{\theta_{\text{old}}}(\cdot \mid s_t) \,\|\, \pi_\theta(\cdot \mid s_t)\big) \Big] \tag{2} \label{avg-kl}
+$$
+
+TRPO requires this average KL to stay below a small number $\delta$, for example $0.01$. This $\delta$ is the size of the trust region: with $\delta = 0.01$, Update A would be allowed and Update B would not.
+
+We can now check whether a new model is inside the trust region. The next question is how to check whether it is actually _better_ than the old one.
+
+## Reusing Old Samples: Importance Sampling
+
+To know whether a new model $\pi_\theta$ is better, we need to estimate how good its answers are, for example, the average reward they would get. The direct way is to let $\pi_\theta$ generate answers and score them. But generation is the slowest part of RL for LLMs, and while searching for the best update we want to evaluate many candidate models. Instead, we want to reuse the answers that $\pi_{\theta_{\text{old}}}$ has already generated. **Importance sampling** lets us do exactly that.
+
+<div className="example">
+
+<span className="example-label">Example: reweighting old samples</span>
+
+Suppose a prompt has only two possible answers: a **good** one with reward $1$ and a **bad** one with reward $0$. The old model generated $N = 4$ answers: 2 good and 2 bad. For each answer, we also ask both models how likely they are to produce it. This does not require generating anything: we feed the answer into the model and read off its probability in a single forward pass, the same way the SFT loss is computed (this is called **teacher forcing**, explained in the details below).
+
+| Answer | Reward | Old samples | Old prob. | New prob. |
+| --- | --- | --- | --- | --- |
+| good | 1 | 2 | 0.5 | 0.75 |
+| bad | 0 | 2 | 0.5 | 0.25 |
+
+If we simply average the rewards of our 4 samples, we get $(1 + 1 + 0 + 0) / 4 = 0.5$. But that is the **old** model's average reward: the samples are half good and half bad because they came from the old model. The new model gives the good answer more often, so our samples contain too few good answers to represent it.
+
+We can fix this by changing how much each sample counts. The new model gives the good answer $0.75 / 0.5 = 1.5$ times as often as the old model, so each good sample should count as 1.5 samples. It gives the bad answer only $0.25 / 0.5 = 0.5$ times as often, so each bad sample should count as half a sample. This factor, $\rho = \text{New prob.} / \text{Old prob.}$, is called the **importance weight**:
+
+$$
+\frac{1}{N} \sum_{i=1}^{N} \rho(y_i) \, r(y_i) = \frac{1.5 \cdot 1 + 1.5 \cdot 1 + 0.5 \cdot 0 + 0.5 \cdot 0}{4} = 0.75
+$$
+
+With the weights, our 2 good samples count as $3$ and our 2 bad samples as $1$, which is exactly what 4 samples from the new model would look like on average. And indeed, the new model's true average reward is $0.75 \cdot 1 + 0.25 \cdot 0 = 0.75$. For a real LLM, we could never check this directly, because there are far too many possible answers to add up. Importance sampling gives us the answer anyway.
+
+</div>
+
+<div className="derivation">
+
+<span className="derivation-label">Details: getting the new model's probabilities with teacher forcing</span>
+
+How do we get the **New prob.** column without sampling from the new model? First, it helps to separate two terms. At each position, a model outputs a **probability distribution**: a probability for _every_ token in its vocabulary, adding up to $1$. A **probability** is a single number taken from that list, such as the probability of one specific token.
+
+Now compare two operations on an answer like _"on the mat"_ for the prompt _"The cat sat"_:
+
+- **Generating** the answer needs one forward pass per token. At each step, the model outputs a distribution, we _sample_ a token from it, and feed that token back in to get the next distribution. Each step has to wait for the previous one.
+- **Scoring** an answer that already exists needs only one forward pass. The whole text _"The cat sat on the mat"_ is known, so we feed it in at once. The model outputs a distribution at every position in parallel, and we just read off the probability of the token that is actually there:
+
+| Position (what the model has seen) | Distribution the model outputs | Token actually there | Probability we read |
+| --- | --- | --- | --- |
+| The cat sat | on 0.60, down 0.30, still 0.10 | on | 0.60 |
+| The cat sat on | the 0.90, a 0.10 | the | 0.90 |
+| The cat sat on the | mat 0.80, sofa 0.15, roof 0.05 | mat | 0.80 |
+
+Multiplying these gives the probability of the whole answer:
+
+$$
+\pi_\theta(\text{"on the mat"}) = 0.60 \cdot 0.90 \cdot 0.80 = 0.432
+$$
+
+This is called **teacher forcing**, and it is the same way the SFT loss is computed. So the new model never writes anything: we only use it to score the answers the old model has already written.
+
+</div>
+
+In general, if we sample from a distribution $p$ but want the average under another distribution $q$, we weight each sample by $\frac{q(y)}{p(y)}$:
+
+$$
+\mathbb{E}_{y \sim q}\big[f(y)\big] = \mathbb{E}_{y \sim p}\left[\frac{q(y)}{p(y)} \, f(y)\right] \tag{3} \label{importance-sampling}
+$$
+
+In our example, $p$ is the old model, $q$ is the new model, and $f$ is the reward.
+
+<div className="derivation">
+
+<span className="derivation-label">Derivation: why importance sampling works</span>
+
+The **expected value** of $f$ under $q$ is each value multiplied by its probability, all added up:
+
+$$
+\mathbb{E}_{y \sim q}\big[f(y)\big] = \sum_y q(y) \, f(y) \tag{4} \label{expectation}
+$$
+
+Multiply and divide each term by $p(y)$, which changes nothing since $\frac{p(y)}{p(y)} = 1$, and move $p(y)$ to the front:
+
+$$
+\sum_y q(y) \, f(y) = \sum_y p(y) \left[ \frac{q(y)}{p(y)} \, f(y) \right]
+$$
+
+The right-hand side has the same shape as [Eq. (4)](#eq-expectation), with $p$ instead of $q$. So it is the expected value of the bracketed term under $p$, which gives [Eq. (3)](#eq-importance-sampling).
+
+</div>
+
+For an LLM, the same weight is applied to every token $y_t$ of every response, given its state $s_t$. It is called the **probability ratio**:
+
+$$
+\rho_t(\theta) = \frac{\pi_\theta(y_t \mid s_t)}{\pi_{\theta_{\text{old}}}(y_t \mid s_t)} \tag{5} \label{ratio}
+$$
+
+There is one more change. In the example, we weighted the **reward** of each answer, but TRPO weights the **advantage** $A_t$ of each token ([Eq. (3) in Part 1](/articles/reinforcement-learning-for-llms#eq-advantage)) instead. As in the policy gradient, the reward only says how good the whole answer was, while the advantage says whether each token was _better or worse than expected_, which is what the model needs to learn which tokens to make more or less likely. Weighting each token's advantage by its probability ratio gives the **surrogate objective**:
+
+$$
+L(\theta) = \mathbb{E}_{s_t, y_t \sim \pi_{\theta_{\text{old}}}} \big[ \rho_t(\theta) \, A_t \big] \tag{6} \label{surrogate}
+$$
+
+"Surrogate" means _substitute_. The objective we really care about is the new model's actual performance, but measuring it would require generating new answers. $L(\theta)$ stands in for it, using only the old model's answers. To make $L(\theta)$ larger, the new model has to make tokens with a positive advantage more likely ($\rho_t > 1$) and tokens with a negative advantage less likely ($\rho_t < 1$), the same idea as the policy gradient. In fact, at $\theta = \theta_{\text{old}}$ every ratio is $1$, and the gradient of $L$ is exactly the policy gradient in [Eq. (2) in Part 1](/articles/reinforcement-learning-for-llms#eq-policy-gradient).
+
+There is a catch, though. The estimate is only reliable when the new model is close to the old one. If they are very different, some ratios become very large, a few tokens dominate the average, and the estimate becomes noisy. This gives a second reason for the trust region: besides keeping the policy from breaking, it keeps $L(\theta)$ accurate.
+
+> This probability ratio $\rho_t(\theta)$ is also the core of PPO.
+
+We now have both pieces: $L(\theta)$ tells us how good a new model is, and the KL tells us how far it is from the old one.
+
+## The TRPO Objective
+
+TRPO combines the two pieces into one optimization problem:
+
+$$
+\max_{\theta} \; L(\theta) \quad \text{subject to} \quad \bar{D}_{\text{KL}}(\theta_{\text{old}}, \theta) \le \delta \tag{7} \label{trpo-objective}
+$$
+
+In plain words: _find the new model that improves the surrogate objective the most, while keeping the change in its output within $\delta$._
+
+Why does this make training stable? Let $J(\theta)$ be the model's true performance (its expected reward), the same objective whose gradient we took in [Eq. (2) in Part 1](/articles/reinforcement-learning-for-llms#eq-policy-gradient). The TRPO paper [[1]](#ref-1), building on earlier work by Kakade and Langford [[3]](#ref-3), proves that:
+
+$$
+J(\theta) \;\ge\; J(\theta_{\text{old}}) + L(\theta) - C \, D_{\text{KL}}^{\max}(\theta_{\text{old}}, \theta) \tag{8} \label{trpo-bound}
+$$
+
+In words: the new model's true performance is at least the old performance, plus the surrogate objective, minus a penalty that grows with the KL divergence. Here $D_{\text{KL}}^{\max}$ is like $\bar{D}_{\text{KL}}$ but takes the **largest** KL over all states instead of the average, and $C$ is a positive constant that depends on the size of the largest advantage. So if an update improves the surrogate and keeps the KL small, the true performance cannot decrease. This is the **monotonic improvement** guarantee, exactly what vanilla policy gradient lacked.
+
+The formulation is clean, but how do we actually solve it? This is where the Fisher matrix comes in.
+
+## The Fisher Information Matrix
+
+[Eq. (7)](#eq-trpo-objective) is hard to solve directly, because $L$ and the KL depend on billions of parameters in complicated ways. But the trust region gives us a shortcut. Every update is small, so we only need to know how these two functions behave _near_ the current parameters $\theta_{\text{old}}$. And near a single point, even complicated functions look like simple shapes.
+
+[Figure 2](#fig-taylor) shows the two shapes TRPO uses. Near $\theta_{\text{old}}$, the objective $L$ looks like a **straight line**, and the KL looks like a **quadratic**, a curve shaped like a bowl.
+
+<figure id="fig-taylor">
+  <Taylor />
+  <figcaption>**Figure 2.** Near $\theta_{\text{old}}$, the objective $L$ looks like a straight line (left), while the KL looks like a quadratic (right). A straight line cannot describe the KL: at $\theta_{\text{old}}$ it is flat and always $0$.</figcaption>
+</figure>
+
+Replacing a function with a simple shape near a point is called a **Taylor approximation**. A straight line uses the function's slope (its first derivative), so it is called a **first-order** approximation. A quadratic also uses its curvature (its second derivative), so it is called a **second-order** approximation. Let's look at each shape, writing $\Delta\theta = \theta - \theta_{\text{old}}$ for the update step.
+
+<div className="derivation">
+
+<span className="derivation-label">Details: the Taylor expansion</span>
+
+**Univariate case.** Near a point $x_0$, after a small step $\Delta x$, a smooth function $f$ can be approximated using its derivatives at $x_0$:
+
+$$
+f(x_0 + \Delta x) \approx \underbrace{f(x_0)}_{\text{value}} + \underbrace{f'(x_0) \, \Delta x}_{\text{first order}} + \underbrace{\tfrac{1}{2} f''(x_0) \, \Delta x^2}_{\text{second order}}
+$$
+
+The value and the **first-order** term together give a **straight line**, the tangent to $f$ at $x_0$: the first derivative $f'$ is the slope, so the line tells us which way the function goes and how fast. Adding the **second-order** term bends this line into a **curve** (a parabola): the second derivative $f''$ is the **curvature**, how fast the slope itself changes. The approximation is very accurate near $x_0$ and gets worse as $\Delta x$ grows, which is why it suits a method that only takes small steps.
+
+**Multivariate case.** For a function of all $N$ parameters $\theta = (\theta_1, \dots, \theta_N)$, the step becomes a vector $\Delta\theta = \theta - \theta_{\text{old}}$, and the derivatives become vectors and matrices. The **first derivative** is taken with respect to each parameter, one at a time. Collecting these $N$ slopes gives the **gradient**, a vector:
+
+$$
+\nabla f = \begin{pmatrix} \dfrac{\partial f}{\partial \theta_1} \\[6pt] \vdots \\[2pt] \dfrac{\partial f}{\partial \theta_N} \end{pmatrix}
+$$
+
+For the **second derivative**, each entry of this gradient is itself a function of all $N$ parameters, so we differentiate each entry again with respect to every parameter. $N$ entries, each differentiated by $N$ parameters, gives an $N \times N$ matrix, the **Hessian**:
+
+$$
+\nabla^2 f = H = \begin{pmatrix} \dfrac{\partial^2 f}{\partial \theta_1^2} & \cdots & \dfrac{\partial^2 f}{\partial \theta_1 \, \partial \theta_N} \\[8pt] \vdots & \ddots & \vdots \\[2pt] \dfrac{\partial^2 f}{\partial \theta_N \, \partial \theta_1} & \cdots & \dfrac{\partial^2 f}{\partial \theta_N^2} \end{pmatrix}
+$$
+
+Row $i$ holds the derivatives of the $i$-th gradient entry. The diagonal entries are the curvature along each parameter on its own, just like $f''$. The off-diagonal entries describe how two parameters **interact**. For smooth functions (with continuous second derivatives), the order of differentiation does not matter, so $H_{ij} = H_{ji}$ and the Hessian is **symmetric**.
+
+With the gradient and the Hessian, the Taylor approximation for the multivariable case is:
+
+$$
+f(\theta) \approx f(\theta_{\text{old}}) + \nabla f^\top \Delta\theta + \tfrac{1}{2} \Delta\theta^\top H \, \Delta\theta
+$$
+
+The first-order term is simply the matrix product of the gradient and the step, which gives a single number. In coordinates, it reads $\sum_i \frac{\partial f}{\partial \theta_i} \Delta\theta_i$: every slope times its step, all added up. The second-order term is a quadratic form: the step appears on both sides of the Hessian, and the result is again a single number. In coordinates, the $i$-th entry of $H \, \Delta\theta$ is $\sum_j H_{ij} \, \Delta\theta_j$, and multiplying by $\Delta\theta^\top$ weights each entry by $\Delta\theta_i$ and adds them up:
+
+$$
+\begin{aligned}
+\tfrac{1}{2} \Delta\theta^\top H \, \Delta\theta &= \tfrac{1}{2} \sum_i \Delta\theta_i \sum_j H_{ij} \, \Delta\theta_j \\
+&= \tfrac{1}{2} \sum_{i,j} H_{ij} \, \Delta\theta_i \, \Delta\theta_j
+\end{aligned}
+$$
+
+In TRPO, $f$ is replaced by $L$ (keeping only the line) and by the KL (keeping the quadratic term), and the KL's Hessian is the matrix $F$.
+
+</div>
+
+### Approximating the Objective
+
+We have just seen the full Taylor approximation with its second-order term, but for the objective we will not need it. For a small step, the second-order term is much smaller than the first-order term: it grows with $\Delta\theta^2$ instead of $\Delta\theta$, so a step of $0.01$ contributes only about $0.0001$. And the objective only has to tell us which _direction_ improves the model. How _far_ to go is decided by the KL, and that is where the second-order term and the Hessian will matter. So for $L$, we keep only the first two terms, the value and the slope:
+
+$$
+L(\theta) \approx L(\theta_{\text{old}}) + \nabla L^\top \Delta\theta
+$$
+
+Both terms are easy to fill in. At $\theta_{\text{old}}$, every probability ratio is $1$, so the value is $L(\theta_{\text{old}}) = \mathbb{E}[A_t] = 0$: on average, the old model's own tokens are neither better nor worse than expected. And the slope $\nabla L$ at $\theta_{\text{old}}$ is exactly the policy gradient, which we call $g$. So the objective becomes a straight line through zero:
+
+$$
+L(\theta) \approx g^\top \Delta\theta = \sum_i g_i \, \Delta\theta_i \tag{9} \label{l-linear}
+$$
+
+For each parameter, this multiplies its slope $g_i$ by how far we move it, $\Delta\theta_i$, and adds everything up.
+
+### Approximating the KL Divergence
+
+For the KL, we cannot stop at the first-order term. Applying the same Taylor approximation, this time with all three terms, gives:
+
+$$
+\bar{D}_{\text{KL}}(\theta_{\text{old}}, \theta) \approx \bar{D}_{\text{KL}}(\theta_{\text{old}}, \theta_{\text{old}}) + \nabla \bar{D}_{\text{KL}}^\top \Delta\theta + \tfrac{1}{2} \Delta\theta^\top F \, \Delta\theta
+$$
+
+where $F$ is the Hessian of the KL at $\theta_{\text{old}}$. This time, the first two terms both vanish. The value is the KL of the old model with itself, which is $0$. And since the KL is never negative, $\theta_{\text{old}}$ sits at the very bottom of a valley, where the ground is flat, so the slope is $0$ as well (right panel of [Figure 2](#fig-taylor)).
+
+<div className="derivation">
+
+<span className="derivation-label">Derivation: why the KL's slope is zero</span>
+
+Write out the average KL from [Eq. (2)](#eq-avg-kl), using the formula in [Eq. (1)](#eq-kl) and dropping $s_t$ for readability:
+
+$$
+\bar{D}_{\text{KL}}(\theta_{\text{old}}, \theta) = \mathbb{E}_{s_t} \Big[ \sum_y \pi_{\theta_{\text{old}}}(y) \big( \log \pi_{\theta_{\text{old}}}(y) - \log \pi_\theta(y) \big) \Big]
+$$
+
+Only the second term depends on $\theta$. Using $\nabla \log \pi = \frac{\nabla \pi}{\pi}$, its gradient is:
+
+$$
+\nabla_\theta \bar{D}_{\text{KL}} = - \mathbb{E}_{s_t} \Big[ \sum_y \pi_{\theta_{\text{old}}}(y) \, \frac{\nabla_\theta \pi_\theta(y)}{\pi_\theta(y)} \Big]
+$$
+
+At $\theta = \theta_{\text{old}}$, the denominator $\pi_\theta(y)$ becomes $\pi_{\theta_{\text{old}}}(y)$ and cancels with the factor in front:
+
+$$
+\begin{aligned}
+\nabla_\theta \bar{D}_{\text{KL}} \Big|_{\theta = \theta_{\text{old}}}
+&= - \mathbb{E}_{s_t} \Big[ \sum_y \nabla_\theta \pi_\theta(y) \Big] \\
+&= - \mathbb{E}_{s_t} \Big[ \nabla_\theta \sum_y \pi_\theta(y) \Big] \\
+&= - \mathbb{E}_{s_t} \big[ \nabla_\theta 1 \big] = 0
+\end{aligned}
+$$
+
+The probabilities always add up to $1$, so their total cannot change in any direction.
+
+</div>
+
+Since the first two terms are zero, we keep only the last one, the second-order term. It describes the shape of the valley, a **quadratic**:
+
+$$
+\bar{D}_{\text{KL}}(\theta_{\text{old}}, \theta) \approx \frac{1}{2} \Delta\theta^\top F \, \Delta\theta \tag{10} \label{kl-quadratic}
+$$
+
+With both approximations, the hard problem in [Eq. (7)](#eq-trpo-objective) becomes a much simpler one: go as far as possible along a straight line, while keeping the quadratic below $\delta$:
+
+$$
+\max_{\Delta\theta} \; g^\top \Delta\theta \quad \text{subject to} \quad \frac{1}{2} \Delta\theta^\top F \, \Delta\theta \le \delta \tag{11} \label{trpo-approx}
+$$
+
+The matrix $F$ is an $N \times N$ matrix that describes how steep the walls of the valley are in every direction. This matrix has a name, the **Fisher Information Matrix**, and the whole trust region now depends on it: the steeper the walls in some direction, the smaller the step we can take that way. So before we use it, let's see what $F$ tells us about the model.
+
+### What the Fisher Matrix Tells Us
+
+Each entry of $F$ tells us how steep the KL's walls are in some direction, which is the same as asking: _if we move the parameters in this direction, how much does the model's output change?_ A large value means the output is **sensitive** in that direction, and even a small step changes it a lot. A small value means the output barely reacts.
+
+This is exactly what we were missing at the start of this post: a way to know which weights are sensitive and which are not, something a single learning rate cannot capture.
+
+<div className="example">
+
+<span className="example-label">Example: one sensitive, one insensitive parameter</span>
+
+Consider a model with two parameters, where
+
+$$
+F = \begin{pmatrix} 100 & 0 \\ 0 & 1 \end{pmatrix}
+$$
+
+The output is very sensitive to $\theta_1$ and not very sensitive to $\theta_2$. Take a step of $0.1$ along each one. By [Eq. (10)](#eq-kl-quadratic), moving $\theta_1$ gives a KL of $\frac{1}{2} \cdot 100 \cdot 0.1^2 = 0.5$, while moving $\theta_2$ gives only $\frac{1}{2} \cdot 1 \cdot 0.1^2 = 0.005$. The same distance in parameter space changes the output **100 times** more in one direction than in the other.
+
+</div>
+
+So the trust region, the set of steps whose KL stays below $\delta$, is not a circle in parameter space. It is an **ellipse**: narrow along sensitive directions, where only tiny steps are safe, and wide along insensitive ones, where large steps are fine.
+
+### Computing the Fisher Matrix
+
+As a Hessian, $F$ would require second derivatives of the whole network, which are expensive to compute. Fortunately, it can be rewritten using first derivatives only (see the derivation below):
+
+$$
+F = \mathbb{E}_{s_t, y_t \sim \pi_{\theta_{\text{old}}}} \Big[ \nabla_\theta \log \pi_\theta(y_t \mid s_t) \, \nabla_\theta \log \pi_\theta(y_t \mid s_t)^\top \Big] \tag{12} \label{fisher}
+$$
+
+The gradient inside, $\nabla_\theta \log \pi_\theta(y_t \mid s_t)$, is called the **score function**. It is the same gradient as in the policy gradient: the direction that makes token $y_t$ more likely. So $F$ is the average **outer product** of the score function with itself. In practice, it is estimated from $M$ sampled tokens:
+
+$$
+F \approx \frac{1}{M} \sum_{m=1}^{M} \nabla_\theta \log \pi_\theta(y_m \mid s_m) \, \nabla_\theta \log \pi_\theta(y_m \mid s_m)^\top \tag{13} \label{fisher-estimate}
+$$
+
+<div className="derivation">
+
+<span className="derivation-label">Derivation: from second to first derivatives</span>
+
+Start from the KL itself and take its second derivative:
+
+$$
+\begin{aligned}
+F &= \nabla^2_\theta \bar{D}_{\text{KL}} \Big|_{\theta_{\text{old}}} \\
+&= \nabla^2_\theta \, \mathbb{E}_{s_t} \Big[ \textstyle\sum_y \pi_{\theta_{\text{old}}}(y) \log \pi_{\theta_{\text{old}}}(y) - \sum_y \pi_{\theta_{\text{old}}}(y) \log \pi_\theta(y) \Big]_{\theta_{\text{old}}} \\
+&= - \mathbb{E}_{s_t} \Big[ \textstyle\sum_y \pi_{\theta_{\text{old}}}(y) \, \nabla^2_\theta \log \pi_\theta(y) \Big]_{\theta_{\text{old}}} \quad {\small \text{(first sum has no } \theta \text{)}}
+\end{aligned}
+$$
+
+To continue, we need the second derivative of a log. The gradient of a log is $\nabla \log \pi = \frac{\nabla \pi}{\pi}$, and differentiating it once more with the **quotient rule** gives:
+
+$$
+\nabla^2 \log \pi = \frac{\pi \, \nabla^2 \pi - \nabla \pi \, \nabla \pi^\top}{\pi^2} = \frac{\nabla^2 \pi}{\pi} - \nabla \log \pi \, \nabla \log \pi^\top
+$$
+
+Substituting this into $F$ (writing $\nabla$ for $\nabla_\theta$ and dropping the $(y)$ to keep the lines short) gives:
+
+$$
+F = - \mathbb{E}_{s_t} \Big[ \textstyle\sum_y \pi_{\theta_{\text{old}}} \Big( \frac{\nabla^2 \pi_\theta}{\pi_\theta} - \nabla \log \pi_\theta \, \nabla \log \pi_\theta^\top \Big) \Big]_{\theta_{\text{old}}}
+$$
+
+Splitting the bracket into its two parts, the two minus signs in the second part cancel:
+
+$$
+F = - \mathbb{E}_{s_t} \Big[ \textstyle\sum_y \pi_{\theta_{\text{old}}} \, \frac{\nabla^2 \pi_\theta}{\pi_\theta} \Big]_{\theta_{\text{old}}} + \mathbb{E}_{s_t} \Big[ \textstyle\sum_y \pi_{\theta_{\text{old}}} \, \nabla \log \pi_\theta \, \nabla \log \pi_\theta^\top \Big]
+$$
+
+At $\theta = \theta_{\text{old}}$, the $\pi_\theta$ in the denominator of the first part becomes $\pi_{\theta_{\text{old}}}$:
+
+$$
+F = - \mathbb{E}_{s_t} \Big[ \textstyle\sum_y \pi_{\theta_{\text{old}}} \, \frac{\nabla^2 \pi_\theta}{\pi_{\theta_{\text{old}}}} \Big] + \mathbb{E}_{s_t} \Big[ \textstyle\sum_y \pi_{\theta_{\text{old}}} \, \nabla \log \pi_\theta \, \nabla \log \pi_\theta^\top \Big]
+$$
+
+so it cancels with the $\pi_{\theta_{\text{old}}}$ in front:
+
+$$
+F = - \mathbb{E}_{s_t} \Big[ \textstyle\sum_y \nabla^2 \pi_\theta \Big] + \mathbb{E}_{s_t} \Big[ \textstyle\sum_y \pi_{\theta_{\text{old}}} \, \nabla \log \pi_\theta \, \nabla \log \pi_\theta^\top \Big]
+$$
+
+In the second part, a sum over $y$ weighted by $\pi_{\theta_{\text{old}}}$ is simply an expectation over $y \sim \pi_{\theta_{\text{old}}}$:
+
+$$
+F = - \mathbb{E}_{s_t} \Big[ \textstyle\sum_y \nabla^2 \pi_\theta \Big] + \mathbb{E}_{s_t, \, y \sim \pi_{\theta_{\text{old}}}} \big[ \nabla \log \pi_\theta \, \nabla \log \pi_\theta^\top \big]
+$$
+
+In the first part, we can move the derivative outside the sum:
+
+$$
+F = - \mathbb{E}_{s_t} \Big[ \nabla^2 \textstyle\sum_y \pi_\theta \Big] + \mathbb{E}_{s_t, \, y \sim \pi_{\theta_{\text{old}}}} \big[ \nabla \log \pi_\theta \, \nabla \log \pi_\theta^\top \big]
+$$
+
+Here $\sum_y \pi_\theta$ is the sum of the probabilities of all tokens, which is always $1$. Substituting $1$:
+
+$$
+F = - \mathbb{E}_{s_t} \Big[ \nabla^2 1 \Big] + \mathbb{E}_{s_t, \, y \sim \pi_{\theta_{\text{old}}}} \big[ \nabla \log \pi_\theta \, \nabla \log \pi_\theta^\top \big]
+$$
+
+The derivative of a constant is $0$, so the first part disappears, and only the second part survives:
+
+$$
+F = \mathbb{E}_{s_t, \, y \sim \pi_{\theta_{\text{old}}}} \big[ \nabla \log \pi_\theta \, \nabla \log \pi_\theta^\top \big]
+$$
+
+Writing the token and its state explicitly gives [Eq. (12)](#eq-fisher).
+
+</div>
+
+## Solving for the Update Step
+
+We now have everything we need to update the model. The policy gradient $g$ tells us which direction improves the objective, and the Fisher matrix $F$ tells us how sensitive the model is in each direction. What is still missing is the actual **update step** $\Delta\theta$: how far to move each parameter. It comes from solving the simplified problem in [Eq. (11)](#eq-trpo-approx): go as far as possible along the line $g^\top \Delta\theta$, while keeping the quadratic $\frac{1}{2} \Delta\theta^\top F \, \Delta\theta$ below $\delta$:
+
+$$
+\max_{\Delta\theta} \; g^\top \Delta\theta \quad \text{subject to} \quad \frac{1}{2} \Delta\theta^\top F \, \Delta\theta \le \delta
+$$
+
+Unlike [Eq. (7)](#eq-trpo-objective), this problem can be solved exactly. We will find the answer in three parts: where the best step ends, which direction it points, and how long it is.
+
+**Where the best step ends.** The objective $g^\top \Delta\theta$ is a straight line, so it keeps growing as long as we keep moving in a good direction. There is no reason to stop early, so the best step goes all the way to the edge of the trust region, where the constraint holds with equality:
+
+$$
+\tfrac{1}{2} \Delta\theta^\top F \, \Delta\theta = \delta
+$$
+
+In parameter space, this edge is an **ellipse**: the set of all steps whose KL is exactly $\delta$.
+
+**Which direction it points.** The best step lies somewhere on this ellipse, but where? The standard tool for maximizing a function under an equality constraint like this one is **Lagrange multipliers** [[4]](#ref-4), and the idea behind them is geometric, as shown in [Figure 3](#fig-edge).
+
+<figure id="fig-edge">
+  <Edge />
+  <figcaption>**Figure 3.** The edge of the trust region is an ellipse, and $F \, \Delta\theta$ (purple) always points straight out of it. Point $A$ is only a candidate (dashed arrow): there, $g$ and $F \, \Delta\theta$ point in different directions, and part of $g$ points along the edge, so sliding along the edge (dotted orange) would still improve the objective. At the best point $B$, $g$ and $F \, \Delta\theta$ point in the same direction and differ only in length, $g = \lambda \, F \, \Delta\theta$. The sliding is only a way of reasoning about where $B$ is: the actual update (green) goes straight from $\theta_{\text{old}}$ to $B$, along $F^{-1} g$.</figcaption>
+</figure>
+
+Pick any point on the edge, such as $A$, and split $g$ into two parts: one that points **along** the edge, and one that points **straight out** of it. If the part along the edge is not zero, we can slide a little along the edge in that direction. The KL stays exactly $\delta$, but $g^\top \Delta\theta$ increases, so $A$ cannot be the best point. Sliding stops helping only where the part of $g$ along the edge is zero, that is, where $g$ points straight out of the ellipse, like at $B$. This is the best step.
+
+What does "straight out of the edge" mean mathematically? Let $c(\Delta\theta) = \frac{1}{2} \Delta\theta^\top F \, \Delta\theta$. Along the edge, $c$ stays equal to $\delta$, just like the height stays the same along a contour line on a map. The gradient $\nabla c$ points in the direction where $c$ increases fastest, and since $c$ does not change along the edge, $\nabla c$ must be perpendicular to it, just as uphill on a map is always perpendicular to the contour lines. So $\nabla c$ points straight out of the edge. For our quadratic, it is:
+
+$$
+\nabla c = \nabla \big( \tfrac{1}{2} \Delta\theta^\top F \, \Delta\theta \big) = F \, \Delta\theta
+$$
+
+which is the many-variable version of $\frac{d}{dx} \big( \tfrac{1}{2} f x^2 \big) = f x$, using the symmetry of $F$. This is the purple arrow in [Figure 3](#fig-edge).
+
+So at $B$, both $g$ and $F \, \Delta\theta$ point straight out of the edge. Two vectors pointing in the same direction differ only in length, so one is a scaled version of the other:
+
+$$
+g = \lambda \, F \, \Delta\theta
+$$
+
+The scaling factor $\lambda > 0$ is called the **Lagrange multiplier**. Multiplying both sides by $F^{-1}$ gives:
+
+$$
+\Delta\theta = \frac{1}{\lambda} \, F^{-1} g \tag{14} \label{direction}
+$$
+
+This fixes the **direction** of the step: it points along $F^{-1} g$. Its length is still unknown, because we do not know $\lambda$ yet.
+
+**How long it is.** To find $\lambda$, we use the fact that the best step ends exactly on the edge. Starting from the edge condition and substituting the direction from [Eq. (14)](#eq-direction):
+
+$$
+\begin{aligned}
+\delta &= \tfrac{1}{2} \Delta\theta^\top F \, \Delta\theta \\
+&= \tfrac{1}{2} \Big( \tfrac{1}{\lambda} F^{-1} g \Big)^\top F \, \Big( \tfrac{1}{\lambda} F^{-1} g \Big) \\
+&= \frac{1}{2 \lambda^2} \, g^\top F^{-1} F \, F^{-1} g \\
+&= \frac{1}{2 \lambda^2} \, g^\top F^{-1} g
+\end{aligned}
+$$
+
+Here we used $(F^{-1} g)^\top = g^\top F^{-1}$, since $F^{-1}$ is symmetric, and $F^{-1} F = I$. Solving for $\lambda$:
+
+$$
+\frac{1}{\lambda} = \sqrt{\frac{2\delta}{g^\top F^{-1} g}}
+$$
+
+**The TRPO update.** Putting the direction and the length together gives the full update step:
+
+$$
+\Delta\theta = \sqrt{\frac{2\delta}{g^\top F^{-1} g}} \; F^{-1} g \tag{15} \label{natural-gradient}
+$$
+
+The direction, $F^{-1} g$, is called the **natural gradient** [[5]](#ref-5), [[6]](#ref-6). The ordinary gradient $g$ treats all parameters the same, while multiplying by $F^{-1}$ divides each direction by its sensitivity, so the step becomes smaller along sensitive directions and larger along insensitive ones. The length, $\sqrt{2\delta / g^\top F^{-1} g}$, stretches or shrinks the step so that it ends exactly on the edge of the trust region, where the KL equals $\delta$. Notice that there is **no learning rate** in this update. Its role is taken by $\delta$, which is easier to interpret: the maximum change in the model's output allowed per update.
+
+## Computing the Update for Large Models
+
+[Eq. (15)](#eq-natural-gradient) gives the ideal update, but it cannot be computed as written for an LLM. The problem is $F^{-1}$. For a 7-billion-parameter model, $F$ has $(7 \times 10^9)^2 = 4.9 \times 10^{19}$ entries, about **98 exabytes** of memory in 16-bit precision, millions of times more than a GPU has. It cannot be stored, let alone inverted. TRPO works around this with two techniques: **conjugate gradient** to compute the direction without ever building $F$, and **line search** to make sure the final step is actually safe.
+
+**Conjugate gradient.** Look again at [Eq. (15)](#eq-natural-gradient). We never need the matrix $F^{-1}$ itself, only the vector $x = F^{-1} g$. Finding this vector is the same as solving:
+
+$$
+F x = g \tag{16} \label{linear-system}
+$$
+
+The **conjugate gradient (CG)** algorithm [[7]](#ref-7) solves this kind of equation step by step (for a gentle introduction, see [[8]](#ref-8)). It starts from a guess and improves it, and the key point is that it never needs $F$ itself, only products $F v$ of $F$ with some vector $v$. These **Fisher-vector products** can be computed with two backward passes through the network, using memory proportional to $N$ instead of $N^2$. In practice, about **10 CG iterations** give a good enough approximation of $x \approx F^{-1} g$. And once we have $x$, the step size in [Eq. (15)](#eq-natural-gradient) is easy to compute, because $g^\top F^{-1} g = g^\top x$.
+
+<div className="derivation">
+
+<span className="derivation-label">Details: the conjugate gradient iterations</span>
+
+The idea behind CG is that solving $F x = g$ is the same as finding the lowest point of the quadratic
+
+$$
+\phi(x) = \tfrac{1}{2} x^\top F x - g^\top x
+$$
+
+because its gradient, $F x - g$, is zero exactly when $F x = g$. CG walks downhill on $\phi$ step by step, keeping track of three things at each iteration $k$:
+
+- $x_k$, the **current guess** for $x = F^{-1} g$, starting from $x_0 = 0$.
+- $r_k = g - F x_k$, the **residual**, which measures how far the current guess is from solving [Eq. (16)](#eq-linear-system). It is also the downhill direction of $\phi$, since $r_k = -\nabla \phi(x_k)$. When $r_k = 0$, the guess is exact.
+- $d_k$, the **search direction**: the direction in which the guess is moved in this iteration. The first direction is simply downhill, $d_0 = r_0 = g$.
+
+In each iteration, CG first decides **how far** to move along $d_k$. Along this direction, $x = x_k + \alpha \, d_k$. Substituting this into $\phi$ and expanding, where the two cross terms are equal ($x_k^\top F d_k = d_k^\top F x_k$) because $F$ is symmetric:
+
+$$
+\begin{aligned}
+\phi(x_k + \alpha \, d_k) &= \tfrac{1}{2} (x_k + \alpha \, d_k)^\top F \, (x_k + \alpha \, d_k) - g^\top (x_k + \alpha \, d_k) \\
+&= \tfrac{1}{2} x_k^\top F x_k + \tfrac{1}{2} \alpha \, x_k^\top F d_k + \tfrac{1}{2} \alpha \, d_k^\top F x_k + \tfrac{1}{2} \alpha^2 \, d_k^\top F d_k - g^\top x_k - \alpha \, d_k^\top g \\
+&= \tfrac{1}{2} x_k^\top F x_k + \alpha \, d_k^\top F x_k + \tfrac{1}{2} \alpha^2 \, d_k^\top F d_k - g^\top x_k - \alpha \, d_k^\top g \\
+&= \big( \tfrac{1}{2} x_k^\top F x_k - g^\top x_k \big) + \alpha \, d_k^\top (F x_k - g) + \tfrac{1}{2} \alpha^2 \, d_k^\top F d_k \\
+&= \phi(x_k) - \alpha \, d_k^\top r_k + \tfrac{1}{2} \alpha^2 \, d_k^\top F d_k
+\end{aligned}
+$$
+
+In the last line, the first bracket is $\phi(x_k)$, and $F x_k - g = -r_k$ by the definition of the residual. This is a parabola in $\alpha$. Its lowest point is where its derivative with respect to $\alpha$ is zero:
+
+$$
+\frac{d}{d\alpha} \, \phi(x_k + \alpha \, d_k) = - d_k^\top r_k + \alpha \, d_k^\top F d_k = 0
+\quad \Longrightarrow \quad
+\alpha_k = \frac{d_k^\top r_k}{d_k^\top F d_k}
+$$
+
+This is the best distance to move along $d_k$. CG then moves the guess by $\alpha_k \, d_k$ and updates the residual.
+
+Next, CG picks a **new search direction**: the new residual plus a little of the previous direction. The amount is chosen so that each new direction is **conjugate** to the previous ones ($d_i^\top F d_j = 0$), which means a step along a new direction never undoes the progress made along the earlier ones. Because each step already went to the lowest point along its direction, the new residual is perpendicular to the previous direction ($r_k^\top d_{k-1} = 0$), which also simplifies $d_k^\top r_k$ to $r_k^\top r_k$. Put together, one iteration is:
+
+$$
+\begin{aligned}
+\alpha_k &= \frac{r_k^\top r_k}{d_k^\top F d_k} && \text{(how far to move along } d_k\text{)} \\
+x_{k+1} &= x_k + \alpha_k d_k && \text{(update the guess)} \\
+r_{k+1} &= r_k - \alpha_k F d_k && \text{(update the residual)} \\
+d_{k+1} &= r_{k+1} + \frac{r_{k+1}^\top r_{k+1}}{r_k^\top r_k} \, d_k && \text{(next search direction)}
+\end{aligned}
+$$
+
+Notice that $F$ only ever appears as a product $F d_k$ with a vector, never on its own. Since $F$ is the Hessian of the KL, each Fisher-vector product can be computed with a trick known as a Hessian-vector product [[9]](#ref-9):
+
+$$
+F v = \nabla_\theta \Big( \big( \nabla_\theta \bar{D}_{\text{KL}} \big)^\top v \Big) \tag{17} \label{fisher-vector-product}
+$$
+
+First compute the gradient of the KL (one backward pass), take its dot product with $v$ to get a single number, then take the gradient of that number (a second backward pass). In practice, a small **damping** term is added, using $(F + \gamma I) v$ instead of $F v$ for a small $\gamma > 0$, to keep CG numerically stable.
+
+</div>
+
+**Line search.** The step from [Eq. (15)](#eq-natural-gradient) relies on the linear and quadratic approximations, which are only accurate close to $\theta_{\text{old}}$. If the full step goes too far, the actual KL may end up larger than $\delta$, or the surrogate objective may not actually improve. So before accepting the step, TRPO checks it with the exact $L$ and KL, and shrinks it if needed:
+
+$$
+\theta_j = \theta_{\text{old}} + \beta^j \, \Delta\theta, \qquad j = 0, 1, 2, \dots \tag{18} \label{line-search}
+$$
+
+With $\beta = 0.5$, this tries the full step, then half, then a quarter, and so on. TRPO accepts the first step where the actual KL is within $\delta$ and $L$ actually improves. If no step passes after about 10 tries, it skips the update. This is called a **backtracking line search** [[4]](#ref-4). Each check only needs forward passes on the batch we already have, so no new text has to be generated.
+
+## The TRPO Algorithm, Step by Step
+
+Putting all the pieces together, TRPO alternates between generating responses with the current model and computing one constrained update from them:
+
+<div className="algorithm">
+
+<span className="algorithm-label"><b>Algorithm 1</b> Trust Region Policy Optimization</span>
+
+$$
+\begin{array}{rl}
+{\scriptsize 1:} & \text{Initialize the policy } \theta_0 \text{, the value model, and the trust region size } \delta \\
+{\scriptsize 2:} & \textbf{for } n = 0, 1, 2, \dots \textbf{ do} \\
+{\scriptsize 3:} & \quad \text{generate responses to a batch of prompts with } \pi_{\theta_{\text{old}}} \\
+{\scriptsize 4:} & \quad \text{compute the rewards and the advantages } A_t \text{ with the value model} \\
+{\scriptsize 5:} & \quad \text{compute the gradient } g \text{ of the surrogate objective, Eq. (6)} \\
+{\scriptsize 6:} & \quad \text{solve } F x = g \text{ with conjugate gradient, Eq. (16) and Eq. (17)} \\
+{\scriptsize 7:} & \quad \Delta\theta \leftarrow \sqrt{2\delta / g^\top x} \; x \quad \text{(Eq. (15))} \\
+{\scriptsize 8:} & \quad \textbf{for } j = 0, 1, 2, \dots \textbf{ do} \\
+{\scriptsize 9:} & \quad \quad \theta_j \leftarrow \theta_{\text{old}} + \beta^j \, \Delta\theta \quad \text{(Eq. (18))} \\
+{\scriptsize 10:} & \quad \quad \textbf{if } \bar{D}_{\text{KL}}(\theta_{\text{old}}, \theta_j) \le \delta \text{ and } L(\theta_j) > L(\theta_{\text{old}}) \textbf{ then} \\
+{\scriptsize 11:} & \quad \quad \quad \theta \leftarrow \theta_j \text{ and stop the line search} \\
+{\scriptsize 12:} & \quad \text{update the value model} \\
+{\scriptsize 13:} & \quad \theta_{\text{old}} \leftarrow \theta
+\end{array}
+$$
+
+</div>
+
+Lines 3 and 4 are the only ones that generate text or need rewards. Everything after them works on the same batch: the gradient, the conjugate gradient iterations, and the line search need only forward and backward passes through the network. This is also where the cost of TRPO comes from, as we see next.
+
+## Limitations of TRPO
+
+TRPO solved the stability problem of vanilla policy gradient. But its **second-order** method comes at a high cost, especially for LLMs:
+
+- **It's expensive.** Each update needs about 10 conjugate gradient iterations, each with an extra pass through the network, plus more forward passes for the line search. For an LLM, where a single pass is already costly, this multiplies the training cost.
+- **It doesn't fit the standard training loop.** Deep learning models are trained with first-order optimizers like Adam, which take many small steps on mini-batches. TRPO instead computes one carefully constrained step per large batch, which does not fit this setup.
+- **It's hard to implement.** Fisher-vector products, conjugate gradient, and line search add a lot of complexity. TRPO is also incompatible with architectures that share parameters between the policy and the value model, or that include noise such as dropout [[10]](#ref-10).
+- **The guarantee is only approximate.** The monotonic improvement theory assumes the exact objective, but the algorithm uses Taylor approximations and an averaged KL. The line search reduces this gap but does not remove it.
+
+> TRPO showed that limiting how much the policy changes in each update makes RL stable. The open question was whether the same stability could be achieved with ordinary **first-order** gradient descent.
+
+This is the question PPO answered, and it is the topic of [Part 3](/articles/proximal-policy-optimization-ppo).
+
+## References
+
+<ol>
+  <li id="ref-1">Schulman, J., Levine, S., Moritz, P., Jordan, M. I., & Abbeel, P. (2015). <a href="https://arxiv.org/abs/1502.05477">Trust Region Policy Optimization</a>. <em>ICML</em>.</li>
+  <li id="ref-2">Kullback, S., & Leibler, R. A. (1951). <a href="https://doi.org/10.1214/aoms/1177729694">On Information and Sufficiency</a>. <em>The Annals of Mathematical Statistics</em>, 22(1), 79–86.</li>
+  <li id="ref-3">Kakade, S., & Langford, J. (2002). <a href="https://people.eecs.berkeley.edu/~pabbeel/cs287-fa09/readings/KakadeLangford-icml2002.pdf">Approximately Optimal Approximate Reinforcement Learning</a>. <em>ICML</em>.</li>
+  <li id="ref-4">Nocedal, J., & Wright, S. J. (2006). <a href="https://doi.org/10.1007/978-0-387-40065-5">Numerical Optimization</a> (2nd ed.). Springer.</li>
+  <li id="ref-5">Amari, S. (1998). <a href="https://doi.org/10.1162/089976698300017746">Natural Gradient Works Efficiently in Learning</a>. <em>Neural Computation</em>, 10(2), 251–276.</li>
+  <li id="ref-6">Kakade, S. M. (2001). <a href="https://proceedings.neurips.cc/paper/2001/hash/4b86abe48d358ecf194c56c69108433e-Abstract.html">A Natural Policy Gradient</a>. <em>NeurIPS</em>.</li>
+  <li id="ref-7">Hestenes, M. R., & Stiefel, E. (1952). <a href="https://nvlpubs.nist.gov/nistpubs/jres/049/jresv49n6p409_A1b.pdf">Methods of Conjugate Gradients for Solving Linear Systems</a>. <em>Journal of Research of the National Bureau of Standards</em>, 49(6), 409–436.</li>
+  <li id="ref-8">Shewchuk, J. R. (1994). <a href="https://www.cs.cmu.edu/~quake-papers/painless-conjugate-gradient.pdf">An Introduction to the Conjugate Gradient Method Without the Agonizing Pain</a>. Carnegie Mellon University.</li>
+  <li id="ref-9">Pearlmutter, B. A. (1994). <a href="https://doi.org/10.1162/neco.1994.6.1.147">Fast Exact Multiplication by the Hessian</a>. <em>Neural Computation</em>, 6(1), 147–160.</li>
+  <li id="ref-10">Schulman, J., Wolski, F., Dhariwal, P., Radford, A., & Klimov, O. (2017). <a href="https://arxiv.org/abs/1707.06347">Proximal Policy Optimization Algorithms</a>. <em>arXiv:1707.06347</em>.</li>
+</ol>

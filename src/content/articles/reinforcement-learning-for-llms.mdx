@@ -1,0 +1,151 @@
+---
+title: "Reinforcement Learning for LLMs: SFT to Policy Gradients"
+tags:
+  - title: Reinforcement Learning
+  - title: LLM
+  - title: Policy Optimization
+  - title: Post-Training
+  - title: Supervised Fine-Tuning
+  - title: SFT
+  - title: Policy Gradient
+  - title: REINFORCE
+  - title: Advantage Function
+  - title: Value Function
+  - title: Reward Hacking
+  - title: RLHF
+categories:
+  - title: Machine Learning
+  - title: Reinforcement Learning
+  - title: Large Language Models
+author:
+  name: Mir Sazzat Hossain
+  designation: Research Assistant
+  url: https://mirsazzathossain.me
+  avatar:
+    url: user.png
+    alt: Mir Sazzat Hossain
+description: "Why supervised fine-tuning is not enough to align large language models, how reinforcement learning maps onto an LLM, and why the vanilla policy gradient is unstable. Part 1 of a series on policy optimization for LLMs."
+seoDescription: "Learn reinforcement learning for LLMs: why SFT falls short, how RL maps onto language models, and how the policy gradient and advantage function work."
+series:
+  title: Policy Optimization in LLMs
+  order: 1
+covers:
+  - url: content/reinforcement-learning-for-llms/cover.jpg
+    alt: "Part 1 cover: a language model generates tokens, receives a reward, and feeds it back into training"
+status: published
+publishedAt: 2026-09-17
+---
+
+<img
+  src="/images/content/reinforcement-learning-for-llms/cover.jpg"
+  alt="Part 1 cover: a language model generates tokens, receives a reward, and feeds it back into training"
+  sizes="100vw"
+  width="100%"
+  height="auto"
+  placeholder="blur"
+  blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="
+/>
+
+## Introduction
+
+Training a large language model (LLM) isn't just about feeding it the entire internet and letting it learn. **Pre-training** gives the model its raw knowledge, but a model that has learned to predict the next token on Wikipedia, GitHub, and Reddit _still doesn't know how to talk to humans_. It has to be guided to understand what we prefer: how we think, act, and communicate. That's what **post-training** does, and it's how LLMs went from simple next-token predictors to the _controllable, safe, and reasoning-capable_ assistants we use today [[1]](#ref-1).
+
+The story of how we got here starts with **reinforcement learning**. Early policy gradient methods were unstable: _a single update that was too large could break the policy_ and make training collapse. **Trust Region Policy Optimization (TRPO)** [[2]](#ref-2) addressed this by keeping every update inside a "trust region," but it required Fisher Information Matrices and second-order optimization, which were hard to implement and expensive to run.
+
+**Proximal Policy Optimization (PPO)** [[3]](#ref-3) came next with a simpler idea: instead of solving for a trust region, _clip the update_. This made stable training cheap enough to scale, and PPO became the standard algorithm behind the first chat assistants. But it still needed a reward model, a value model, and a lot of GPUs. **Direct Preference Optimization (DPO)** [[4]](#ref-4) removed reinforcement learning entirely and learned directly from human preference pairs. Then **Group Relative Policy Optimization (GRPO)** [[5]](#ref-5) brought RL back in a lighter form: it removed the value model and compared answers within a group, which worked well for training reasoning models.
+
+> Each algorithm solved a problem the previous one left behind.
+
+This series goes through each algorithm in order: _why_ it was created and which mathematical bottleneck it solved. Each part builds on the previous one:
+
+1. **Part 1** (this post): how SFT works, how RL maps onto an LLM, and why the simplest RL method, the policy gradient, is unstable.
+2. [**Part 2**](/articles/trust-region-policy-optimization-trpo): TRPO, the first fix for that instability.
+3. [**Part 3**](/articles/proximal-policy-optimization-ppo): PPO, which makes TRPO's idea simple and scalable.
+4. [**Part 4**](/articles/reinforcement-learning-from-human-feedback-rlhf): RLHF, the full pipeline that trains LLMs with PPO from human preferences.
+5. [**Part 5**](/articles/direct-preference-optimization-dpo): DPO, which removes reinforcement learning from RLHF altogether.
+6. [**Part 6**](/articles/group-relative-policy-optimization-grpo): GRPO, which brings RL back without the value model.
+
+## From Pre-training to SFT
+
+After pre-training, the first step is usually **Supervised Fine-Tuning (SFT)**. We collect a dataset of prompts $x$ paired with good, human-written answers $y$, and train the model to _imitate_ them. It uses the same next-token prediction as pre-training, but on curated examples instead of raw internet data:
+
+$$
+\mathcal{L}_{\text{SFT}}(\theta) = -\sum_{t=1}^{T} \log \pi_\theta(y_t \mid x, y_{<t}) \tag{1} \label{sft-loss}
+$$
+
+In other words, SFT makes every token in the reference answer **more likely**. With enough examples, the model learns to follow instructions and answer in the expected format [[1]](#ref-1).
+
+But SFT can only **copy**. It treats every token in the reference answer as equally good and never sees _bad_ answers, so it cannot learn _why_ one answer is better than another. Writing high-quality answers for every type of prompt is also slow and expensive.
+
+> Instead of showing the model the correct answer, we can let it generate its own and tell it _how good_ it was.
+
+This is what reinforcement learning does.
+
+## RL in LLM Terms
+
+The table below maps standard **RL notation** to a **language model**. We use it throughout the post.
+
+| Notation | In RL | In an LLM |
+| --- | --- | --- |
+| $\pi_\theta$ | **Policy** with parameters $\theta$ | The language model being trained |
+| $s_t$ | **State** at step $t$ | Prompt + tokens generated so far, $y_{<t}$ |
+| $a_t$ | **Action** at step $t$ | Next token $y_t$ |
+| $y$ | **Trajectory** | Full response to prompt $x$ |
+| $r(x, y)$ | **Reward** | Score from a reward model or verifier, given _once the response is finished_ |
+| $V(s_t)$ | **Value function** | Separate model that predicts the expected reward from a state |
+| $A_t$ | **Advantage** | How much _better_ a token turned out than expected |
+| $\pi_{\text{ref}}$ | **Reference policy** | _Frozen_ copy of the SFT model |
+
+The goal is to make the model produce **better answers (higher reward)** more often, without drifting too far from $\pi_{\text{ref}}$. This constraint matters because the reward model is itself a neural network and can be exploited. Without it, the model may learn outputs that get high scores without being good answers, like a student who learns to pass the test without learning the subject. This is called **reward hacking** [[6]](#ref-6).
+
+The simplest method for this is the **vanilla policy gradient** [[7]](#ref-7). If an answer scores _better than expected_ (positive advantage), the probability of its tokens is increased. If it scores _worse than expected_, the probability is decreased. Repeating this over many samples gradually improves the model.
+
+Formally:
+
+$$
+\nabla_\theta J(\theta) = \mathbb{E} \Big[ \sum_{t=1}^{T} \nabla_\theta \log \pi_\theta(y_t \mid x, y_{<t}) \cdot A_t \Big] \tag{2} \label{policy-gradient}
+$$
+
+Each term has a simple meaning:
+
+- $\nabla_\theta \log \pi_\theta(y_t \mid x, y_{<t})$ is the direction that makes token $y_t$ **more likely**.
+- $A_t$ says **how much** and **which way** to move: a positive advantage pushes the token up, a negative one pushes it down.
+- $\sum_{t=1}^{T}$ does this for every token in the response, and $\mathbb{E}[\cdot]$ averages over many prompts and responses.
+
+How is the **advantage** $A_t$ calculated? It compares what actually happened with what the model _expected_ to happen. The expected part comes from the **value model** $V(s_t)$, a separate network trained to predict the final reward of a response from its current state $s_t$ (the prompt plus the tokens so far). In the simplest version, the advantage of token $y_t$ is the reward the response actually received minus this prediction:
+
+$$
+A_t = r(x, y) - V(s_t) \tag{3} \label{advantage}
+$$
+
+<div className="example">
+
+<span className="example-label">Example: computing the advantage</span>
+
+Suppose that at some point in a response, the value model predicts a final reward of $V(s_t) = 0.6$. If the finished response gets a reward of $r = 1$, then $A_t = 1 - 0.6 = +0.4$: things went better than expected, so the token $y_t$ is pushed up. If it gets $r = 0$, then $A_t = -0.6$, and the token is pushed down.
+
+</div>
+
+Without the value model, every token in a response with a positive reward would be pushed up, even if the response was worse than usual. The value model acts as a **baseline** that makes the signal fairer. In practice, PPO uses a refined version of [Eq. (3)](#eq-advantage) called **Generalized Advantage Estimation (GAE)**, which we will see later.
+
+Compared with the SFT loss in [Eq. (1)](#eq-sft-loss), the policy gradient is **SFT with each token weighted by its advantage** $A_t$. SFT increases the probability of every token, while the policy gradient increases it for good tokens and decreases it for bad ones. The answers also come from the model itself rather than from humans.
+
+The parameters are then updated in this direction, $\theta \leftarrow \theta + \alpha \, \nabla_\theta J(\theta)$, where $\alpha$ is the learning rate.
+
+However, the gradient only gives the _direction_ of the update, not _how far_ to go. If the step is too small, learning is slow. If it is too large, the policy can break. In supervised learning, the next batch of ground-truth data corrects a bad update. In RL, **the policy generates its own training data**, so a bad update produces bad answers, which become the next training batch. The model can then fall into a **death spiral** from which it does not recover.
+
+> One step too large, and the policy can collapse.
+
+This is the problem **TRPO** was built to solve, and it is the topic of [Part 2](/articles/trust-region-policy-optimization-trpo).
+
+## References
+
+<ol>
+  <li id="ref-1">Ouyang, L., Wu, J., Jiang, X., et al. (2022). <a href="https://arxiv.org/abs/2203.02155">Training language models to follow instructions with human feedback</a>. <em>NeurIPS</em>.</li>
+  <li id="ref-2">Schulman, J., Levine, S., Moritz, P., Jordan, M. I., & Abbeel, P. (2015). <a href="https://arxiv.org/abs/1502.05477">Trust Region Policy Optimization</a>. <em>ICML</em>.</li>
+  <li id="ref-3">Schulman, J., Wolski, F., Dhariwal, P., Radford, A., & Klimov, O. (2017). <a href="https://arxiv.org/abs/1707.06347">Proximal Policy Optimization Algorithms</a>. <em>arXiv:1707.06347</em>.</li>
+  <li id="ref-4">Rafailov, R., Sharma, A., Mitchell, E., Ermon, S., Manning, C. D., & Finn, C. (2023). <a href="https://arxiv.org/abs/2305.18290">Direct Preference Optimization: Your Language Model is Secretly a Reward Model</a>. <em>NeurIPS</em>.</li>
+  <li id="ref-5">Shao, Z., Wang, P., Zhu, Q., et al. (2024). <a href="https://arxiv.org/abs/2402.03300">DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open Language Models</a>. <em>arXiv:2402.03300</em>.</li>
+  <li id="ref-6">Ziegler, D. M., Stiennon, N., Wu, J., Brown, T. B., Radford, A., Amodei, D., Christiano, P., & Irving, G. (2019). <a href="https://arxiv.org/abs/1909.08593">Fine-Tuning Language Models from Human Preferences</a>. <em>arXiv:1909.08593</em>.</li>
+  <li id="ref-7">Williams, R. J. (1992). <a href="https://link.springer.com/article/10.1007/BF00992696">Simple statistical gradient-following algorithms for connectionist reinforcement learning</a>. <em>Machine Learning</em>, 8, 229–256.</li>
+</ol>

@@ -1,0 +1,454 @@
+---
+title: "Reinforcement Learning from Human Feedback (RLHF) Explained"
+tags:
+  - title: RLHF
+  - title: Reinforcement Learning from Human Feedback
+  - title: LLM Alignment
+  - title: Reward Model
+  - title: Bradley-Terry Model
+  - title: Preference Learning
+  - title: KL Penalty
+  - title: Reward Hacking
+  - title: PPO
+  - title: InstructGPT
+  - title: LLM
+  - title: Policy Optimization
+  - title: Reference Model
+  - title: Reinforcement Learning
+categories:
+  - title: Machine Learning
+  - title: Reinforcement Learning
+  - title: Large Language Models
+author:
+  name: Mir Sazzat Hossain
+  designation: Research Assistant
+  url: https://mirsazzathossain.me
+  avatar:
+    url: user.png
+    alt: Mir Sazzat Hossain
+description: "How Reinforcement Learning from Human Feedback (RLHF) trains language models from human preferences: collecting comparisons, training a reward model, and optimizing the model with PPO under a KL penalty. Part 4 of a series on policy optimization for LLMs."
+seoDescription: "RLHF explained: how LLMs learn from human preferences with a Bradley-Terry reward model, a KL penalty, and PPO, and how reward hacking is avoided."
+series:
+  title: Policy Optimization in LLMs
+  order: 4
+covers:
+  - url: content/reinforcement-learning-from-human-feedback-rlhf/cover.jpg
+    alt: "RLHF cover: a person prefers one answer, a reward model learns the preference, and the policy is trained on it"
+status: published
+publishedAt: 2026-10-08
+---
+
+import Pipeline from "@/assets/articles/reinforcement-learning-from-human-feedback-rlhf/pipeline.svg";
+
+<img
+  src="/images/content/reinforcement-learning-from-human-feedback-rlhf/cover.jpg"
+  alt="RLHF cover: a person prefers one answer, a reward model learns the preference, and the policy is trained on it"
+  sizes="100vw"
+  width="100%"
+  height="auto"
+  placeholder="blur"
+  blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="
+/>
+
+## Introduction
+
+[Part 3](/articles/proximal-policy-optimization-ppo) ended with a question. PPO can train a language model with any reward we give it, and it does so stably. But it says nothing about where that reward comes from. For a math problem, the answer is easy: a **checker** compares the model's final answer with the correct one and gives $+1$ or $0$. But most of what we want from a chat assistant cannot be checked this way. Is this explanation clear? Is this email polite? Is this answer helpful without being harmful? There is no program that can score these, yet any person can tell a good answer from a bad one.
+
+The obvious solution is to let people give the reward. But PPO needs a reward for every response it generates, and a single training run generates millions of them. No team of people can read and score that many responses, let alone fast enough to keep up with training.
+
+**Reinforcement Learning from Human Feedback (RLHF)** solves this in two steps. First, it collects a limited amount of human feedback and trains a model to imitate it: a **reward model** that predicts how a person would judge a response. Then it uses this reward model in place of the person, and trains the language model on it with PPO. The idea was introduced for games and simulated robots [[1]](#ref-1), applied to language models soon after [[2]](#ref-2), [[3]](#ref-3), and became widely known with **InstructGPT** [[4]](#ref-4), the direct predecessor of ChatGPT.
+
+In this post, we go through RLHF one problem at a time. We first see why people are asked to **compare** responses instead of scoring them, and how the **Bradley-Terry model** turns those comparisons into a reward model. We then see what goes wrong when PPO maximizes this reward directly, a problem called **reward hacking**, and how a **KL penalty** against a **reference model** prevents it. Finally, we put everything together into the full RLHF pipeline and look at its limitations.
+
+## The Three Stages of RLHF
+
+RLHF, as used in InstructGPT [[4]](#ref-4), has three stages ([Figure 1](#fig-pipeline)). The first two stages each use a different kind of human data, the third needs only prompts, and each stage starts from the model produced by the previous one.
+
+<figure id="fig-pipeline">
+  <Pipeline />
+  <figcaption>**Figure 1.** The three stages of RLHF. Stage 1 trains the SFT model on human demonstrations. Stage 2 trains the reward model on human comparisons, starting from the SFT model. Stage 3 trains the policy with PPO, starting from the SFT model, using the reward model for rewards and a frozen copy of the SFT model as the reference.</figcaption>
+</figure>
+
+1. **Supervised fine-tuning (SFT).** People write good answers to a set of prompts, and the pre-trained model is fine-tuned to imitate them, exactly as in [Part 1](/articles/reinforcement-learning-for-llms#from-pre-training-to-sft). The result, $\pi_{\text{SFT}}$, already follows instructions reasonably well.
+2. **Reward model.** People compare answers written by the SFT model, and a reward model $r_\psi$ is trained to predict their judgments.
+3. **RL with PPO.** The policy $\pi_\theta$, initialized from $\pi_{\text{SFT}}$, is trained with PPO to maximize the reward model's score.
+
+We now go through the stages in order.
+
+## Stage 1: Supervised Fine-Tuning
+
+The first stage is the SFT we already know from [Part 1](/articles/reinforcement-learning-for-llms#from-pre-training-to-sft). People write good answers to a set of prompts, and the pre-trained model is trained to imitate them. In InstructGPT, this dataset had about $13{,}000$ prompts [[4]](#ref-4).
+
+RLHF needs this stage for two reasons. First, the later stages work with responses written by the model itself. A pre-trained model that only continues text would mostly write responses that are all bad in the same way, and comparing them would teach us little. After SFT, the model already answers in the right format, so its responses are worth comparing. Second, the SFT model is the starting point for everything that follows: the reward model and the policy are both initialized from it, and a frozen copy of it becomes the reference model in [Stage 3](#stage-3-optimizing-the-policy-with-ppo).
+
+But SFT can only copy its demonstrations, and writing a demonstration for every kind of prompt is slow. Judging answers is much easier than writing them. This is what the next stage uses.
+
+## Stage 2: Learning a Reward from Human Preferences
+
+The goal of this stage is a reward model: a model that reads a prompt and a response and outputs a number saying how much a person would like the response. The natural way to train it would be to ask people for exactly that number, a grade for each response. But for a person, giving an answer an absolute grade is hard, while deciding which of two answers is better is easy. So RLHF collects comparisons instead of grades, turns them into scores with the **Bradley-Terry model**, and fits the reward model to those scores. We first see why comparisons work better.
+
+### Why Compare Instead of Score
+
+When people grade a single response from $1$ to $10$, different people use the scale differently, and even the same person scores inconsistently, so the grades end up full of noise. When they compare two responses to the same prompt instead, they agree far more, because the question does not depend on a personal scale [[1]](#ref-1), [[3]](#ref-3).
+
+InstructGPT made the collection more efficient [[4]](#ref-4). Instead of showing a person only two responses at a time, the SFT model writes between $4$ and $9$ responses to the same prompt, and the person **ranks** all of them from best to worst. A ranking contains every pairwise comparison between its responses: if A is ranked above B, then A is preferred over B. With $K$ responses there are $\binom{K}{2}$ such pairs, so ranking $4$ responses gives $6$ comparisons from a single reading.
+
+Each comparison is stored as three pieces: the prompt $x$, the response that was preferred, and the response that was not. We call the preferred response $y_w$, for "winner", and the other one $y_l$, for "loser". Collecting many of these gives a **preference dataset** of $N$ comparisons:
+
+$$
+\mathcal{D} = \big\{ (x^{(k)}, y_w^{(k)}, y_l^{(k)}) \big\}_{k=1}^{N} \tag{1} \label{pref-data}
+$$
+
+where the superscript $k$ numbers the comparisons. But PPO cannot learn from a comparison directly. It needs a **number** for every response it generates. So the next question is how to turn "$y_w$ is better than $y_l$" into a score for each response.
+
+### From Comparisons to Scores: The Bradley-Terry Model
+
+The **Bradley-Terry model** [[5]](#ref-5) does exactly this. It was introduced in 1952 to rank players from the results of their matches, and comparing two responses is the same situation: each comparison is a match, and the preferred response is the winner.
+
+Take two items $i$ and $j$, for example two responses to the same prompt. The model assumes that each item has a **strength**, a positive number $p_i > 0$ that measures how good it is. The strength is hidden: we never observe it directly, only the outcomes of comparisons. The stronger an item is compared with its opponent, the more often it should win, so the model sets the probability that $i$ wins to $i$'s share of the total strength of the two:
+
+$$
+P(i \succ j) = \frac{p_i}{p_i + p_j} \tag{2} \label{bt-strength}
+$$
+
+where $i \succ j$ means "$i$ is preferred over $j$".
+
+To use this with a reward model, there is one obstacle. The strengths in [Eq. (2)](#eq-bt-strength) must be positive: a negative strength would make the probability negative or greater than $1$. But a reward model is a neural network, and the number at its output can be anything, positive or negative. We cannot force it to output only positive numbers without restricting what it can learn.
+
+The solution is to let the network output any real number, which we call the **score** $r_i \in \mathbb{R}$, and to turn it into a strength with the exponential function:
+
+$$
+p_i = e^{r_i}, \qquad p_j = e^{r_j} \tag{3} \label{bt-exp}
+$$
+
+The exponential is positive for every input, so every score gives a valid strength. It also keeps the order: a higher score always means a higher strength, so a response the reward model scores higher is also more likely to be preferred. Substituting the strengths from [Eq. (3)](#eq-bt-exp) into [Eq. (2)](#eq-bt-strength):
+
+$$
+P(i \succ j) = \frac{e^{r_i}}{e^{r_i} + e^{r_j}} \tag{4} \label{bt}
+$$
+
+Dividing the numerator and the denominator by $e^{r_i}$:
+
+$$
+P(i \succ j) = \frac{\dfrac{e^{r_i}}{e^{r_i}}}{\dfrac{e^{r_i}}{e^{r_i}} + \dfrac{e^{r_j}}{e^{r_i}}} = \frac{1}{1 + e^{r_j - r_i}} = \frac{1}{1 + e^{-(r_i - r_j)}}
+$$
+
+The last expression is the **logistic sigmoid function**,
+
+$$
+\sigma(z) = \frac{1}{1 + e^{-z}}
+$$
+
+applied to the difference of the scores, $z = r_i - r_j$:
+
+$$
+P(i \succ j) = \sigma(r_i - r_j) \tag{5} \label{bt-sigmoid}
+$$
+
+So the probability of a preference depends only on the **difference** between the two scores, not on the scores themselves. One consequence is that the scores have no fixed zero point. If we add the same constant $c$ to every score, every difference stays the same,
+
+$$
+(r_i + c) - (r_j + c) = r_i - r_j
+$$
+
+and so does every probability. A trained reward model can therefore put its scores anywhere on the number line, and only their differences carry meaning. In practice, the scores are shifted after training so that their average is $0$ [[4]](#ref-4).
+
+The score difference also has a direct meaning, which we can see through the **odds** of a preference. The odds compare the chance that something happens with the chance that it does not. If $i$ is preferred $75\%$ of the time and $j$ $25\%$ of the time, the odds for $i$ are $0.75 / 0.25 = 3$, or "3 to 1".
+
+To compute the odds, we need both probabilities. The probability that $i$ wins is [Eq. (4)](#eq-bt). The probability that $j$ wins is the same expression with $i$ and $j$ swapped, so only the numerator changes:
+
+$$
+P(i \succ j) = \frac{e^{r_i}}{e^{r_i} + e^{r_j}}, \qquad P(j \succ i) = \frac{e^{r_j}}{e^{r_i} + e^{r_j}}
+$$
+
+Dividing the first by the second, the two denominators are the same, so they cancel. What remains is a ratio of two exponentials, which by the rule $e^a / e^b = e^{a - b}$ is a single exponential of the difference:
+
+$$
+\begin{aligned}
+\frac{P(i \succ j)}{P(j \succ i)} &= \frac{\dfrac{e^{r_i}}{e^{r_i} + e^{r_j}}}{\dfrac{e^{r_j}}{e^{r_i} + e^{r_j}}} \\
+&= \frac{e^{r_i}}{e^{r_j}} \\
+&= e^{r_i - r_j}
+\end{aligned}
+$$
+
+Taking the natural logarithm of both sides undoes the exponential:
+
+$$
+\ln \frac{P(i \succ j)}{P(j \succ i)} = r_i - r_j
+$$
+
+The left side is called the **log-odds** of the preference. So the difference between two scores is exactly the log-odds that one response is preferred over the other: a difference of $0$ means even odds, and every extra point of difference multiplies the odds by $e \approx 2.7$. This is the same relationship that defines **logistic regression**, where a linear function predicts the log-odds of an outcome. The Bradley-Terry model is a logistic regression in which the input is the difference between two scores.
+
+### Training the Reward Model
+
+We can now train the reward model. It is a neural network $r_\psi(x, y)$ with parameters $\psi$ that reads a prompt $x$ and a response $y$ and outputs a score. We want it to give the preferred responses in the dataset $\mathcal{D}$ from [Eq. (1)](#eq-pref-data) higher scores than the rejected ones.
+
+In a comparison from the dataset, the two items of the Bradley-Terry model are the two responses: $i$ is the preferred response $y_w$, and $j$ is the rejected response $y_l$. Their scores are the reward model's outputs, $r_\psi(x, y_w)$ and $r_\psi(x, y_l)$. Putting these into [Eq. (5)](#eq-bt-sigmoid), the probability that the reward model assigns to the choice the person actually made is:
+
+$$
+P(y_w \succ y_l \mid x) = \sigma\big( r_\psi(x, y_w) - r_\psi(x, y_l) \big)
+$$
+
+A good reward model should make the choices people actually made as likely as possible. This is the principle of **maximum likelihood**. If the $N$ comparisons were made independently, the probability of all of them together is the product of their individual probabilities, and we choose $\psi$ to maximize it:
+
+$$
+\max_\psi \prod_{(x, y_w, y_l) \in \mathcal{D}} P(y_w \succ y_l \mid x)
+$$
+
+A product of thousands of numbers below $1$ becomes too small for a computer to represent, so we take the logarithm. It turns the product into a sum, $\log (ab) = \log a + \log b$, and since it is increasing, it does not change which $\psi$ is best:
+
+$$
+\max_\psi \sum_{(x, y_w, y_l) \in \mathcal{D}} \log P(y_w \succ y_l \mid x)
+$$
+
+Dividing by $N$ turns the sum into an average over the dataset, written as an expectation, again without changing the best $\psi$. Substituting the probability from above:
+
+$$
+\max_\psi \; \mathbb{E}_{(x, y_w, y_l) \sim \mathcal{D}} \Big[ \log \sigma\big( r_\psi(x, y_w) - r_\psi(x, y_l) \big) \Big]
+$$
+
+Neural networks are trained by **minimizing** a loss with gradient descent, not by maximizing. Maximizing a quantity is the same as minimizing its negative, so we flip the sign. The result is the **negative log-likelihood**, the reward model loss:
+
+$$
+\mathcal{L}_{\text{RM}}(\psi) = -\mathbb{E}_{(x, y_w, y_l) \sim \mathcal{D}} \Big[ \log \sigma\big( r_\psi(x, y_w) - r_\psi(x, y_l) \big) \Big] \tag{6} \label{rm-loss}
+$$
+
+To see how this loss trains the reward model, we take its gradient with respect to the parameters $\psi$. To keep the notation short, we write the gap between the two scores as
+
+$$
+\Delta = r_\psi(x, y_w) - r_\psi(x, y_l)
+$$
+
+so that [Eq. (6)](#eq-rm-loss) becomes:
+
+$$
+\mathcal{L}_{\text{RM}}(\psi) = -\mathbb{E}_{(x, y_w, y_l) \sim \mathcal{D}} \big[ \log \sigma(\Delta) \big]
+$$
+
+The gradient can be moved inside the expectation, because the dataset does not depend on $\psi$:
+
+$$
+\nabla_\psi \mathcal{L}_{\text{RM}}(\psi) = -\mathbb{E}_{(x, y_w, y_l) \sim \mathcal{D}} \Big[ \nabla_\psi \log \sigma(\Delta) \Big]
+$$
+
+Now we break down the gradient inside. The logarithm is applied to $\sigma$, which is applied to $\Delta$, which depends on $\psi$. By the chain rule, using $\frac{d}{dz} \log z = \frac{1}{z}$:
+
+$$
+\nabla_\psi \log \sigma(\Delta) = \frac{1}{\sigma(\Delta)} \, \sigma'(\Delta) \, \nabla_\psi \Delta
+$$
+
+The sigmoid has a convenient derivative:
+
+$$
+\sigma'(\Delta) = \sigma(\Delta) \big( 1 - \sigma(\Delta) \big)
+$$
+
+Substituting it, the $\sigma(\Delta)$ in the numerator and the denominator cancels:
+
+$$
+\nabla_\psi \log \sigma(\Delta) = \frac{\sigma(\Delta) \big( 1 - \sigma(\Delta) \big)}{\sigma(\Delta)} \, \nabla_\psi \Delta = \big( 1 - \sigma(\Delta) \big) \, \nabla_\psi \Delta
+$$
+
+The gradient of the gap is the difference of the gradients of the two scores:
+
+$$
+\nabla_\psi \Delta = \nabla_\psi r_\psi(x, y_w) - \nabla_\psi r_\psi(x, y_l)
+$$
+
+Putting everything together gives the gradient of [Eq. (6)](#eq-rm-loss):
+
+$$
+\nabla_\psi \mathcal{L}_{\text{RM}}(\psi) = -\mathbb{E}_{(x, y_w, y_l) \sim \mathcal{D}} \Big[ \big( 1 - \sigma(\Delta) \big) \Big( \nabla_\psi r_\psi(x, y_w) - \nabla_\psi r_\psi(x, y_l) \Big) \Big] \tag{7} \label{rm-gradient}
+$$
+
+Gradient descent moves against this gradient, so each step adds a multiple of $\nabla_\psi r_\psi(x, y_w)$, raising the score of the preferred response, and subtracts a multiple of $\nabla_\psi r_\psi(x, y_l)$, lowering the score of the rejected one.
+
+The size of the step is set by the factor $1 - \sigma(\Delta)$. Since $\sigma(\Delta)$ is the probability the reward model gives to the person's choice, this factor is the probability it gives to the **opposite** choice:
+
+$$
+1 - \sigma(\Delta) = 1 - P(y_w \succ y_l \mid x) = P(y_l \succ y_w \mid x)
+$$
+
+When the model strongly disagrees with the person, this probability is close to $1$ and the update is large. When the model already agrees, it is close to $0$ and the update fades.
+
+In architecture, the reward model is built like the value model from [Part 3](/articles/proximal-policy-optimization-ppo#fig-actor-critic). It is an LLM, usually initialized from the SFT model so that it already understands language, with its language-model head replaced by a single linear layer that outputs one number. It reads the prompt followed by the full response, and the number it outputs at the last token is the score.
+
+The two models differ in what they predict and when they are trained. The value model estimates the expected future reward from every intermediate state of a response, and it is trained during PPO, alongside the policy. The reward model scores only finished responses, and it is trained once, before PPO, and then frozen. In InstructGPT, the reward model had $6$ billion parameters and was trained on comparisons from about $33{,}000$ prompts [[4]](#ref-4).
+
+## Stage 3: Optimizing the Policy with PPO
+
+With the reward model trained and frozen, the last stage trains the policy. It starts as a copy of the SFT model and is improved with PPO from [Part 3](/articles/proximal-policy-optimization-ppo), with the reward model in place of a checker. We first see why maximizing the reward model's score directly does not work, then how a **KL penalty** fixes it, how that penalty is turned into the token rewards PPO needs, and finally one more term that keeps the model's old skills.
+
+### The Naive Objective and Reward Hacking
+
+With a reward model in hand, Stage 3 seems straightforward: generate a response $y$ for each prompt $x$ with the policy, score it with $r_\psi(x, y)$, and run PPO to maximize the score:
+
+$$
+\max_\theta \; \mathbb{E}_{x \sim \mathcal{D}, \, y \sim \pi_\theta(\cdot \mid x)} \big[ r_\psi(x, y) \big] \tag{8} \label{naive-objective}
+$$
+
+This fails, and the reason is that the reward model is not a person. It is a model that has learned to imitate human judgments on the responses it was trained on, which were all written by the SFT model. As PPO trains, the policy starts writing responses that look different from those, and on such responses the reward model's scores are no longer reliable. PPO is very good at finding whatever the reward model rewards, including its mistakes. The policy learns to write responses that score high without being good: answers that are needlessly long because the reward model slightly prefers length [[6]](#ref-6), that flatter the user, or that repeat phrases the reward model likes. This is **reward hacking**, an example of **Goodhart's law**: when a measure becomes a target, it ceases to be a good measure [[7]](#ref-7).
+
+Reward hacking can be measured. Gao et al. [[8]](#ref-8) trained policies against a reward model and checked them against a much larger "gold" reward model standing in for real human judgment. As the policy moved further from its starting point, the score from the trained reward model kept rising, but the gold score first rose, then peaked, and then fell. Past that point, the policy was getting better at fooling the reward model and worse at the actual task.
+
+### The KL Penalty: Staying Close to the Reference Model
+
+The reward model is reliable only near the responses it was trained on, that is, near the SFT model. So the fix is to keep the policy close to the SFT model. We make a frozen copy of it, the **reference model** $\pi_{\text{ref}} = \pi_{\text{SFT}}$, and subtract a penalty from the reward that grows as the policy moves away from it. As in [Part 2](/articles/trust-region-policy-optimization-trpo#eq-kl), we measure this distance with the **KL divergence** [[2]](#ref-2), [[4]](#ref-4):
+
+$$
+\max_\theta \; \mathbb{E}_{x \sim \mathcal{D}, \, y \sim \pi_\theta(\cdot \mid x)} \big[ r_\psi(x, y) \big] - \beta \, \mathbb{E}_{x \sim \mathcal{D}} \Big[ D_{\text{KL}}\big( \pi_\theta(\cdot \mid x) \,\|\, \pi_{\text{ref}}(\cdot \mid x) \big) \Big] \tag{9} \label{kl-objective}
+$$
+
+The coefficient $\beta$ sets the balance. With $\beta = 0$, we are back to the naive objective in [Eq. (8)](#eq-naive-objective) and to reward hacking. With a very large $\beta$, the policy cannot move at all and stays the SFT model. In between, the policy can improve the reward only as long as the improvement is worth the distance it costs.
+
+This KL term looks like TRPO's constraint from [Eq. (7) in Part 2](/articles/trust-region-policy-optimization-trpo#eq-trpo-objective), but it plays a different role. TRPO's KL is measured against $\pi_{\theta_{\text{old}}}$, the model from the start of the current iteration, and limits the size of **each update**. Within PPO, clipping already does that job. The KL in [Eq. (9)](#eq-kl-objective) is measured against $\pi_{\text{ref}}$, the model from the start of **training**, and limits how far the policy can move **in total**, however many small, safe updates it takes to get there. So RLHF needs both: clipping keeps every single update small, and the KL penalty keeps the sum of all the updates from carrying the policy too far from the SFT model.
+
+### From a Sequence Penalty to Token Rewards
+
+PPO, as we saw in [Part 3](/articles/proximal-policy-optimization-ppo), works with one reward $r_t$ per token. The reward model gives one score per response, and the KL in [Eq. (9)](#eq-kl-objective) is also defined over whole responses. To use PPO, we need to split both into token rewards.
+
+The KL divergence between the two models, for a prompt $x$, is the expected log-ratio of the probabilities they give to a response:
+
+$$
+D_{\text{KL}}\big( \pi_\theta(\cdot \mid x) \,\|\, \pi_{\text{ref}}(\cdot \mid x) \big) = \mathbb{E}_{y \sim \pi_\theta(\cdot \mid x)} \left[ \log \frac{\pi_\theta(y \mid x)}{\pi_{\text{ref}}(y \mid x)} \right]
+$$
+
+A language model gives the probability of a response as the product of its token probabilities, where $s_t$ is the prompt and the tokens before $y_t$:
+
+$$
+\pi(y \mid x) = \prod_{t=0}^{T} \pi(y_t \mid s_t)
+$$
+
+The logarithm turns the product into a sum, so the log-ratio of a response splits into one log-ratio per token:
+
+$$
+\log \frac{\pi_\theta(y \mid x)}{\pi_{\text{ref}}(y \mid x)} = \sum_{t=0}^{T} \log \frac{\pi_\theta(y_t \mid s_t)}{\pi_{\text{ref}}(y_t \mid s_t)} \tag{10} \label{log-ratio-split}
+$$
+
+Now we put [Eq. (10)](#eq-log-ratio-split) back into [Eq. (9)](#eq-kl-objective). The KL term becomes an expectation over responses sampled from the policy, the same expectation as the reward term, so the two can be merged into one. Then the sum over tokens can be pulled out:
+
+$$
+\begin{aligned}
+& \mathbb{E}_{x \sim \mathcal{D}, \, y \sim \pi_\theta(\cdot \mid x)} \left[ r_\psi(x, y) - \beta \log \frac{\pi_\theta(y \mid x)}{\pi_{\text{ref}}(y \mid x)} \right] \\
+= \; & \mathbb{E}_{x \sim \mathcal{D}, \, y \sim \pi_\theta(\cdot \mid x)} \left[ r_\psi(x, y) - \beta \sum_{t=0}^{T} \log \frac{\pi_\theta(y_t \mid s_t)}{\pi_{\text{ref}}(y_t \mid s_t)} \right]
+\end{aligned}
+$$
+
+Inside the expectation, we now have one penalty term per token and one score for the whole response. We can assign them to tokens: every token gets its own penalty, which grows with how much more likely the policy makes that token than the reference model does, and the last token, $t = T$, also gets the reward model's score, since that is when the response is finished [[2]](#ref-2), [[9]](#ref-9):
+
+$$
+r_t = -\beta \log \frac{\pi_\theta(y_t \mid s_t)}{\pi_{\text{ref}}(y_t \mid s_t)} + \begin{cases} r_\psi(x, y) & \text{if } t = T \\ 0 & \text{otherwise} \end{cases} \tag{11} \label{token-reward}
+$$
+
+Now we check that these token rewards give back the objective. For short, we write the log-ratio of token $t$ as
+
+$$
+\ell_t = \log \frac{\pi_\theta(y_t \mid s_t)}{\pi_{\text{ref}}(y_t \mid s_t)}
+$$
+
+Then we expand the sum inside the expectation, move the reward model's score next to the last token's penalty, and recognize each group as a token reward from [Eq. (11)](#eq-token-reward):
+
+$$
+\begin{aligned}
+r_\psi(x, y) - \beta \sum_{t=0}^{T} \ell_t &= r_\psi(x, y) - \beta \, \ell_0 - \beta \, \ell_1 - \dots - \beta \, \ell_T \\
+&= \big( -\beta \, \ell_0 \big) + \big( -\beta \, \ell_1 \big) + \dots + \big( -\beta \, \ell_T + r_\psi(x, y) \big) \\
+&= r_0 + r_1 + \dots + r_T \\
+&= \sum_{t=0}^{T} r_t
+\end{aligned}
+$$
+
+Putting this back inside the expectation, and flipping the sign to turn the objective into a loss to minimize, the total loss of Stage 3, with the KL penalty, is:
+
+$$
+\mathcal{L}^{\text{RLHF}}(\theta) = -\mathbb{E}_{x \sim \mathcal{D}, \, y \sim \pi_\theta(\cdot \mid x)} \left[ \sum_{t=0}^{T} r_t \right] \tag{12} \label{rlhf-final}
+$$
+
+This sum is something PPO already knows. In [Part 3](/articles/proximal-policy-optimization-ppo#measuring-what-actually-happened-the-return), we defined the **return** $G_t$ as the sum of all the rewards from step $t$ to the end of the response, each discounted by $\gamma$ for every step it lies ahead ([Eq. (3) in Part 3](/articles/proximal-policy-optimization-ppo#eq-return)). For the first token, $t = 0$, and with $\gamma = 1$ as is common for LLMs, the discounting disappears and the return is exactly our sum:
+
+$$
+G_0 = r_0 + \gamma \, r_1 + \dots + \gamma^{T} \, r_T = r_0 + r_1 + \dots + r_T = \sum_{t=0}^{T} r_t
+$$
+
+So minimizing the loss in [Eq. (12)](#eq-rlhf-final) is the same as maximizing the expected return, which is exactly what PPO does.
+
+PPO does not minimize [Eq. (12)](#eq-rlhf-final) directly. Instead, it computes an advantage $\hat{A}_t$ for every token from the token rewards of [Eq. (11)](#eq-token-reward), with the value model and GAE, and maximizes the clipped objective from [Eq. (11) in Part 3](/articles/proximal-policy-optimization-ppo#eq-clip). This is what is actually optimized at each update:
+
+$$
+L^{\text{CLIP}}(\theta) = \mathbb{E}_t \Big[ \min\big( \rho_t(\theta) \, \hat{A}_t, \; \text{clip}\big(\rho_t(\theta), 1 - \epsilon, 1 + \epsilon\big) \, \hat{A}_t \big) \Big] \tag{13} \label{rlhf-loss}
+$$
+
+The reward model and the KL penalty do not appear in this equation directly. They enter through the advantages $\hat{A}_t$, which are computed from the token rewards. Note also that the ratio $\rho_t$ here is not the log-ratio in the KL penalty. The ratio compares the policy with $\pi_{\theta_{\text{old}}}$, the policy that generated the batch, and is clipped to keep each update small. The log-ratio in the penalty compares the policy with the frozen reference model, and it is computed once when the batch is generated and then kept fixed as part of the reward, so it is never clipped.
+
+> RLHF changes only the reward. Everything else in Stage 3 is PPO exactly as in [Part 3](/articles/proximal-policy-optimization-ppo).
+
+Each token's reward $r_t$ now comes from [Eq. (11)](#eq-token-reward): the KL penalty for every token, plus the reward model's score at the last one. From these rewards on, nothing is new. The value model $V_\phi$ is trained to predict them with the value loss, the TD errors and the GAE advantages are computed from them, and the policy is updated with the probability ratio and clipping, over several epochs of each batch. Stage 3 uses four models: the policy $\pi_\theta$, the value model $V_\phi$, the reward model $r_\psi$, and the reference model $\pi_{\text{ref}}$. Of these, only the policy and the value model are updated. The reward model was trained in [Stage 2](#stage-2-learning-a-reward-from-human-preferences) and stays frozen, and so does the reference model.
+
+### Keeping Old Skills: The Pretraining Mix
+
+The KL penalty keeps the policy's responses close to the reference model, but RLHF still has a side effect. InstructGPT found that after PPO, the model performed worse on several standard NLP benchmarks than before, a cost the authors called the **alignment tax** [[4]](#ref-4). The reason is that PPO only rewards what the reward model cares about, and skills that the reward model does not measure can slowly fade.
+
+To reduce this, InstructGPT added a second term to the clipped objective in [Eq. (13)](#eq-rlhf-loss): the ordinary language-modeling log-likelihood, the same objective as in pre-training, computed on text $x$ drawn from the pre-training data $\mathcal{D}_{\text{pretrain}}$ and weighted by a coefficient $\eta$:
+
+$$
+L^{\text{PPO-ptx}}(\theta) = L^{\text{CLIP}}(\theta) + \eta \, \mathbb{E}_{x \sim \mathcal{D}_{\text{pretrain}}} \big[ \log \pi_\theta(x) \big] \tag{14} \label{ptx}
+$$
+
+The new term needs no RL at all: it is ordinary next-token prediction on fixed text, so its gradient is simply added to PPO's. It keeps training the model on the pre-training task, so the model does not forget what it learned there. InstructGPT called this variant **PPO-ptx** [[4]](#ref-4).
+
+## The Full RLHF Pipeline
+
+Putting the three stages together, with the PPO loop from [Part 3](/articles/proximal-policy-optimization-ppo#reusing-samples-the-probability-ratio) inside [Stage 3](#stage-3-optimizing-the-policy-with-ppo):
+
+<div className="algorithm">
+
+<span className="algorithm-label"><b>Algorithm 1</b> RLHF with PPO</span>
+
+$$
+\begin{array}{rl}
+{\scriptsize 1:} & \text{Fine-tune on human demonstrations} \to \pi_{\text{SFT}} \\
+{\scriptsize 2:} & \text{Train the reward model } r_\psi \text{ on human comparisons with Eq. (6)} \\
+{\scriptsize 3:} & \text{Initialize the policy } \pi_\theta \leftarrow \pi_{\text{SFT}} \text{ and freeze } \pi_{\text{ref}} \leftarrow \pi_{\text{SFT}} \\
+{\scriptsize 4:} & \text{Initialize the value model } V_\phi \text{ (for example, from } r_\psi \text{)} \\
+{\scriptsize 5:} & \textbf{for } n = 0, 1, 2, \dots \textbf{ do} \\
+{\scriptsize 6:} & \quad \text{generate responses } y \text{ for a batch of prompts with } \pi_\theta \\
+{\scriptsize 7:} & \quad \text{score each response with } r_\psi(x, y) \\
+{\scriptsize 8:} & \quad \text{compute the token rewards } r_t \text{ with Eq. (11)} \\
+{\scriptsize 9:} & \quad \text{update } \pi_\theta \text{ with Eq. (13) or (14), and } V_\phi \text{ with PPO}
+\end{array}
+$$
+
+</div>
+
+This is where the four models from [Part 3](/articles/proximal-policy-optimization-ppo#ppo-for-language-models), the policy, the value model, the reward model, and the reference model, come from. The policy and the value model belong to PPO and are trained. The reward model comes from [Stage 2](#stage-2-learning-a-reward-from-human-preferences), and the reference model is the frozen SFT model from [Stage 1](#stage-1-supervised-fine-tuning). Both are used only for forward passes.
+
+The results showed how well this works. In InstructGPT, people preferred the answers of a $1.3$-billion-parameter RLHF model over those of the original $175$-billion-parameter GPT-3, a model more than $100$ times larger [[4]](#ref-4). The RLHF model also made up facts less often and produced less toxic text. Anthropic later used the same recipe to train assistants that are both helpful and harmless [[10]](#ref-10).
+
+## Limitations of RLHF
+
+RLHF made language models far more useful, but it has clear limitations [[11]](#ref-11):
+
+- **It is expensive.** [Stage 3](#stage-3-optimizing-the-policy-with-ppo) needs four LLMs in memory at the same time (the policy, the value model, the reward model, and the reference model), and PPO generates new responses at every iteration. Human comparisons are also slow and costly to collect.
+- **The reward model is a weak point.** It is only an approximation of human judgment, trained on a limited dataset. It inherits the biases of its labelers and of its data, such as a preference for longer answers [[6]](#ref-6), and the policy can still exploit its mistakes if $\beta$ is too small.
+- **It is complex and unstable.** RLHF combines two separately trained models and an RL algorithm with many hyperparameters, and small implementation details can change the result [[9]](#ref-9).
+
+Most of these problems come from the same place: the reward model and the RL loop that optimizes it. The reward model learns from preferences, and then PPO learns from the reward model. This raises a natural question.
+
+> If the preferences are what we actually care about, do we need the reward model and the RL loop at all?
+
+Direct Preference Optimization shows that we do not, and it is the topic of [Part 5](/articles/direct-preference-optimization-dpo).
+
+## References
+
+<ol>
+  <li id="ref-1">Christiano, P. F., Leike, J., Brown, T., Martic, M., Legg, S., & Amodei, D. (2017). <a href="https://arxiv.org/abs/1706.03741">Deep Reinforcement Learning from Human Preferences</a>. <em>NeurIPS</em>.</li>
+  <li id="ref-2">Ziegler, D. M., Stiennon, N., Wu, J., et al. (2019). <a href="https://arxiv.org/abs/1909.08593">Fine-Tuning Language Models from Human Preferences</a>. <em>arXiv:1909.08593</em>.</li>
+  <li id="ref-3">Stiennon, N., Ouyang, L., Wu, J., et al. (2020). <a href="https://arxiv.org/abs/2009.01325">Learning to Summarize from Human Feedback</a>. <em>NeurIPS</em>.</li>
+  <li id="ref-4">Ouyang, L., Wu, J., Jiang, X., et al. (2022). <a href="https://arxiv.org/abs/2203.02155">Training Language Models to Follow Instructions with Human Feedback</a>. <em>NeurIPS</em>.</li>
+  <li id="ref-5">Bradley, R. A., & Terry, M. E. (1952). <a href="https://doi.org/10.2307/2334029">Rank Analysis of Incomplete Block Designs: I. The Method of Paired Comparisons</a>. <em>Biometrika</em>, 39(3/4), 324–345.</li>
+  <li id="ref-6">Singhal, P., Goyal, T., Xu, J., & Durrett, G. (2023). <a href="https://arxiv.org/abs/2310.03716">A Long Way to Go: Investigating Length Correlations in RLHF</a>. <em>arXiv:2310.03716</em>.</li>
+  <li id="ref-7">Manheim, D., & Garrabrant, S. (2018). <a href="https://arxiv.org/abs/1803.04585">Categorizing Variants of Goodhart's Law</a>. <em>arXiv:1803.04585</em>.</li>
+  <li id="ref-8">Gao, L., Schulman, J., & Hilton, J. (2023). <a href="https://arxiv.org/abs/2210.10760">Scaling Laws for Reward Model Overoptimization</a>. <em>ICML</em>.</li>
+  <li id="ref-9">Huang, S., Noukhovitch, M., Hosseini, A., Rasul, K., Wang, W., & Tunstall, L. (2024). <a href="https://arxiv.org/abs/2403.17031">The N+ Implementation Details of RLHF with PPO: A Case Study on TL;DR Summarization</a>. <em>arXiv:2403.17031</em>.</li>
+  <li id="ref-10">Bai, Y., Jones, A., Ndousse, K., et al. (2022). <a href="https://arxiv.org/abs/2204.05862">Training a Helpful and Harmless Assistant with Reinforcement Learning from Human Feedback</a>. <em>arXiv:2204.05862</em>.</li>
+  <li id="ref-11">Casper, S., Davies, X., Shi, C., et al. (2023). <a href="https://arxiv.org/abs/2307.15217">Open Problems and Fundamental Limitations of Reinforcement Learning from Human Feedback</a>. <em>TMLR</em>.</li>
+</ol>

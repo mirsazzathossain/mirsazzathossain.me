@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 370" role="img" aria-label="PPO versus GRPO. In PPO, the policy writes one response per prompt, a reward model scores it, and a value model of the same size as the policy estimates the expected reward of every state; GAE turns these into per-token advantages. In GRPO, the policy writes a group of responses to the same prompt, each one is scored, and each advantage is the reward minus the group mean, divided by the group standard deviation. There is no value model." font-family="var(--font-sans)">
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--ink-3)"/></marker></defs>
+<text x="14" y="22" fill="var(--ink)" font-size="13" font-weight="700" text-anchor="start" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">PPO</text>
+<rect x="10" y="60" width="70" height="44" rx="8" fill="var(--ink-3)" fill-opacity="0.06" stroke="var(--ink-3)" stroke-width="1.8"/>
+<text x="45" y="87" fill="var(--ink)" font-size="11" font-weight="600" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">prompt x</text>
+<line x1="80" y1="82" x2="105" y2="82" stroke="var(--ink-3)" stroke-width="2" marker-end="url(#a)"/>
+<rect x="110" y="60" width="90" height="44" rx="8" fill="var(--link)" fill-opacity="0.12" stroke="var(--link)" stroke-width="1.8"/>
+<text x="155" y="87" fill="var(--link)" font-size="12" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">policy π<tspan baseline-shift="sub" font-size="9">θ</tspan></text>
+<line x1="200" y1="82" x2="225" y2="82" stroke="var(--ink-3)" stroke-width="2" marker-end="url(#a)"/>
+<rect x="230" y="60" width="80" height="44" rx="8" fill="var(--ink-3)" fill-opacity="0.06" stroke="var(--ink-3)" stroke-width="1.8"/>
+<text x="270" y="87" fill="var(--ink)" font-size="11" font-weight="600" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">response y</text>
+<line x1="310" y1="70" x2="352" y2="52" stroke="var(--ink-3)" stroke-width="2" marker-end="url(#a)"/>
+<line x1="310" y1="94" x2="352" y2="112" stroke="var(--ink-3)" stroke-width="2" marker-end="url(#a)"/>
+<rect x="357" y="34" width="120" height="36" rx="8" fill="var(--green)" fill-opacity="0.12" stroke="var(--green)" stroke-width="1.8"/>
+<text x="417" y="57" fill="var(--green)" font-size="11" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">reward model</text>
+<rect x="357" y="96" width="120" height="36" rx="8" fill="#f59e0b" fill-opacity="0.12" stroke="#f59e0b" stroke-width="1.8"/>
+<text x="417" y="119" fill="#f59e0b" font-size="11" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">value model V<tspan baseline-shift="sub" font-size="9">φ</tspan></text>
+<text x="417" y="148" fill="#f59e0b" font-size="10" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">same size as the policy</text>
+<line x1="477" y1="52" x2="519" y2="72" stroke="var(--ink-3)" stroke-width="2" marker-end="url(#a)"/>
+<line x1="477" y1="114" x2="519" y2="94" stroke="var(--ink-3)" stroke-width="2" marker-end="url(#a)"/>
+<rect x="524" y="60" width="70" height="44" rx="8" fill="var(--ink-3)" fill-opacity="0.06" stroke="var(--ink-3)" stroke-width="1.8"/>
+<text x="559" y="87" fill="var(--ink)" font-size="12" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">GAE</text>
+<line x1="594" y1="82" x2="619" y2="82" stroke="var(--ink-3)" stroke-width="2" marker-end="url(#a)"/>
+<rect x="624" y="60" width="86" height="44" rx="8" fill="#8b5cf6" fill-opacity="0.12" stroke="#8b5cf6" stroke-width="1.8"/>
+<text x="667" y="80" fill="#8b5cf6" font-size="13" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">Â<tspan baseline-shift="sub" font-size="9">t</tspan></text>
+<text x="667" y="96" fill="var(--ink-3)" font-size="9" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">per token</text>
+<line x1="10" y1="170" x2="710" y2="170" stroke="var(--ink-3)" stroke-width="1" stroke-dasharray="4 4"/>
+<text x="14" y="195" fill="var(--ink)" font-size="13" font-weight="700" text-anchor="start" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">GRPO</text>
+<rect x="10" y="253" width="70" height="44" rx="8" fill="var(--ink-3)" fill-opacity="0.06" stroke="var(--ink-3)" stroke-width="1.8"/>
+<text x="45" y="280" fill="var(--ink)" font-size="11" font-weight="600" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">prompt x</text>
+<line x1="80" y1="275" x2="105" y2="275" stroke="var(--ink-3)" stroke-width="2" marker-end="url(#a)"/>
+<rect x="110" y="253" width="90" height="44" rx="8" fill="var(--link)" fill-opacity="0.12" stroke="var(--link)" stroke-width="1.8"/>
+<text x="155" y="280" fill="var(--link)" font-size="12" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">policy π<tspan baseline-shift="sub" font-size="9">θ</tspan></text>
+<line x1="200" y1="275" x2="233" y2="222" stroke="var(--ink-3)" stroke-width="2" marker-end="url(#a)"/>
+<rect x="238" y="205" width="70" height="34" rx="8" fill="var(--ink-3)" fill-opacity="0.06" stroke="var(--ink-3)" stroke-width="1.8"/>
+<text x="273" y="227" fill="var(--ink)" font-size="12" font-weight="600" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">y<tspan baseline-shift="sub" font-size="9">1</tspan></text>
+<line x1="308" y1="222" x2="333" y2="222" stroke="var(--ink-3)" stroke-width="2" marker-end="url(#a)"/>
+<rect x="338" y="205" width="60" height="34" rx="8" fill="var(--green)" fill-opacity="0.12" stroke="var(--green)" stroke-width="1.8"/>
+<text x="368" y="227" fill="var(--green)" font-size="12" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">r<tspan baseline-shift="sub" font-size="9">1</tspan></text>
+<line x1="398" y1="222" x2="433" y2="275" stroke="var(--ink-3)" stroke-width="2" marker-end="url(#a)"/>
+<line x1="200" y1="275" x2="233" y2="264" stroke="var(--ink-3)" stroke-width="2" marker-end="url(#a)"/>
+<rect x="238" y="247" width="70" height="34" rx="8" fill="var(--ink-3)" fill-opacity="0.06" stroke="var(--ink-3)" stroke-width="1.8"/>
+<text x="273" y="269" fill="var(--ink)" font-size="12" font-weight="600" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">y<tspan baseline-shift="sub" font-size="9">2</tspan></text>
+<line x1="308" y1="264" x2="333" y2="264" stroke="var(--ink-3)" stroke-width="2" marker-end="url(#a)"/>
+<rect x="338" y="247" width="60" height="34" rx="8" fill="var(--green)" fill-opacity="0.12" stroke="var(--green)" stroke-width="1.8"/>
+<text x="368" y="269" fill="var(--green)" font-size="12" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">r<tspan baseline-shift="sub" font-size="9">2</tspan></text>
+<line x1="398" y1="264" x2="433" y2="275" stroke="var(--ink-3)" stroke-width="2" marker-end="url(#a)"/>
+<line x1="200" y1="275" x2="233" y2="326" stroke="var(--ink-3)" stroke-width="2" marker-end="url(#a)"/>
+<rect x="238" y="309" width="70" height="34" rx="8" fill="var(--ink-3)" fill-opacity="0.06" stroke="var(--ink-3)" stroke-width="1.8"/>
+<text x="273" y="331" fill="var(--ink)" font-size="12" font-weight="600" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">y<tspan baseline-shift="sub" font-size="9">G</tspan></text>
+<line x1="308" y1="326" x2="333" y2="326" stroke="var(--ink-3)" stroke-width="2" marker-end="url(#a)"/>
+<rect x="338" y="309" width="60" height="34" rx="8" fill="var(--green)" fill-opacity="0.12" stroke="var(--green)" stroke-width="1.8"/>
+<text x="368" y="331" fill="var(--green)" font-size="12" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">r<tspan baseline-shift="sub" font-size="9">G</tspan></text>
+<line x1="398" y1="326" x2="433" y2="275" stroke="var(--ink-3)" stroke-width="2" marker-end="url(#a)"/>
+<text x="273" y="299" fill="var(--ink-3)" font-size="14" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">⋮</text>
+<text x="368" y="299" fill="var(--ink-3)" font-size="14" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">⋮</text>
+<rect x="438" y="243" width="150" height="64" rx="8" fill="var(--ink-3)" fill-opacity="0.06" stroke="var(--ink-3)" stroke-width="1.8"/>
+<text x="513" y="269" fill="var(--ink)" font-size="11" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">group normalization</text>
+<text x="513" y="289" fill="var(--ink-3)" font-size="11" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">(r<tspan baseline-shift="sub" font-size="9">i</tspan> − mean) / std</text>
+<line x1="588" y1="275" x2="619" y2="275" stroke="var(--ink-3)" stroke-width="2" marker-end="url(#a)"/>
+<rect x="624" y="253" width="86" height="44" rx="8" fill="#8b5cf6" fill-opacity="0.12" stroke="#8b5cf6" stroke-width="1.8"/>
+<text x="667" y="273" fill="#8b5cf6" font-size="13" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">Â<tspan baseline-shift="sub" font-size="9">i</tspan></text>
+<text x="667" y="289" fill="var(--ink-3)" font-size="9" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">per response</text>
+<text x="360" y="362" fill="var(--ink-3)" font-size="11" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">No value model: the group itself provides the baseline</text>
+</svg>

@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 420" role="img" aria-label="At A, g and F delta theta point in different directions. The edge of the trust region is an ellipse. At point A, the gradient g has a part along the edge, so sliding along the edge still improves the objective. At the best point B, g points straight out of the edge, in the same direction as F times delta theta. The best step goes from the center to B, along F inverse g." font-family="var(--font-sans)">
+<defs>
+<marker id="e-ink3" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--ink-3)"/></marker>
+<marker id="e-ink" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--ink)"/></marker>
+<marker id="e-green" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--green)"/></marker>
+<marker id="e-orange" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#f59e0b"/></marker>
+<marker id="e-purple" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#8b5cf6"/></marker>
+</defs>
+<ellipse cx="230.0" cy="240.0" rx="82.5" ry="165.0" fill="var(--link)" fill-opacity="0.08" stroke="var(--link)" stroke-width="2.2"/>
+<text x="141.5" y="363.8" fill="var(--link)" font-size="12" font-weight="600" text-anchor="end" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">edge: ½ ΔθᵀFΔθ = δ</text>
+<circle cx="230.0" cy="240.0" r="4" fill="var(--ink-3)"/>
+<text x="230.0" y="260.0" fill="var(--ink-3)" font-size="12" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">θ<tspan baseline-shift="sub" font-size="9">old</tspan></text>
+<line x1="230.0" y1="240.0" x2="265.4" y2="98.3" stroke="var(--green)" stroke-width="2.4" marker-end="url(#e-green)"/>
+<text x="240.4" y="166.2" fill="var(--green)" font-size="12" font-weight="700" text-anchor="end" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">actual update: Δθ ∝ F⁻¹g</text>
+<line x1="230.0" y1="240.0" x2="308.4" y2="240.0" stroke="var(--ink-3)" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#e-ink3)"/>
+<text x="271.2" y="232.0" fill="var(--ink-3)" font-size="11" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">candidate step</text>
+<path d="M312.9,166.0 L312.3,163.5 L311.7,161.1 L311.1,158.7 L310.5,156.2 L309.9,153.9 L309.2,151.5 L308.6,149.1 L307.9,146.8 L307.2,144.5 L306.4,142.2 L305.7,139.9 L305.0,137.7 L304.2,135.5 L303.4,133.3 L302.6,131.1 L301.8,128.9 L300.9,126.8 L300.1,124.7 L299.2,122.6 L298.3,120.6 L297.4,118.6 L296.5,116.6 L295.6,114.6 L294.7,112.6 L293.7,110.7 L292.7,108.9 L291.7,107.0 L290.8,105.2 L289.7,103.4 L288.7,101.6" fill="none" stroke="#f59e0b" stroke-width="2" stroke-dasharray="2 4" marker-end="url(#e-orange)"/>
+<text x="315.0" y="137.7" fill="#f59e0b" font-size="11" font-weight="600" text-anchor="start" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">sliding improves</text>
+<text x="315.0" y="151.7" fill="#f59e0b" font-size="11" font-weight="600" text-anchor="start" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">the objective</text>
+<line x1="312.5" y1="292.8" x2="312.5" y2="137.7" stroke="var(--ink-3)" stroke-width="1.2" stroke-dasharray="5 4"/>
+<text x="318.5" y="296.8" fill="var(--ink-3)" font-size="11" font-weight="400" text-anchor="start" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">edge direction at A</text>
+<line x1="365.0" y1="187.5" x2="312.5" y2="187.5" stroke="var(--ink-3)" stroke-width="1.2" stroke-dasharray="2 3"/>
+<line x1="312.5" y1="240.0" x2="312.5" y2="187.5" stroke="#f59e0b" stroke-width="2.4" marker-end="url(#e-orange)"/>
+<text x="304.5" y="191.5" fill="#f59e0b" font-size="11" font-weight="600" text-anchor="end" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">part of g along the edge</text>
+<line x1="312.5" y1="240.0" x2="365.0" y2="187.5" stroke="var(--ink)" stroke-width="2.4" marker-end="url(#e-ink)"/>
+<text x="371.0" y="191.5" fill="var(--ink)" font-size="13" font-weight="700" text-anchor="start" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">g</text>
+<circle cx="312.5" cy="240.0" r="5.5" fill="var(--ink-3)"/>
+<text x="322.5" y="258.0" fill="var(--ink-3)" font-size="13" font-weight="700" text-anchor="start" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">A</text>
+<line x1="312.5" y1="240.0" x2="368.6" y2="240.0" stroke="#8b5cf6" stroke-width="2.4" marker-end="url(#e-purple)"/>
+<text x="374.6" y="244.0" fill="#8b5cf6" font-size="12" font-weight="700" text-anchor="start" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">FΔθ</text>
+<line x1="266.9" y1="92.4" x2="319.4" y2="39.9" stroke="var(--ink)" stroke-width="2.4" marker-end="url(#e-ink)"/>
+<line x1="266.9" y1="92.4" x2="294.9" y2="64.4" stroke="#8b5cf6" stroke-width="2.4" marker-end="url(#e-purple)"/>
+<text x="286.9" y="56.4" fill="#8b5cf6" font-size="12" font-weight="700" text-anchor="end" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">FΔθ</text>
+<circle cx="266.9" cy="92.4" r="6" fill="var(--green)"/>
+<text x="256.9" y="86.4" fill="var(--green)" font-size="13" font-weight="700" text-anchor="end" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">B</text>
+<text x="325.4" y="43.9" fill="var(--ink)" font-size="13" font-weight="700" text-anchor="start" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">g</text>
+<text x="341.4" y="43.9" fill="var(--ink)" font-size="11" font-weight="600" text-anchor="start" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">same direction: g = λ FΔθ</text>
+</svg>

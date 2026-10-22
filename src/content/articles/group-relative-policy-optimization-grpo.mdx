@@ -1,0 +1,283 @@
+---
+title: "Group Relative Policy Optimization (GRPO) Explained"
+tags:
+  - title: GRPO
+  - title: Group Relative Policy Optimization
+  - title: Policy Optimization
+  - title: Reinforcement Learning
+  - title: Reasoning Models
+  - title: Verifiable Rewards
+  - title: RLVR
+  - title: DeepSeekMath
+  - title: DeepSeek-R1
+  - title: PPO
+  - title: LLM
+categories:
+  - title: Machine Learning
+  - title: Reinforcement Learning
+  - title: Large Language Models
+author:
+  name: Mir Sazzat Hossain
+  designation: Research Assistant
+  url: https://mirsazzathossain.me
+  avatar:
+    url: user.png
+    alt: Mir Sazzat Hossain
+description: "How Group Relative Policy Optimization (GRPO) removes PPO's value model by comparing answers within a group, and why it works so well for training reasoning models. Part 6 of a series on policy optimization for LLMs."
+seoDescription: "GRPO explained: how Group Relative Policy Optimization drops PPO's value model with group-relative advantages to train reasoning LLMs like DeepSeek-R1."
+series:
+  title: Policy Optimization in LLMs
+  order: 6
+covers:
+  - url: content/group-relative-policy-optimization-grpo/cover.jpg
+    alt: "GRPO cover: rewards of a group of answers compared against the group mean to compute advantages"
+status: published
+publishedAt: 2026-10-22
+---
+
+import PpoVsGrpo from "@/assets/articles/group-relative-policy-optimization-grpo/ppo-vs-grpo.svg";
+
+<img
+  src="/images/content/group-relative-policy-optimization-grpo/cover.jpg"
+  alt="GRPO cover: rewards of a group of answers compared against the group mean to compute advantages"
+  sizes="100vw"
+  width="100%"
+  height="auto"
+  placeholder="blur"
+  blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="
+/>
+
+## Introduction
+
+[Part 5](/articles/direct-preference-optimization-dpo#limitations-of-dpo) ended with a question. DPO showed that for preferences between two responses, we do not need reinforcement learning at all. But for tasks with an answer that can be checked, such as a math problem or a program with tests, the most useful signal is not a fixed dataset of preferred responses. It is a **reward** for the model's own, newly generated attempts: write a solution, check it, and learn from the result. That brings back online reinforcement learning, and with it PPO.
+
+PPO works, but in [Part 3](/articles/proximal-policy-optimization-ppo#ppo-for-language-models) we saw what it costs for language models. To compute the **advantage** of every token, PPO trains a **value model** next to the policy, and for an LLM, that value model is itself an LLM of the same size. It doubles the memory and compute of training, and it has to learn to predict the final reward of a response from every partial response, which is hard when the reward arrives only at the end.
+
+In 2024, **Group Relative Policy Optimization (GRPO)** [[1]](#ref-1), introduced with the DeepSeekMath model, answered the question of whether the advantage can be computed without a value model. Its idea is simple: instead of asking a model what reward to expect for a prompt, ask the policy to answer the same prompt several times and look at how its answers actually scored. The average score of this **group** of answers is the expected reward, and each answer's advantage is how much better or worse it did than its group. A year later, GRPO with rewards from simple checkers trained **DeepSeek-R1** [[2]](#ref-2), one of the first open models to reason step by step at the level of the best closed models.
+
+In this post, we derive GRPO from the PPO we already know. We first see exactly what the value model was used for, and why the group of answers can replace it. We then build the GRPO objective: PPO's clipped objective with group advantages, and a KL penalty that is moved from the reward into the loss. Finally, we look at how GRPO is used with **verifiable rewards** to train reasoning models, what its limitations are, and how the whole series fits together.
+
+## What the Value Model Was For
+
+To remove the value model, we first need to be precise about what it did. Recall from [Part 3](/articles/proximal-policy-optimization-ppo#the-advantage-function) that the advantage compares what actually happened after a token with what was expected to happen. The simplest estimate of it, the **Monte Carlo** advantage from [Eq. (6) in Part 3](/articles/proximal-policy-optimization-ppo#eq-adv-mc), is the return minus the value model's prediction:
+
+$$
+\hat{A}_t = G_t - V_\phi(s_t)
+$$
+
+For the tasks GRPO is designed for, this estimate simplifies considerably. The reward is given only once the response is finished: $r_t = 0$ for every token except the last one, which gets the reward of the whole response, $r(x, y)$. With a discount factor of $\gamma = 1$, the return of every token, from [Eq. (3) in Part 3](/articles/proximal-policy-optimization-ppo#eq-return), is therefore the same number:
+
+$$
+G_t = r_t + r_{t+1} + \dots + r_T = 0 + 0 + \dots + r(x, y) = r(x, y)
+$$
+
+So every token sees the same outcome, the reward of the whole response. The only part of the advantage that changes from token to token is the value model's prediction $V_\phi(s_t)$, the **baseline**. Its job is to say what reward to expect, so that a response is pushed up only when it did better than expected, and down only when it did worse.
+
+This is the part GRPO replaces. Training a second LLM to produce the baseline is expensive, and it is also hard: the value model has to predict the final reward of a response from every partial response, while it only ever receives a single number at the end. DeepSeekMath points out that this makes an accurate value at every token difficult to learn [[1]](#ref-1). So the question becomes: is there another way to know what reward to expect?
+
+## The Group as the Baseline
+
+GRPO's answer comes from the definition of the value itself. In this section, we first write the expected reward of a prompt as an average, then estimate that average from a group of responses, normalize the result, and finally see what this means for every token.
+
+### Estimating the Expected Reward by Sampling
+
+In [Part 3](/articles/proximal-policy-optimization-ppo#eq-value-expectation), the value of a state was defined as the expected return from it. At the very start of a response, the state is just the prompt $x$, and the return is the reward of the whole response. So the value of a prompt is the average reward of the responses the policy writes to it:
+
+$$
+V(x) = \mathbb{E}_{y \sim \pi_\theta(\cdot \mid x)} \big[ r(x, y) \big] \tag{1} \label{prompt-value}
+$$
+
+The value model learns to predict the average in [Eq. (1)](#eq-prompt-value). But an average can also be **estimated by sampling**, which is the Monte Carlo idea from Part 3: let the policy write $G$ responses $y_1, \dots, y_G$ to the same prompt, score each one, and take the mean of their rewards $r_i = r(x, y_i)$:
+
+$$
+V(x) \approx \text{mean}(\mathbf{r}) = \frac{1}{G} \sum_{i=1}^{G} r_i \tag{2} \label{group-mean}
+$$
+
+where $\mathbf{r} = (r_1, \dots, r_G)$ is the vector of rewards in the group. (Following the GRPO paper, we write $G$ for the size of the group. It is not the return $G_t$ from Part 3, which we no longer need.) The more responses in the group, the closer this mean is to the true value. DeepSeekMath used groups of $G = 64$ responses per prompt [[1]](#ref-1).
+
+The idea of using other samples as the baseline is older than GRPO. It is known as a **sampled baseline**, and methods such as RLOO use the average reward of the other responses to the same prompt in the same way [[3]](#ref-3). What GRPO adds is how it scales the result and how it combines it with PPO.
+
+### The Group-Relative Advantage
+
+With the group mean of [Eq. (2)](#eq-group-mean) as the baseline, the advantage of response $i$ is its reward minus the mean: positive if it did better than its group, negative if it did worse. GRPO then divides by the **standard deviation** of the rewards in the group,
+
+$$
+\text{std}(\mathbf{r}) = \sqrt{\frac{1}{G} \sum_{i=1}^{G} \big( r_i - \text{mean}(\mathbf{r}) \big)^2}
+$$
+
+which gives the **group-relative advantage** [[1]](#ref-1):
+
+$$
+\hat{A}_i = \frac{r_i - \text{mean}(\mathbf{r})}{\text{std}(\mathbf{r})} \tag{3} \label{group-advantage}
+$$
+
+The division puts every prompt on the same scale. For some prompts, the rewards of the group are spread far apart, and for others they are close together. Without the division, prompts with widely spread rewards would produce much larger updates than the others. After it, the advantages of every group have a standard deviation of $1$, so every prompt contributes to training on an equal footing. In practice, a small constant is added to the denominator so that it is never zero.
+
+<div className="example">
+
+<span className="example-label">Example: advantages within a group</span>
+
+Suppose the policy answers a math problem $G = 4$ times, and a checker gives $1$ for a correct final answer and $0$ otherwise. If the rewards are $\mathbf{r} = (1, 0, 1, 0)$, then $\text{mean}(\mathbf{r}) = 0.5$ and every reward is $0.5$ away from the mean, so $\text{std}(\mathbf{r}) = 0.5$. The advantages are $(+1, -1, +1, -1)$: the correct answers are pushed up and the wrong ones down, by the same amount.
+
+If instead all four answers are correct, $\mathbf{r} = (1, 1, 1, 1)$, every reward equals the mean, and every advantage is $0$. The policy already solves this problem every time, so there is nothing to learn from it.
+
+</div>
+
+### From Responses to Tokens
+
+[Eq. (3)](#eq-group-advantage) gives one advantage per response, but the policy is updated token by token. GRPO assigns the advantage of a response to every one of its tokens:
+
+$$
+\hat{A}_{i,t} = \hat{A}_i \quad \text{for every token } t \text{ of } y_i \tag{4} \label{token-advantage}
+$$
+
+This matches what we found for the return: when the reward arrives only at the end, every token of a response sees the same outcome. The difference from PPO is that the baseline is also shared. PPO subtracts a different $V_\phi(s_t)$ at every token, while GRPO subtracts the same group mean for the whole response. This setting, with one reward for the whole response, is called **outcome supervision**. DeepSeekMath also describes a **process supervision** variant, in which a process reward model scores every reasoning step [[4]](#ref-4), the step rewards are normalized across the group in the same way, and the advantage of a token is the sum of the normalized rewards of the steps from that token on [[1]](#ref-1).
+
+## The GRPO Objective
+
+With an advantage for every token, the rest of GRPO follows PPO closely. In this section, we first put the group advantages into PPO's clipped objective, then add a KL penalty to keep the policy close to the reference model, and see why GRPO puts that penalty in the loss instead of in the reward.
+
+### The Clipped Objective Over a Group
+
+Like PPO, GRPO reuses each batch of responses for several updates. So it uses the same **probability ratio** from [Eq. (9) in Part 3](/articles/proximal-policy-optimization-ppo#eq-ratio) between the policy being trained and the policy that generated the group, now written for token $t$ of response $i$, where $s_{i,t}$ is the prompt and the tokens of $y_i$ before $y_{i,t}$:
+
+$$
+\rho_{i,t}(\theta) = \frac{\pi_\theta(y_{i,t} \mid s_{i,t})}{\pi_{\theta_{\text{old}}}(y_{i,t} \mid s_{i,t})}
+$$
+
+and the same clipping as in [Eq. (11) in Part 3](/articles/proximal-policy-optimization-ppo#eq-clip), to keep each update small, with the token advantages $\hat{A}_{i,t}$ from [Eq. (4)](#eq-token-advantage). The only change is how the terms are averaged. The clipped term is first averaged over the $|y_i|$ tokens of each response, and then over the $G$ responses of the group:
+
+$$
+\mathcal{J}^{\text{CLIP}}(\theta) = \mathbb{E} \left[ \frac{1}{G} \sum_{i=1}^{G} \frac{1}{|y_i|} \sum_{t=1}^{|y_i|} \min\Big( \rho_{i,t}(\theta) \, \hat{A}_{i,t}, \; \text{clip}\big( \rho_{i,t}(\theta), 1 - \epsilon, 1 + \epsilon \big) \, \hat{A}_{i,t} \Big) \right] \tag{5} \label{grpo-clip}
+$$
+
+where the expectation is over prompts $x$ and groups of responses sampled from $\pi_{\theta_{\text{old}}}$.
+
+### The KL Penalty, Moved into the Loss
+
+As in RLHF, the policy should not drift too far from the reference model $\pi_{\text{ref}}$, so GRPO keeps a KL penalty. But it places it differently. In [Part 4](/articles/reinforcement-learning-from-human-feedback-rlhf#eq-token-reward), the penalty was folded into the reward of every token, and from there it entered the advantages. In GRPO, that would mix the penalty into the group mean and standard deviation of [Eq. (3)](#eq-group-advantage). So GRPO keeps the advantage purely about the reward, and subtracts the KL divergence directly from the objective instead [[1]](#ref-1).
+
+The KL divergence is estimated from the sampled tokens. The most direct estimate would be the log-ratio of the two models at each sampled token, as in RLHF. But a single log-ratio can be negative, even though a KL divergence never is, and it has a high variance. GRPO uses a different estimator [[1]](#ref-1), [[5]](#ref-5). To write it, let $u$ be the ratio of the reference model to the policy at a sampled token:
+
+$$
+u = \frac{\pi_{\text{ref}}(y_{i,t} \mid s_{i,t})}{\pi_\theta(y_{i,t} \mid s_{i,t})}
+$$
+
+The estimator is:
+
+$$
+\hat{D}_{\text{KL}} = u - \log u - 1 \tag{6} \label{kl-estimator}
+$$
+
+It has two useful properties. First, it is **unbiased**: on average over tokens sampled from the policy, it equals the true KL divergence. The average of $u$ is exactly $1$, because the policy's probabilities cancel:
+
+$$
+\mathbb{E}_{y_t \sim \pi_\theta} [u] = \sum_{y_t} \pi_\theta(y_t \mid s_t) \, \frac{\pi_{\text{ref}}(y_t \mid s_t)}{\pi_\theta(y_t \mid s_t)} = \sum_{y_t} \pi_{\text{ref}}(y_t \mid s_t) = 1
+$$
+
+so the term $u - 1$ averages to $0$. The remaining term, $-\log u$, is the log-ratio of the policy to the reference model, whose average under the policy is exactly the KL divergence from [Eq. (1) in Part 2](/articles/trust-region-policy-optimization-trpo#eq-kl):
+
+$$
+\mathbb{E}_{y_t \sim \pi_\theta} [-\log u] = \mathbb{E}_{y_t \sim \pi_\theta} \left[ \log \frac{\pi_\theta(y_t \mid s_t)}{\pi_{\text{ref}}(y_t \mid s_t)} \right] = D_{\text{KL}}\big( \pi_\theta \,\|\, \pi_{\text{ref}} \big)
+$$
+
+Second, unlike a single log-ratio, it is **never negative**. The logarithm always lies below its tangent line at $u = 1$:
+
+$$
+\log u \le u - 1 \quad \text{for every } u > 0
+$$
+
+Moving $\log u$ to the right side gives:
+
+$$
+u - \log u - 1 \ge 0
+$$
+
+with equality only when $u = 1$, that is, when the two models agree on the token.
+
+### The Full Objective
+
+Putting the clipped objective of [Eq. (5)](#eq-grpo-clip) and the KL estimator of [Eq. (6)](#eq-kl-estimator) together, with a coefficient $\beta$, gives the GRPO objective, which is maximized [[1]](#ref-1):
+
+$$
+\mathcal{J}^{\text{GRPO}}(\theta) = \mathbb{E} \left[ \frac{1}{G} \sum_{i=1}^{G} \frac{1}{|y_i|} \sum_{t=1}^{|y_i|} \Big( \min\big( \rho_{i,t} \hat{A}_{i,t}, \, \text{clip}(\rho_{i,t}, 1 - \epsilon, 1 + \epsilon) \hat{A}_{i,t} \big) - \beta \, \hat{D}_{\text{KL}} \Big) \right] \tag{7} \label{grpo-objective}
+$$
+
+Compared with PPO, nothing in this objective needs a value model. The policy, the reference model, and a source of rewards are all it uses. [Figure 1](#fig-ppo-vs-grpo) shows the difference.
+
+<figure id="fig-ppo-vs-grpo">
+  <PpoVsGrpo />
+  <figcaption>**Figure 1.** How PPO and GRPO compute advantages. PPO writes one response per prompt and needs a value model, as large as the policy, to estimate the expected reward of every state; GAE turns the rewards and values into a different advantage for every token. GRPO writes a group of responses to the same prompt and uses the group itself as the baseline: each response's advantage is its reward minus the group mean, divided by the group's standard deviation, and it is shared by all of its tokens.</figcaption>
+</figure>
+
+## The GRPO Algorithm
+
+The training loop has the same structure as PPO's in [Part 3](/articles/proximal-policy-optimization-ppo#reusing-samples-the-probability-ratio). The only difference in the loop is that every prompt is answered $G$ times, and the advantages come from the group:
+
+<div className="algorithm">
+
+<span className="algorithm-label"><b>Algorithm 1</b> Group Relative Policy Optimization</span>
+
+$$
+\begin{array}{rl}
+{\scriptsize 1:} & \text{Initialize the policy } \pi_\theta \text{ and freeze the reference model } \pi_{\text{ref}} \\
+{\scriptsize 2:} & \textbf{for } n = 0, 1, 2, \dots \textbf{ do} \\
+{\scriptsize 3:} & \quad \pi_{\theta_{\text{old}}} \leftarrow \pi_\theta \\
+{\scriptsize 4:} & \quad \textbf{for } \text{each prompt } x \text{ in a batch } \textbf{do} \\
+{\scriptsize 5:} & \quad \quad \text{generate } G \text{ responses } y_1, \dots, y_G \text{ with } \pi_{\theta_{\text{old}}} \\
+{\scriptsize 6:} & \quad \quad \text{score them to get } r_1, \dots, r_G \\
+{\scriptsize 7:} & \quad \quad \text{compute the advantages with Eq. (3) and Eq. (4)} \\
+{\scriptsize 8:} & \quad \textbf{for } \text{epoch} = 1, 2, \dots, K \textbf{ do} \\
+{\scriptsize 9:} & \quad \quad \text{update } \pi_\theta \text{ by maximizing Eq. (7)}
+\end{array}
+$$
+
+</div>
+
+The savings are clear when we count the models. PPO in RLHF needs four LLMs: the policy, the value model, the reward model, and the reference model. GRPO drops the value model, leaving three. And when the reward comes from a checker instead of a reward model, only two LLMs remain, the policy and the reference model.
+
+| | PPO | GRPO |
+| --- | --- | --- |
+| Baseline for the advantage | Value model $V_\phi(s_t)$, trained alongside the policy | Mean reward of a group of responses |
+| Advantage | Different for every token, from GAE | Same for every token of a response |
+| Responses per prompt | One | A group of $G$ |
+| KL penalty | Folded into the token rewards | Added directly to the loss |
+| LLMs in memory | Four, with a reward model | Three with a reward model, two with a checker |
+
+## GRPO with Verifiable Rewards
+
+GRPO works with any reward. In DeepSeekMath, it was used with a reward model, as in RLHF [[1]](#ref-1). But it is a natural fit for rewards that need no model at all. When the answer can be checked by a program, the reward can come from a **checker**: compare the final answer of a math problem with the correct one, or run the tests of a program. Training with such rewards is called **reinforcement learning with verifiable rewards (RLVR)** [[6]](#ref-6).
+
+Verifiable rewards remove two problems at once. They need no human labels during training, because the checker is a program. And they are much harder to hack than a reward model: as we saw in [Part 4](/articles/reinforcement-learning-from-human-feedback-rlhf#the-naive-objective-and-reward-hacking), a policy optimized against a learned reward model eventually finds its mistakes, but a correct checker has no such mistakes to find. GRPO, in turn, removes the value model, so what is left is a simple loop: generate a group of answers, check them, and push up the ones that were right more often than the group.
+
+This combination trained **DeepSeek-R1** [[2]](#ref-2). Its first version, **DeepSeek-R1-Zero**, was trained with GRPO directly from a pre-trained base model, without any SFT, using only two rule-based rewards: an **accuracy reward** for a correct final answer, and a **format reward** for placing the reasoning between dedicated tags before the answer. The authors chose rule-based rewards precisely to avoid the reward hacking of neural reward models [[2]](#ref-2). Nothing in these rewards asked for long reasoning, yet as training went on, the responses grew longer, and the model learned on its own to check its work, to reconsider earlier steps, and to try other approaches when one failed. The final DeepSeek-R1 added a small SFT stage before RL to make its reasoning more readable, and reached reasoning performance comparable to the best closed models of its time [[2]](#ref-2).
+
+## Limitations of GRPO
+
+GRPO is simpler than PPO, but its design has costs of its own, and later work has identified several of them:
+
+- **It needs many samples.** Every prompt is answered $G$ times, so generation, already the most expensive part of RL for LLMs, is multiplied by the group size.
+- **Uniform groups give no signal.** As in the example above, when all the answers in a group are right, or all are wrong, every advantage is $0$, and the whole group is wasted. This happens more and more as the model gets better at the training problems. **DAPO** addresses it by filtering out such groups and sampling new prompts until every batch has useful groups [[7]](#ref-7).
+- **The normalizations introduce biases.** Dividing by the response length $|y_i|$ in [Eq. (7)](#eq-grpo-objective) makes each token of a long response count less, so a long wrong answer is penalized less per token than a short one. Dividing by the group's standard deviation gives more weight to prompts whose answers are almost all right or almost all wrong. **Dr. GRPO** removes both normalizations to avoid these biases [[8]](#ref-8).
+- **Credit assignment is coarse.** With outcome supervision, every token of a response gets the same advantage, whether it was the step that solved the problem or an irrelevant one. PPO's value model, for all its cost, could tell them apart.
+
+## Looking Back at the Series
+
+This post ends the series, and GRPO is a good place to look back, because it reuses almost everything that came before.
+
+In [Part 1](/articles/reinforcement-learning-for-llms), we saw that the **policy gradient** turns supervised fine-tuning into learning from rewards, by weighting each token with its advantage, and that its updates can be too large and break the model. In [Part 2](/articles/trust-region-policy-optimization-trpo), **TRPO** fixed this with a **trust region**: a limit on how far the model's outputs may move in one update, enforced with second-order optimization. In [Part 3](/articles/proximal-policy-optimization-ppo), **PPO** got the same stability with a simple **clipped objective** and first-order optimization, and we built the advantage it needs from a **value model** and **GAE**. In [Part 4](/articles/reinforcement-learning-from-human-feedback-rlhf), **RLHF** gave PPO a reward for tasks that no program can check, through a **reward model** trained on human comparisons and a **KL penalty** against a reference model. In [Part 5](/articles/direct-preference-optimization-dpo), **DPO** showed that for preferences, the reward model and the RL loop can be replaced by a single classification loss. And in this post, **GRPO** brought online RL back for tasks with checkable answers, while removing the value model that made PPO so expensive.
+
+> Each method kept what worked in the one before it, and removed what was most expensive.
+
+## References
+
+<ol>
+  <li id="ref-1">Shao, Z., Wang, P., Zhu, Q., et al. (2024). <a href="https://arxiv.org/abs/2402.03300">DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open Language Models</a>. <em>arXiv:2402.03300</em>.</li>
+  <li id="ref-2">DeepSeek-AI (2025). <a href="https://arxiv.org/abs/2501.12948">DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning</a>. <em>arXiv:2501.12948</em>.</li>
+  <li id="ref-3">Ahmadian, A., Cremer, C., Gallé, M., et al. (2024). <a href="https://arxiv.org/abs/2402.14740">Back to Basics: Revisiting REINFORCE Style Optimization for Learning from Human Feedback in LLMs</a>. <em>ACL</em>.</li>
+  <li id="ref-4">Lightman, H., Kosaraju, V., Burda, Y., et al. (2023). <a href="https://arxiv.org/abs/2305.20050">Let's Verify Step by Step</a>. <em>arXiv:2305.20050</em>.</li>
+  <li id="ref-5">Schulman, J. (2020). <a href="http://joschu.net/blog/kl-approx.html">Approximating KL Divergence</a>. Blog post.</li>
+  <li id="ref-6">Lambert, N., Morrison, J., Pyatkin, V., et al. (2024). <a href="https://arxiv.org/abs/2411.15124">Tulu 3: Pushing Frontiers in Open Language Model Post-Training</a>. <em>arXiv:2411.15124</em>.</li>
+  <li id="ref-7">Yu, Q., Zhang, Z., Zhu, R., et al. (2025). <a href="https://arxiv.org/abs/2503.14476">DAPO: An Open-Source LLM Reinforcement Learning System at Scale</a>. <em>arXiv:2503.14476</em>.</li>
+  <li id="ref-8">Liu, Z., Chen, C., Li, W., et al. (2025). <a href="https://arxiv.org/abs/2503.20783">Understanding R1-Zero-Like Training: A Critical Perspective</a>. <em>arXiv:2503.20783</em>.</li>
+</ol>

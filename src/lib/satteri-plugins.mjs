@@ -23,14 +23,22 @@ export const prismPlugin = defineHastPlugin({
 
       // Display math — render with KaTeX and replace the whole <pre>
       if (classes.includes("math-display")) {
-        const latex = ctx.textContent(codeChild);
+        // KaTeX has no \label; strip it and use it as the anchor id (#eq-<label>)
+        let latex = ctx.textContent(codeChild);
+        let label;
+        latex = latex.replace(/\\label\{([^}]+)\}/, (_, l) => {
+          label = l.trim();
+          return "";
+        });
         const rendered = katex.renderToString(latex, {
           displayMode: true,
           throwOnError: false,
           output: "html",
           strict: "ignore",
         });
-        return wrapHtml(rendered);
+        const node = wrapHtml(rendered);
+        if (label && node.type === "element") node.properties.id = `eq-${label}`;
+        return node;
       }
 
       // Skip inline math (handled by katexPlugin on <code> nodes)
