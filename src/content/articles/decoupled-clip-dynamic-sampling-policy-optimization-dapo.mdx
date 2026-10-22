@@ -1,0 +1,280 @@
+---
+title: "Decoupled Clip and Dynamic Sampling Policy Optimization (DAPO)"
+tags:
+  - title: DAPO
+  - title: Decoupled Clip and Dynamic Sampling Policy Optimization
+  - title: GRPO
+  - title: PPO
+  - title: Reinforcement Learning
+  - title: Policy Optimization
+  - title: Reasoning Models
+  - title: RLVR
+  - title: Verifiable Rewards
+  - title: Entropy Collapse
+  - title: Clip-Higher
+  - title: Dynamic Sampling
+  - title: Long Chain-of-Thought
+  - title: LLM
+categories:
+  - title: Machine Learning
+  - title: Reinforcement Learning
+  - title: Large Language Models
+author:
+  name: Mir Sazzat Hossain
+  designation: Research Assistant
+  url: https://mirsazzathossain.me
+  avatar:
+    url: user.png
+    alt: Mir Sazzat Hossain
+description: "How DAPO fixes the failures of GRPO in long chain-of-thought reasoning: Clip-Higher against entropy collapse, dynamic sampling against zero-gradient prompts, a token-level loss for long responses, and overlong reward shaping for truncated answers."
+seoDescription: "DAPO explained: how Clip-Higher, dynamic sampling, token-level loss, and overlong reward shaping fix GRPO for long chain-of-thought reasoning in LLMs."
+covers:
+  - url: content/decoupled-clip-dynamic-sampling-policy-optimization-dapo/cover.jpg
+    alt: "DAPO cover: an asymmetric clipping range that leaves more room for raising the probability of rare tokens"
+status: published
+publishedAt: 2026-10-23
+---
+
+<img
+  src="/images/content/decoupled-clip-dynamic-sampling-policy-optimization-dapo/cover.jpg"
+  alt="DAPO cover: an asymmetric clipping range that leaves more room for raising the probability of rare tokens"
+  sizes="100vw"
+  width="100%"
+  height="auto"
+  placeholder="blur"
+  blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="
+/>
+
+## Introduction
+
+When DeepSeek released **DeepSeek-R1** [[1]](#ref-1), it showed that a language model can learn to reason step by step through reinforcement learning alone. Its first version, R1-Zero, was trained with **GRPO** [[2]](#ref-2) directly from a pre-trained model, using nothing but a checker that says whether the final answer is right. But the paper left out many training details, and when others tried to reproduce the result, it did not work as well. Training **Qwen2.5-32B** [[3]](#ref-3) with GRPO in the same way, one team reached only $30$ points on the AIME 2024 math competition, far below the $47$ points DeepSeek reported for the same base model.
+
+That team, from ByteDance Seed and Tsinghua University, studied why. They found that plain GRPO runs into four problems when the responses are long chains of reasoning: the model stops exploring, many prompts stop producing any learning signal, long responses are weighted wrongly in the loss, and responses cut off at the length limit give misleading rewards. Their fix, **DAPO** (Decoupled Clip and Dynamic sAmpling Policy Optimization) [[4]](#ref-4), changes GRPO in four places, one for each problem. With it, the same base model reached $50$ points on AIME 2024, more than DeepSeek's $47$, using half as many training steps. They also released the full training system and dataset.
+
+In this post, we start from GRPO and the setting DAPO works in, then go through the four problems one at a time, each with the change that fixes it. We then put the changes together into the DAPO objective and algorithm, and see how much each one contributed. If you are not yet familiar with GRPO, the [GRPO post](/articles/group-relative-policy-optimization-grpo) covers everything this one builds on.
+
+## The Starting Point: GRPO for Long Reasoning
+
+DAPO keeps the core of GRPO. For each prompt $x$, the policy writes a group of $G$ responses $y_1, \dots, y_G$, each response gets a reward $r_i$, and the advantage of each response is its reward compared with the rest of its group, as in [Eq. (3) of the GRPO post](/articles/group-relative-policy-optimization-grpo#eq-group-advantage):
+
+$$
+\hat{A}_i = \frac{r_i - \text{mean}(\mathbf{r})}{\text{std}(\mathbf{r})}
+$$
+
+Every token of response $i$ gets this advantage, and the policy is updated with PPO's clipped objective, using the probability ratio between the current policy and the policy that generated the group:
+
+$$
+\rho_{i,t}(\theta) = \frac{\pi_\theta(y_{i,t} \mid s_{i,t})}{\pi_{\theta_{\text{old}}}(y_{i,t} \mid s_{i,t})}
+$$
+
+where $s_{i,t}$ is the prompt and the tokens of $y_i$ before $y_{i,t}$. Like GRPO, DAPO uses no value model. In DAPO's training runs, every group had $G = 16$ responses.
+
+Two choices define the setting. First, the reward comes from a rule instead of a reward model, because a learned reward model can be exploited, as we saw in [the RLHF post](/articles/reinforcement-learning-from-human-feedback-rlhf#the-naive-objective-and-reward-hacking). For math problems, a checker compares the model's final answer $\hat{y}$ with the correct answer $y^*$ [[4]](#ref-4):
+
+$$
+r = \begin{cases} +1 & \text{if } \hat{y} \text{ is equivalent to } y^* \\ -1 & \text{otherwise} \end{cases} \tag{1} \label{rule-reward}
+$$
+
+Second, DAPO removes the KL penalty that GRPO subtracts in [Eq. (7) of the GRPO post](/articles/group-relative-policy-optimization-grpo#eq-grpo-objective). In RLHF, the penalty keeps the model close to its starting point because the reward model is only reliable there. Here, the reward of [Eq. (1)](#eq-rule-reward) is reliable everywhere, and a model learning long chains of reasoning is expected to move far away from its starting point, so the restriction is no longer needed [[4]](#ref-4).
+
+With this setup, plain GRPO reached $30$ points on AIME 2024. The rest of this post follows the four problems behind that gap.
+
+## Clip-Higher: Making Room for Exploration
+
+The first problem appeared early in training. At every step of a response, the policy gives a probability to every possible next token, and its **entropy** measures how spread out these probabilities are. High entropy means several tokens have a real chance of being picked, so the model tries different ways of solving a problem; low entropy means it makes the same choice nearly every time. In DAPO's first runs with plain GRPO, the entropy fell quickly, and the $16$ responses in a group became nearly identical: the model had settled on one way of solving each problem before it knew whether that way was the best one. This is called **entropy collapse**, and it hurts GRPO in particular, because GRPO learns by comparing the responses within a group. When they are all the same, they all get the same reward, nothing tells the model that a different approach would have worked better, and training stops improving [[4]](#ref-4).
+
+DAPO traced this to PPO's clipping. Recall from [the PPO post](/articles/proximal-policy-optimization-ppo#the-clipped-surrogate-objective) that when a token has a positive advantage, the clipped objective stops rewarding the update once the ratio reaches $1 + \epsilon$:
+
+$$
+\rho_{i,t}(\theta) = \frac{\pi_\theta(y_{i,t} \mid s_{i,t})}{\pi_{\theta_{\text{old}}}(y_{i,t} \mid s_{i,t})} \le 1 + \epsilon
+$$
+
+Multiplying both sides by the old probability shows what this means for the new probability:
+
+$$
+\pi_\theta(y_{i,t} \mid s_{i,t}) \le (1 + \epsilon) \, \pi_{\theta_{\text{old}}}(y_{i,t} \mid s_{i,t}) \tag{2} \label{upper-bound}
+$$
+
+The limit in [Eq. (2)](#eq-upper-bound) is a **multiple** of the old probability, so it treats likely and unlikely tokens very differently. With the usual $\epsilon = 0.2$, a token that already has probability $0.9$ may go up to $1.08$, which is no limit at all, since no probability can exceed $1$. But a token with probability $0.01$ may only go up to $0.012$ in one update. Tokens the model already prefers, the **exploitation** tokens, can easily become even more likely, while rare tokens that might start a new line of reasoning, the **exploration** tokens, can barely move. The paper confirms this in training: the tokens that hit the upper clip had a mean probability below $0.2$ [[4]](#ref-4).
+
+DAPO's fix is to **decouple** the two sides of the clipping range. Instead of one $\epsilon$, it uses a lower bound $\epsilon_{\text{low}}$ and a separate, larger upper bound $\epsilon_{\text{high}}$:
+
+$$
+\text{clip}\big( \rho_{i,t}(\theta), \; 1 - \epsilon_{\text{low}}, \; 1 + \epsilon_{\text{high}} \big) \tag{3} \label{clip-higher}
+$$
+
+DAPO uses $\epsilon_{\text{low}} = 0.2$ and $\epsilon_{\text{high}} = 0.28$, so the ratio may move within $[0.8, 1.28]$ instead of $[0.8, 1.2]$. A rare token with probability $0.01$ may now reach $0.0128$ in one update instead of $0.012$, and over many updates this extra room adds up. In training, this kept the entropy from collapsing and the responses diverse [[4]](#ref-4).
+
+The lower bound stays where it was. Raising $\epsilon_{\text{low}}$ would let a single update push the probability of a token much further down, and repeated over training, this would drive the probabilities of many tokens to $0$ and shrink the set of responses the model can produce [[4]](#ref-4).
+
+## Dynamic Sampling: Keeping Every Prompt Useful
+
+The second problem comes from the group advantage itself. When every response in a group gets the same reward, all correct or all wrong, every reward equals the group mean:
+
+$$
+r_1 = r_2 = \dots = r_G \quad \Longrightarrow \quad r_i - \text{mean}(\mathbf{r}) = 0 \quad \text{for every } i
+$$
+
+so every advantage in the group is $0$, and the whole group contributes nothing to the gradient. As we saw in [the limitations of GRPO](/articles/group-relative-policy-optimization-grpo#limitations-of-grpo), this happens more and more as the model improves: in DAPO's training, the share of prompts that the model solved in all $16$ attempts kept growing [[4]](#ref-4). A batch of $512$ prompts might then contain only a fraction of prompts that actually produce a gradient. The effective batch shrinks, and the gradient becomes noisier.
+
+DAPO's fix is **dynamic sampling**. It generates responses for more prompts than it needs and keeps only the prompts whose group is mixed, with at least one correct and at least one wrong response:
+
+$$
+0 < \big| \{ y_i \mid y_i \text{ is correct} \} \big| < G \tag{4} \label{dynamic-sampling}
+$$
+
+The left inequality removes groups where every response is wrong, and the right one removes groups where every response is correct. Prompts that pass are added to a buffer, and generation continues until the buffer holds a full batch. Every prompt in the batch then has a non-zero advantage for at least some of its responses.
+
+This means generating more responses per batch, but the paper found that it does not slow training down. In synchronous RL systems, the time to generate a batch is dominated by its longest responses, not by the number of prompts, and with every prompt now useful, the model reaches the same performance in fewer steps [[4]](#ref-4).
+
+## Token-Level Loss: Weighting Every Token Equally
+
+The third problem is in how GRPO averages the loss. Write $\ell_{i,t}$ for the clipped term of token $t$ in response $i$. GRPO first averages over the tokens of each response, and then over the responses of the group:
+
+$$
+\frac{1}{G} \sum_{i=1}^{G} \frac{1}{|y_i|} \sum_{t=1}^{|y_i|} \ell_{i,t} \tag{5} \label{sample-loss}
+$$
+
+This is called a **sample-level** loss: every response gets the same total weight, $1/G$, however long it is. But the weight of each individual token then depends on the length of its response. A token in response $i$ is weighted by
+
+$$
+\frac{1}{G \, |y_i|}
+$$
+
+so the longer the response, the less each of its tokens counts. With $G = 2$, a response of $10$ tokens gives each of its tokens a weight of $1/20 = 0.05$, while a response of $1{,}000$ tokens gives each of its tokens $1/2{,}000 = 0.0005$, a hundred times less.
+
+In long reasoning, this has two harmful effects [[4]](#ref-4). For a long and correct response, each of its reasoning steps is reinforced only weakly, so the model learns little from its best work. And very long responses are often the worst ones, full of repetition or meaningless text, but with sample-level weighting their tokens are penalized only weakly too. In DAPO's training, this let the entropy and the response length grow in an unhealthy way.
+
+DAPO's fix is a **token-level** loss. Instead of averaging each response first, as in [Eq. (5)](#eq-sample-loss), it sums over all the tokens of all the responses in the group, and divides once by the total number of tokens:
+
+$$
+\frac{1}{\sum_{i=1}^{G} |y_i|} \sum_{i=1}^{G} \sum_{t=1}^{|y_i|} \ell_{i,t} \tag{6} \label{token-loss}
+$$
+
+Now every token has the same weight, $1 / \sum_i |y_i|$, whatever the length of its response. In the example above, every token gets $1/1{,}010 \approx 0.001$. A longer response has more influence on the update simply because it has more tokens, and a pattern that raises or lowers the reward is reinforced or suppressed equally, wherever it appears. The same length bias of GRPO was also pointed out by later work on Dr. GRPO [[5]](#ref-5).
+
+## Overlong Reward Shaping: Handling Truncated Responses
+
+The fourth problem appears at the length limit. During training, responses are cut off at a maximum length, and a cut-off response has no final answer to check, so by default it gets the lowest reward. But a response may be cut off while its reasoning is still correct and simply long. Punishing it teaches the model that its reasoning was wrong when the only problem was its length. This adds **reward noise**: the same kind of reasoning is sometimes rewarded and sometimes punished, depending only on where the length limit falls.
+
+DAPO first tested how much this noise matters with **overlong filtering**, which removes truncated responses from the loss entirely, so they neither reward nor punish anything. This alone made training much more stable and improved performance [[4]](#ref-4).
+
+DAPO then replaced the hard punishment with a **soft overlong punishment**: a penalty that starts before the hard limit and grows gradually with the length. With $L_{\text{max}}$ the hard limit and $L_{\text{cache}}$ the width of a soft interval before it, the length penalty of a response $y$ is [[4]](#ref-4):
+
+$$
+R_{\text{length}}(y) = \begin{cases} 0, & |y| \le L_{\text{max}} - L_{\text{cache}} \\[4pt] \dfrac{(L_{\text{max}} - L_{\text{cache}}) - |y|}{L_{\text{cache}}}, & L_{\text{max}} - L_{\text{cache}} < |y| \le L_{\text{max}} \\[4pt] -1, & |y| > L_{\text{max}} \end{cases} \tag{7} \label{length-penalty}
+$$
+
+This penalty is added to the correctness reward of [Eq. (1)](#eq-rule-reward). DAPO sets the expected maximum length to $16{,}384$ tokens and adds a soft interval of $L_{\text{cache}} = 4{,}096$ tokens after it, so the hard limit is $L_{\text{max}} = 20{,}480$ tokens [[4]](#ref-4). With these values, the three cases of [Eq. (7)](#eq-length-penalty) divide the possible lengths into three zones.
+
+<div className="example">
+
+<span className="example-label">Example: the three zones of the length penalty</span>
+
+**The safe zone.** If the response is no longer than $L_{\text{max}} - L_{\text{cache}}$, the first case applies:
+
+$$
+|y| \le 20{,}480 - 4{,}096 = 16{,}384 \quad \Longrightarrow \quad R_{\text{length}}(y) = 0
+$$
+
+A response of up to $16{,}384$ tokens gets no length penalty at all, and its reward is decided only by whether its answer is correct.
+
+**The soft zone.** If the response is longer than $16{,}384$ tokens but still within the hard limit of $20{,}480$, the second case applies. The penalty is the distance past $16{,}384$ tokens, as a fraction of the $4{,}096$-token interval, with a minus sign. At the start of the interval, the penalty is still zero:
+
+$$
+|y| = 16{,}384 \quad \Longrightarrow \quad R_{\text{length}} = \frac{16{,}384 - 16{,}384}{4{,}096} = 0
+$$
+
+Halfway through the interval, it is $-0.5$:
+
+$$
+|y| = 18{,}432 \quad \Longrightarrow \quad R_{\text{length}} = \frac{16{,}384 - 18{,}432}{4{,}096} = \frac{-2{,}048}{4{,}096} = -0.5
+$$
+
+and at the end of the interval, it reaches $-1$:
+
+$$
+|y| = 20{,}480 \quad \Longrightarrow \quad R_{\text{length}} = \frac{16{,}384 - 20{,}480}{4{,}096} = \frac{-4{,}096}{4{,}096} = -1
+$$
+
+So inside this zone, the penalty falls in a straight line from $0$ to $-1$. Every extra token costs a little more reward, which tells the model that its response is getting too long while it is still being generated in full and its answer is still checked.
+
+**The hard zone.** If the response goes beyond $20{,}480$ tokens, it is cut off, and the third case gives the full penalty:
+
+$$
+|y| > 20{,}480 \quad \Longrightarrow \quad R_{\text{length}}(y) = -1
+$$
+
+</div>
+
+The two zones meet without a jump: the soft zone ends at exactly $-1$, the value of the hard zone. Instead of going from no penalty to the maximum penalty at a single length, the reward now declines smoothly, so a response that runs slightly long is punished only slightly, and only a response that runs far too long is punished fully.
+
+## The DAPO Objective
+
+Putting the four changes together gives the DAPO objective [[4]](#ref-4). Compared with GRPO, it uses the decoupled clipping range of [Eq. (3)](#eq-clip-higher), the token-level average of [Eq. (6)](#eq-token-loss), no KL term, and the dynamic sampling condition of [Eq. (4)](#eq-dynamic-sampling):
+
+$$
+\begin{aligned}
+\mathcal{J}^{\text{DAPO}}(\theta) = \mathbb{E} \Bigg[ & \frac{1}{\sum_{i=1}^{G} |y_i|} \sum_{i=1}^{G} \sum_{t=1}^{|y_i|} \min\Big( \rho_{i,t}(\theta) \, \hat{A}_{i,t}, \\
+& \text{clip}\big( \rho_{i,t}(\theta), 1 - \epsilon_{\text{low}}, 1 + \epsilon_{\text{high}} \big) \, \hat{A}_{i,t} \Big) \Bigg] \\
+\text{subject to} \quad & 0 < \big| \{ y_i \mid y_i \text{ is correct} \} \big| < G
+\end{aligned} \tag{8} \label{dapo-objective}
+$$
+
+where the expectation is over prompts and groups of responses sampled from $\pi_{\theta_{\text{old}}}$, and the reward behind each advantage $\hat{A}_{i,t}$ is the correctness reward of [Eq. (1)](#eq-rule-reward) plus the length penalty of [Eq. (7)](#eq-length-penalty). The training loop that maximizes [Eq. (8)](#eq-dapo-objective) follows GRPO's, with the dynamic sampling buffer added:
+
+<div className="algorithm">
+
+<span className="algorithm-label"><b>Algorithm 1</b> DAPO</span>
+
+$$
+\begin{array}{rl}
+{\scriptsize 1:} & \textbf{for } \text{step} = 1, 2, \dots \textbf{ do} \\
+{\scriptsize 2:} & \quad \pi_{\theta_{\text{old}}} \leftarrow \pi_\theta \\
+{\scriptsize 3:} & \quad \textbf{repeat} \\
+{\scriptsize 4:} & \quad \quad \text{sample prompts and generate } G \text{ responses for each with } \pi_{\theta_{\text{old}}} \\
+{\scriptsize 5:} & \quad \quad \text{compute the rewards with Eq. (1) and Eq. (7)} \\
+{\scriptsize 6:} & \quad \quad \text{add the prompts that satisfy Eq. (4) to the buffer} \\
+{\scriptsize 7:} & \quad \textbf{until } \text{the buffer holds a full batch} \\
+{\scriptsize 8:} & \quad \text{compute the group advantages } \hat{A}_{i,t} \text{ for every response in the buffer} \\
+{\scriptsize 9:} & \quad \textbf{for } \text{each mini-batch of the buffer } \textbf{do} \\
+{\scriptsize 10:} & \quad \quad \text{update } \pi_\theta \text{ by maximizing Eq. (8)}
+\end{array}
+$$
+
+</div>
+
+The training runs used a batch of $512$ prompts with $16$ responses each, split into mini-batches for $16$ gradient updates per batch, the AdamW optimizer with a learning rate of $10^{-6}$, and the **verl** framework [[6]](#ref-6) for training. The prompts come from **DAPO-Math-17K**, a dataset of $17{,}000$ math problems the authors released with the paper. To make the rule-based reward of [Eq. (1)](#eq-rule-reward) reliable, every problem was rewritten so that its answer is an integer, which a simple rule can check without parsing formulas [[4]](#ref-4).
+
+## How Much Each Change Helped
+
+The paper added the techniques to plain GRPO one at a time, training Qwen2.5-32B and measuring the average accuracy on AIME 2024 over $32$ attempts per problem [[4]](#ref-4):
+
+| Model | AIME 2024 |
+| --- | --- |
+| DeepSeek-R1-Zero-Qwen-32B | 47 |
+| GRPO | 30 |
+| + Overlong filtering | 36 |
+| + Clip-Higher | 38 |
+| + Soft overlong punishment | 41 |
+| + Token-level loss | 42 |
+| + Dynamic sampling (DAPO) | **50** |
+
+Every change helped. The largest single gain came from dynamic sampling, which keeps every prompt in the batch useful, and handling truncated responses correctly was worth $9$ points in total, $6$ from overlong filtering and $3$ from soft overlong punishment. The token-level loss added only one point on its own, but the paper found that it made training more stable by keeping the response length under control.
+
+## What DAPO Does Not Change
+
+DAPO fixes GRPO's problems in long reasoning, but it keeps GRPO's basic design and its costs. It still generates a group of responses for every prompt, and dynamic sampling generates even more before filtering. Every token of a response still gets the same advantage, so a correct step and an irrelevant one in the same response are reinforced equally. Removing the KL penalty relies on a reward that cannot be exploited, which holds for checkable tasks like math but not for rewards from a learned model. And the paper evaluates DAPO only on math, although its techniques are not specific to it.
+
+> DAPO did not replace GRPO. It showed that GRPO works for long reasoning once its clipping, sampling, loss averaging, and length handling are adjusted to it.
+
+## References
+
+<ol>
+  <li id="ref-1">DeepSeek-AI (2025). <a href="https://arxiv.org/abs/2501.12948">DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning</a>. <em>arXiv:2501.12948</em>.</li>
+  <li id="ref-2">Shao, Z., Wang, P., Zhu, Q., et al. (2024). <a href="https://arxiv.org/abs/2402.03300">DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open Language Models</a>. <em>arXiv:2402.03300</em>.</li>
+  <li id="ref-3">Qwen Team (2024). <a href="https://arxiv.org/abs/2412.15115">Qwen2.5 Technical Report</a>. <em>arXiv:2412.15115</em>.</li>
+  <li id="ref-4">Yu, Q., Zhang, Z., Zhu, R., et al. (2025). <a href="https://arxiv.org/abs/2503.14476">DAPO: An Open-Source LLM Reinforcement Learning System at Scale</a>. <em>arXiv:2503.14476</em>.</li>
+  <li id="ref-5">Liu, Z., Chen, C., Li, W., et al. (2025). <a href="https://arxiv.org/abs/2503.20783">Understanding R1-Zero-Like Training: A Critical Perspective</a>. <em>arXiv:2503.20783</em>.</li>
+  <li id="ref-6">Sheng, G., Zhang, C., Ye, Z., et al. (2024). <a href="https://arxiv.org/abs/2409.19256">HybridFlow: A Flexible and Efficient RLHF Framework</a>. <em>arXiv:2409.19256</em>.</li>
+</ol>
