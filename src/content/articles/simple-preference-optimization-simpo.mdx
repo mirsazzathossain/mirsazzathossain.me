@@ -1,0 +1,214 @@
+---
+title: "Simple Preference Optimization (SimPO)"
+tags:
+  - title: SimPO
+  - title: Simple Preference Optimization
+  - title: DPO
+  - title: Direct Preference Optimization
+  - title: Preference Optimization
+  - title: LLM Alignment
+  - title: Reference-Free Reward
+  - title: Length Normalization
+  - title: Bradley-Terry Model
+  - title: Reward Margin
+  - title: Policy Optimization
+  - title: LLM
+categories:
+  - title: Machine Learning
+  - title: Large Language Models
+author:
+  name: Mir Sazzat Hossain
+  designation: Research Assistant
+  url: https://mirsazzathossain.me
+  avatar:
+    url: user.png
+    alt: Mir Sazzat Hossain
+description: "How SimPO simplifies DPO: it replaces DPO's reward with the average log-likelihood that the model uses to generate text, which removes the reference model, and adds a target reward margin to separate preferred and rejected responses."
+seoDescription: "SimPO explained: a reference-free, length-normalized reward and a target reward margin that make preference optimization simpler and better than DPO."
+covers:
+  - url: content/simple-preference-optimization-simpo/cover.jpg
+    alt: "SimPO cover: preferred and rejected responses separated by a target reward margin, without a reference model"
+status: published
+publishedAt: 2026-10-23
+---
+
+<img
+  src="/images/content/simple-preference-optimization-simpo/cover.jpg"
+  alt="SimPO cover: preferred and rejected responses separated by a target reward margin, without a reference model"
+  sizes="100vw"
+  width="100%"
+  height="auto"
+  placeholder="blur"
+  blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="
+/>
+
+## Introduction
+
+**Direct Preference Optimization (DPO)** [[1]](#ref-1) made preference training much simpler than RLHF. It removed the reward model and the reinforcement learning loop, and trained the language model directly on pairs of preferred and rejected responses with a single classification loss. But it kept one piece of the old setup: a frozen **reference model**, the starting point of training, which appears in every term of the loss. As we saw in the [DPO post](/articles/direct-preference-optimization-dpo), the reference model is what remains of the KL penalty of RLHF, and DPO's reward is defined relative to it.
+
+In 2024, **Simple Preference Optimization (SimPO)** [[2]](#ref-2), by Yu Meng, Mengzhou Xia, and Danqi Chen, asked whether the reference model is needed at all. It found two problems with DPO's reward. The reference model costs memory and compute at every training step. And more fundamentally, the reward DPO optimizes is not the quantity the model uses when it generates text, so a model can learn to rank responses correctly by DPO's reward and still prefer the wrong response when generating. SimPO replaces DPO's reward with the one the model actually uses for generation, the **average log-likelihood** of a response, which needs no reference model, and adds a **target reward margin** that asks the preferred response to win by a clear amount.
+
+In this post, we start from DPO, look at its two problems, and derive SimPO's reward and loss from them, step by step. We then compute its gradient, compare it with DPO's, see why it trains stably without a reference model, and look at how well it works.
+
+## The Starting Point: DPO
+
+DPO trains on a dataset of triples $(x, y_w, y_l)$: a prompt $x$, a preferred response $y_w$, and a rejected response $y_l$. Its key result, derived in the [DPO post](/articles/direct-preference-optimization-dpo#eq-implicit-reward), is that the language model $\pi_\theta$ defines an **implicit reward** for every response, through its log-ratio with the reference model:
+
+$$
+r_{\text{DPO}}(x, y) = \beta \log \frac{\pi_\theta(y \mid x)}{\pi_{\text{ref}}(y \mid x)}
+$$
+
+Putting this reward into the **Bradley-Terry model** of preferences [[3]](#ref-3), from [Eq. (5) in the RLHF post](/articles/reinforcement-learning-from-human-feedback-rlhf#eq-bt-sigmoid), gives the probability that $y_w$ is preferred over $y_l$, and maximizing this probability over the dataset gives the DPO loss from [Eq. (9) in the DPO post](/articles/direct-preference-optimization-dpo#eq-dpo-loss):
+
+$$
+\mathcal{L}_{\text{DPO}}(\theta) = -\mathbb{E}_{(x, y_w, y_l) \sim \mathcal{D}} \left[ \log \sigma\left( \beta \log \frac{\pi_\theta(y_w \mid x)}{\pi_{\text{ref}}(y_w \mid x)} - \beta \log \frac{\pi_\theta(y_l \mid x)}{\pi_{\text{ref}}(y_l \mid x)} \right) \right]
+$$
+
+Training with this loss pushes the implicit reward of $y_w$ above that of $y_l$. SimPO starts by asking what this reward actually measures.
+
+## Two Problems with DPO's Reward
+
+DPO's reward has two weaknesses, one practical and one more fundamental. The practical one is the cost of the reference model. The fundamental one is that the reward does not measure what the model does when it generates text.
+
+### The Reference Model Costs Memory and Time
+
+Every term of the DPO loss contains $\pi_{\text{ref}}$. So during training, a second copy of the model, as large as the policy, has to be kept in memory, and every preferred and rejected response has to be passed through it to compute $\pi_{\text{ref}}(y_w \mid x)$ and $\pi_{\text{ref}}(y_l \mid x)$. These values never change during training, but in the standard implementation they are computed again at every step. This is pure overhead: memory and computation spent on a model that is never trained.
+
+### The Reward Does Not Match Generation
+
+The second problem is subtler. When a language model generates text, or when it chooses between candidate responses, for example in beam search or in a multiple-choice question, it ranks a response by how likely it finds it. The common measure is the **average log-likelihood** of the response, its log-probability divided by its length:
+
+$$
+p_\theta(y \mid x) = \frac{1}{|y|} \log \pi_\theta(y \mid x) = \frac{1}{|y|} \sum_{t=1}^{|y|} \log \pi_\theta(y_t \mid x, y_{<t}) \tag{1} \label{avg-loglik}
+$$
+
+where $|y|$ is the number of tokens in the response and $y_{<t}$ the tokens before $y_t$. No reference model appears here. It plays no part in generation.
+
+DPO's reward, in contrast, is the policy's log-probability **relative to** the reference model's. These two measures can disagree. A response can have a high DPO reward simply because the reference model gave it a very low probability, even if the policy also gives it a low probability. So DPO can satisfy its training goal, $r_{\text{DPO}}(x, y_w) > r_{\text{DPO}}(x, y_l)$, while the policy itself still finds the rejected response more likely, $p_\theta(y_l \mid x) > p_\theta(y_w \mid x)$. The SimPO authors measured this on their training data: among the pairs where DPO's reward ranked the preferred response higher, almost half had the opposite ranking by average log-likelihood [[2]](#ref-2). A concurrent study found the same: models trained with DPO rank preferred and rejected responses by likelihood barely better than chance [[4]](#ref-4).
+
+In other words, DPO optimizes one quantity during training, and the model uses another during generation. SimPO's idea is to optimize the one used during generation.
+
+## A Reward Aligned with Generation
+
+The natural choice is to make the reward the model's own log-probability of the response, with no reference model. But there are two ways to measure it, summed or averaged over the tokens, and only one of them works.
+
+### Why Not the Summed Log-Probability
+
+The simplest reward would be the log-probability of the whole response, the sum of its token log-probabilities:
+
+$$
+\log \pi_\theta(y \mid x) = \sum_{t=1}^{|y|} \log \pi_\theta(y_t \mid x, y_{<t})
+$$
+
+Every term of this sum is the logarithm of a probability, and so it is negative. Every extra token adds one more negative term, so the longer a response is, the lower its summed log-probability tends to be, whatever its quality. This is a **length bias**. When the preferred response is the longer one, as is common in preference data, the model can only give it the higher reward by raising the probabilities of its tokens far above what they would naturally be, to make up for the extra negative terms. The SimPO authors found that this overcompensation makes the model **degenerate**, producing long and repetitive text [[2]](#ref-2).
+
+### The Length-Normalized Reward
+
+Dividing the sum by the length removes the bias: the average log-likelihood of [Eq. (1)](#eq-avg-loglik) does not decrease simply because a response has more tokens. SimPO uses it, scaled by a constant $\beta$, as its reward [[2]](#ref-2):
+
+$$
+r_{\text{SimPO}}(x, y) = \frac{\beta}{|y|} \log \pi_\theta(y \mid x) = \frac{\beta}{|y|} \sum_{t=1}^{|y|} \log \pi_\theta(y_t \mid x, y_{<t}) \tag{2} \label{simpo-reward}
+$$
+
+This reward solves both problems at once. It contains no reference model, so the second model and its forward passes disappear from training. And it is exactly the average log-likelihood that guides generation, multiplied by $\beta$, so if the preferred response gets the higher reward, the model also finds it more likely. The mismatch between training and generation is gone by construction.
+
+## The Target Reward Margin
+
+With the reward in place, SimPO changes one more thing: the Bradley-Terry model itself. In the standard model, the probability of a preference depends on the difference between the two rewards, and any positive difference, however small, already makes the preferred response more likely than not. SimPO subtracts a **target reward margin** $\gamma > 0$ from the difference [[2]](#ref-2):
+
+$$
+p(y_w \succ y_l \mid x) = \sigma\big( r(x, y_w) - r(x, y_l) - \gamma \big) \tag{3} \label{bt-margin}
+$$
+
+Now the preferred response has to beat the rejected one by more than $\gamma$ before the model counts the comparison as clearly won. The idea comes from classification, where a larger margin between two classes is known to help a classifier generalize; in Bradley-Terry models, such a margin is also called a **home advantage** [[2]](#ref-2). Here the two classes are the preferred and rejected responses to the same prompt. The authors found that generation quality improves as $\gamma$ grows, but only up to a point: a margin that is too large makes it worse again [[2]](#ref-2). A related idea appears in IPO, which also targets a fixed reward gap [[5]](#ref-5).
+
+## The SimPO Objective
+
+Putting the length-normalized reward of [Eq. (2)](#eq-simpo-reward) into the Bradley-Terry model with a margin, [Eq. (3)](#eq-bt-margin), gives the probability of a preference. Taking its negative log-likelihood over the dataset, exactly as for DPO, gives the SimPO loss [[2]](#ref-2):
+
+$$
+\mathcal{L}_{\text{SimPO}}(\theta) = -\mathbb{E}_{(x, y_w, y_l) \sim \mathcal{D}} \left[ \log \sigma\left( \frac{\beta}{|y_w|} \log \pi_\theta(y_w \mid x) - \frac{\beta}{|y_l|} \log \pi_\theta(y_l \mid x) - \gamma \right) \right] \tag{4} \label{simpo-loss}
+$$
+
+Compared with DPO, only the inside of the sigmoid has changed: the log-ratios with the reference model are replaced by length-normalized log-probabilities, and the margin $\gamma$ is subtracted. Training needs only the policy, one forward pass for each response, and nothing else.
+
+### The Gradient
+
+To see how the loss in [Eq. (4)](#eq-simpo-loss) changes the model, we take its gradient for a single pair, following the same steps as for DPO. We write the argument of the sigmoid as
+
+$$
+u = \frac{\beta}{|y_w|} \log \pi_\theta(y_w \mid x) - \frac{\beta}{|y_l|} \log \pi_\theta(y_l \mid x) - \gamma
+$$
+
+so the loss for the pair is $-\log \sigma(u)$. As we saw for the reward model in the [RLHF post](/articles/reinforcement-learning-from-human-feedback-rlhf#eq-rm-gradient), the derivative of $-\log \sigma(u)$ with respect to $u$ is $-\big( 1 - \sigma(u) \big)$, and $1 - \sigma(u) = \sigma(-u)$. The margin $\gamma$ is a constant, so it has no gradient, and the gradient of $u$ is:
+
+$$
+\nabla_\theta u = \beta \left( \frac{1}{|y_w|} \nabla_\theta \log \pi_\theta(y_w \mid x) - \frac{1}{|y_l|} \nabla_\theta \log \pi_\theta(y_l \mid x) \right)
+$$
+
+By the chain rule, the gradient of the loss is $-\sigma(-u) \, \nabla_\theta u$, which gives [[2]](#ref-2):
+
+$$
+\nabla_\theta \mathcal{L}_{\text{SimPO}} = -\beta \, \mathbb{E}_{(x, y_w, y_l) \sim \mathcal{D}} \left[ s_\theta \left( \frac{1}{|y_w|} \nabla_\theta \log \pi_\theta(y_w \mid x) - \frac{1}{|y_l|} \nabla_\theta \log \pi_\theta(y_l \mid x) \right) \right] \tag{5} \label{simpo-gradient}
+$$
+
+where the weight of the pair is
+
+$$
+s_\theta = \sigma(-u) = \sigma\left( \frac{\beta}{|y_l|} \log \pi_\theta(y_l \mid x) - \frac{\beta}{|y_w|} \log \pi_\theta(y_w \mid x) + \gamma \right)
+$$
+
+The structure of [Eq. (5)](#eq-simpo-gradient) is the same as DPO's gradient in [Eq. (11) of the DPO post](/articles/direct-preference-optimization-dpo#eq-dpo-gradient): raise the probability of the preferred response, lower that of the rejected one, and weight the pair by how wrong the model currently is. There are two differences. First, each response's gradient is divided by its length. In DPO, the gradient of $\log \pi_\theta(y \mid x)$ is a sum over all the tokens of the response, so a long response pulls harder on the model than a short one. In SimPO, it is an average, so a response's influence does not grow with its length. Second, the weight $s_\theta$ includes the margin: a pair stays heavily weighted until the preferred response wins by more than $\gamma$, not just until it wins.
+
+## Why SimPO Does Not Need a Reference Model
+
+Removing the reference model raises a natural concern. In RLHF and DPO, the reference model keeps the policy from drifting too far from where it started. Without it, what stops SimPO from forgetting what the model knew?
+
+The authors found that in practice, the policy stays close to its starting point anyway, and they measured a KL divergence from the initial model that stays small [[2]](#ref-2). They attribute this to three factors: a **small learning rate**, on the order of $10^{-7}$ to $10^{-6}$; a preference dataset that covers many domains and tasks; and the natural robustness of large language models to learning new data without losing what they already know.
+
+The reference model also explains another finding. When the authors added length normalization to DPO, it helped only in a setting where the preferred responses were much longer than the rejected ones, and gave no benefit where the lengths were similar. The reason becomes clear when we rewrite DPO's loss. Expanding the two log-ratios and grouping the reference model's terms together:
+
+$$
+\begin{aligned}
+& \beta \log \frac{\pi_\theta(y_w \mid x)}{\pi_{\text{ref}}(y_w \mid x)} - \beta \log \frac{\pi_\theta(y_l \mid x)}{\pi_{\text{ref}}(y_l \mid x)} \\
+= \; & \beta \log \pi_\theta(y_w \mid x) - \beta \log \pi_\theta(y_l \mid x) - \underbrace{\big( \beta \log \pi_{\text{ref}}(y_w \mid x) - \beta \log \pi_{\text{ref}}(y_l \mid x) \big)}_{\gamma_{\text{ref}}}
+\end{aligned}
+$$
+
+This has the same form as SimPO's argument, a reward difference minus a margin, except that the margin $\gamma_{\text{ref}}$ is set by the reference model and differs from pair to pair [[2]](#ref-2). DPO already has a margin, just not a fixed one. SimPO replaces it with a single constant $\gamma$ that does not need a second model to compute.
+
+## How Well It Works
+
+The authors compared SimPO with DPO and its variants on several base and instruction-tuned models, including Mistral-7B and Llama-3-8B, trained on the **UltraFeedback** preference dataset [[6]](#ref-6) and evaluated on chat benchmarks: **AlpacaEval 2**, scored by its **length-controlled win rate** so that longer answers do not win just by being longer [[7]](#ref-7), and **Arena-Hard** [[8]](#ref-8). SimPO beat DPO by up to $6.4$ points on AlpacaEval 2 and up to $7.5$ points on Arena-Hard, without making the responses noticeably longer [[2]](#ref-2). Their best model, built on **Gemma-2-9B-it** [[9]](#ref-9), reached a length-controlled win rate of $72.4\%$ on AlpacaEval 2 and $59.1\%$ on Arena-Hard, and ranked first among models under $10$ billion parameters on **Chatbot Arena** [[10]](#ref-10), where real users vote between models.
+
+The ablations show that both of SimPO's changes matter. On AlpacaEval 2, measured by the length-controlled win rate [[2]](#ref-2):
+
+| Method | Mistral-Base (7B) | Mistral-Instruct (7B) |
+| --- | --- | --- |
+| DPO | 15.1 | 26.8 |
+| SimPO | **21.5** | **32.1** |
+| SimPO without length normalization | 11.9 | 19.1 |
+| SimPO with $\gamma = 0$ | 16.8 | 30.9 |
+
+Removing the length normalization hurts the most: the score falls below even DPO's, and the responses become longer, from an average of $1{,}868$ to $2{,}345$ tokens in the Mistral-Base setting, which is the length bias described above. Removing the margin hurts less, but still costs several points. And without a reference model to run, SimPO trained about $20\%$ faster than DPO and used about $10\%$ less GPU memory [[2]](#ref-2).
+
+## Limitations of SimPO
+
+SimPO's simplicity has costs of its own. Without a reference model, the only thing keeping the policy close to its starting point is the training setup, and the authors found this to be fragile: training Llama-3-8B-Instruct with a higher learning rate made it stronger on chat benchmarks, but caused **catastrophic forgetting** on math (GSM8K) and general knowledge (MMLU) [[2]](#ref-2). Even with the default settings, math performance dropped after SimPO training. SimPO also adds a hyperparameter, the margin $\gamma$, which has to be tuned together with $\beta$ and the learning rate for each model; the authors used different values in every setting, and a margin that is too large hurts. Finally, SimPO is still an offline method like DPO: it learns only from a fixed dataset of preference pairs, and does not learn from the responses the model writes during training.
+
+> SimPO showed that the reward in preference optimization should be the quantity the model uses to generate, and that once it is, the reference model is no longer needed.
+
+## References
+
+<ol>
+  <li id="ref-1">Rafailov, R., Sharma, A., Mitchell, E., Ermon, S., Manning, C. D., & Finn, C. (2023). <a href="https://arxiv.org/abs/2305.18290">Direct Preference Optimization: Your Language Model is Secretly a Reward Model</a>. <em>NeurIPS</em>.</li>
+  <li id="ref-2">Meng, Y., Xia, M., & Chen, D. (2024). <a href="https://arxiv.org/abs/2405.14734">SimPO: Simple Preference Optimization with a Reference-Free Reward</a>. <em>NeurIPS</em>.</li>
+  <li id="ref-3">Bradley, R. A., & Terry, M. E. (1952). <a href="https://doi.org/10.2307/2334029">Rank Analysis of Incomplete Block Designs: I. The Method of Paired Comparisons</a>. <em>Biometrika</em>, 39(3/4), 324–345.</li>
+  <li id="ref-4">Chen, A., Malladi, S., Zhang, L. H., Chen, X., Zhang, Q., Ranganath, R., & Cho, K. (2024). <a href="https://arxiv.org/abs/2405.19534">Preference Learning Algorithms Do Not Learn Preference Rankings</a>. <em>NeurIPS</em>.</li>
+  <li id="ref-5">Azar, M. G., Rowland, M., Piot, B., et al. (2024). <a href="https://arxiv.org/abs/2310.12036">A General Theoretical Paradigm to Understand Learning from Human Preferences</a>. <em>AISTATS</em>.</li>
+  <li id="ref-6">Cui, G., Yuan, L., Ding, N., et al. (2024). <a href="https://arxiv.org/abs/2310.01377">UltraFeedback: Boosting Language Models with Scaled AI Feedback</a>. <em>ICML</em>.</li>
+  <li id="ref-7">Dubois, Y., Galambosi, B., Liang, P., & Hashimoto, T. B. (2024). <a href="https://arxiv.org/abs/2404.04475">Length-Controlled AlpacaEval: A Simple Way to Debias Automatic Evaluators</a>. <em>arXiv:2404.04475</em>.</li>
+  <li id="ref-8">Li, T., Chiang, W.-L., Frick, E., et al. (2024). <a href="https://arxiv.org/abs/2406.11939">From Crowdsourced Data to High-Quality Benchmarks: Arena-Hard and BenchBuilder Pipeline</a>. <em>arXiv:2406.11939</em>.</li>
+  <li id="ref-9">Gemma Team (2024). <a href="https://arxiv.org/abs/2408.00118">Gemma 2: Improving Open Language Models at a Practical Size</a>. <em>arXiv:2408.00118</em>.</li>
+  <li id="ref-10">Chiang, W.-L., Zheng, L., Sheng, Y., et al. (2024). <a href="https://arxiv.org/abs/2403.04132">Chatbot Arena: An Open Platform for Evaluating LLMs by Human Preference</a>. <em>ICML</em>.</li>
+</ol>
