@@ -1,0 +1,194 @@
+---
+title: "Value-Model-Based Augmented PPO (VAPO)"
+tags:
+  - title: VAPO
+  - title: PPO
+  - title: Value Model
+  - title: Generalized Advantage Estimation
+  - title: GAE
+  - title: Credit Assignment
+  - title: DAPO
+  - title: GRPO
+  - title: Reasoning Models
+  - title: Long Chain-of-Thought
+  - title: Reinforcement Learning
+  - title: Policy Optimization
+  - title: LLM
+categories:
+  - title: Machine Learning
+  - title: Reinforcement Learning
+  - title: Large Language Models
+author:
+  name: Mir Sazzat Hossain
+  designation: Research Assistant
+  url: https://mirsazzathossain.me
+  avatar:
+    url: user.png
+    alt: Mir Sazzat Hossain
+description: "How VAPO makes PPO with a value model work for long chain-of-thought reasoning: pretraining the value model, decoupling and adapting GAE to response length, and borrowing DAPO's fixes for sparse rewards, to beat value-free methods like GRPO and DAPO."
+seoDescription: "VAPO explained: how value pretraining, decoupled and length-adaptive GAE make value-based PPO beat GRPO and DAPO on long chain-of-thought reasoning."
+covers:
+  - url: content/value-augmented-proximal-policy-optimization-vapo/cover.jpg
+    alt: "VAPO cover: a value model assigning a different advantage to each token of a long reasoning chain"
+status: published
+publishedAt: 2026-08-27
+---
+
+<img
+  src="/images/content/value-augmented-proximal-policy-optimization-vapo/cover.jpg"
+  alt="VAPO cover: a value model assigning a different advantage to each token of a long reasoning chain"
+  sizes="100vw"
+  width="100%"
+  height="auto"
+  placeholder="blur"
+  blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="
+/>
+
+## Introduction
+
+Most of the progress in training reasoning models with reinforcement learning has come from methods without a value model. **GRPO** [[1]](#ref-1) and **DAPO** [[2]](#ref-2) drop PPO's value model and compute the advantage by comparing a group of responses to the same prompt. Every token of a response then gets the same advantage. This is cheap and stable, and it trained models like **DeepSeek-R1** [[3]](#ref-3). But it has a cost: within a response, the step that solved the problem and the step that wasted time are rewarded equally.
+
+In 2025, a team at ByteDance Seed, the same group behind DAPO, argued that this cost limits how far such methods can go [[4]](#ref-4). A value model, as in PPO [[5]](#ref-5), estimates how promising every partial response is, so it can give each token its own advantage, and its estimates have lower variance than the reward of a single sampled response. The problem is that PPO with a value model tends to collapse on long chains of reasoning: in their experiments, plain PPO reached only $5$ points on the AIME 2024 math competition. Their method, **VAPO** (Value-model-based Augmented Proximal Policy Optimization), identifies three reasons for this failure and makes seven changes to PPO to address them. With it, Qwen2.5-32B [[6]](#ref-6) reached $60.4$ points on AIME 2024, more than $10$ points above DAPO under the same settings, in about $5{,}000$ training steps, and without a single training crash across repeated runs.
+
+In this post, we start from why a value model is worth having, then look at the three reasons PPO fails on long reasoning, and go through VAPO's changes for each of them. We end with the full objective, the results, and the limitations. The [PPO post](/articles/proximal-policy-optimization-ppo) covers the value model and GAE that VAPO builds on, and the [DAPO post](/articles/decoupled-clip-dynamic-sampling-policy-optimization-dapo) covers the techniques it borrows.
+
+## Why Bring the Value Model Back
+
+As we saw in the [GRPO post](/articles/group-relative-policy-optimization-grpo#what-the-value-model-was-for), the value model's job in PPO is to provide the baseline of the advantage: an estimate $V_\phi(s_t)$ of the reward to expect from every partial response $s_t$. GRPO replaced it with the mean reward of a group, which is one baseline for the whole response. A value model gives a different baseline at every token, and through GAE, from [Eq. (8) in the PPO post](/articles/proximal-policy-optimization-ppo#eq-gae), every token gets its own advantage:
+
+$$
+\hat{A}_t = \sum_{l=0}^{T-t} (\gamma \lambda)^l \, \delta_{t+l}, \qquad \delta_t = r_t + \gamma \, V_\phi(s_{t+1}) - V_\phi(s_t)
+$$
+
+This brings three benefits, according to the VAPO authors [[4]](#ref-4). First, **credit assignment**: if a long solution goes wrong at one step, the value model's estimate drops at that step, so the tokens that caused the error get a negative advantage while the correct steps before it do not. In long reasoning, where a single wrong step often ruins the whole answer, this is exactly the information a group-level advantage lacks. Second, **lower variance**: an estimate learned from many responses is less noisy than the reward of one sampled response. Third, **generalization**: a trained value model can judge partial responses it has never seen, so every sample teaches it something about similar situations.
+
+These benefits only appear if the value model is accurate. In long chains of reasoning, it is not, and the next section explains why.
+
+## Why PPO Fails on Long Reasoning
+
+The authors identified three challenges that make PPO with a value model break down when responses are long. The first is a bias in the value model itself, the second comes from the very different lengths of the responses, and the third from how rarely the reward is positive.
+
+### Value Model Bias
+
+In RLHF, the value model is usually initialized from the reward model, as we saw in the [RLHF post](/articles/reinforcement-learning-from-human-feedback-rlhf#the-full-rlhf-pipeline). But the reward model was trained only on **finished** responses, while the value model has to judge **partial** ones. Given a half-finished solution, the reward model tends to give it a low score, simply because it looks incomplete. So at the start of training, the value estimates are too low early in a response and rise toward the end. Each rise looks like the response did better than expected, so every token gets a positive advantage, even in a wrong answer, and GAE adds these errors up along the sequence. This problem was first identified in VC-PPO [[7]](#ref-7), [[4]](#ref-4).
+
+The usual GAE setting makes it worse. With $\lambda = 0.95$, the final reward reaches token $t$ only after being multiplied by $\lambda$ once for every step between them. For a token $100$ steps before the end, that factor is already:
+
+$$
+0.95^{100} \approx 0.006
+$$
+
+In a response of thousands of tokens, the real reward has almost no effect on the early tokens. Their value targets are then built almost entirely from the value model's own estimates, which are exactly the biased ones. The value model learns from itself and stays wrong.
+
+### Heterogeneous Lengths
+
+The second challenge is that reasoning responses vary enormously in length, from a few hundred tokens to many thousands. A single $\lambda$ cannot suit all of them [[4]](#ref-4). As we saw in the [PPO post](/articles/proximal-policy-optimization-ppo#generalized-advantage-estimation), $\lambda$ trades bias against variance. For a short response, a $\lambda$ of $0.95$ lets the real reward reach every token, so the estimate is close to Monte Carlo and has high variance. For a long response, the same $\lambda$ cuts the reward off long before it reaches the early tokens, so the estimate relies on bootstrapping and has high bias. The same setting is too noisy for short responses and too biased for long ones.
+
+### Sparse Rewards
+
+The third challenge comes from the reward. For math and code, the reward is a checker's verdict, usually $1$ for a correct answer and $0$ otherwise. On hard problems, most sampled responses are wrong, so a correct response is rare and valuable [[4]](#ref-4). The model has to keep exploring, to have a chance of finding correct answers at all, and it has to learn as much as possible from each correct answer it does find. Getting either side wrong leaves the model stuck: too little exploration and it never finds new solutions, too little use of its successes and it learns too slowly.
+
+## VAPO's Changes
+
+VAPO makes seven changes to PPO, each aimed at one of the three challenges [[4]](#ref-4). Two of them fix the value model, two adapt the training to responses of different lengths, and three deal with sparse rewards. Four of them come from earlier work: two from VC-PPO and two from DAPO.
+
+### Fixing the Value Model
+
+**Value pretraining.** Instead of starting PPO with a value model copied from the reward model, VAPO first trains the value model on its own. It samples responses from a fixed policy, such as the SFT model, and trains the value model to predict their actual returns, the Monte Carlo targets $G_t$ of [Eq. (3) in the PPO post](/articles/proximal-policy-optimization-ppo#eq-return). Training continues until the value loss is low and the value model explains most of the variance in the returns. Only then does PPO start, with a value model that already estimates expected rewards correctly [[4]](#ref-4), [[7]](#ref-7).
+
+**Decoupled GAE.** The value model and the policy do not need the same $\lambda$. VAPO trains the value model with $\lambda_{\text{critic}} = 1$. As we saw in the [PPO post](/articles/proximal-policy-optimization-ppo#generalized-advantage-estimation), GAE with $\lambda = 1$ is the Monte Carlo estimate: the target for every token is the actual return, with no decay of the reward and no bootstrapping from the value model's own estimates. This removes the problem of the value model learning from itself. The policy keeps a smaller $\lambda_{\text{policy}}$, which gives it lower-variance advantages and faster learning [[4]](#ref-4), [[7]](#ref-7).
+
+### Adapting to Response Length
+
+**Length-adaptive GAE.** To suit both short and long responses, VAPO sets $\lambda_{\text{policy}}$ separately for each response, based on its length $l$ [[4]](#ref-4). The idea is to keep the same balance between bias and variance at every length. Recall from the [GAE derivation](/articles/proximal-policy-optimization-ppo#generalized-advantage-estimation) that the weights $1, \lambda, \lambda^2, \dots$ form a geometric series, whose sum is
+
+$$
+\sum_{t=0}^{\infty} \lambda^t = \frac{1}{1 - \lambda}
+$$
+
+This sum measures how many steps ahead the advantage effectively looks. VAPO makes it proportional to the length of the response, with a coefficient $\alpha$:
+
+$$
+\frac{1}{1 - \lambda_{\text{policy}}} = \alpha \, l \tag{1} \label{length-sum}
+$$
+
+Solving [Eq. (1)](#eq-length-sum) for $\lambda_{\text{policy}}$, by taking the reciprocal of both sides and rearranging:
+
+$$
+\lambda_{\text{policy}} = 1 - \frac{1}{\alpha \, l} \tag{2} \label{length-lambda}
+$$
+
+With $\alpha = 0.05$, the value VAPO uses, the advantage always looks ahead about $5\%$ of the response. A response of $100$ tokens gets $\lambda = 1 - 1/5 = 0.8$, one of $1{,}000$ tokens gets $\lambda = 1 - 1/50 = 0.98$, and one of $10{,}000$ tokens gets $\lambda = 1 - 1/500 = 0.998$. Long responses get a $\lambda$ close to $1$, so the reward reaches their early tokens, while short responses get a smaller $\lambda$, which reduces their variance.
+
+**Token-level loss.** VAPO also adopts DAPO's [token-level loss](/articles/decoupled-clip-dynamic-sampling-policy-optimization-dapo#token-level-loss-weighting-every-token-equally), which divides the sum of the clipped terms by the total number of tokens in the batch, instead of averaging each response first. This gives every token the same weight, so the tokens of long responses, where problems such as repetition tend to appear, are not underweighted [[4]](#ref-4).
+
+### Handling Sparse Rewards
+
+**Clip-Higher.** To keep the model exploring, VAPO uses DAPO's [Clip-Higher](/articles/decoupled-clip-dynamic-sampling-policy-optimization-dapo#clip-higher-making-room-for-exploration): a larger upper clipping bound, $\epsilon_{\text{high}} = 0.28$, than lower bound, $\epsilon_{\text{low}} = 0.2$, which leaves more room to raise the probability of rare tokens and prevents entropy collapse.
+
+**Positive-example language modeling loss.** To learn as much as possible from each correct answer, VAPO adds a second loss: the ordinary language-modeling loss, the negative log-likelihood, on the correct responses sampled during training [[4]](#ref-4). With $\mathcal{T}$ the set of correct responses in the batch:
+
+$$
+\mathcal{L}_{\text{NLL}}(\theta) = -\frac{1}{\sum_{y_i \in \mathcal{T}} |y_i|} \sum_{y_i \in \mathcal{T}} \sum_{t=1}^{|y_i|} \log \pi_\theta(y_{i,t} \mid s_{i,t}) \tag{3} \label{nll-loss}
+$$
+
+This is supervised imitation of the model's own successes. When correct answers are rare, the policy gradient alone learns slowly from them, and this term reinforces every correct answer directly.
+
+**Group sampling.** Finally, for the same generation budget, VAPO samples fewer prompts but more responses per prompt: $512$ prompts with $16$ responses each, instead of many prompts with one response each. Several responses to the same prompt are more likely to include both correct and incorrect ones, which gives a clearer contrast for the policy to learn from [[4]](#ref-4).
+
+## The VAPO Objective
+
+Putting the changes together, the policy loss of VAPO is PPO's clipped loss with the token-level average and the decoupled clipping range, using the length-adaptive advantages $\hat{A}_{i,t}$ [[4]](#ref-4):
+
+$$
+\begin{aligned}
+\mathcal{L}_{\text{PPO}}(\theta) = -\frac{1}{\sum_{i=1}^{G} |y_i|} \sum_{i=1}^{G} \sum_{t=1}^{|y_i|} \min\Big( & \rho_{i,t}(\theta) \, \hat{A}_{i,t}, \\
+& \text{clip}\big( \rho_{i,t}(\theta), 1 - \epsilon_{\text{low}}, 1 + \epsilon_{\text{high}} \big) \, \hat{A}_{i,t} \Big)
+\end{aligned} \tag{4} \label{vapo-ppo}
+$$
+
+and the total loss of the policy adds the positive-example loss of [Eq. (3)](#eq-nll-loss) with a weight $\mu$:
+
+$$
+\mathcal{L}(\theta) = \mathcal{L}_{\text{PPO}}(\theta) + \mu \, \mathcal{L}_{\text{NLL}}(\theta) \tag{5} \label{vapo-total}
+$$
+
+In [Eq. (5)](#eq-vapo-total), VAPO uses $\mu = 0.1$. The value model is trained alongside, as in PPO, but on Monte Carlo returns with $\lambda_{\text{critic}} = 1$, and the advantages in [Eq. (4)](#eq-vapo-ppo) are computed with the $\lambda_{\text{policy}}$ of [Eq. (2)](#eq-length-lambda), different for every response.
+
+## How Much Each Change Helped
+
+The authors trained Qwen2.5-32B on math problems and measured the average accuracy on AIME 2024 over $32$ attempts per problem. They then removed each of the seven changes one at a time [[4]](#ref-4):
+
+| Model | AIME 2024 |
+| --- | --- |
+| Plain PPO | 5 |
+| DeepSeek-R1-Zero-Qwen-32B | 47 |
+| DAPO | 50 |
+| VAPO without value pretraining | 11 |
+| VAPO without decoupled GAE | 33 |
+| VAPO without length-adaptive GAE | 45 |
+| VAPO without Clip-Higher | 46 |
+| VAPO without token-level loss | 53 |
+| VAPO without positive-example loss | 54 |
+| VAPO without group sampling | 55 |
+| **VAPO** | **60** |
+
+The changes to the value model matter most. Without value pretraining, training collapsed just like plain PPO: the responses became very short and the model answered without reasoning. Without decoupled GAE, the reward faded before reaching the early tokens of long responses, and the score fell by $27$ points. The other changes each added between $5$ and $15$ points. VAPO matched DAPO's score with about $60\%$ of DAPO's training steps, reached $60.4$ within $5{,}000$ steps, and kept its entropy stable, neither collapsing nor growing too high, across three repeated runs [[4]](#ref-4).
+
+## Limitations of VAPO
+
+VAPO's results come at the price of complexity. It brings back the value model that GRPO and DAPO removed, with the memory and compute of a second LLM as large as the policy, and it adds a separate value-pretraining stage before RL begins. It also has more settings to tune than its value-free counterparts: the two values of $\lambda$, the coefficient $\alpha$ of the length-adaptive GAE, the clipping bounds, and the weight $\mu$ of the positive-example loss. The ablations show that most of the gain depends on getting the value model right, so a poorly trained value model can still make the whole method fail, as it did for plain PPO. And the reported experiments are on math with a single model family, so how far the specific settings carry over to other tasks and models is an open question.
+
+> VAPO showed that the value model was not the problem with PPO on long reasoning. The problem was how it was trained, and once that is fixed, its finer credit assignment pays off.
+
+## References
+
+<ol>
+  <li id="ref-1">Shao, Z., Wang, P., Zhu, Q., et al. (2024). <a href="https://arxiv.org/abs/2402.03300">DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open Language Models</a>. <em>arXiv:2402.03300</em>.</li>
+  <li id="ref-2">Yu, Q., Zhang, Z., Zhu, R., et al. (2025). <a href="https://arxiv.org/abs/2503.14476">DAPO: An Open-Source LLM Reinforcement Learning System at Scale</a>. <em>arXiv:2503.14476</em>.</li>
+  <li id="ref-3">DeepSeek-AI (2025). <a href="https://arxiv.org/abs/2501.12948">DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning</a>. <em>arXiv:2501.12948</em>.</li>
+  <li id="ref-4">Yue, Y., Yuan, Y., Yu, Q., et al. (2025). <a href="https://arxiv.org/abs/2504.05118">VAPO: Efficient and Reliable Reinforcement Learning for Advanced Reasoning Tasks</a>. <em>arXiv:2504.05118</em>.</li>
+  <li id="ref-5">Schulman, J., Wolski, F., Dhariwal, P., Radford, A., & Klimov, O. (2017). <a href="https://arxiv.org/abs/1707.06347">Proximal Policy Optimization Algorithms</a>. <em>arXiv:1707.06347</em>.</li>
+  <li id="ref-6">Qwen Team (2024). <a href="https://arxiv.org/abs/2412.15115">Qwen2.5 Technical Report</a>. <em>arXiv:2412.15115</em>.</li>
+  <li id="ref-7">Yuan, Y., Yue, Y., Zhu, R., Fan, T., & Yan, L. (2025). <a href="https://arxiv.org/abs/2503.01491">What's Behind PPO's Collapse in Long-CoT? Value Optimization Holds the Secret</a>. <em>arXiv:2503.01491</em>.</li>
+</ol>
