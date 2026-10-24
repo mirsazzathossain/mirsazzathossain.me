@@ -1,0 +1,171 @@
+---
+title: "Clipped IS-weight Policy Optimization (CISPO)"
+tags:
+  - title: CISPO
+  - title: Clipped IS-weight Policy Optimization
+  - title: MiniMax-M1
+  - title: Importance Sampling
+  - title: Clipping
+  - title: GRPO
+  - title: DAPO
+  - title: PPO
+  - title: Reasoning Models
+  - title: Reinforcement Learning
+  - title: Policy Optimization
+  - title: LLM
+categories:
+  - title: Machine Learning
+  - title: Reinforcement Learning
+  - title: Large Language Models
+author:
+  name: Mir Sazzat Hossain
+  designation: Research Assistant
+  url: https://mirsazzathossain.me
+  avatar:
+    url: user.png
+    alt: Mir Sazzat Hossain
+description: "How CISPO, from MiniMax-M1, keeps every token in the gradient: instead of clipping token updates like PPO and GRPO, which silently drops rare reasoning tokens such as 'Wait' and 'However', it clips the importance sampling weight and lets every token keep learning."
+seoDescription: "CISPO explained: why PPO-style clipping drops rare reasoning tokens, and how clipping the importance sampling weight instead keeps every token learning."
+covers:
+  - url: content/clipped-is-weight-policy-optimization-cispo/cover.jpg
+    alt: "CISPO cover: a rare token kept in the gradient with a capped weight instead of being clipped out"
+status: published
+publishedAt: 2026-09-04
+---
+
+<img
+  src="/images/content/clipped-is-weight-policy-optimization-cispo/cover.jpg"
+  alt="CISPO cover: a rare token kept in the gradient with a capped weight instead of being clipped out"
+  sizes="100vw"
+  width="100%"
+  height="auto"
+  placeholder="blur"
+  blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="
+/>
+
+## Introduction
+
+When MiniMax trained **MiniMax-M1** [[1]](#ref-1), a large reasoning model built on a Mixture-of-Experts architecture with a hybrid attention mechanism, they started with **GRPO** [[2]](#ref-2), the standard algorithm for training reasoning models with reinforcement learning. It did not work well. Training was slow, and the model did not develop the long chains of reasoning, with self-checking and reconsidering, that RL is supposed to bring out. After a series of ablations, they found the cause in the part of the algorithm that is supposed to keep training stable: **clipping**.
+
+The tokens that start a new line of reasoning, words like _"However"_, _"Wait"_, or _"Recheck"_, are rare, so the model gives them low probabilities. When an update raises the probability of such a token, its ratio to the old policy quickly becomes large, the clipping of PPO and GRPO kicks in, and from then on the token contributes nothing to the gradient. The tokens that matter most for reasoning were the ones being silently dropped. MiniMax's fix, **CISPO** (Clipped IS-weight Policy Optimization), clips something else: instead of clipping the update of each token, it clips the importance sampling weight, so every token keeps contributing to the gradient, with a capped weight. With it, training on the same data matched DAPO's performance in half the training steps, and the full RL training of MiniMax-M1 took three weeks on $512$ GPUs.
+
+In this post, we look at why PPO-style clipping drops tokens, derive the REINFORCE objective that CISPO starts from, and see exactly how clipping the weight differs from clipping the update. We then cover the unified formulation, the results, and the limitations. The [PPO post](/articles/proximal-policy-optimization-ppo#the-clipped-surrogate-objective) covers the clipped objective that CISPO changes.
+
+## Why Clipping Drops Tokens
+
+PPO and GRPO reuse each batch of responses for several gradient updates. To correct for the policy changing during those updates, each token's term is multiplied by its **importance sampling (IS) weight**, the ratio of the current policy to the policy that generated the response:
+
+$$
+r_{i,t}(\theta) = \frac{\pi_\theta(y_{i,t} \mid x, y_{i,<t})}{\pi_{\theta_{\text{old}}}(y_{i,t} \mid x, y_{i,<t})} \tag{1} \label{is-weight}
+$$
+
+and the objective takes the minimum of the weighted term and its clipped version, as in [Eq. (11) of the PPO post](/articles/proximal-policy-optimization-ppo#eq-clip):
+
+$$
+\min\Big( r_{i,t}(\theta) \, \hat{A}_{i,t}, \; \text{clip}\big( r_{i,t}(\theta), 1 - \epsilon, 1 + \epsilon \big) \, \hat{A}_{i,t} \Big)
+$$
+
+As we derived in the PPO post, when a token has a positive advantage and its weight has risen above $1 + \epsilon$, the minimum picks the clipped term, $(1 + \epsilon) \hat{A}_{i,t}$. That term is a constant, so its gradient is zero: the token is removed from the update. This is intended. It stops the policy from pushing a token's probability up too far on old data.
+
+The problem is which tokens this affects. The weight in [Eq. (1)](#eq-is-weight) is a ratio, so how quickly it reaches $1 + \epsilon$ depends on how small the old probability was. With the usual $\epsilon = 0.2$, take a rare token whose probability rises from $0.02$ to $0.025$ after one update, and a common token whose probability rises from $0.6$ to $0.65$:
+
+$$
+\frac{0.025}{0.02} = 1.25 > 1.2, \qquad \frac{0.65}{0.6} \approx 1.08 < 1.2
+$$
+
+The common token moved ten times more in probability, from $0.6$ to $0.65$, and is still inside the clipping range. The rare token moved by only $0.005$, and its ratio is already past $1.2$, so it is clipped and its gradient becomes zero. MiniMax found that the tokens behind reflective reasoning, such as _"However"_, _"Recheck"_, _"Wait"_, and _"Aha"_, were exactly such tokens [[1]](#ref-1). They are rare, and the base model gives them low probabilities, but they act as **forks** in the reasoning: the points where the model stops to check its work or tries another approach. After the first update on a batch raised their probabilities, their weights exceeded $1 + \epsilon$, and for every later update on the same batch they were clipped out. MiniMax used $16$ rounds of updates per batch, so these tokens took part in one update out of sixteen. Low-probability tokens like these are also known to be important for keeping the policy's entropy stable and for RL to keep improving as it is scaled up [[3]](#ref-3), [[4]](#ref-4).
+
+DAPO's **Clip-Higher** [[5]](#ref-5), covered in the [DAPO post](/articles/decoupled-clip-dynamic-sampling-policy-optimization-dapo#clip-higher-making-room-for-exploration), addresses the same problem by raising the upper bound. MiniMax found it less effective in their setting [[1]](#ref-1): with $16$ rounds of updates per batch, the weights of rare tokens still pass any reasonable bound, and once they do, the tokens are dropped just the same.
+
+## From REINFORCE to CISPO
+
+CISPO starts from a different form of the objective, in which clipping can be applied without removing tokens. In this section, we write the off-policy REINFORCE objective, see that its gradient is the same as PPO's before clipping, and then apply the clip to the weight.
+
+### The Off-Policy REINFORCE Objective
+
+The REINFORCE gradient, derived in the [RLOO post](/articles/reinforce-leave-one-out-rloo#reinforce), pushes up the log-probability of each token in proportion to its advantage. When the responses come from the old policy, each token is reweighted by its IS weight. This can be written as an objective whose gradient is exactly that [[1]](#ref-1):
+
+$$
+\mathcal{J}_{\text{REINFORCE}}(\theta) = \mathbb{E} \left[ \frac{1}{|y_i|} \sum_{t=1}^{|y_i|} \text{sg}\big( r_{i,t}(\theta) \big) \, \hat{A}_{i,t} \, \log \pi_\theta(y_{i,t} \mid x, y_{i,<t}) \right] \tag{2} \label{reinforce-is}
+$$
+
+where $\text{sg}[\cdot]$, **stop-gradient**, uses the value of the weight but does not differentiate through it. The gradient therefore acts only on the log-probability. Writing $\pi_\theta$ and $\pi_{\theta_{\text{old}}}$ for the probabilities of token $y_{i,t}$, the gradient of one term is:
+
+$$
+\nabla_\theta \Big( \text{sg}(r_{i,t}) \, \hat{A}_{i,t} \, \log \pi_\theta \Big) = r_{i,t} \, \hat{A}_{i,t} \, \nabla_\theta \log \pi_\theta
+$$
+
+Using $\nabla_\theta \log \pi_\theta = \nabla_\theta \pi_\theta / \pi_\theta$ and the definition of $r_{i,t}$, the $\pi_\theta$ cancels:
+
+$$
+r_{i,t} \, \hat{A}_{i,t} \, \nabla_\theta \log \pi_\theta = \frac{\pi_\theta}{\pi_{\theta_{\text{old}}}} \, \hat{A}_{i,t} \, \frac{\nabla_\theta \pi_\theta}{\pi_\theta} = \hat{A}_{i,t} \, \frac{\nabla_\theta \pi_\theta}{\pi_{\theta_{\text{old}}}} = \nabla_\theta \big( r_{i,t} \, \hat{A}_{i,t} \big)
+$$
+
+So before any clipping, the objective in [Eq. (2)](#eq-reinforce-is) has exactly the same gradient as the ratio-weighted term $r_{i,t} \hat{A}_{i,t}$ of PPO and GRPO. The two objectives differ only in where the weight sits: in PPO, the ratio is part of what is differentiated; here, it is a fixed number multiplying the gradient of the log-probability.
+
+### Clipping the Weight
+
+This form makes a different kind of clipping possible. Instead of clipping the update, CISPO clips the value of the IS weight, before it multiplies the gradient [[1]](#ref-1):
+
+$$
+\hat{r}_{i,t}(\theta) = \text{clip}\Big( r_{i,t}(\theta), \; 1 - \epsilon^{\text{IS}}_{\text{low}}, \; 1 + \epsilon^{\text{IS}}_{\text{high}} \Big) \tag{3} \label{clipped-weight}
+$$
+
+Using the clipped weight of [Eq. (3)](#eq-clipped-weight), and adopting GRPO's group-relative advantage and DAPO's token-level averaging, the **CISPO** objective is [[1]](#ref-1):
+
+$$
+\mathcal{J}_{\text{CISPO}}(\theta) = \mathbb{E} \left[ \frac{1}{\sum_{i=1}^{G} |y_i|} \sum_{i=1}^{G} \sum_{t=1}^{|y_i|} \text{sg}\big( \hat{r}_{i,t}(\theta) \big) \, \hat{A}_{i,t} \, \log \pi_\theta(y_{i,t} \mid x, y_{i,<t}) \right] \tag{4} \label{cispo}
+$$
+
+The difference from PPO is in what happens to a token whose weight has grown too large. Take a token with a positive advantage whose weight has passed $1 + \epsilon$. Its gradient in each method is:
+
+$$
+\begin{aligned}
+\text{PPO / GRPO:} \quad & 0 \\
+\text{CISPO:} \quad & \big( 1 + \epsilon^{\text{IS}}_{\text{high}} \big) \, \hat{A}_{i,t} \, \nabla_\theta \log \pi_\theta(y_{i,t} \mid x, y_{i,<t})
+\end{aligned}
+$$
+
+PPO removes the token from the update. CISPO keeps it, and only limits how much weight it gets. A rare reasoning token whose probability is rising therefore keeps learning in all $16$ rounds of updates, but its influence on each update is capped, so it cannot dominate the gradient. MiniMax found that this also keeps the entropy of the policy in a healthy range, without the collapse that clipping can cause [[1]](#ref-1). In their experiments, they effectively removed the lower bound by setting $\epsilon^{\text{IS}}_{\text{low}}$ to a large value, and tuned only the upper bound.
+
+Without the clip, [Eq. (4)](#eq-cispo) is the ordinary policy gradient. With it, the gradient is slightly **biased**, because the weights of some tokens are capped below their true values. MiniMax accepted this bias in exchange for keeping every token and reducing the variance that very large weights would cause. Like DAPO, CISPO also uses dynamic sampling and a length penalty, and it has no KL penalty [[1]](#ref-1), [[5]](#ref-5).
+
+### A Unified Formulation
+
+The two kinds of clipping can be written in one objective by adding a mask $M_{i,t}$ to [Eq. (4)](#eq-cispo), which decides whether each token's gradient is kept [[1]](#ref-1):
+
+$$
+\mathcal{J}_{\text{unify}}(\theta) = \mathbb{E} \left[ \frac{1}{\sum_{i=1}^{G} |y_i|} \sum_{i=1}^{G} \sum_{t=1}^{|y_i|} \text{sg}\big( \hat{r}_{i,t}(\theta) \big) \, \hat{A}_{i,t} \, \log \pi_\theta(y_{i,t} \mid x, y_{i,<t}) \, M_{i,t} \right] \tag{5} \label{unified}
+$$
+
+Setting the mask to the condition under which PPO's minimum picks the clipped term recovers PPO's behavior:
+
+$$
+M_{i,t} = \begin{cases} 0 & \text{if } \hat{A}_{i,t} > 0 \text{ and } r_{i,t}(\theta) > 1 + \epsilon_{\text{high}} \\ 0 & \text{if } \hat{A}_{i,t} < 0 \text{ and } r_{i,t}(\theta) < 1 - \epsilon_{\text{low}} \\ 1 & \text{otherwise} \end{cases}
+$$
+
+CISPO is the case $M_{i,t} = 1$ for every token: no token is ever dropped. [Eq. (5)](#eq-unified) makes clear that "clipping" in PPO and GRPO really does two things at once, limiting the weight and dropping the token, and that CISPO keeps the first and removes the second.
+
+## Results
+
+MiniMax compared CISPO with GRPO and DAPO by training Qwen2.5-32B from its base model on DAPO's math dataset, and measuring accuracy on AIME 2024 [[1]](#ref-1). At the same number of training steps, CISPO outperformed both. It also reached DAPO's level of performance with only half of DAPO's training steps.
+
+CISPO was then used to train MiniMax-M1 itself, a model with $456$ billion parameters, $45.9$ billion of them active for each token. Together with the efficiency of its hybrid attention for long generations, CISPO let the full RL training finish in three weeks on $512$ H800 GPUs, at a rental cost of about 534,700 US dollars. The resulting models were comparable to or better than strong open-weight models such as the original DeepSeek-R1 [[6]](#ref-6) and Qwen3-235B [[7]](#ref-7) on standard benchmarks, with particular strengths in long-context tasks and software engineering [[1]](#ref-1).
+
+## Limitations of CISPO
+
+CISPO gives up something that PPO's clipping provides: a trust region. Because no token is ever dropped, a token whose weight has passed the bound keeps being pushed in every round of updates, with a capped but non-zero weight, so on a batch reused many times its probability can keep moving further from the old policy than PPO would allow. The capped weights also make the gradient biased, as the authors note. The upper bound $\epsilon^{\text{IS}}_{\text{high}}$ becomes the main knob controlling stability and has to be tuned for each setting. And the evidence comes from MiniMax's own experiments: the comparison with GRPO and DAPO is a single training run on one model and dataset, reported as a training curve, in a paper whose main subject is the MiniMax-M1 model rather than the algorithm.
+
+> CISPO showed that PPO's clipping does two things at once, limiting a token's weight and removing it from the gradient, and that in long reasoning the second is harmful: the rare tokens it removes are the ones that make reasoning possible.
+
+## References
+
+<ol>
+  <li id="ref-1">MiniMax (2025). <a href="https://arxiv.org/abs/2506.13585">MiniMax-M1: Scaling Test-Time Compute Efficiently with Lightning Attention</a>. <em>arXiv:2506.13585</em>.</li>
+  <li id="ref-2">Shao, Z., Wang, P., Zhu, Q., et al. (2024). <a href="https://arxiv.org/abs/2402.03300">DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open Language Models</a>. <em>arXiv:2402.03300</em>.</li>
+  <li id="ref-3">Cui, G., Zhang, Y., et al. (2025). <a href="https://arxiv.org/abs/2505.22617">The Entropy Mechanism of Reinforcement Learning for Reasoning Language Models</a>. <em>arXiv:2505.22617</em>.</li>
+  <li id="ref-4">Wang, S., Yu, L., et al. (2025). <a href="https://arxiv.org/abs/2506.01939">Beyond the 80/20 Rule: High-Entropy Minority Tokens Drive Effective Reinforcement Learning for LLM Reasoning</a>. <em>arXiv:2506.01939</em>.</li>
+  <li id="ref-5">Yu, Q., Zhang, Z., Zhu, R., et al. (2025). <a href="https://arxiv.org/abs/2503.14476">DAPO: An Open-Source LLM Reinforcement Learning System at Scale</a>. <em>arXiv:2503.14476</em>.</li>
+  <li id="ref-6">DeepSeek-AI (2025). <a href="https://arxiv.org/abs/2501.12948">DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning</a>. <em>arXiv:2501.12948</em>.</li>
+  <li id="ref-7">Qwen Team (2025). <a href="https://arxiv.org/abs/2505.09388">Qwen3 Technical Report</a>. <em>arXiv:2505.09388</em>.</li>
+</ol>

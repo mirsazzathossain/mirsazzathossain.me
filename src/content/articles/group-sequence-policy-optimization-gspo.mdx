@@ -1,0 +1,178 @@
+---
+title: "Group Sequence Policy Optimization (GSPO)"
+tags:
+  - title: GSPO
+  - title: Group Sequence Policy Optimization
+  - title: GRPO
+  - title: Importance Sampling
+  - title: Mixture of Experts
+  - title: MoE
+  - title: Qwen3
+  - title: Reasoning Models
+  - title: Reinforcement Learning
+  - title: Policy Optimization
+  - title: LLM
+categories:
+  - title: Machine Learning
+  - title: Reinforcement Learning
+  - title: Large Language Models
+author:
+  name: Mir Sazzat Hossain
+  designation: Research Assistant
+  url: https://mirsazzathossain.me
+  avatar:
+    url: user.png
+    alt: Mir Sazzat Hossain
+description: "How GSPO fixes the instability of GRPO by moving the importance ratio from tokens to whole responses: one length-normalized sequence ratio, sequence-level clipping, and equal weights for every token, which stabilizes large Mixture-of-Experts training and powered Qwen3."
+seoDescription: "GSPO explained: how a sequence-level importance ratio and sequence-level clipping fix GRPO's instability and stabilize RL for large MoE models like Qwen3."
+covers:
+  - url: content/group-sequence-policy-optimization-gspo/cover.jpg
+    alt: "GSPO cover: noisy per-token importance ratios combined into a single stable ratio for the whole response"
+status: published
+publishedAt: 2026-09-12
+---
+
+<img
+  src="/images/content/group-sequence-policy-optimization-gspo/cover.jpg"
+  alt="GSPO cover: noisy per-token importance ratios combined into a single stable ratio for the whole response"
+  sizes="100vw"
+  width="100%"
+  height="auto"
+  placeholder="blur"
+  blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="
+/>
+
+## Introduction
+
+**GRPO** [[1]](#ref-1) became the standard algorithm for training reasoning models with reinforcement learning. But as models grew larger and responses longer, it started to fail in a particular way: training would run normally for a while and then suddenly collapse, and the collapse was often irreversible. Going back to an earlier checkpoint and tuning the hyperparameters did not help. Teams training the largest models reported the same problem, especially with **Mixture-of-Experts (MoE)** models [[2]](#ref-2), [[3]](#ref-3).
+
+In 2025, the Qwen team traced this instability to a single design choice in GRPO: its **importance ratio**, the ratio between the current policy and the policy that generated the responses, is computed separately for every token [[4]](#ref-4). They argued that a per-token ratio does not do what importance sampling is supposed to do, and that it adds noise that grows with the length of the response. Their algorithm, **Group Sequence Policy Optimization (GSPO)**, computes one importance ratio for the whole response, clips whole responses instead of individual tokens, and gives every token of a response the same weight. It trained more efficiently than GRPO, stabilized MoE training without special workarounds, and was used to train the **Qwen3** models [[2]](#ref-2).
+
+In this post, we start from the importance ratio in GRPO and the principle of importance sampling, see why a per-token ratio breaks that principle, and derive GSPO's sequence-level ratio and objective step by step. We then compare its gradient with GRPO's, look at the results, and end with the limitations. The [GRPO post](/articles/group-relative-policy-optimization-grpo) covers the algorithm GSPO modifies.
+
+## The Starting Point: GRPO's Importance Ratio
+
+For each prompt $x$, GRPO samples a group of $G$ responses $y_1, \dots, y_G$ from the old policy $\pi_{\theta_{\text{old}}}$, scores them, and computes the group advantage $\hat{A}_i$ of each response from [Eq. (3) of the GRPO post](/articles/group-relative-policy-optimization-grpo#eq-group-advantage). Like PPO, it then reuses these responses for several gradient updates, and corrects for the fact that the policy changes during those updates with the probability ratio of each token:
+
+$$
+w_{i,t}(\theta) = \frac{\pi_\theta(y_{i,t} \mid x, y_{i,<t})}{\pi_{\theta_{\text{old}}}(y_{i,t} \mid x, y_{i,<t})}
+$$
+
+This ratio is clipped and multiplied by the advantage, and the result is averaged over the tokens of each response and over the group, as in [Eq. (7) of the GRPO post](/articles/group-relative-policy-optimization-grpo#eq-grpo-objective). The ratio exists to make reusing old responses valid. To see whether it does that job, we go back to where it comes from.
+
+## Why a Per-Token Ratio Fails
+
+The ratio comes from **importance sampling**, which we met in the [TRPO post](/articles/trust-region-policy-optimization-trpo#reusing-old-samples-importance-sampling). Importance sampling estimates an average under one distribution, the target $\pi_{\text{tar}}$, using samples drawn from another, the behavior distribution $\pi_{\text{beh}}$, by reweighting each sample [[4]](#ref-4):
+
+$$
+\mathbb{E}_{z \sim \pi_{\text{tar}}} \big[ f(z) \big] = \mathbb{E}_{z \sim \pi_{\text{beh}}} \left[ \frac{\pi_{\text{tar}}(z)}{\pi_{\text{beh}}(z)} \, f(z) \right] \tag{1} \label{importance-sampling}
+$$
+
+The correction in [Eq. (1)](#eq-importance-sampling) works **on average**: a single reweighted sample can be far from the true value, and it is only by averaging over many samples from $\pi_{\text{beh}}$ that the weights correct the mismatch between the two distributions.
+
+GRPO applies this at every token. But at each position $t$, the old policy has a whole distribution over possible next tokens, and GRPO has exactly **one** sample from it, the token $y_{i,t}$ that was actually generated. A weight computed from a single sample cannot correct a distribution; it only rescales that one token's gradient by a random factor. These random factors are noise, and since every token of the response contributes one, the noise grows with the length of the response. The clipping of each token's ratio then makes it worse, by cutting off some tokens' gradients and not others in an unpredictable pattern. The GSPO authors found that this noise accumulated until it caused the collapse they observed [[4]](#ref-4).
+
+The deeper issue, in their words, is a mismatch of units: **the unit of the optimization objective should match the unit of the reward**. The reward in GRPO is given to the whole response, not to individual tokens. So the off-policy correction should also be made for the whole response.
+
+## The Sequence-Level Importance Ratio
+
+The response as a whole does have a well-defined importance ratio. A response $y_i$ is one sample from the old policy's distribution over responses, and its probability under each policy is the product of its token probabilities. So the ratio of the two sequence probabilities is the product of the token ratios:
+
+$$
+\frac{\pi_\theta(y_i \mid x)}{\pi_{\theta_{\text{old}}}(y_i \mid x)} = \prod_{t=1}^{|y_i|} \frac{\pi_\theta(y_{i,t} \mid x, y_{i,<t})}{\pi_{\theta_{\text{old}}}(y_{i,t} \mid x, y_{i,<t})} = \prod_{t=1}^{|y_i|} w_{i,t}(\theta)
+$$
+
+This ratio measures how far the whole response, sampled from the old policy, has moved under the new one, which is exactly the quantity that matches a reward given to the whole response. But a product of many factors is numerically unstable. If each of $1{,}000$ tokens has a ratio of just $1.01$, the product is already
+
+$$
+1.01^{1{,}000} \approx 20{,}959
+$$
+
+and if each has $0.99$, it is close to $0$. A small change in a few tokens would swing the ratio enormously, and responses of different lengths would need completely different clipping ranges. GSPO therefore takes the **geometric mean** of the token ratios instead of their product, by raising the product to the power $1 / |y_i|$ [[4]](#ref-4), [[5]](#ref-5):
+
+$$
+s_i(\theta) = \left( \frac{\pi_\theta(y_i \mid x)}{\pi_{\theta_{\text{old}}}(y_i \mid x)} \right)^{\frac{1}{|y_i|}} \tag{2} \label{sequence-ratio}
+$$
+
+In practice, it is computed in log space. The logarithm turns the power into a factor and the product into a sum, and the exponential turns the result back:
+
+$$
+s_i(\theta) = \exp\left( \frac{1}{|y_i|} \log \prod_{t=1}^{|y_i|} w_{i,t}(\theta) \right) = \exp\left( \frac{1}{|y_i|} \sum_{t=1}^{|y_i|} \log w_{i,t}(\theta) \right)
+$$
+
+So $s_i$ is the exponential of the **average** log-ratio of the response's tokens. In the example above, $1{,}000$ tokens with a ratio of $1.01$ each give $s_i = 1.01$, a value on the same scale for a response of any length.
+
+## The GSPO Objective
+
+With one ratio per response, GSPO clips and weights whole responses. Its objective uses the same group advantage $\hat{A}_i$ as GRPO, and replaces the average of token-level clipped terms with a single clipped term per response [[4]](#ref-4):
+
+$$
+\mathcal{J}^{\text{GSPO}}(\theta) = \mathbb{E}_{x \sim \mathcal{D}, \, \{y_i\} \sim \pi_{\theta_{\text{old}}}} \left[ \frac{1}{G} \sum_{i=1}^{G} \min\Big( s_i(\theta) \, \hat{A}_i, \; \text{clip}\big( s_i(\theta), 1 - \epsilon, 1 + \epsilon \big) \, \hat{A}_i \Big) \right] \tag{3} \label{gspo}
+$$
+
+Because $s_i$ in [Eq. (2)](#eq-sequence-ratio) is an average over many tokens, it stays much closer to $1$ than individual token ratios do, so the clipping range is far narrower. In the paper's experiments, GSPO clipped $s_i$ to between $1 - 3 \times 10^{-4}$ and $1 + 4 \times 10^{-4}$, while GRPO used $0.2$ and $0.27$ for its token ratios [[4]](#ref-4). When a response's ratio leaves this range, the whole response is excluded from the gradient, not just some of its tokens.
+
+## Comparing the Gradients
+
+The difference between GSPO and GRPO is clearest in their gradients. Ignoring clipping, the gradient of one term $s_i \hat{A}_i$ of [Eq. (3)](#eq-gspo) follows from the identity $\nabla s = s \, \nabla \log s$:
+
+$$
+\nabla_\theta \big( s_i(\theta) \, \hat{A}_i \big) = \hat{A}_i \, s_i(\theta) \, \nabla_\theta \log s_i(\theta)
+$$
+
+The log of the ratio is the average log-ratio from above, and the old policy's probabilities do not depend on $\theta$, so only the current policy's log-probabilities have a gradient:
+
+$$
+\nabla_\theta \log s_i(\theta) = \frac{1}{|y_i|} \sum_{t=1}^{|y_i|} \nabla_\theta \log \pi_\theta(y_{i,t} \mid x, y_{i,<t})
+$$
+
+Putting the two together, the gradient of GSPO is [[4]](#ref-4):
+
+$$
+\nabla_\theta \mathcal{J}^{\text{GSPO}} = \mathbb{E} \left[ \frac{1}{G} \sum_{i=1}^{G} s_i(\theta) \, \hat{A}_i \cdot \frac{1}{|y_i|} \sum_{t=1}^{|y_i|} \nabla_\theta \log \pi_\theta(y_{i,t} \mid x, y_{i,<t}) \right] \tag{4} \label{gspo-gradient}
+$$
+
+For GRPO, the same steps applied to each token's ratio give a gradient in which each token is weighted by its **own** ratio [[4]](#ref-4):
+
+$$
+\nabla_\theta \mathcal{J}^{\text{GRPO}} = \mathbb{E} \left[ \frac{1}{G} \sum_{i=1}^{G} \hat{A}_i \cdot \frac{1}{|y_i|} \sum_{t=1}^{|y_i|} w_{i,t}(\theta) \, \nabla_\theta \log \pi_\theta(y_{i,t} \mid x, y_{i,<t}) \right] \tag{5} \label{grpo-gradient}
+$$
+
+Comparing [Eq. (4)](#eq-gspo-gradient) with [Eq. (5)](#eq-grpo-gradient), the only difference is how the tokens of a response are weighted. In GRPO, each token's gradient is multiplied by its own ratio $w_{i,t}$, a number that varies from token to token and, after clipping, can range anywhere in $(0, 1 + \epsilon]$ for a positive advantage or $[1 - \epsilon, \infty)$ for a negative one. These unequal, noisy weights are what accumulate during training. In GSPO, every token of a response is multiplied by the same number, $s_i \hat{A}_i$, so the tokens of a response are weighted equally.
+
+### GSPO-Token: Keeping Per-Token Advantages
+
+Sometimes we want different advantages for different tokens of a response, for example in multi-turn tasks. For this, the paper defines a variant, **GSPO-token**, with a per-token ratio that has the same value as $s_i$ but lets each token carry its own advantage $\hat{A}_{i,t}$ [[4]](#ref-4):
+
+$$
+s_{i,t}(\theta) = \text{sg}\big[ s_i(\theta) \big] \cdot \frac{\pi_\theta(y_{i,t} \mid x, y_{i,<t})}{\text{sg}\big[ \pi_\theta(y_{i,t} \mid x, y_{i,<t}) \big]}
+$$
+
+where $\text{sg}[\cdot]$, **stop-gradient**, uses a value without differentiating through it. The fraction equals $1$, so $s_{i,t}$ has the same value as $s_i$ and is clipped in the same way, but its gradient flows through each token's own log-probability. When every token has the same advantage, GSPO-token is identical to GSPO.
+
+## Results
+
+The authors trained a model fine-tuned from **Qwen3-30B-A3B-Base**, an MoE model, splitting each batch of responses into four mini-batches for gradient updates [[4]](#ref-4). Training with GSPO stayed stable throughout and kept improving as compute, the set of training problems, and the generation length grew. Under the same compute, GSPO reached higher training reward and better scores on AIME 2024, LiveCodeBench, and CodeForces than GRPO.
+
+One observation stands out. Because GSPO clips whole responses, it clipped about **two orders of magnitude** more tokens than GRPO, and so trained on far fewer of them. Yet it still learned more efficiently [[4]](#ref-4). If discarding most of the tokens that GRPO keeps does not hurt, then the gradients from those tokens were contributing more noise than signal.
+
+The largest benefit was for MoE models. In an MoE model, each token is processed by a few of many **experts**, chosen by a router. After a single gradient update, the experts chosen for the same response can change: in the 48-layer Qwen3-30B-A3B-Base, about $10\%$ of the activated experts differed between the old and the new policy [[4]](#ref-4). When the experts change, a token's probability can change sharply, and the token-level ratios of GRPO fluctuate wildly. To make GRPO converge at all, the team had used **Routing Replay**: caching the experts chosen by the old policy and forcing the new policy to use the same ones when computing the ratios, at a cost in memory and communication. GSPO does not need it. The probability of a whole response, which is all GSPO uses, stays stable even when individual tokens' experts change, because the model's ability to produce the response does not change much.
+
+The sequence-level ratio also simplifies the training system. Training and inference engines compute probabilities with slightly different numerical precision, so systems usually recompute the old policy's probabilities with the training engine. Sequence likelihoods are much more tolerant of these small differences than token likelihoods, so GSPO may be able to use the probabilities returned by the inference engine directly [[4]](#ref-4).
+
+## Limitations of GSPO
+
+GSPO's single ratio per response is also its main trade-off. Clipping a whole response because its average ratio drifted out of range throws away every token in it, including tokens whose individual ratios were fine, which is part of why it clips so many more tokens than GRPO. Its clipping range is several orders of magnitude narrower than GRPO's, so it has to be tuned anew rather than carried over. GSPO also keeps the rest of GRPO's design: the group sampling, the same advantage for every token of a response, and the division of the advantage by the group's standard deviation, which [Dr. GRPO](/articles/dr-grpo-group-relative-policy-optimization-done-right#question-level-difficulty-bias) argues biases the update toward very easy and very hard questions [[6]](#ref-6). And the reported results come from the Qwen team's own models and training setup, without an independent replication in the paper.
+
+> GSPO showed that the importance ratio should be computed for the unit that receives the reward. When the reward is given to the whole response, so should be the ratio, the clipping, and the weight of every token.
+
+## References
+
+<ol>
+  <li id="ref-1">Shao, Z., Wang, P., Zhu, Q., et al. (2024). <a href="https://arxiv.org/abs/2402.03300">DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open Language Models</a>. <em>arXiv:2402.03300</em>.</li>
+  <li id="ref-2">Qwen Team (2025). <a href="https://arxiv.org/abs/2505.09388">Qwen3 Technical Report</a>. <em>arXiv:2505.09388</em>.</li>
+  <li id="ref-3">MiniMax (2025). <a href="https://arxiv.org/abs/2506.13585">MiniMax-M1: Scaling Test-Time Compute Efficiently with Lightning Attention</a>. <em>arXiv:2506.13585</em>.</li>
+  <li id="ref-4">Zheng, C., Liu, S., Li, M., Chen, X.-H., Yu, B., et al. (2025). <a href="https://arxiv.org/abs/2507.18071">Group Sequence Policy Optimization</a>. <em>arXiv:2507.18071</em>.</li>
+  <li id="ref-5">Zheng, C., Ke, P., Zhang, Z., & Huang, M. (2023). <a href="https://aclanthology.org/2023.findings-acl.65/">Click: Controllable Text Generation with Sequence Likelihood Contrastive Learning</a>. <em>Findings of ACL</em>.</li>
+  <li id="ref-6">Liu, Z., Chen, C., Li, W., et al. (2025). <a href="https://arxiv.org/abs/2503.20783">Understanding R1-Zero-Like Training: A Critical Perspective</a>. <em>arXiv:2503.20783</em>.</li>
+</ol>
