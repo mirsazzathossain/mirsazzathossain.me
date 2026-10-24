@@ -11,13 +11,14 @@
     }
   },
   "researchInterests": [
-    "Multimodal Learning",
-    "Domain Adaptation",
-    "CUAs",
-    "Vision-Language Models",
-    "Federated Learning"
+    "Preference Optimization",
+    "LLM Scaling",
+    "Test-Time Adaptation",
+    "Formal Verification",
+    "Self-Distillation",
+    "Adversarial Policy Optimization"
   ],
-  "description": "A highly motivated and aspiring researcher with a strong background in deep learning, with recent work centered on multimodal learning. Over the past few years, I have actively contributed to the field, publishing research articles in top-tier venues such as ACL and WACV. My primary research interests lie in vision-language models. I have also worked on domain adaptation and federated learning, and continue to explore these areas with strong interest.\n\nCurrently, I am working as a Research Assistant at the Center for Computational & Data Sciences (CCDS) at Independent University, Bangladesh. My recent work explores multimodal alignment, efficient adaptation, and generative approaches, including diffusion models and constrained generation. I am actively seeking Ph.D. opportunities in Computer Science, with an emphasis on vision-language models, domain adaptation, and generative models.",
+  "description": "A highly motivated and aspiring researcher with a strong background in deep learning, with recent work centered on multimodal learning. Over the past few years, I have actively contributed to the field, publishing research articles in top-tier venues such as ACL and WACV. My primary research interests now lie in preference optimization and reinforcement learning for large language models. I have also worked on vision-language models, domain adaptation, and federated learning, and continue to explore these areas with strong interest.\n\nCurrently, I am working as a Research Assistant at the Center for Computational & Data Sciences (CCDS) at Independent University, Bangladesh. My recent work explores multimodal alignment and efficient adaptation, and I am increasingly focused on LLM scaling, test-time adaptation, self-distillation, adversarial policy optimization, and formal verification. I am actively seeking Ph.D. opportunities in Computer Science for Fall 2027, with an emphasis on preference optimization and reinforcement learning for large language models.",
   "academicLinks": [
     {
       "name": "google-scholar",
