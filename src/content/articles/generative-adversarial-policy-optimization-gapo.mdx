@@ -1,0 +1,219 @@
+---
+title: "Generative Adversarial Policy Optimization (GAPO)"
+tags:
+  - title: GAPO
+  - title: Generative Adversarial Policy Optimization
+  - title: Adversarial Policy Optimization
+  - title: GAN
+  - title: Reward Model
+  - title: Constraint Following
+  - title: Instruction Following
+  - title: Preference Optimization
+  - title: PPO
+  - title: Reinforcement Learning
+  - title: LLM
+categories:
+  - title: Machine Learning
+  - title: Reinforcement Learning
+  - title: Large Language Models
+author:
+  name: Mir Sazzat Hossain
+  designation: Research Assistant
+  url: https://mirsazzathossain.me
+  avatar:
+    url: user.png
+    alt: Mir Sazzat Hossain
+description: "How GAPO teaches language models to follow constraints: instead of pairing one prompt with a good and a bad response, it pairs one response with a matching and a violating prompt, and trains the policy against an encoder-only reward model in a GAN-style adversarial loop."
+seoDescription: "GAPO explained: preferential prompts, an encoder-only reward model, and GAN-style adversarial training with PPO for constraint following in LLMs."
+covers:
+  - url: content/generative-adversarial-policy-optimization-gapo/cover.jpg
+    alt: "GAPO cover: a generator and a reward model trained against each other in an adversarial loop"
+status: published
+publishedAt: 2026-08-07
+---
+
+<img
+  src="/images/content/generative-adversarial-policy-optimization-gapo/cover.jpg"
+  alt="GAPO cover: a generator and a reward model trained against each other in an adversarial loop"
+  sizes="100vw"
+  width="100%"
+  height="auto"
+  placeholder="blur"
+  blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="
+/>
+
+## Introduction
+
+Many real uses of language models come with **constraints**: write a product description of at most $50$ words, mention the price, use a formal tone, do not use bullet points. A model has to read every constraint in the prompt and produce a response that satisfies all of them. Models are usually taught this in one of two ways. **Supervised fine-tuning** shows them examples of responses that satisfy the constraints, but it never shows them what a violation looks like, so a model can learn to imitate the style of correct responses without checking the constraints at all. **Preference optimization**, such as DPO [[1]](#ref-1) or PPO [[2]](#ref-2) with a reward model, shows them a better and a worse response to the same prompt, which adjusts which responses the model prefers, but it still does not directly teach it to read the constraints.
+
+In 2025, a team from Fudan University and Alibaba proposed **GAPO** (Generative Adversarial Policy Optimization) [[3]](#ref-3), built on two ideas. The first is to change the preference data: instead of comparing two responses to one prompt, compare one response with two prompts, one whose constraints it satisfies and one whose constraints it violates. This forces the reward model to look at the constraints. The second is to train the reward model and the policy against each other, like the two networks of a **Generative Adversarial Network (GAN)** [[4]](#ref-4): the reward model learns to catch the policy's mistakes, and the policy learns to avoid them. On instruction-following benchmarks, this beat PPO, DPO, and other preference methods.
+
+In this post, we go through these two ideas and the adversarial loop that ties them together, then look at the results and the limitations. The reward model and PPO that GAPO builds on are covered in the [RLHF post](/articles/reinforcement-learning-from-human-feedback-rlhf).
+
+## Preferential Prompts Instead of Preferential Responses
+
+Let us first write the problem down. A prompt $P = (\mathcal{T}, \mathcal{C})$ has two parts: a free-text task $\mathcal{T}$, such as "write a description of this phone", and a set of constraints $\mathcal{C} = \{C_1, \dots, C_n\}$, such as "at most $50$ words" and "mention the price". A response $R$ either satisfies a constraint or it does not, which GAPO captures with a **constraint satisfaction function** [[3]](#ref-3):
+
+$$
+\mathcal{L}(R, C_i) = \begin{cases} 1 & \text{if } R \models C_i \\ 0 & \text{otherwise} \end{cases} \tag{1} \label{constraint}
+$$
+
+The language model, which GAPO calls the **generator** $\pi_\theta$, should write responses that satisfy as many constraints as possible. Counting the satisfied constraints with [Eq. (1)](#eq-constraint) and averaging over the responses the generator writes gives the objective:
+
+$$
+E(\pi_\theta) = \mathbb{E}_{R \sim \pi_\theta(P)} \left[ \sum_{C_i \in \mathcal{C}} \mathcal{L}(R, C_i) \right] \tag{2} \label{objective}
+$$
+
+The question is what data teaches a model this. The usual preference data, as in the [RLHF post](/articles/reinforcement-learning-from-human-feedback-rlhf#why-compare-instead-of-score), pairs one prompt with a preferred and a rejected response. GAPO reverses this. It keeps the response fixed and changes the **prompt**. It starts from a dataset $\mathcal{D} = \{ (P_i, R_i) \}_{i=1}^{N}$ in which each response satisfies every constraint of its prompt, and builds a rejected version of each prompt, one that the same response violates. There are two ways to do this.
+
+**Constraint modification** takes one constraint $C_{i,j}$ and changes it until the response no longer satisfies it. A response of $40$ words satisfies "at most $50$ words", but not "at most $20$ words":
+
+$$
+C_{i,j}^{\text{reject}} = f_{\text{modify}}(C_{i,j}), \quad \text{where} \quad \mathcal{L}\big( R_i, C_{i,j}^{\text{reject}} \big) = 0 \tag{3} \label{modify}
+$$
+
+**Constraint insertion** keeps every constraint and adds a new one that the response violates. A response that mentions the price violates "do not mention the price":
+
+$$
+\mathcal{C}_i^{\text{reject}} = \mathcal{C}_i \cup \big\{ C_{i,n+1}^{\text{reject}} \big\}, \quad \text{where} \quad \mathcal{L}\big( R_i, C_{i,n+1}^{\text{reject}} \big) = 0 \tag{4} \label{insert}
+$$
+
+Either way, [Eq. (3)](#eq-modify) or [Eq. (4)](#eq-insert), the rejected constraint set contains at least one constraint that the response breaks:
+
+$$
+\exists \, C_{i,j}^{\text{reject}} \in \mathcal{C}_i^{\text{reject}} : \; \mathcal{L}\big( R_i, C_{i,j}^{\text{reject}} \big) = 0 \tag{5} \label{guarantee}
+$$
+
+So every example now comes in two versions with the same response: an accepted prompt $P_i^{\text{accept}} = (\mathcal{T}_i, \mathcal{C}_i)$, which the response satisfies, and a rejected prompt $P_i^{\text{reject}} = (\mathcal{T}_i, \mathcal{C}_i^{\text{reject}})$, which it violates. Together they form the augmented dataset:
+
+$$
+\mathcal{D}' = \big\{ (P_i^{\text{accept}}, R_i), \, (P_i^{\text{reject}}, R_i) \big\}_{i=1}^{N} \tag{6} \label{augmented}
+$$
+
+Because the response is the same in both pairs, its style or its length says nothing about which pair is which. [Eq. (5)](#eq-guarantee) tells us the difference lies in the constraints, so the only way to tell the pairs apart is to read the constraints and check them against the response. A reward model trained on [Eq. (6)](#eq-augmented) has to learn what each constraint means, which is exactly what the objective in [Eq. (2)](#eq-objective) asks for.
+
+## An Encoder-Only Reward Model
+
+Checking a response against its constraints means comparing words in the prompt with words in the response. This is where the architecture of the reward model matters. A decoder-only language model, the usual choice for a reward model, reads the text from left to right: each token can only attend to the tokens before it. When it reads a constraint in the prompt, the response has not appeared yet, so the constraint can only be checked later, from the response tokens looking back.
+
+GAPO uses an **encoder-only** model instead, in which every token attends to every other token in both directions. Each constraint can be compared directly with every part of the response, and each part of the response with every constraint. The authors used **Longformer** [[5]](#ref-5), an encoder for long texts, with about $0.4$ billion parameters, much smaller than the $7$-billion-parameter policy it trains [[3]](#ref-3).
+
+The paper writes the reward model as $R(c, t)$, not to be confused with a response $R$. It is a classifier: given a prompt $c$ and a response $t$, it outputs the probability that the response satisfies the prompt's constraints. Each training example carries a label $y$, which is $1$ for a match and $0$ for a mismatch, and the reward model is trained with the **binary cross-entropy** loss [[3]](#ref-3):
+
+$$
+\mathcal{L}_R(\theta) = -\mathbb{E}_{(c, t, y) \sim \mathcal{D}'} \Big[ y \log R(c, t) + (1 - y) \log \big( 1 - R(c, t) \big) \Big] \tag{7} \label{bce}
+$$
+
+## The Adversarial Training Loop
+
+With the data and the reward model in place, GAPO trains the reward model and the generator in turns, like the discriminator and the generator of a GAN. In a GAN, the discriminator learns to tell real examples from the generator's fakes, and the generator learns to produce examples the discriminator cannot tell apart from real ones. In GAPO, the reward model plays the discriminator, and the language model is the generator.
+
+Training begins with a **warmup**. The reward model is trained alone with [Eq. (7)](#eq-bce) on the accepted and rejected pairs of [Eq. (6)](#eq-augmented), so that it has learned to check constraints before it starts judging the generator. Then the **adversarial phase** alternates between a reward model step and a generator step.
+
+### The Reward Model Step
+
+The generator writes a response $\hat{R}_i$ to each prompt $P_i$. These responses join the reward model's training data as **negatives**, labeled $0$, next to the accepted pairs labeled $1$ and the rejected prompts labeled $0$ [[3]](#ref-3):
+
+$$
+\mathcal{D}' = \big\{ (P_i^{\text{accept}}, R_i, 1), \; (P_i^{\text{reject}}, R_i, 0), \; (P_i, \hat{R}_i, 0) \big\} \tag{8} \label{adversarial-data}
+$$
+
+The reward model is then trained on this data with [Eq. (7)](#eq-bce). Labeling the generator's own responses as negatives is what makes the loop adversarial. The reward model is always trained to rank the generator's current responses below the reference responses, so it keeps learning to spot exactly the mistakes the generator is making now.
+
+### The Generator Step
+
+Now the reward model is held fixed, and the generator learns to score higher under it. The generator writes a response one token at a time: $\pi_\theta(t_n \mid c_n)$ is the probability of the token $t_n$ at position $n$, given the context $c_n$, which is the prompt plus the tokens written so far. GAPO updates it with PPO [[2]](#ref-2), using the objective [[3]](#ref-3):
+
+$$
+L_G(\theta) = \mathbb{E}_n \left[ \frac{\pi_\theta(t_n \mid c_n)}{\pi_{\text{ref}}(t_n \mid c_n)} \, A_n \right] \tag{9} \label{generator}
+$$
+
+Each token's probability ratio against the reference generator $\pi_{\text{ref}}$ is weighted by its advantage $A_n$. As in the [PPO post](/articles/proximal-policy-optimization-ppo#what-better-than-expected-means), the advantage says how much better a token turned out than what was expected from its context:
+
+$$
+A_n = Q^\pi(c_n, t_n) - V^\pi(c_n) \tag{10} \label{advantage}
+$$
+
+Here $V^\pi(c)$ is the **value function**, the reward expected from context $c$ onward, and $Q^\pi(c, t)$ is the **action value**, the reward expected after writing token $t$ in context $c$. The action value is the reward model's score for the token plus the discounted value of the context it leads to:
+
+$$
+Q^\pi(c_n, t_n) = R(c_n, t_n) + \gamma \, \mathbb{E}_{c_{n+1} \sim \pi_\theta} \big[ V^\pi(c_{n+1}) \big] \tag{11} \label{action-value}
+$$
+
+Putting [Eq. (11)](#eq-action-value) into [Eq. (10)](#eq-advantage) gives:
+
+$$
+A_n = R(c_n, t_n) + \gamma \, \mathbb{E}_{c_{n+1} \sim \pi_\theta} \big[ V^\pi(c_{n+1}) \big] - V^\pi(c_n)
+$$
+
+This is the TD error from [Eq. (7) of the PPO post](/articles/proximal-policy-optimization-ppo#eq-td-error), with the reward model's score playing the role of the reward. The value function itself is learned alongside the generator, by minimizing its squared error against the reward:
+
+$$
+L_V(\theta) = \mathbb{E}_c \Big[ \big( V^\pi(c) - R(c, t) \big)^2 \Big] \tag{12} \label{value-loss}
+$$
+
+So a generator step updates $\pi_\theta$ with [Eq. (9)](#eq-generator) and $V^\pi$ with [Eq. (12)](#eq-value-loss), and the loop goes back to the reward model.
+
+### Why the Loop Works
+
+As the generator improves, its responses become harder to tell apart from the reference responses, and the reward model, trained on them as negatives through [Eq. (8)](#eq-adversarial-data), has to learn finer distinctions. The difficulty of the training data increases on its own, without anyone writing harder examples by hand [[3]](#ref-3). This also solves a practical problem of RLHF. Normally, the reward model has to be trained well before PPO begins, and a weak reward model is exploited by the policy, as we saw with [reward hacking](/articles/reinforcement-learning-from-human-feedback-rlhf#the-naive-objective-and-reward-hacking). In GAPO, the reward model keeps training on the generator's latest responses, so any weakness the generator starts exploiting becomes new training data for the reward model.
+
+The full procedure follows the paper's algorithm [[3]](#ref-3):
+
+<div className="algorithm">
+
+<span className="algorithm-label"><b>Algorithm 1</b> Generative Adversarial Policy Optimization</span>
+
+$$
+\begin{array}{rl}
+{\scriptsize 1:} & \text{build } \mathcal{D}' \text{ with rejected prompts, Eq. (3) to Eq. (6)} \\
+{\scriptsize 2:} & \textbf{for } t = 1, \dots, T_{\text{warmup}} \textbf{ do} \quad \text{(warmup)} \\
+{\scriptsize 3:} & \quad \text{sample a batch } (P_i, R_i) \text{ from } \mathcal{D} \\
+{\scriptsize 4:} & \quad \text{update } R(c, t) \text{ with Eq. (7) on } (P_i^{\text{accept}}, R_i, 1), \, (P_i^{\text{reject}}, R_i, 0) \\
+{\scriptsize 5:} & \textbf{for } t = T_{\text{warmup}} + 1, \dots, T_{\text{warmup}} + T \textbf{ do} \quad \text{(adversarial)} \\
+{\scriptsize 6:} & \quad \textbf{if } t \bmod 2 = 1 \textbf{ then} \\
+{\scriptsize 7:} & \quad \quad \text{sample a batch } (P_i, R_i) \text{ from } \mathcal{D} \text{ and generate } \hat{R}_i = \pi_\theta(P_i) \\
+{\scriptsize 8:} & \quad \quad \text{update } R(c, t) \text{ with Eq. (7) on the data of Eq. (8)} \\
+{\scriptsize 9:} & \quad \textbf{else} \\
+{\scriptsize 10:} & \quad \quad \text{update } \pi_\theta \text{ with Eq. (9), using } A_n \text{ from Eq. (10) and Eq. (11)} \\
+{\scriptsize 11:} & \quad \quad \text{update } V^\pi \text{ with Eq. (12)}
+\end{array}
+$$
+
+</div>
+
+## Results
+
+The authors trained **Qwen2.5-7B** [[6]](#ref-6) on two tasks: the **IFEval** instruction-following benchmark [[7]](#ref-7), and a product-description dataset they built, where descriptions must follow constraints on product attributes [[3]](#ref-3). On IFEval, the overall accuracy was [[3]](#ref-3):
+
+| Method | IFEval (all) |
+| --- | --- |
+| Base model | 57.8 |
+| SFT | 78.3 |
+| PPO | 75.6 |
+| KTO [[8]](#ref-8) | 54.4 |
+| DPO | 33.3 |
+| SimPO [[9]](#ref-9) | 30.6 |
+| **GAPO** | **83.9** |
+
+On the product-description task, GAPO scored $95.4$ with an automatic reward-model judge, against $89.4$ for PPO, and $89$ against $81$ in a human evaluation. The offline preference methods, DPO, SimPO, and ORPO, did poorly on both tasks, below even the base model. A likely reason is that they are built to compare two responses to the same prompt, and the preferential-prompt data, where the two examples share one response and differ in the prompt, does not fit that form. PPO and GAPO, which learn from a reward model, can use it.
+
+## Limitations of GAPO
+
+GAPO's results come from a single policy, Qwen2.5-7B, on constraint-following tasks, and one of its two evaluation datasets was built by the authors themselves, so how well it carries over to other models and tasks is not yet known. The IFEval test split it reports is small. The adversarial loop also inherits the difficulties of GANs: the two models have to stay balanced, since a reward model that becomes too strong or too weak relative to the policy can stall training. And because every response the policy writes is labeled as a negative, even a response that fully satisfies its constraints is treated as worse than the reference, which ties the policy closely to the style of the reference responses.
+
+> GAPO showed that to teach a model to follow constraints, the preference data should differ in the constraints themselves, and that a reward model kept learning against the policy can supply ever harder examples on its own.
+
+## References
+
+<ol>
+  <li id="ref-1">Rafailov, R., Sharma, A., Mitchell, E., Ermon, S., Manning, C. D., & Finn, C. (2023). <a href="https://arxiv.org/abs/2305.18290">Direct Preference Optimization: Your Language Model is Secretly a Reward Model</a>. <em>NeurIPS</em>.</li>
+  <li id="ref-2">Schulman, J., Wolski, F., Dhariwal, P., Radford, A., & Klimov, O. (2017). <a href="https://arxiv.org/abs/1707.06347">Proximal Policy Optimization Algorithms</a>. <em>arXiv:1707.06347</em>.</li>
+  <li id="ref-3">Gu, Z., Chen, X., Shi, X., Wang, T., Zheng, S., Li, T., Feng, H., & Xiao, Y. (2025). <a href="https://arxiv.org/abs/2503.20194">GAPO: Learning Preferential Prompt through Generative Adversarial Policy Optimization</a>. <em>arXiv:2503.20194</em>.</li>
+  <li id="ref-4">Goodfellow, I. J., Pouget-Abadie, J., Mirza, M., et al. (2014). <a href="https://arxiv.org/abs/1406.2661">Generative Adversarial Networks</a>. <em>NeurIPS</em>.</li>
+  <li id="ref-5">Beltagy, I., Peters, M. E., & Cohan, A. (2020). <a href="https://arxiv.org/abs/2004.05150">Longformer: The Long-Document Transformer</a>. <em>arXiv:2004.05150</em>.</li>
+  <li id="ref-6">Qwen Team (2024). <a href="https://arxiv.org/abs/2412.15115">Qwen2.5 Technical Report</a>. <em>arXiv:2412.15115</em>.</li>
+  <li id="ref-7">Zhou, J., Lu, T., et al. (2023). <a href="https://arxiv.org/abs/2311.07911">Instruction-Following Evaluation for Large Language Models</a>. <em>arXiv:2311.07911</em>.</li>
+  <li id="ref-8">Ethayarajh, K., Xu, W., Muennighoff, N., Jurafsky, D., & Kiela, D. (2024). <a href="https://arxiv.org/abs/2402.01306">KTO: Model Alignment as Prospect Theoretic Optimization</a>. <em>ICML</em>.</li>
+  <li id="ref-9">Meng, Y., Xia, M., & Chen, D. (2024). <a href="https://arxiv.org/abs/2405.14734">SimPO: Simple Preference Optimization with a Reference-Free Reward</a>. <em>NeurIPS</em>.</li>
+</ol>
