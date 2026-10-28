@@ -6,7 +6,7 @@ import { ArticleListItem } from "@/components/articles/ArticleListItem";
 import { Pagination } from "@/components/ui/Pagination";
 import { SearchField } from "@/components/ui/SearchField";
 
-const POSTS_PER_PAGE = 20;
+const POSTS_PER_PAGE = 15;
 
 export default function PostsList({
   articles,
