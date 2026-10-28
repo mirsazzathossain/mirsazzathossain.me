@@ -1,0 +1,166 @@
+---
+title: "Adversarial Defense with Preference Optimization (AdPO)"
+tags:
+  - title: AdPO
+  - title: Adversarial Robustness
+  - title: Adversarial Training
+  - title: Vision-Language Models
+  - title: LVLM
+  - title: CLIP
+  - title: DPO
+  - title: Preference Optimization
+  - title: PGD
+  - title: LLM
+categories:
+  - title: Machine Learning
+  - title: Large Language Models
+author:
+  name: Mir Sazzat Hossain
+  designation: Research Assistant
+  url: https://mirsazzathossain.me
+  avatar:
+    url: user.png
+    alt: Mir Sazzat Hossain
+description: "How AdPO turns adversarial training into a preference optimization problem: a vision-language model learns, with DPO, to prefer its own description of a clean image over its description of an attacked one, and to describe the attacked image as if it were clean."
+seoDescription: "AdPO explained: adversarial training of vision-language models as DPO, with preferred image optimization, adversarial image optimization, and PGD attacks on CLIP."
+covers:
+  - url: content/adversarial-defense-preference-optimization-adpo/cover.jpg
+    alt: "AdPO cover: a clean image and an adversarially perturbed image, with the description of the clean one preferred"
+status: published
+publishedAt: 2026-09-28
+---
+
+<img
+  src="/images/content/adversarial-defense-preference-optimization-adpo/cover.jpg"
+  alt="AdPO cover: a clean image and an adversarially perturbed image, with the description of the clean one preferred"
+  sizes="100vw"
+  width="100%"
+  height="auto"
+  placeholder="blur"
+  blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="
+/>
+
+## Introduction
+
+A **large vision-language model (LVLM)**, such as LLaVA [[1]](#ref-1), answers questions about images. It has two main parts: an **image encoder**, usually the vision transformer of **CLIP** [[2]](#ref-2), which turns the image into features, and a language model, which reads those features together with the text prompt and writes the answer. The weak point is the image encoder. Because an image is made of continuous pixel values, an attacker can add noise to it that is too small for a person to see, but chosen so carefully that the encoder's features change completely. The model then describes something that is not in the image, or writes whatever text the attacker wants, such as a wrong medical diagnosis or a phishing link.
+
+The standard defense is **adversarial training**: generate such attacked images during training and teach the model to handle them. For vision-language models, the existing methods, such as **TeCoA** [[3]](#ref-3) and **FARE** [[4]](#ref-4), fine-tune only the CLIP image encoder, and they work on its features alone. They make the encoder more robust, but the model loses accuracy on clean images: it starts to miss fine details, or to describe things that are not there.
+
+In 2025, a team from the University of Science and Technology of China and Alibaba's Tongyi Lab proposed **AdPO** (Adversarial defense based on Preference Optimization) [[5]](#ref-5). Its idea is that adversarial training and preference optimization want the same thing. Adversarial training wants the model to keep its correct behavior on clean images and to reject the misleading behavior caused by attacked images. Preference optimization, such as **DPO** [[6]](#ref-6), raises the probability of a preferred output and lowers the probability of a rejected one. So AdPO trains the model with DPO to prefer its description of a clean image over its description of the attacked image, and adds a second loss that makes the attacked image produce the clean description.
+
+In this post, we first go through how the attacked images are made, then recall the DPO loss, and then build AdPO's two losses and the training procedure, ending with the limitations. The [DPO post](/articles/direct-preference-optimization-dpo) covers the loss AdPO builds on.
+
+## Adversarial Images
+
+Let $\phi$ be the image encoder and $x_m$ a clean image. An **adversarial image** $x_{\text{adv}}$ is a copy of $x_m$ in which every pixel has been moved by at most a small amount $\epsilon$. This is the $\ell_\infty$ constraint $\lVert x_{\text{adv}} - x_m \rVert_\infty \le \epsilon$. AdPO uses $\epsilon = 2/255$ or $\epsilon = 4/255$, so no pixel moves by more than $2$ or $4$ steps on the usual $0$ to $255$ scale, far too little to see.
+
+Within that limit, the attacker looks for the image whose features are as far as possible from the features of the clean image [[5]](#ref-5):
+
+$$
+x_{\text{adv}} = \arg\max_{\lVert x_{\text{adv}} - x_m \rVert_\infty \le \epsilon} \; \big\lVert \phi(x_{\text{adv}}) - \phi_{\text{org}}(x_m) \big\rVert_2^2 \tag{1} \label{attack}
+$$
+
+Here $\phi_{\text{org}}$ is the original encoder, before any adversarial training, and $\phi$ is the encoder being trained. If the features of the attacked image are far from the clean features, the language model, which only sees the features, receives a very different picture. This is an **untargeted** attack: it does not aim for a particular wrong output, it only pushes the features away. AdPO uses it during training because it needs no labels and no target text, and it reliably produces images the model gets wrong [[5]](#ref-5).
+
+The maximization in [Eq. (1)](#eq-attack) is solved with **projected gradient descent (PGD)** [[7]](#ref-7). Starting from the clean image, each step moves every pixel by a small step size $\alpha$ in the direction that increases the feature distance, and then clips the result back into the allowed box around $x_m$:
+
+$$
+x^{(k+1)} = \Pi_{\lVert x - x_m \rVert_\infty \le \epsilon} \Big( x^{(k)} + \alpha \cdot \text{sign}\big( \nabla_x \lVert \phi(x^{(k)}) - \phi_{\text{org}}(x_m) \rVert_2^2 \big) \Big) \tag{2} \label{pgd}
+$$
+
+The $\text{sign}$ keeps only the direction of the gradient for each pixel, so every pixel moves by exactly $\alpha$, and the projection $\Pi$ cuts back any pixel that has moved more than $\epsilon$ away from the clean image. AdPO runs $10$ steps of [Eq. (2)](#eq-pgd).
+
+FARE uses the same distance as its defense: it trains the encoder to make $\lVert \phi(x_{\text{adv}}) - \phi_{\text{org}}(x_m) \rVert_2^2$ small, so that the attacked features stay close to the clean ones [[4]](#ref-4). The attack in [Eq. (1)](#eq-attack) maximizes this distance, and FARE minimizes it. This works only at the level of features. It never checks what the language model actually says, and a feature that the distance treats as unimportant may carry exactly the detail the answer needs. AdPO instead trains on the model's output.
+
+## The Starting Point: DPO
+
+AdPO is built on the DPO loss. Given an input $x$, a preferred response $y_w$, and a rejected response $y_l$, DPO trains the policy $\pi_\theta$ to raise the probability of $y_w$ and lower that of $y_l$, both measured relative to a frozen reference model $\pi_{\text{ref}}$, as in [Eq. (9) of the DPO post](/articles/direct-preference-optimization-dpo#eq-dpo-loss):
+
+$$
+\mathcal{L}_{\text{DPO}} = -\mathbb{E}_{(x, y_w, y_l) \sim \mathcal{D}} \left[ \log \sigma\left( \beta \log \frac{\pi_\theta(y_w \mid x)}{\pi_{\text{ref}}(y_w \mid x)} - \beta \log \frac{\pi_\theta(y_l \mid x)}{\pi_{\text{ref}}(y_l \mid x)} \right) \right] \tag{3} \label{dpo}
+$$
+
+Each log ratio, multiplied by $\beta$, is the [implicit reward](/articles/direct-preference-optimization-dpo#eq-implicit-reward) of a response, and the loss pushes the reward of $y_w$ above the reward of $y_l$. In standard DPO, both responses answer the same input $x$. AdPO changes this.
+
+## Preferred Image Optimization
+
+For a vision-language model, the input has two parts, $x = \{x_m, x_{\text{text}}\}$: the image and the text prompt. AdPO uses a simple prompt, such as "What is the content of the image?", and builds the preference pair from the model's own answers [[5]](#ref-5):
+
+- The **preferred response** $y_w$ is what the model writes for the clean image $x_m$.
+- The **rejected response** $y_l$ is what the model writes for the adversarial image $x_{\text{adv}}$.
+
+The pairs are generated **online**, during training, from unlabeled images. No one writes captions, and the model is never trained on text written by someone else, so its own way of writing is kept. Since the attack moves the features, the description of the attacked image is usually wrong, and it serves as the rejected response.
+
+The key change from [Eq. (3)](#eq-dpo) is that the two responses are now scored under **different images**. The preferred response is scored on the clean image, and the rejected response on the adversarial image [[5]](#ref-5):
+
+$$
+\mathcal{L}_P = -\mathbb{E} \left[ \log \sigma\left( \beta \log \frac{\pi_\theta(y_w \mid x_m, x_{\text{text}})}{\pi_{\text{ref}}(y_w \mid x_m, x_{\text{text}})} - \beta \log \frac{\pi_\theta(y_l \mid x_{\text{adv}}, x_{\text{text}})}{\pi_{\text{ref}}(y_l \mid x_{\text{adv}}, x_{\text{text}})} \right) \right] \tag{4} \label{preferred}
+$$
+
+The reference model $\pi_{\text{ref}}$ is the model with the original encoder. Only the image encoder is trained. The language model stays frozen, so every change in the probabilities comes from a change in the image features. Read this way, the two halves of [Eq. (4)](#eq-preferred) do two different jobs. The first raises the probability of the correct description given the clean image, which protects the clean performance that TeCoA and FARE lose. The second lowers the probability of the wrong description given the attacked image, so the encoder learns to stop producing features that lead to it.
+
+## Adversarial Image Optimization
+
+[Eq. (4)](#eq-preferred) keeps the clean performance, but on its own it does not make the model much more robust [[5]](#ref-5). The reason is a known weakness of DPO on multimodal data, called **unconditional preference** [[8]](#ref-8). The preferred and the rejected responses are both text, and they differ in their wording. DPO can lower the reward of $y_l$ by learning which kind of text to disfavor, without looking much at the image at all. The loss goes down, but the encoder has not learned to handle the attacked image.
+
+So AdPO adds a second loss that ties the attacked image directly to the right answer. It trains the model to produce the clean description $y_w$ when it sees the **adversarial** image [[5]](#ref-5):
+
+$$
+\mathcal{L}_A = -\sum_{t=1}^{T} \log \pi_\theta\big( y_w^t \mid x_{\text{adv}}, x_{\text{text}}, y_w^{0:t-1} \big) \tag{5} \label{adversarial}
+$$
+
+This is the usual language-modeling loss, summed over the $T$ tokens of $y_w$: each token $y_w^t$ is predicted from the attacked image, the prompt, and the tokens before it. The loss is computed only on the answer, not on the prompt. Since the language model is frozen, the only way to make the clean description likely again is for the encoder to give the attacked image features that look like those of the clean image. Unlike FARE, though, "look like" is measured by what the language model says, not by the distance between the features.
+
+## The AdPO Objective
+
+The full objective adds the two losses, with a weight $\lambda$ [[5]](#ref-5):
+
+$$
+\mathcal{L}_{\text{AdPO}} = \mathcal{L}_P + \lambda \, \mathcal{L}_A \tag{6} \label{adpo}
+$$
+
+[Eq. (4)](#eq-preferred) keeps the clean behavior and [Eq. (5)](#eq-adversarial) adds the robustness, and $\lambda$ trades one against the other. The authors found that a larger $\lambda$ makes the model more robust, and a smaller one keeps more of its clean performance. They use $\lambda = 1$ and $\beta = 0.1$.
+
+Training the full LLaVA-7B in this way would be expensive, since every step runs the language model on two images and generates two responses. AdPO therefore trains on a small model, **TinyLLaVA** [[9]](#ref-9), which pairs the same CLIP ViT-L/14 encoder with **OpenELM-450M** [[10]](#ref-10), a language model of $450$ million parameters. Only the encoder is updated, so the trained encoder can then be plugged into larger models that use the same CLIP encoder, such as LLaVA-1.5-7B and **OpenFlamingo-9B** [[11]](#ref-11), without any further training. The images come from ImageNet, without their labels. Putting everything together, with the encoder trained on [Eq. (6)](#eq-adpo):
+
+<div className="algorithm">
+
+<span className="algorithm-label"><b>Algorithm 1</b> AdPO</span>
+
+$$
+\begin{array}{rl}
+{\scriptsize 1:} & \text{copy the original encoder } \phi_{\text{org}} \text{ and set } \pi_{\text{ref}} \text{ to the original model} \\
+{\scriptsize 2:} & \textbf{for } \text{each batch of clean images } x_m \textbf{ do} \\
+{\scriptsize 3:} & \quad \text{generate } x_{\text{adv}} \text{ with } 10 \text{ PGD steps of Eq. (2)} \\
+{\scriptsize 4:} & \quad y_w \leftarrow \text{the model's answer for } (x_m, x_{\text{text}}) \\
+{\scriptsize 5:} & \quad y_l \leftarrow \text{the model's answer for } (x_{\text{adv}}, x_{\text{text}}) \\
+{\scriptsize 6:} & \quad \text{compute } \mathcal{L}_P \text{ with Eq. (4) and } \mathcal{L}_A \text{ with Eq. (5)} \\
+{\scriptsize 7:} & \quad \text{update the encoder } \phi \text{ with } \mathcal{L}_{\text{AdPO}} \text{ of Eq. (6)}
+\end{array}
+$$
+
+</div>
+
+The attack in line 3 is made against the current encoder $\phi$, so as the encoder becomes more robust, the attacks change with it.
+
+## Limitations of AdPO
+
+AdPO's cost is higher than that of FARE: each step generates two responses and runs a language model, even if a small one, where FARE only compares features. The preferred response is the model's own description of the clean image, so any mistake the model already makes on clean images is learned as correct. The training attack is untargeted and limited to small $\ell_\infty$ noise, and the defense covers only the image, not attacks through the text prompt. The method also depends on the variant of preference optimization: the authors found that IPO, KTO, and Step-DPO work about as well as DPO, but [SimPO](/articles/simple-preference-optimization-simpo) does worse, possibly because it has no reference model [[5]](#ref-5).
+
+> AdPO showed that adversarial training can be written as a preference: the model's answer on a clean image is preferred over its answer on an attacked one, and training on that preference, together with a loss that makes the attacked image give the clean answer, keeps the model accurate while making it robust.
+
+## References
+
+<ol>
+  <li id="ref-1">Liu, H., Li, C., Li, Y., & Lee, Y. J. (2024). <a href="https://arxiv.org/abs/2310.03744">Improved Baselines with Visual Instruction Tuning</a>. <em>CVPR</em>.</li>
+  <li id="ref-2">Radford, A., Kim, J. W., Hallacy, C., et al. (2021). <a href="https://arxiv.org/abs/2103.00020">Learning Transferable Visual Models From Natural Language Supervision</a>. <em>ICML</em>.</li>
+  <li id="ref-3">Mao, C., Geng, S., Yang, J., Wang, X., & Vondrick, C. (2023). <a href="https://arxiv.org/abs/2212.07016">Understanding Zero-Shot Adversarial Robustness for Large-Scale Models</a>. <em>ICLR</em>.</li>
+  <li id="ref-4">Schlarmann, C., Singh, N. D., Croce, F., & Hein, M. (2024). <a href="https://arxiv.org/abs/2402.12336">Robust CLIP: Unsupervised Adversarial Fine-Tuning of Vision Embeddings for Robust Large Vision-Language Models</a>. <em>ICML</em>.</li>
+  <li id="ref-5">Liu, C., Gui, T., Liu, Y., & Xu, L. (2025). <a href="https://arxiv.org/abs/2504.01735">AdPO: Enhancing the Adversarial Robustness of Large Vision-Language Models with Preference Optimization</a>. <em>arXiv:2504.01735</em>.</li>
+  <li id="ref-6">Rafailov, R., Sharma, A., Mitchell, E., Ermon, S., Manning, C. D., & Finn, C. (2023). <a href="https://arxiv.org/abs/2305.18290">Direct Preference Optimization: Your Language Model is Secretly a Reward Model</a>. <em>NeurIPS</em>.</li>
+  <li id="ref-7">Madry, A., Makelov, A., Schmidt, L., Tsipras, D., & Vladu, A. (2018). <a href="https://arxiv.org/abs/1706.06083">Towards Deep Learning Models Resistant to Adversarial Attacks</a>. <em>ICLR</em>.</li>
+  <li id="ref-8">Wang, F., Zhou, W., Huang, J. Y., Xu, N., Zhang, S., Poon, H., & Chen, M. (2024). <a href="https://arxiv.org/abs/2406.11839">mDPO: Conditional Preference Optimization for Multimodal Large Language Models</a>. <em>EMNLP</em>.</li>
+  <li id="ref-9">Jia, J., Hu, Y., Weng, X., Shi, Y., Li, M., et al. (2024). <a href="https://arxiv.org/abs/2405.11788">TinyLLaVA Factory: A Modularized Codebase for Small-scale Large Multimodal Models</a>. <em>arXiv:2405.11788</em>.</li>
+  <li id="ref-10">Mehta, S., Sekhavat, M. H., Cao, Q., et al. (2024). <a href="https://arxiv.org/abs/2404.14619">OpenELM: An Efficient Language Model Family with Open Training and Inference Framework</a>. <em>arXiv:2404.14619</em>.</li>
+  <li id="ref-11">Awadalla, A., Gao, I., Gardner, J., et al. (2023). <a href="https://arxiv.org/abs/2308.01390">OpenFlamingo: An Open-Source Framework for Training Large Autoregressive Vision-Language Models</a>. <em>arXiv:2308.01390</em>.</li>
+</ol>
