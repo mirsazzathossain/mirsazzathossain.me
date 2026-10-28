@@ -1,0 +1,180 @@
+---
+title: "Adversarial Policy Optimization (APO)"
+tags:
+  - title: APO
+  - title: Adversarial Policy Optimization
+  - title: Adversarial Training
+  - title: Robust Reinforcement Learning
+  - title: Data Augmentation
+  - title: KL Divergence
+  - title: PPO
+  - title: Deep Reinforcement Learning
+  - title: Reinforcement Learning
+categories:
+  - title: Machine Learning
+  - title: Reinforcement Learning
+author:
+  name: Mir Sazzat Hossain
+  designation: Research Assistant
+  url: https://mirsazzathossain.me
+  avatar:
+    url: user.png
+    alt: Mir Sazzat Hossain
+description: "How APO makes a reinforcement learning agent robust to high-dimensional and noisy observations: a perturber network learns small changes to the observation that change the agent's actions the most, and the policy network learns to ignore them, in a max-min game on top of PPO."
+seoDescription: "APO explained: a perturber network and a policy network play a max-min game with KL divergence on top of PPO, for robust RL in high-dimensional, noisy states."
+covers:
+  - url: content/adversarial-policy-optimization-apo/cover.jpg
+    alt: "APO cover: a perturber network nudges an observation, and the policy learns to keep its action the same"
+status: published
+publishedAt: 2026-09-20
+---
+
+<img
+  src="/images/content/adversarial-policy-optimization-apo/cover.jpg"
+  alt="APO cover: a perturber network nudges an observation, and the policy learns to keep its action the same"
+  sizes="100vw"
+  width="100%"
+  height="auto"
+  placeholder="blur"
+  blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="
+/>
+
+## Introduction
+
+A reinforcement learning agent rarely sees the true state of its environment. It sees an **observation**: a long vector of joint angles, velocities, and sensor readings for a robot, or the pixels of a screen for a game. A policy network trained on such observations can pick up on features that happen to go along with the reward during training but have nothing to do with the task. This is called **observational overfitting** [[1]](#ref-1). The problem gets worse as the observation grows, since there are more irrelevant features to latch onto, and worse again when part of the observation is pure noise. An agent that overfits early in training often never recovers.
+
+The usual remedy is **data augmentation**: transform the observation in ways that should not matter, such as scaling it by a random factor, and train the agent on the transformed versions. Methods such as **RAD** [[2]](#ref-2) and **DRAC** [[3]](#ref-3) do this and often help. But the choice of transformation is a form of prior knowledge. Someone has to decide which changes leave the task unchanged, and a wrong choice can hurt. On the DeepMind Control Quadruped Run task, RAD made a PPO agent about $14\%$ worse [[4]](#ref-4).
+
+In 2023, Md Masudur Rahman and Yexiang Xue of Purdue University proposed **APO** (Adversarial Policy Optimization) [[4]](#ref-4), which learns the transformation instead of choosing it by hand. A second network, the **perturber**, learns to change the observation slightly in the way that changes the agent's actions the most. The policy network, in turn, learns to keep its actions the same under those changes. The two networks play a **max-min game**, and the result is a policy that ignores the parts of the observation it should never have relied on. On the same Quadruped Run task, APO improved PPO by about $47\%$.
+
+Unlike most posts here, APO is not about language models. It is a deep reinforcement learning method for continuous control, but it is built directly on PPO, and the adversarial idea is close to the one behind [GAPO](/articles/generative-adversarial-policy-optimization-gapo). In this post, we go through the PPO objective APO starts from, the perturber and the policy losses, and the training algorithm, and end with its limitations.
+
+## The Starting Point: PPO
+
+At every timestep $t$, the agent receives an observation $x_t$, takes an action $a_t$, and gets a reward $r_t$. These play the roles of the state $s_t$ and the token $y_t$ in the [PPO post](/articles/proximal-policy-optimization-ppo). The paper uses the words state and observation for the same thing, since in its experiments the agent sees the full state vector. APO adds its adversarial terms on top of a base policy optimization method, and in the paper that method is **PPO** [[5]](#ref-5). Written as a loss to minimize, the PPO objective is:
+
+$$
+L_\pi = -\mathbb{E}_t \left[ \frac{\pi_\theta(a_t \mid x_t)}{\pi_{\theta_{\text{old}}}(a_t \mid x_t)} \, A_t \right] \tag{1} \label{ppo}
+$$
+
+This is the probability-ratio surrogate from [Eq. (10) of the PPO post](/articles/proximal-policy-optimization-ppo#eq-surrogate), with a minus sign so that it can be minimized. The ratio compares the current policy $\pi_\theta$ with the policy $\pi_{\theta_{\text{old}}}$ that collected the data, and the advantage $A_t$ says how much better the action turned out than expected. As in [Eq. (2) of the PPO post](/articles/proximal-policy-optimization-ppo#eq-advantage-qv), it is the action value minus the state value:
+
+$$
+A_t = Q(x_t, a_t) - V(x_t)
+$$
+
+Both are measured in terms of the **return** $G_t$, the discounted sum of the rewards from step $t$ onward, as in [Eq. (3) of the PPO post](/articles/proximal-policy-optimization-ppo#eq-return), with $\gamma = 0.99$ in the paper:
+
+$$
+G_t = r_t + \gamma \, r_{t+1} + \gamma^2 \, r_{t+2} + \dots = \sum_{k=0}^{\infty} \gamma^k \, r_{t+k}
+$$
+
+The two halves are estimated exactly as in the PPO post. The return the agent [actually collected](/articles/proximal-policy-optimization-ppo#measuring-what-actually-happened-the-return) after taking $a_t$ is one sample of $Q(x_t, a_t)$. $V(x_t)$ comes from a [value network](/articles/proximal-policy-optimization-ppo#measuring-what-was-expected-the-value-model), trained with the mean squared error of [Eq. (4) of the PPO post](/articles/proximal-policy-optimization-ppo#eq-value-loss) to predict the average return, $V(x_t) = \mathbb{E}[G_t \mid x_t]$, as in [Eq. (5) of the PPO post](/articles/proximal-policy-optimization-ppo#eq-value-expectation).
+
+There is one problem. PPO collects data in rollouts of a fixed length, $2048$ steps in the paper, and the episode usually has not ended when the rollout stops at step $T$. The rewards up to $r_{T-1}$ are known, but the rewards from step $T$ onward were never observed. So we split the return at step $T$ into the part we saw and the part we did not:
+
+$$
+G_t = \underbrace{\sum_{k=0}^{T-t-1} \gamma^k \, r_{t+k}}_{\text{observed}} + \underbrace{\sum_{k=T-t}^{\infty} \gamma^k \, r_{t+k}}_{\text{not observed}}
+$$
+
+In the second sum, every term carries at least $\gamma^{T-t}$. Taking it out, and counting from step $T$ with $j = k - (T - t)$, leaves exactly the return from step $T$:
+
+$$
+\sum_{k=T-t}^{\infty} \gamma^k \, r_{t+k} = \gamma^{T-t} \sum_{j=0}^{\infty} \gamma^j \, r_{T+j} = \gamma^{T-t} \, G_T
+$$
+
+$G_T$ is unknown, but its expected value is exactly what the value network predicts, $V(x_T) = \mathbb{E}[G_T \mid x_T]$. Replacing $G_T$ with $V(x_T)$, and writing out the observed sum, gives the estimate of the action value:
+
+$$
+Q(x_t, a_t) \approx r_t + \gamma \, r_{t+1} + \dots + \gamma^{T-t-1} \, r_{T-1} + \gamma^{T-t} \, V(x_T)
+$$
+
+If the episode did end before step $T$, nothing comes after it, and $V(x_T)$ is set to $0$. This way of filling in the unseen future with a predicted value is called **bootstrapping**, as in the [TD estimate of the PPO post](/articles/proximal-policy-optimization-ppo#second-estimate-td-bootstrapping).
+
+Subtracting $V(x_t)$ gives the advantage estimate used in the paper [[4]](#ref-4):
+
+$$
+A_t = -V(x_t) + r_t + \gamma \, r_{t+1} + \dots + \gamma^{T-t-1} \, r_{T-1} + \gamma^{T-t} \, V(x_T) \tag{2} \label{advantage}
+$$
+
+How far ahead the observed rewards reach decides what kind of estimate this is. If the rollout stops one step after $t$, so that $T = t + 1$, only one reward is observed, and [Eq. (2)](#eq-advantage) becomes:
+
+$$
+A_t = r_t + \gamma \, V(x_{t+1}) - V(x_t)
+$$
+
+which is the TD error from [Eq. (7) of the PPO post](/articles/proximal-policy-optimization-ppo#eq-td-error). It relies mostly on the value network, so it has low variance but inherits the network's errors. If instead the episode ends before $T$, so that $V(x_T) = 0$, every reward is observed, and it becomes the Monte Carlo estimate from [Eq. (6) of the PPO post](/articles/proximal-policy-optimization-ppo#eq-adv-mc), which is unbiased but noisy. [Eq. (2)](#eq-advantage) lies between the two.
+
+In the implementation, the ratio is clipped with $\epsilon = 0.2$, as in the [clipped surrogate objective](/articles/proximal-policy-optimization-ppo#the-clipped-surrogate-objective). And instead of a single estimate of [Eq. (2)](#eq-advantage), the advantage is computed with [GAE](/articles/proximal-policy-optimization-ppo#generalized-advantage-estimation), with $\lambda = 0.95$, which averages such estimates over every lookahead [[4]](#ref-4). Nothing in this part is new. APO's contribution is what it adds to $L_\pi$.
+
+## The Max-Min Game
+
+APO trains two networks against each other. The **perturber network**, with parameters $\phi$, takes an observation $x$ and returns a perturbed observation $x'$. The **policy network** $\pi_\theta$ is the agent itself. To measure how much the perturbation changes the agent's behavior, APO compares the action distributions the policy gives for the two observations, $\pi_\theta(\cdot \mid x)$ and $\pi_\theta(\cdot \mid x')$, with the **KL divergence**.
+
+The perturber wants this KL divergence to be large: it looks for a change to the observation that makes the agent act differently. The policy wants it to be small: it should act the same way whether or not the observation was perturbed. One side maximizes the same quantity that the other minimizes, which is what makes it a max-min game.
+
+### The Perturber Network
+
+A perturber that is free to change anything would win easily. It could replace the observation with noise, and no policy could act the same on noise as on the real observation. So the perturber is also asked to keep its change small, measured by the squared $L_2$ distance between the two observations. Its loss is [[4]](#ref-4):
+
+$$
+L_\phi = \lVert x_t - x_t' \rVert_2^2 - \mathrm{KL}\big( \pi_\theta(\cdot \mid x_t) \, \Vert \, \pi_\theta(\cdot \mid x_t') \big) \tag{3} \label{perturber}
+$$
+
+Minimizing the first term keeps the distortion small. Minimizing the second term, which has a minus sign, makes the KL divergence large. Together, the perturber is pushed toward the smallest change that moves the agent's action the most. A small change that moves the action a lot is exactly a sign of overfitting. If a slight nudge to some features makes the agent behave very differently, the policy is relying heavily on those features.
+
+### The Policy Network
+
+The policy network keeps learning from the reward with $L_\pi$ of [Eq. (1)](#eq-ppo), and adds the same KL divergence as a penalty [[4]](#ref-4):
+
+$$
+L_\theta = L_\pi + \mathrm{KL}\big( \pi_\theta(\cdot \mid x_t) \, \Vert \, \pi_\theta(\cdot \mid x_t') \big) \tag{4} \label{policy}
+$$
+
+The KL term appears in [Eq. (3)](#eq-perturber) with a minus sign and in [Eq. (4)](#eq-policy) with a plus sign. The perturber tries to make it larger, and the policy tries to make it smaller. For the policy, making it smaller means giving the same action distribution for $x$ and $x'$, which in turn means paying little attention to the features the perturber changed. Since the perturber always targets the features the policy is currently most sensitive to, the policy is steadily pushed away from relying on any small, easily changed part of the observation. The first term, meanwhile, keeps it learning the task.
+
+This is how APO replaces a hand-chosen data augmentation. RAD decides in advance that, for example, scaling the observation should not change the action. APO lets the perturber find, at every step, the changes that the current policy is most vulnerable to. The two can also be combined: in the paper's experiments, the observation is first scaled by a random factor between $0.6$ and $1.2$, as in RAD, and then passed to the perturber and the policy [[4]](#ref-4).
+
+## The APO Algorithm
+
+The two losses are minimized in turns. The agent first collects data with its current policy, then, for each collected observation, the perturber produces a perturbed observation, the policy is updated with [Eq. (4)](#eq-policy), and the perturber is updated with [Eq. (3)](#eq-perturber) [[4]](#ref-4):
+
+<div className="algorithm">
+
+<span className="algorithm-label"><b>Algorithm 1</b> Adversarial Policy Optimization</span>
+
+$$
+\begin{array}{rl}
+{\scriptsize 1:} & \text{initialize the policy parameters } \theta \text{ and the perturber parameters } \phi \\
+{\scriptsize 2:} & \textbf{for } \text{each iteration} \textbf{ do} \\
+{\scriptsize 3:} & \quad \textbf{for } \text{each environment step} \textbf{ do} \\
+{\scriptsize 4:} & \quad \quad a_t \sim \pi_\theta(a_t \mid x_t) \\
+{\scriptsize 5:} & \quad \quad x_{t+1} \sim P(x_{t+1} \mid x_t, a_t), \quad r_t \sim R(x_t, a_t) \\
+{\scriptsize 6:} & \quad \quad \mathcal{D} \leftarrow \mathcal{D} \cup \{ (x_t, a_t, r_t, x_{t+1}) \} \\
+{\scriptsize 7:} & \quad \textbf{for } \text{each observation } x_t \text{ in } \mathcal{D} \textbf{ do} \\
+{\scriptsize 8:} & \quad \quad x_t' \leftarrow \text{PerturberNetwork}(x_t) \\
+{\scriptsize 9:} & \quad \quad \text{compute } L_\pi \text{ with PPO, Eq. (1) and Eq. (2)} \\
+{\scriptsize 10:} & \quad \quad \text{compute } L_\theta \text{ with Eq. (4) and update } \theta \\
+{\scriptsize 11:} & \quad \quad \text{compute } L_\phi \text{ with Eq. (3) and update } \phi
+\end{array}
+$$
+
+</div>
+
+Compared with PPO, the new parts are the perturber, in lines 1, 8, and 11, and the KL term inside line 10. The perturber is used during training only. At test time, the agent acts on the real observation, and the perturber is thrown away.
+
+## Limitations of APO
+
+APO was tested only on vector observations, not on images, where data augmentation methods such as RAD are most often used, and only with PPO as the base algorithm. The APO agent in the experiments also used RAD's random scaling, and the paper does not report APO without it, so how much of the gain comes from the adversarial game alone is not clear. The two terms of the perturber loss in [Eq. (3)](#eq-perturber), and the two terms of the policy loss in [Eq. (4)](#eq-policy), are added with equal weight. The squared distance depends on the scale of the observation, so the balance between a small change and a large KL divergence may need tuning on other tasks. Finally, the gains vary a lot across random seeds, and on some tasks RAD or DRAC still did better.
+
+> APO showed that instead of guessing which changes to the observation should not matter, an agent can train against a network that searches for the changes it is most sensitive to, and learn to ignore them.
+
+## References
+
+<ol>
+  <li id="ref-1">Song, X., Jiang, Y., Tu, S., Du, Y., & Neyshabur, B. (2020). <a href="https://arxiv.org/abs/1912.02975">Observational Overfitting in Reinforcement Learning</a>. <em>ICLR</em>.</li>
+  <li id="ref-2">Laskin, M., Lee, K., Stooke, A., Pinto, L., Abbeel, P., & Srinivas, A. (2020). <a href="https://arxiv.org/abs/2004.14990">Reinforcement Learning with Augmented Data</a>. <em>NeurIPS</em>.</li>
+  <li id="ref-3">Raileanu, R., Goldstein, M., Yarats, D., Kostrikov, I., & Fergus, R. (2020). <a href="https://arxiv.org/abs/2006.12862">Automatic Data Augmentation for Generalization in Deep Reinforcement Learning</a>. <em>arXiv:2006.12862</em>.</li>
+  <li id="ref-4">Rahman, M. M., & Xue, Y. (2023). <a href="https://arxiv.org/abs/2304.14533">Adversarial Policy Optimization in Deep Reinforcement Learning</a>. <em>arXiv:2304.14533</em>.</li>
+  <li id="ref-5">Schulman, J., Wolski, F., Dhariwal, P., Radford, A., & Klimov, O. (2017). <a href="https://arxiv.org/abs/1707.06347">Proximal Policy Optimization Algorithms</a>. <em>arXiv:1707.06347</em>.</li>
+</ol>
