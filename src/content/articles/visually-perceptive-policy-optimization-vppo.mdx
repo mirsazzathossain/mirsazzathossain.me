@@ -1,0 +1,240 @@
+---
+title: "Visually-Perceptive Policy Optimization (VPPO)"
+tags:
+  - title: VPPO
+  - title: Visually-Perceptive Policy Optimization
+  - title: Token Perception
+  - title: Multimodal Reinforcement Learning
+  - title: Vision-Language Models
+  - title: RLVR
+  - title: GRPO
+  - title: DAPO
+  - title: KL Divergence
+  - title: LLM
+categories:
+  - title: Machine Learning
+  - title: Reinforcement Learning
+  - title: Large Language Models
+author:
+  name: Mir Sazzat Hossain
+  designation: Research Assistant
+  url: https://mirsazzathossain.me
+  avatar:
+    url: user.png
+    alt: Mir Sazzat Hossain
+description: "How VPPO makes reinforcement learning for vision-language models pay attention to the image: it measures how much each token depends on the picture, scales each response's advantage by that dependency, and updates only the most image-dependent tokens."
+seoDescription: "VPPO explained: token visual dependency via KL divergence, trajectory-level advantage shaping, and token-level gradient filtering for multimodal RLVR with GRPO and DAPO."
+covers:
+  - url: content/visually-perceptive-policy-optimization-vppo/cover.jpg
+    alt: "VPPO cover: a reasoning trace where only the few tokens that depend on the image are highlighted"
+status: published
+publishedAt: 2026-10-06
+---
+
+<img
+  src="/images/content/visually-perceptive-policy-optimization-vppo/cover.jpg"
+  alt="VPPO cover: a reasoning trace where only the few tokens that depend on the image are highlighted"
+  sizes="100vw"
+  width="100%"
+  height="auto"
+  placeholder="blur"
+  blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="
+/>
+
+## Introduction
+
+**Reinforcement learning with verifiable rewards (RLVR)**, usually with [GRPO](/articles/group-relative-policy-optimization-grpo) [[1]](#ref-1), has made language models much better at math and code. The same recipe is now applied to **vision-language models**, which answer questions about images: the model writes a chain of reasoning, and it gets a reward of $1$ if its final answer is correct and $0$ otherwise. But this recipe was built for text. It does not know that, for a vision-language model, some of the reasoning comes from looking at the image and some does not.
+
+Take a geometry question: "In circle $O$, $AC$ is parallel to $OB$, and $\angle BOC = 50^\circ$. What is $\angle OAB$?" The key step is something only the diagram shows: $OA$ and $OB$ are both radii, so the triangle $AOB$ is isosceles. Most of the other tokens in the answer, such as "so", "the", or "therefore", would be written the same way without the image. A response can also reach the right answer by guessing from the text alone, without looking at the diagram at all. GRPO treats all of these the same way. Every correct response gets the same advantage, and every token in it gets the same update.
+
+In 2025, a team from the Shanghai AI Laboratory and several universities proposed **VPPO** (Visually-Perceptive Policy Optimization) [[2]](#ref-2). It measures how much each generated token depends on the image, and uses that measure twice: it gives more weight to responses that rely more on the image, and it updates only the tokens that depend on the image the most. On Qwen2.5-VL-7B, this raised the average accuracy over eight multimodal reasoning benchmarks by $19.2\%$ over its baseline.
+
+In this post, we first recall the GRPO objective that VPPO starts from, then measure how much a token depends on the image, build VPPO's two mechanisms and its objective, show why it reduces the variance of the gradient, and end with the limitations.
+
+## The Starting Point: GRPO
+
+A multimodal prompt $(I, q)$ has an image $I$ and a text question $q$. The old policy $\pi_{\theta_{\text{old}}}$ writes a group of $G$ responses $\{o_i\}_{i=1}^{G}$, and each one gets a binary reward $R_i \in \{0, 1\}$ for whether its final answer is correct. As in [Eq. (3) of the GRPO post](/articles/group-relative-policy-optimization-grpo#eq-group-advantage), the advantage of a response is its reward normalized within the group:
+
+$$
+\hat{A}_i = \frac{R_i - \text{mean}\big( \{R_k\}_{k=1}^{G} \big)}{\text{std}\big( \{R_k\}_{k=1}^{G} \big)} \tag{1} \label{grpo-advantage}
+$$
+
+This single number is then given to every token of the response, and the policy is trained with the clipped objective of [Eq. (5) of the GRPO post](/articles/group-relative-policy-optimization-grpo#eq-grpo-clip):
+
+$$
+\begin{aligned}
+\mathcal{L}_{\text{GRPO}}(\theta) = \mathbb{E} \Bigg[ & \frac{1}{G} \sum_{i=1}^{G} \frac{1}{|o_i|} \sum_{t=1}^{|o_i|} \\
+& \min\Big( r_{i,t}(\theta) \, \hat{A}_i, \; \text{clip}\big( r_{i,t}(\theta), 1 - \epsilon, 1 + \epsilon \big) \, \hat{A}_i \Big) \Bigg]
+\end{aligned} \tag{2} \label{grpo}
+$$
+
+where $r_{i,t}(\theta) = \pi_\theta(o_{i,t} \mid I, q, o_{i,<t}) / \pi_{\theta_{\text{old}}}(o_{i,t} \mid I, q, o_{i,<t})$ is the probability ratio of token $t$. The paper points out two problems with this for images [[2]](#ref-2). At the level of **responses**, $\hat{A}_i$ treats all correct responses equally, whether they found the answer in the diagram or guessed it from the text. At the level of **tokens**, the same $\hat{A}_i$ is applied to every token, so the few tokens that actually read the image get no more credit than the many that do not.
+
+## Measuring How Much a Token Depends on the Image
+
+To fix either problem, VPPO first needs a number for how much a token depends on the image. The idea is to ask the model the same thing twice, once with the real image $I$ and once with a version $I'$ in which the image no longer carries useful information, and see how much its prediction changes. If the next-token distribution barely changes, the token did not need the image. If it changes a lot, the image mattered.
+
+To build $I'$, VPPO divides the image into patches of $14 \times 14$ pixels and blacks out each patch independently with probability $0.5$ [[2]](#ref-2). Then, at each step of a response, with state $s_t = (q, o_{<t})$, the **token visual dependency** is the KL divergence between the two predictions:
+
+$$
+S(s_t, I) = D_{\text{KL}}\big( \pi_\theta(\cdot \mid s_t, I) \, \Vert \, \pi_\theta(\cdot \mid s_t, I') \big) \tag{3} \label{dependency}
+$$
+
+The KL divergence is $0$ when the masked image gives exactly the same prediction as the real one, and it grows as the two predictions move apart. In the implementation, it is computed with the same low-variance estimator as the KL penalty in [Eq. (6) of the GRPO post](/articles/group-relative-policy-optimization-grpo#eq-kl-estimator). Computing it costs one extra forward pass per response, with the masked image.
+
+The authors then measured the dependency of [Eq. (3)](#eq-dependency) for every token in many responses of Qwen2.5-VL-7B and found two patterns [[2]](#ref-2). The first is that **image-dependent tokens are rare**. Most tokens have a dependency close to $0$, and the number of tokens drops off sharply as the dependency grows. The few high-dependency tokens are mostly numbers, geometric terms, and logical operators, exactly the places where the reasoning reads the diagram.
+
+The second pattern appears when the token scores are averaged over a whole response. The **trajectory dependency** of a response $\tau$ with $T$ tokens is:
+
+$$
+\bar{S}(\tau) = \frac{1}{T} \sum_{t=1}^{T} S(s_t, I)
+$$
+
+and it **varies widely between responses**. Most responses sit around the average, but some depend on the image much more than others. Two responses can reach the same correct answer, one by reading the diagram and one mostly by guessing from the text, and GRPO cannot tell them apart.
+
+## Token-Level Gradient Filtering
+
+The first pattern says the learning signal is spread over many tokens that do not matter for the image. So, within each response $\tau_i$, VPPO keeps only the top $k\%$ of tokens by visual dependency, and calls this set $K_i$. A binary mask records which tokens are kept [[2]](#ref-2):
+
+$$
+m_{i,t} = \mathbb{I}(t \in K_i) = \begin{cases} 1 & \text{if token } t \text{ is among the top } k\% \text{ of } \tau_i \\ 0 & \text{otherwise} \end{cases} \tag{4} \label{mask}
+$$
+
+Only tokens with $m_{i,t} = 1$ get a gradient. The others still appear in the response and still condition the later tokens, but the update does not change their probabilities. The paper uses $k = 0.4$, so the update falls on $40\%$ of each response. A smaller $k$ gives too little learning signal, and a larger one brings back the tokens that do not depend on the image.
+
+## Trajectory-Level Advantage Shaping
+
+The second pattern says that some responses are more grounded in the image than others, so VPPO wants to give each response a weight based on its trajectory dependency $\bar{S}(\tau_i)$. But $\bar{S}$ cannot be used as the weight directly. Its values are small, around $0.09$ on average in the paper's measurements, and their scale depends on the model and on how the image is masked. Multiplying the advantage by $\bar{S}$ would shrink every update to almost nothing. What matters is only how a response compares with the others, so VPPO uses where each response stands within the batch $\mathcal{B}$, in two steps.
+
+The first step puts the trajectory dependencies on a scale from $0$ to $1$, by **min-max normalization**. Let $\bar{S}_{\min}$ and $\bar{S}_{\max}$ be the smallest and the largest trajectory dependency in the batch:
+
+$$
+\bar{S}_{\min} = \min_{\tau_j \in \mathcal{B}} \bar{S}(\tau_j), \qquad \bar{S}_{\max} = \max_{\tau_j \in \mathcal{B}} \bar{S}(\tau_j)
+$$
+
+Subtracting the smallest value and dividing by the distance between the two gives:
+
+$$
+u_i = \frac{\bar{S}(\tau_i) - \bar{S}_{\min}}{\bar{S}_{\max} - \bar{S}_{\min}}
+$$
+
+The least image-dependent response in the batch gets $u_i = 0$, since its numerator is $0$. The most dependent one gets $u_i = 1$, since its numerator equals the denominator. Every other response falls in between, in proportion to where it lies: a response halfway between the two gets $u_i = 0.5$. The absolute size of $\bar{S}$ no longer matters, only its position relative to the rest of the batch.
+
+The second step stretches this $[0, 1]$ scale onto a chosen range $[\beta_{\min}, \beta_{\max}]$ with a straight line:
+
+$$
+\alpha(\tau_i) = \beta_{\min} + (\beta_{\max} - \beta_{\min}) \, u_i
+$$
+
+At $u_i = 0$ this gives $\beta_{\min}$, at $u_i = 1$ it gives $\beta_{\min} + (\beta_{\max} - \beta_{\min}) = \beta_{\max}$, and halfway it gives the midpoint of the range. Substituting $u_i$ gives the full **shaping factor** [[2]](#ref-2):
+
+$$
+\begin{aligned}
+\alpha(\tau_i) = \; & \beta_{\min} \\
+& + (\beta_{\max} - \beta_{\min}) \, \frac{\bar{S}(\tau_i) - \min_{\tau_j \in \mathcal{B}} \bar{S}(\tau_j)}{\max_{\tau_j \in \mathcal{B}} \bar{S}(\tau_j) - \min_{\tau_j \in \mathcal{B}} \bar{S}(\tau_j)}
+\end{aligned} \tag{5} \label{shaping}
+$$
+
+The range is there so that no response is switched off or blown up. The lower bound $\beta_{\min}$ keeps even the least image-dependent response in the learning signal: with $\beta_{\min} = 0.9$, it still keeps $90\%$ of its advantage, since a correct answer is still worth learning from. The upper bound $\beta_{\max}$ limits how much the most image-dependent response is amplified, so that a single response cannot dominate the update. The paper sets $\beta_{\min} = 0.9$ and adjusts $\beta_{\max}$ from each batch, which worked better than fixed ranges such as $[0.8, 1.2]$ or $[0.9, 1.1]$ in its ablation.
+
+The shaping factor then scales the GRPO advantage of [Eq. (1)](#eq-grpo-advantage):
+
+$$
+\hat{A}'_i = \alpha(\tau_i) \cdot \hat{A}_i
+$$
+
+A correct response that relied heavily on the image is pushed up more than a correct response that did not, and an incorrect response that relied on the image is pushed down more. Since $\alpha$ stays in a narrow band around $1$, the advantage keeps its sign and roughly its size, and the shaping only adjusts it.
+
+## The VPPO Objective
+
+Putting the two together, the shaped advantage $\hat{A}'_i$ replaces $\hat{A}_i$ in [Eq. (2)](#eq-grpo), and the mask $m_{i,t}$ of [Eq. (4)](#eq-mask) keeps only the image-dependent tokens [[2]](#ref-2):
+
+$$
+\begin{aligned}
+\mathcal{L}_{\text{VPPO}}(\theta) = \mathbb{E} \Bigg[ & \frac{1}{G} \sum_{i=1}^{G} \frac{1}{|o_i|} \sum_{t=1}^{|o_i|} m_{i,t} \\
+& \cdot \min\Big( r_{i,t}(\theta) \, \hat{A}'_i, \; \text{clip}\big( r_{i,t}(\theta), 1 - \epsilon, 1 + \epsilon \big) \, \hat{A}'_i \Big) \Bigg]
+\end{aligned} \tag{6} \label{vppo}
+$$
+
+Compared with [Eq. (2)](#eq-grpo), [Eq. (6)](#eq-vppo) changes only two things: the advantage is scaled by the shaping factor of [Eq. (5)](#eq-shaping), and each token's term is multiplied by its mask. Everything else, the group of responses, the probability ratio, and the clipping, stays the same. VPPO can therefore be added to other GRPO-style methods too. In the paper's experiments, it is added on top of [DAPO](/articles/decoupled-clip-dynamic-sampling-policy-optimization-dapo) [[3]](#ref-3), with its clip-higher, dynamic sampling, and token-level loss.
+
+<div className="algorithm">
+
+<span className="algorithm-label"><b>Algorithm 1</b> VPPO training step</span>
+
+$$
+\begin{array}{rl}
+{\scriptsize 1:} & \textbf{for } \text{each prompt } (I, q) \text{ in the batch} \textbf{ do} \\
+{\scriptsize 2:} & \quad \text{sample } G \text{ responses } o_1, \dots, o_G \text{ from } \pi_{\theta_{\text{old}}}(\cdot \mid I, q) \\
+{\scriptsize 3:} & \quad \text{build } I' \text{ by blacking out random } 14 \times 14 \text{ patches of } I \\
+{\scriptsize 4:} & \quad \text{compute } S(s_t, I) \text{ for every token with Eq. (3)} \\
+{\scriptsize 5:} & \text{compute the rewards and } \hat{A}_i \text{ with Eq. (1)} \\
+{\scriptsize 6:} & \textbf{for } \text{each response } \tau_i \textbf{ do} \\
+{\scriptsize 7:} & \quad \bar{S}(\tau_i) \leftarrow \text{mean of its token dependencies} \\
+{\scriptsize 8:} & \quad \hat{A}'_i \leftarrow \alpha(\tau_i) \, \hat{A}_i \text{ with Eq. (5)} \\
+{\scriptsize 9:} & \quad m_{i,t} \leftarrow 1 \text{ for the top } k\% \text{ of its tokens by } S \text{, as in Eq. (4)} \\
+{\scriptsize 10:} & \text{update } \pi_\theta \text{ with Eq. (6)}
+\end{array}
+$$
+
+</div>
+
+## Why It Lowers the Variance
+
+The paper also shows that the two changes make the gradient less noisy [[2]](#ref-2). Write $v_t = \nabla_\theta \log \pi_\theta(o_t \mid s_t, I)$ for the gradient of one token's log-probability. Leaving out the ratio and the clipping, the GRPO gradient of one response is the advantage times the sum of these over all $T$ tokens:
+
+$$
+g_{\text{GRPO}}(\tau) = \hat{A}(\tau) \sum_{t=0}^{T-1} v_t \tag{7} \label{grpo-grad}
+$$
+
+VPPO scales the advantage by $\alpha(\tau)$ and sums only over the kept tokens $K_\tau$:
+
+$$
+g_{\text{VPPO}}(\tau) = \alpha(\tau) \, \hat{A}(\tau) \sum_{t \in K_\tau} v_t \tag{8} \label{vppo-grad}
+$$
+
+To compare their variances, the paper compares their second moments, $\mathbb{E}[\lVert g \rVert^2]$, which dominate the variance in high dimensions. It also assumes that the advantage is independent of the token gradients, that the gradients of different tokens are uncorrelated, $\mathbb{E}[v_t^\top v_j] \approx 0$ for $t \ne j$, and that $\alpha$ is independent of the advantage. For GRPO, squaring [Eq. (7)](#eq-grpo-grad) and taking the advantage out of the expectation:
+
+$$
+\mathbb{E}\big[ \lVert g_{\text{GRPO}} \rVert^2 \big] = \mathbb{E}\big[ \hat{A}^2 \big] \, \mathbb{E}\Big[ \Big\lVert \sum_{t=0}^{T-1} v_t \Big\rVert^2 \Big]
+$$
+
+The squared norm of a sum expands into the squared norms of each term plus the cross terms between different tokens:
+
+$$
+\Big\lVert \sum_{t=0}^{T-1} v_t \Big\rVert^2 = \sum_{t=0}^{T-1} \lVert v_t \rVert^2 + \sum_{t \ne j} v_t^\top v_j
+$$
+
+The cross terms are uncorrelated, so their expectation is about $0$, and only the squared norms are left. If every token's gradient has roughly the same expected squared norm $C$, the sum over $T$ tokens gives:
+
+$$
+\mathbb{E}\big[ \lVert g_{\text{GRPO}} \rVert^2 \big] \approx \mathbb{E}\big[ \hat{A}^2 \big] \cdot T \cdot C
+$$
+
+The same steps for [Eq. (8)](#eq-vppo-grad) take out $\alpha^2$ as well, and the sum now runs over only the $|K_\tau| = kT$ kept tokens:
+
+$$
+\mathbb{E}\big[ \lVert g_{\text{VPPO}} \rVert^2 \big] \approx \mathbb{E}\big[ \alpha^2 \big] \, \mathbb{E}\big[ \hat{A}^2 \big] \cdot kT \cdot C
+$$
+
+Dividing the two gives the ratio between the variances:
+
+$$
+\text{Var}(g_{\text{VPPO}}) \approx k \cdot \mathbb{E}\big[ \alpha(\tau)^2 \big] \cdot \text{Var}(g_{\text{GRPO}}) \tag{9} \label{variance}
+$$
+
+With $k = 0.4$ and $\alpha$ close to $1$, the factor $k \cdot \mathbb{E}[\alpha^2]$ is well below $1$, so the VPPO gradient is much less noisy. Most of the reduction comes from the mask: the tokens it drops add noise to the gradient but carry little of the image-related signal. The result in [Eq. (9)](#eq-variance) rests on the simplifying assumptions above, so it shows the direction of the effect more than its exact size.
+
+## Limitations of VPPO
+
+VPPO needs a second forward pass with the masked image for every response, which made training about $10\%$ slower in the paper. The dependency score depends on how the image is masked, and random patch blackening, the best of the strategies the authors tried, may not be the best choice for every kind of image. The filtering ratio $k$ and the shaping range were tuned on one training set and may need tuning again elsewhere. The method was tested on reasoning tasks with a single correct answer, such as math, geometry, and logic, and on models of up to $32$ billion parameters. How it works for open-ended tasks, such as detailed image descriptions, where there is no single answer to check, is not yet known.
+
+> VPPO showed that in multimodal reinforcement learning, the reward should flow to the moments where the model actually looks at the image, and that a simple KL divergence between the real and a masked image is enough to find them.
+
+## References
+
+<ol>
+  <li id="ref-1">Shao, Z., Wang, P., Zhu, Q., et al. (2024). <a href="https://arxiv.org/abs/2402.03300">DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open Language Models</a>. <em>arXiv:2402.03300</em>.</li>
+  <li id="ref-2">Huang, S., Qu, X., Li, Y., Luo, Y., He, Z., Liu, D., & Cheng, Y. (2026). <a href="https://arxiv.org/abs/2510.09285">Spotlight on Token Perception for Multimodal Reinforcement Learning</a>. <em>ICLR</em>.</li>
+  <li id="ref-3">Yu, Q., Zhang, Z., Zhu, R., et al. (2025). <a href="https://arxiv.org/abs/2503.14476">DAPO: An Open-Source LLM Reinforcement Learning System at Scale</a>. <em>arXiv:2503.14476</em>.</li>
+</ol>
