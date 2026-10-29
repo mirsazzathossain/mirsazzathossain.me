@@ -1,0 +1,144 @@
+---
+title: "Perception-Aware Policy Optimization (PAPO)"
+tags:
+  - title: PAPO
+  - title: Perception-Aware Policy Optimization
+  - title: Implicit Perception Loss
+  - title: Multimodal Reinforcement Learning
+  - title: Vision-Language Models
+  - title: RLVR
+  - title: GRPO
+  - title: DAPO
+  - title: KL Divergence
+  - title: LLM
+categories:
+  - title: Machine Learning
+  - title: Reinforcement Learning
+  - title: Large Language Models
+author:
+  name: Mir Sazzat Hossain
+  designation: Research Assistant
+  url: https://mirsazzathossain.me
+  avatar:
+    url: user.png
+    alt: Mir Sazzat Hossain
+description: "How PAPO teaches multimodal models to look at the image while they learn to reason: it adds a loss that rewards responses whose probability drops when the image is masked, and keeps that loss from being gamed with two entropy terms."
+seoDescription: "PAPO explained: the Implicit Perception Loss, a KL divergence between real and masked images, plus Double Entropy Loss, added to GRPO and DAPO for multimodal RLVR."
+covers:
+  - url: content/perception-aware-policy-optimization-papo/cover.jpg
+    alt: "PAPO cover: the same response scored with the real image and with a masked image, pushed apart"
+status: published
+publishedAt: 2026-10-14
+---
+
+<img
+  src="/images/content/perception-aware-policy-optimization-papo/cover.jpg"
+  alt="PAPO cover: the same response scored with the real image and with a masked image, pushed apart"
+  sizes="100vw"
+  width="100%"
+  height="auto"
+  placeholder="blur"
+  blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="
+/>
+
+## Introduction
+
+When **reinforcement learning with verifiable rewards (RLVR)** is applied to vision-language models, the training objective is usually the one built for text, such as [GRPO](/articles/group-relative-policy-optimization-grpo) [[1]](#ref-1). The model writes a chain of reasoning about an image and a question, and it is rewarded only for a correct final answer. Nothing in this objective asks the model to actually look at the image.
+
+The authors of PAPO checked where such a model goes wrong. They trained Qwen2.5-VL-3B with GRPO and sorted $200$ of its mistakes by hand into perception errors, reasoning errors, calculation errors, and inconsistencies between the reasoning and the answer [[2]](#ref-2). Most of the mistakes, $67\%$, were **perception errors**: the reasoning was fine, but the model read the image wrong. In one example, it had to find a side $x$ of a right triangle with a $60^\circ$ angle and a hypotenuse of $18$. It decided that $x$ was opposite the $60^\circ$ angle, when the figure showed it opposite the $30^\circ$ angle, and the correct answer was simply half the hypotenuse, $9$.
+
+In 2025, a team from the University of Illinois Urbana-Champaign and Alibaba proposed **PAPO** (Perception-Aware Policy Optimization) [[2]](#ref-2) to address this through the training objective itself. Its idea is to make the model learn to perceive while it learns to reason. It adds one loss to GRPO: the model should be much less confident in its response when the image is mostly hidden. A response that the model would write just as easily without the image is not grounded in it. PAPO needs no extra data, no reward model, and no stronger teacher model, and it can replace GRPO or [DAPO](/articles/decoupled-clip-dynamic-sampling-policy-optimization-dapo) [[3]](#ref-3) directly. It cut perception errors by $30.5\%$.
+
+In this post, we first recall the GRPO objective, then build PAPO's **Implicit Perception Loss**, see how it can be gamed and how the **Double Entropy Loss** prevents that, and put everything together in the PAPO objective, ending with the limitations.
+
+## The Starting Point: GRPO
+
+A training example has an image $I$, a question $q$, and a short ground-truth answer $a$. The old policy $\pi_{\theta_{\text{old}}}$ writes a group of $G$ responses $\{o_i\}_{i=1}^{G}$, and a rule-based checker gives each one a reward $R_i = 1$ if its answer matches $a$ and $R_i = 0$ otherwise. As in [Eq. (3) of the GRPO post](/articles/group-relative-policy-optimization-grpo#eq-group-advantage), the advantage of each token of response $o_i$ is its reward normalized within the group:
+
+$$
+\hat{A}_{i,t} = \frac{R_i - \text{mean}(\mathbf{R})}{\text{std}(\mathbf{R})} \tag{1} \label{advantage}
+$$
+
+where $\mathbf{R} = \{R_1, \dots, R_G\}$. The policy is then trained to maximize the clipped objective with a KL penalty toward a reference model $\pi_{\text{ref}}$, the same as [Eq. (7) of the GRPO post](/articles/group-relative-policy-optimization-grpo#eq-grpo-objective):
+
+$$
+\begin{aligned}
+\mathcal{J}_{\text{GRPO}}(\theta) = \mathbb{E} \Bigg[ & \frac{1}{G} \sum_{i=1}^{G} \frac{1}{|o_i|} \sum_{t=1}^{|o_i|} \Big( \min\big( r_{i,t}(\theta) \, \hat{A}_{i,t}, \; \text{clip}\big( r_{i,t}(\theta), 1 - \epsilon_l, 1 + \epsilon_h \big) \, \hat{A}_{i,t} \big) \\
+& - \beta \, D_{\text{KL}}\big[ \pi_\theta \Vert \pi_{\text{ref}} \big] \Big) \Bigg]
+\end{aligned} \tag{2} \label{grpo}
+$$
+
+with the probability ratio $r_{i,t}(\theta) = \pi_\theta(o_{i,t} \mid q, I, o_{i,<t}) / \pi_{\theta_{\text{old}}}(o_{i,t} \mid q, I, o_{i,<t})$. The paper uses the clip-higher setting from DAPO, with a larger upper bound $\epsilon_h = 0.3$ than lower bound $\epsilon_l = 0.2$. The image $I$ appears only as part of the input. Whether the response actually used it makes no difference to the objective.
+
+## The Implicit Perception Loss
+
+To reward the use of the image, PAPO needs a way to tell whether a response depends on it. It compares the probability of the same response under two inputs: the real image $I$, and a **corrupted image** $I_{\text{mask}}$ in which most of the image has been hidden. Their ratio is the **perception ratio** [[2]](#ref-2):
+
+$$
+r^{\text{prcp}}(\theta) = \frac{\pi_\theta(o \mid q, I)}{\pi_\theta(o \mid q, I_{\text{mask}})} \tag{3} \label{perception-ratio}
+$$
+
+Both probabilities come from the same model and the same response $o$, and only the image differs. If the response really relied on the image, the model should find it much less likely once the image is hidden, so the denominator is small and the ratio is large. If the model would have written the same response without the image, perhaps because it guessed from the question alone, the two probabilities are close and the ratio is near $1$. So a well-behaved multimodal model should have a high perception ratio.
+
+The logarithm of this ratio is the **information gain** from the image: how much more probable the response becomes when the image is visible. Averaging it over responses sampled from the model gives the KL divergence between the two predictions:
+
+$$
+D_{\text{KL}}\big[ \pi_\theta \Vert \pi_\theta^{\text{mask}} \big] = \mathbb{E}_{o \sim \pi_\theta} \left[ \log \frac{\pi_\theta(o \mid q, I)}{\pi_\theta(o \mid q, I_{\text{mask}})} \right]
+$$
+
+where $\pi_\theta^{\text{mask}}$ is shorthand for the same model given the masked image. This is the **Implicit Perception Loss**. Unlike the KL penalty in [Eq. (2)](#eq-grpo), which is subtracted to keep the policy close to the reference model, this KL divergence is **maximized**: PAPO wants the predictions with and without the image to be as different as possible. It is called implicit because nothing tells the model what it should see in the image. The model is only rewarded for making its responses depend on it.
+
+In practice, the KL divergence is computed per token from the perception ratio, with the same estimator as the KL penalty in [Eq. (6) of the GRPO post](/articles/group-relative-policy-optimization-grpo#eq-kl-estimator), following Schulman [[4]](#ref-4):
+
+$$
+D_{\text{KL}}\big[ \pi_\theta \Vert \pi_\theta^{\text{mask}} \big] \approx r^{\text{prcp}}_i(\theta) - \log r^{\text{prcp}}_i(\theta) - 1 \tag{4} \label{kl-estimate}
+$$
+
+The function $x - \log x - 1$ is never negative. Its derivative, $1 - 1/x$, is zero only at $x = 1$, where the function is $0$, and it grows on both sides. So the estimate is $0$ when the masked image changes nothing, and it grows as the perception ratio moves away from $1$.
+
+### How the Image Is Masked
+
+The corrupted image has to remove the information in the picture. Adding noise to the pixels is not enough: even with strong Gaussian noise, the shapes and labels in a diagram usually stay readable. PAPO therefore splits the image into patches and blacks out a fraction of them [[2]](#ref-2). The authors tried two ways of choosing the patches: at random, or by picking the most salient patches according to the attention of **DINOv2** [[5]](#ref-5), a self-supervised vision model. Random masking worked better, and it costs almost nothing. The fraction of masked patches matters too. With too little masking, the corrupted image still shows most of what matters, and with all of it masked, training became unstable. The paper uses $60\%$.
+
+## The Double Entropy Loss
+
+Maximizing a KL divergence has a catch: the KL divergence has no upper limit. The model can make it as large as it likes by making the masked prediction terrible, rather than by making the real one better. If the model assigns almost no probability to its responses whenever the image is masked, the denominator of [Eq. (3)](#eq-perception-ratio) goes to $0$ and the perception ratio explodes, whether or not the model has learned to look at the image.
+
+The authors observed exactly this, and called it **KL hacking** [[2]](#ref-2). With a large weight on the Implicit Perception Loss, training first improved and then collapsed: the reward dropped sharply, and the model started inserting tokens unrelated to the question into its reasoning. Larger models, a larger weight, and masking the whole image all made the collapse come sooner. A warning sign was that the **entropy** of the model's predictions rose, both with the real image and with the masked one. The model was becoming uncertain about everything in order to inflate the KL divergence.
+
+So PAPO adds a penalty on both entropies, the **Double Entropy Loss**. The entropy $H[\pi_\theta]$ measures how spread out the predictions are given the real image, and $H[\pi_\theta^{\text{mask}}]$ given the masked image. Each is estimated from the sampled tokens by their negative log-probability, so a confident prediction has low entropy. Subtracting both from the objective keeps the model confident with and without the image, which closes the loophole: it can no longer inflate the KL divergence by spreading its masked predictions out. Of the regularizers the authors tried, including a stronger KL penalty toward the reference model and an entropy penalty on only one of the two, the double one gave the best results.
+
+## The PAPO Objective
+
+Adding the Implicit Perception Loss with weight $\gamma$ and the two entropy terms with weights $\eta_1$ and $\eta_2$ to [Eq. (2)](#eq-grpo) gives the full objective, written here for GRPO [[2]](#ref-2):
+
+$$
+\begin{aligned}
+\mathcal{J}_{\text{PAPO}}(\theta) = \mathbb{E} \Bigg[ & \frac{1}{G} \sum_{i=1}^{G} \frac{1}{|o_i|} \sum_{t=1}^{|o_i|} \Big( \min\big( r_{i,t}(\theta) \, \hat{A}_{i,t}, \; \text{clip}\big( r_{i,t}(\theta), 1 - \epsilon_l, 1 + \epsilon_h \big) \, \hat{A}_{i,t} \big) \\
+& - \beta \, D_{\text{KL}}\big[ \pi_\theta \Vert \pi_{\text{ref}} \big] + \gamma \, D_{\text{KL}}\big[ \pi_\theta \Vert \pi_\theta^{\text{mask}} \big] \\
+& - \eta_1 \, H\big[ \pi_\theta \big] - \eta_2 \, H\big[ \pi_\theta^{\text{mask}} \big] \Big) \Bigg]
+\end{aligned} \tag{5} \label{papo}
+$$
+
+Each term of [Eq. (5)](#eq-papo) has its own job. The clipped term learns from the reward, as in GRPO. The $\beta$ term keeps the policy close to the reference model. The $\gamma$ term, computed with [Eq. (4)](#eq-kl-estimate), pushes the response to depend on the image. The two $\eta$ terms keep the predictions confident, so that the $\gamma$ term cannot be gamed. The paper uses $\beta = 0.01$ and $\gamma = 0.02$ for the $3$-billion-parameter model, and adds the entropy terms with $\eta_1 = \eta_2 = 0.05$ where collapse is a risk, such as for the larger $7$-billion-parameter model. The DAPO version of PAPO is built the same way, with DAPO's objective in place of the clipped term and no KL penalty toward the reference model. Since that version loses the $\beta$ term, which also holds the policy in place, the entropy terms are essential there.
+
+Computing the masked probabilities costs one extra forward pass over each response, with the masked image. No extra responses have to be generated, and nothing else in the training loop changes. Every response, correct or not, is still scored with the advantage of [Eq. (1)](#eq-advantage).
+
+PAPO and [VPPO](/articles/visually-perceptive-policy-optimization-vppo) [[6]](#ref-6) start from the same measurement, a KL divergence between predictions with the real and a masked image, but use it in opposite ways. PAPO turns it into a loss and maximizes it for every token. VPPO keeps the GRPO loss and uses the measurement to decide which responses and which tokens the reward should flow to.
+
+## Limitations of PAPO
+
+PAPO adds an objective that can be gamed, and keeping it in check takes care. The weight $\gamma$ that works for a $3$-billion-parameter model causes collapse at $7$ billion without the entropy terms, so the weights have to be tuned to the model. The Implicit Perception Loss is applied to every token, including the many that have nothing to do with the image, and the authors list a finer selection of tokens as future work. The extra forward pass makes each training step moderately slower. And the experiments cover only models of up to $7$ billion parameters from the Qwen family, so how PAPO behaves at larger scales or on other model families is not yet known.
+
+> PAPO showed that a multimodal model can be taught to look at the image without telling it what to see: it is enough to reward responses that become much less likely when the image is hidden, as long as the model is kept from making the hidden-image predictions bad on purpose.
+
+## References
+
+<ol>
+  <li id="ref-1">Shao, Z., Wang, P., Zhu, Q., et al. (2024). <a href="https://arxiv.org/abs/2402.03300">DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open Language Models</a>. <em>arXiv:2402.03300</em>.</li>
+  <li id="ref-2">Wang, Z., Guo, X., Stoica, S., Xu, H., Wang, H., Ha, H., Chen, X., Chen, Y., Yan, M., Huang, F., & Ji, H. (2026). <a href="https://arxiv.org/abs/2507.06448">Perception-Aware Policy Optimization for Multimodal Reasoning</a>. <em>ICLR</em>.</li>
+  <li id="ref-3">Yu, Q., Zhang, Z., Zhu, R., et al. (2025). <a href="https://arxiv.org/abs/2503.14476">DAPO: An Open-Source LLM Reinforcement Learning System at Scale</a>. <em>arXiv:2503.14476</em>.</li>
+  <li id="ref-4">Schulman, J. (2020). <a href="http://joschu.net/blog/kl-approx.html">Approximating KL Divergence</a>. Blog post.</li>
+  <li id="ref-5">Oquab, M., Darcet, T., Moutakanni, T., et al. (2024). <a href="https://arxiv.org/abs/2304.07193">DINOv2: Learning Robust Visual Features without Supervision</a>. <em>Transactions on Machine Learning Research</em>.</li>
+  <li id="ref-6">Huang, S., Qu, X., Li, Y., Luo, Y., He, Z., Liu, D., & Cheng, Y. (2026). <a href="https://arxiv.org/abs/2510.09285">Spotlight on Token Perception for Multimodal Reinforcement Learning</a>. <em>ICLR</em>.</li>
+</ol>
