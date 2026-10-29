@@ -1,0 +1,222 @@
+---
+title: "Contrastive Perception Policy Optimization (CPPO)"
+tags:
+  - title: CPPO
+  - title: Contrastive Perception Policy Optimization
+  - title: Contrastive Learning
+  - title: InfoNCE
+  - title: Multimodal Reinforcement Learning
+  - title: Vision-Language Models
+  - title: RLVR
+  - title: GRPO
+  - title: Entropy
+  - title: LLM
+categories:
+  - title: Machine Learning
+  - title: Reinforcement Learning
+  - title: Large Language Models
+author:
+  name: Mir Sazzat Hossain
+  designation: Research Assistant
+  url: https://mirsazzathossain.me
+  avatar:
+    url: user.png
+    alt: Mir Sazzat Hossain
+description: "How CPPO improves perception in vision-language models during reinforcement learning: it finds the tokens whose entropy rises most when the image is hidden, and trains them with a contrastive loss to stay stable under harmless image changes and to shift when the image's content is removed."
+seoDescription: "CPPO explained: entropy-based perception token detection, a token-level InfoNCE Contrastive Perception Loss, and advantage gating added to GRPO for vision-language models."
+covers:
+  - url: content/contrastive-perception-policy-optimization-cppo/cover.jpg
+    alt: "CPPO cover: an anchor image pulled toward a mildly changed copy and pushed away from a masked copy"
+status: published
+publishedAt: 2026-10-22
+---
+
+<img
+  src="/images/content/contrastive-perception-policy-optimization-cppo/cover.jpg"
+  alt="CPPO cover: an anchor image pulled toward a mildly changed copy and pushed away from a masked copy"
+  sizes="100vw"
+  width="100%"
+  height="auto"
+  placeholder="blur"
+  blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="
+/>
+
+## Introduction
+
+When a vision-language model reasons about an image, its response contains two kinds of tokens. Some tokens carry information read from the image, such as "the base is $10$ cm". The paper calls these **perception tokens**. Others carry reasoning that needs no image at all, such as solving $x^2 + 2x + 1 = 0$, or recalling that the angles of a triangle add up to $180^\circ$. These are **reasoning tokens**. Reinforcement learning with a reward for the correct final answer, such as [GRPO](/articles/group-relative-policy-optimization-grpo) [[1]](#ref-1), does not tell the two apart. A wrong answer is penalized in the same way whether the model misread the image or made a mistake in the algebra.
+
+Earlier methods tried to give perception its own learning signal. Some make the model write its perception and its reasoning in separate tagged sections, and score the perception section with another language model, which breaks the natural flow of reasoning and invites reward hacking. [PAPO](/articles/perception-aware-policy-optimization-papo) [[2]](#ref-2) avoids extra models: it maximizes the KL divergence between the model's predictions with the real and a masked image. But that KL divergence has no upper limit, which makes training prone to collapse, and PAPO applies it to every token of every response, including reasoning tokens and responses that got the answer wrong.
+
+In 2026, a team from Huawei proposed **CPPO** (Contrastive Perception Policy Optimization) [[3]](#ref-3), which addresses both problems. It finds the perception tokens from the model's own predictions, by checking which tokens become most uncertain when the image is hidden. On those tokens, and only in responses that did better than the rest of their group, it adds a **contrastive** loss: the prediction should stay the same when the image is changed in a harmless way, and change when the image's content is removed.
+
+In this post, we first recall the GRPO objective, then build the **Contrastive Perception Loss**, show how CPPO detects perception tokens and why the entropy test works, and put everything together in the CPPO objective, ending with the limitations.
+
+## The Starting Point: GRPO
+
+The input is a query $q$ and an image $I$. The old policy $\pi_{\theta_{\text{old}}}$ samples a group of $G$ responses $\{o_1, \dots, o_G\}$, and each response $o_i$, with tokens $o_{i,1}, \dots, o_{i,T}$, gets a reward $R(o_i)$ for its correctness. As in [Eq. (3) of the GRPO post](/articles/group-relative-policy-optimization-grpo#eq-group-advantage), the advantage of a response is its reward normalized within the group:
+
+$$
+A_i = \frac{R(o_i) - \text{mean}\big( R(o_{1:G}) \big)}{\text{std}\big( R(o_{1:G}) \big)} \tag{1} \label{advantage}
+$$
+
+and the policy is trained with the clipped objective and a KL penalty toward a reference model, as in [Eq. (7) of the GRPO post](/articles/group-relative-policy-optimization-grpo#eq-grpo-objective):
+
+$$
+\begin{aligned}
+\mathcal{J}_{\text{GRPO}}(\theta) = \mathbb{E} \Bigg[ & \frac{1}{G} \sum_{i=1}^{G} \frac{1}{|o_i|} \sum_{t=1}^{|o_i|} \Big( \min\big( r_{i,t}(\theta) \, A_i, \; \text{clip}\big( r_{i,t}(\theta), 1 - \epsilon, 1 + \epsilon \big) \, A_i \big) \\
+& - \beta \, \mathrm{KL}\big[ \pi_\theta \Vert \pi_{\text{ref}} \big] \Big) \Bigg]
+\end{aligned} \tag{2} \label{grpo}
+$$
+
+where $r_{i,t}(\theta)$ is the probability ratio between the current and the old policy for token $o_{i,t}$. The reward says only whether the final answer was right, so nothing in this objective gives the model a direct signal about its perception.
+
+## The Contrastive Perception Loss
+
+CPPO's perception signal compares the model's prediction for a token under three versions of the image. The first is the original image $I$. The second is an **information-preserving** perturbation $I^+$, a change that keeps everything the question needs, such as slight color jitter, mild Gaussian noise, a small rotation, or a small change of perspective. The third is an **information-removing** perturbation $I^-$, which hides what the question needs: $80\%$ of the image's patches masked, or a crop that keeps only $30\%$ of the image. At each training step, one perturbation of each kind is picked at random [[3]](#ref-3).
+
+For a token $o_{i,t}$ of a response, the model gives a distribution over the next token under each of the three images. In the language of contrastive learning, the distribution under the original image is the **anchor**:
+
+$$
+\pi_\theta(o_{i,t}) = \pi_\theta(o_{i,t} \mid q, I, o_{i,<t})
+$$
+
+the distribution under the information-preserving image is the **positive** sample:
+
+$$
+\pi_\theta^+(o_{i,t}) = \pi_\theta(o_{i,t} \mid q, I^+, o_{i,<t})
+$$
+
+and the distribution under the information-removing image is the **negative** sample:
+
+$$
+\pi_\theta^-(o_{i,t}) = \pi_\theta(o_{i,t} \mid q, I^-, o_{i,<t})
+$$
+
+The goal is a model whose perception is stable and sensitive at the same time. A harmless change to the image should not change what the model reads from it, so the anchor should be close to the positive. Removing the image's content should change it, so the anchor should be far from the negative.
+
+To measure closeness, CPPO uses the negative KL divergence as a similarity, $\text{sim}(p, p^*) = -\mathrm{KL}(p \Vert p^*)$, which is $0$ when the two distributions are identical and becomes more negative as they move apart. The similarities of the anchor to the positive and to the negative are:
+
+$$
+s_{i,t}^+ = -\mathrm{KL}\big( \pi_\theta(o_{i,t}) \, \Vert \, \pi_\theta^+(o_{i,t}) \big), \qquad s_{i,t}^- = -\mathrm{KL}\big( \pi_\theta(o_{i,t}) \, \Vert \, \pi_\theta^-(o_{i,t}) \big)
+$$
+
+These two similarities go into the **InfoNCE** loss [[4]](#ref-4), the standard loss of contrastive learning, with a temperature $\tau > 0$ [[3]](#ref-3):
+
+$$
+\mathcal{L}_{i,t}^{\text{InfoNCE}} = -\log \frac{\exp\big( s_{i,t}^+ / \tau \big)}{\exp\big( s_{i,t}^+ / \tau \big) + \exp\big( s_{i,t}^- / \tau \big)} \tag{3} \label{infonce}
+$$
+
+The fraction is a softmax over the two candidates, the positive and the negative, so the loss is a cross-entropy that asks the anchor to pick out the positive as the more similar one. Dividing the numerator and the denominator by $\exp(s_{i,t}^+ / \tau)$ shows more clearly what it does:
+
+$$
+\mathcal{L}_{i,t}^{\text{InfoNCE}} = \log\Big( 1 + \exp\big( (s_{i,t}^- - s_{i,t}^+) / \tau \big) \Big)
+$$
+
+and substituting the two similarities, $s_{i,t}^- - s_{i,t}^+ = \mathrm{KL}(\pi_\theta \Vert \pi_\theta^+) - \mathrm{KL}(\pi_\theta \Vert \pi_\theta^-)$:
+
+$$
+\mathcal{L}_{i,t}^{\text{InfoNCE}} = \log\Big( 1 + \exp\Big( \frac{\mathrm{KL}\big( \pi_\theta \Vert \pi_\theta^+ \big) - \mathrm{KL}\big( \pi_\theta \Vert \pi_\theta^- \big)}{\tau} \Big) \Big)
+$$
+
+The loss goes down when the KL divergence to the positive gets smaller, and when the KL divergence to the negative gets larger. This is where CPPO differs from PAPO. PAPO maximizes the KL divergence to the masked image directly, and the objective can grow without limit. Here, once the negative is clearly farther than the positive, the exponent becomes very negative, the loss approaches its minimum of $0$, and its gradient fades. Pushing the negative even farther brings no further reward, so the model has nothing to gain from making its masked-image predictions arbitrarily bad.
+
+## Finding the Perception Tokens
+
+The contrastive loss only makes sense for perception tokens. A reasoning token, such as a step of algebra, should not change much when the image is hidden, and pushing it away from the masked prediction would over-regularize the model and destabilize training. So CPPO first finds the tokens that the model itself treats as perception tokens, using the **entropy** of its predictions. The entropy of the prediction at step $t$ measures how uncertain the model is about the next token:
+
+$$
+H(o_{i,t} \mid q, I, o_{i,<t}) = -\sum_{o \in \mathcal{V}} \pi_\theta(o \mid q, I, o_{i,<t}) \log \pi_\theta(o \mid q, I, o_{i,<t})
+$$
+
+where $\mathcal{V}$ is the vocabulary. CPPO compares this with the entropy under the information-removing image, and takes the difference [[3]](#ref-3):
+
+$$
+\Delta H_{i,t} = H(o_{i,t} \mid q, I^-, o_{i,<t}) - H(o_{i,t} \mid q, I, o_{i,<t}) \tag{4} \label{entropy-shift}
+$$
+
+If a token was read from the image, hiding the image should make the model unsure what to write there, so its entropy rises. A reasoning token can be predicted from the text alone, so its entropy barely changes.
+
+### Why the Entropy Shift Works
+
+The paper backs this up with **mutual information** [[3]](#ref-3). The mutual information between the next token and the image, $\mathrm{MI}(o_{i,t}; I \mid q, o_{i,<t})$, measures how much knowing the image reduces the uncertainty about the token. It is connected to entropy by a standard identity: the uncertainty about the token given the image equals the uncertainty without it, minus what the image tells us:
+
+$$
+H(o_{i,t} \mid I, q, o_{i,<t}) = H(o_{i,t} \mid q, o_{i,<t}) - \mathrm{MI}(o_{i,t}; I \mid q, o_{i,<t})
+$$
+
+The same identity holds with $I^-$ in place of $I$. Writing both and subtracting, the term $H(o_{i,t} \mid q, o_{i,<t})$, which does not involve the image, cancels:
+
+$$
+\Delta H_{i,t} = \mathrm{MI}(o_{i,t}; I \mid q, o_{i,<t}) - \mathrm{MI}(o_{i,t}; I^- \mid q, o_{i,<t})
+$$
+
+So the entropy shift is exactly how much more the original image tells us about the token than the information-removing one does. For a perception token, the paper assumes that the original image carries more information about it than the image with its content removed, so that the difference of mutual informations is non-negative, and therefore $\Delta H_{i,t} \ge 0$. The larger $\Delta H_{i,t}$ is, the more the token depends on the content of the image.
+
+### Selecting the Top Tokens
+
+CPPO ranks the tokens of each response by the entropy shift of [Eq. (4)](#eq-entropy-shift) and keeps the top $k$ fraction of them as perception tokens:
+
+$$
+S_{\text{perception}} = \big\{ t \;\big|\; \text{Rank}(\Delta H_{i,t}) \le k \cdot T \big\}
+$$
+
+A binary mask marks the selected tokens:
+
+$$
+M_{i,t} = \begin{cases} 1 & \text{if } t \in S_{\text{perception}} \\ 0 & \text{otherwise} \end{cases} \tag{5} \label{mask}
+$$
+
+The contrastive loss of [Eq. (3)](#eq-infonce) is applied only where the mask of [Eq. (5)](#eq-mask) is $1$, and the loss of a whole response averages over its tokens [[3]](#ref-3):
+
+$$
+\mathcal{L}_{\text{CPL}}(o_i) = \frac{1}{|o_i|} \sum_{t=1}^{|o_i|} M_{i,t} \, \mathcal{L}_{i,t}^{\text{InfoNCE}} \tag{6} \label{cpl}
+$$
+
+The fraction $k$ trades coverage against focus. In the paper's ablation, accuracy rose as $k$ grew from $5\%$ to $50\%$ and fell beyond that, because a larger $k$ starts to include tokens whose entropy barely changes, on which the model is already confident with or without the image [[3]](#ref-3).
+
+## The CPPO Objective
+
+One more decision remains: which responses should get the contrastive loss. Training the anchor to stay close to the positive reinforces whatever the model read from the image. If the response was wrong, that perception may well be wrong too, and reinforcing it would make things worse. So CPPO applies the loss only to responses with a positive advantage $A_i$ from [Eq. (1)](#eq-advantage), the ones that did better than the average of their group. This is the **advantage gating** [[3]](#ref-3):
+
+$$
+\mathcal{J}_{\text{CPPO}}(\theta) = \mathbb{E} \left[ \mathcal{J}_{\text{GRPO}}(\theta) - \lambda \, \frac{1}{G} \sum_{i=1}^{G} \mathbb{1}\{A_i > 0\} \, \mathcal{L}_{\text{CPL}}(o_i) \right] \tag{7} \label{cppo}
+$$
+
+In [Eq. (7)](#eq-cppo), the per-response loss $\mathcal{L}_{\text{CPL}}(o_i)$ comes from [Eq. (6)](#eq-cpl). The indicator $\mathbb{1}\{A_i > 0\}$ is $1$ for responses above the group average and $0$ otherwise, and $\lambda$ sets the strength of the contrastive loss, with $\lambda = 0.02$ working best in the paper. The GRPO part of [Eq. (2)](#eq-grpo) is unchanged, and the contrastive loss is subtracted, since the objective is maximized and the loss should be minimized.
+
+<div className="algorithm">
+
+<span className="algorithm-label"><b>Algorithm 1</b> CPPO</span>
+
+$$
+\begin{array}{rl}
+{\scriptsize 1:} & \textbf{for } \text{each training step} \textbf{ do} \\
+{\scriptsize 2:} & \quad \text{sample } (q, I) \text{ and generate responses } o_i \sim \pi_{\theta_{\text{old}}}(\cdot \mid q, I) \\
+{\scriptsize 3:} & \quad \text{compute the rewards and the advantages } A_i \text{ with Eq. (1)} \\
+{\scriptsize 4:} & \quad \textbf{for } \text{each response } o_i \textbf{ do} \\
+{\scriptsize 5:} & \quad \quad \text{create } I^- \text{ and compute } \Delta H_{i,t} \text{ for every token with Eq. (4)} \\
+{\scriptsize 6:} & \quad \quad \text{keep the top } k \text{ tokens as perception tokens, Eq. (5)} \\
+{\scriptsize 7:} & \quad \quad \text{create } I^+ \text{ and compute } \mathcal{L}_{\text{CPL}}(o_i) \text{ with Eq. (3) and Eq. (6)} \\
+{\scriptsize 8:} & \quad \text{update } \pi_\theta \text{ with Eq. (7), using the CPL only where } A_i > 0
+\end{array}
+$$
+
+</div>
+
+Putting the pieces next to its predecessors shows what CPPO changes. [PAPO](/articles/perception-aware-policy-optimization-papo) maximizes an unbounded KL divergence on every token of every response. [VPPO](/articles/visually-perceptive-policy-optimization-vppo) [[5]](#ref-5) also selects the most image-dependent tokens, but it uses them only to filter the GRPO gradient and adds no perception loss. CPPO adds a perception loss, but a bounded one, only on perception tokens, and only in responses that did well, and it adds a positive view, so the model also learns what should not change its perception.
+
+## Limitations of CPPO
+
+CPPO needs two extra forward passes per response, one with each perturbed image, which made training about $39\%$ slower than GRPO in the paper. The perturbations are chosen by hand, and whether a change preserves the information depends on the question: a small rotation is harmless for reading a number off a chart, but not for a question about which line is horizontal. The entropy test rests on the assumption that the original image carries more information about a perception token than the perturbed one, and it is only as good as the information-removing perturbation. The experiments use Qwen2.5-VL models of up to $7$ billion parameters and about $40{,}000$ training examples. And despite the paper's title, CPPO was evaluated on multimodal reasoning benchmarks, not inside actual agents acting in web or computer-use environments.
+
+> CPPO showed that a perception signal works best when it is targeted: applied only to the tokens the model reads from the image, only in responses that turned out well, and in a contrastive form that teaches the model both what should change its perception and what should not.
+
+## References
+
+<ol>
+  <li id="ref-1">Shao, Z., Wang, P., Zhu, Q., et al. (2024). <a href="https://arxiv.org/abs/2402.03300">DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open Language Models</a>. <em>arXiv:2402.03300</em>.</li>
+  <li id="ref-2">Wang, Z., Guo, X., Stoica, S., Xu, H., Wang, H., Ha, H., Chen, X., Chen, Y., Yan, M., Huang, F., & Ji, H. (2026). <a href="https://arxiv.org/abs/2507.06448">Perception-Aware Policy Optimization for Multimodal Reasoning</a>. <em>ICLR</em>.</li>
+  <li id="ref-3">Rezaei, A., Gholami, M., Ranjbar Alvar, S., Cannons, K., Hossain, M. A., Zhou, W., Zhang, Y., & Akbari, M. (2026). <a href="https://arxiv.org/abs/2601.00501">CPPO: Contrastive Perception Policy Optimization for VLM Agents</a>. <em>ICML</em>.</li>
+  <li id="ref-4">Chen, T., Kornblith, S., Norouzi, M., & Hinton, G. (2020). <a href="https://arxiv.org/abs/2002.05709">A Simple Framework for Contrastive Learning of Visual Representations</a>. <em>ICML</em>.</li>
+  <li id="ref-5">Huang, S., Qu, X., Li, Y., Luo, Y., He, Z., Liu, D., & Cheng, Y. (2026). <a href="https://arxiv.org/abs/2510.09285">Spotlight on Token Perception for Multimodal Reinforcement Learning</a>. <em>ICLR</em>.</li>
+</ol>
