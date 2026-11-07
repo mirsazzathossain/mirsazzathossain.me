@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 216" role="img" aria-label="Left: with a verification as long as a solution, eight solutions with a majority vote cost the same as two solutions verified three times each, since 2 times 1 plus 3 is 8. Right: a schematic of accuracy against compute. Self-consistency is better at low budgets, and the generative reward model only overtakes it at around eight times the compute." font-family="var(--font-sans)">
+<defs><marker id="a-ink" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--ink-3)"/></marker></defs>
+<text x="20" y="22" fill="var(--ink-2)" font-size="12" font-weight="600" text-anchor="start" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">Same budget, two ways to spend it (λ = 1)</text>
+<text x="20" y="46" fill="var(--link)" font-size="11" font-weight="700" text-anchor="start" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">Self-consistency: 8 solutions, majority vote</text>
+<rect x="20" y="56" width="32" height="24" rx="4" fill="var(--link)" fill-opacity="0.12" stroke="var(--link)" stroke-width="1.3"/>
+<text x="36" y="72" fill="var(--link)" font-size="9.5" font-weight="600" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">y1</text>
+<rect x="60" y="56" width="32" height="24" rx="4" fill="var(--link)" fill-opacity="0.12" stroke="var(--link)" stroke-width="1.3"/>
+<text x="76" y="72" fill="var(--link)" font-size="9.5" font-weight="600" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">y2</text>
+<rect x="100" y="56" width="32" height="24" rx="4" fill="var(--link)" fill-opacity="0.12" stroke="var(--link)" stroke-width="1.3"/>
+<text x="116" y="72" fill="var(--link)" font-size="9.5" font-weight="600" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">y3</text>
+<rect x="140" y="56" width="32" height="24" rx="4" fill="var(--link)" fill-opacity="0.12" stroke="var(--link)" stroke-width="1.3"/>
+<text x="156" y="72" fill="var(--link)" font-size="9.5" font-weight="600" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">y4</text>
+<rect x="180" y="56" width="32" height="24" rx="4" fill="var(--link)" fill-opacity="0.12" stroke="var(--link)" stroke-width="1.3"/>
+<text x="196" y="72" fill="var(--link)" font-size="9.5" font-weight="600" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">y5</text>
+<rect x="220" y="56" width="32" height="24" rx="4" fill="var(--link)" fill-opacity="0.12" stroke="var(--link)" stroke-width="1.3"/>
+<text x="236" y="72" fill="var(--link)" font-size="9.5" font-weight="600" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">y6</text>
+<rect x="260" y="56" width="32" height="24" rx="4" fill="var(--link)" fill-opacity="0.12" stroke="var(--link)" stroke-width="1.3"/>
+<text x="276" y="72" fill="var(--link)" font-size="9.5" font-weight="600" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">y7</text>
+<rect x="300" y="56" width="32" height="24" rx="4" fill="var(--link)" fill-opacity="0.12" stroke="var(--link)" stroke-width="1.3"/>
+<text x="316" y="72" fill="var(--link)" font-size="9.5" font-weight="600" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">y8</text>
+<text x="20" y="98" fill="var(--ink-3)" font-size="10.5" font-weight="400" text-anchor="start" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">cost = 8</text>
+<text x="20" y="126" fill="var(--green)" font-size="11" font-weight="700" text-anchor="start" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">GenRM: 2 solutions × 3 verifications each, pick the best</text>
+<rect x="20" y="136" width="32" height="24" rx="4" fill="var(--green)" fill-opacity="0.14" stroke="var(--green)" stroke-width="1.3"/>
+<text x="36" y="152" fill="var(--green)" font-size="9.5" font-weight="600" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">y1</text>
+<rect x="62" y="136" width="32" height="24" rx="4" fill="var(--green)" fill-opacity="0.06" stroke="var(--green)" stroke-width="1.1"/>
+<text x="78" y="152" fill="var(--ink-3)" font-size="9.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">v1</text>
+<rect x="102" y="136" width="32" height="24" rx="4" fill="var(--green)" fill-opacity="0.06" stroke="var(--green)" stroke-width="1.1"/>
+<text x="118" y="152" fill="var(--ink-3)" font-size="9.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">v2</text>
+<rect x="142" y="136" width="32" height="24" rx="4" fill="var(--green)" fill-opacity="0.06" stroke="var(--green)" stroke-width="1.1"/>
+<text x="158" y="152" fill="var(--ink-3)" font-size="9.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">v3</text>
+<rect x="190" y="136" width="32" height="24" rx="4" fill="var(--green)" fill-opacity="0.14" stroke="var(--green)" stroke-width="1.3"/>
+<text x="206" y="152" fill="var(--green)" font-size="9.5" font-weight="600" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">y2</text>
+<rect x="232" y="136" width="32" height="24" rx="4" fill="var(--green)" fill-opacity="0.06" stroke="var(--green)" stroke-width="1.1"/>
+<text x="248" y="152" fill="var(--ink-3)" font-size="9.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">v1</text>
+<rect x="272" y="136" width="32" height="24" rx="4" fill="var(--green)" fill-opacity="0.06" stroke="var(--green)" stroke-width="1.1"/>
+<text x="288" y="152" fill="var(--ink-3)" font-size="9.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">v2</text>
+<rect x="312" y="136" width="32" height="24" rx="4" fill="var(--green)" fill-opacity="0.06" stroke="var(--green)" stroke-width="1.1"/>
+<text x="328" y="152" fill="var(--ink-3)" font-size="9.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">v3</text>
+<text x="20" y="178" fill="var(--ink-3)" font-size="10.5" font-weight="400" text-anchor="start" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">cost = S(1 + λV) = 2 × (1 + 3) = 8</text>
+<line x1="440" y1="190" x2="700" y2="190" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<line x1="440" y1="190" x2="440" y2="40" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<text x="570.0" y="212" fill="var(--ink-3)" font-size="10.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">compute budget (log scale)</text>
+<text x="432" y="115.0" fill="var(--ink-3)" font-size="10.5" font-weight="400" text-anchor="end" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">accuracy</text>
+<path d="M445,160 C500,100 560,88 690,84" fill="none" stroke="var(--link)" stroke-width="2.5"/>
+<path d="M480,180 C550,130 600,80 690,58" fill="none" stroke="var(--green)" stroke-width="2.5"/>
+<text x="688" y="100" fill="var(--link)" font-size="10" font-weight="700" text-anchor="end" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">self-consistency</text>
+<text x="688" y="52" fill="var(--green)" font-size="10" font-weight="700" text-anchor="end" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">GenRM</text>
+<line x1="590" y1="90" x2="590" y2="190" stroke="var(--ink-3)" stroke-width="1.3" stroke-dasharray="4 4"/>
+<text x="590" y="184" fill="var(--ink-3)" font-size="9.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">≈ 8× compute</text>
+<text x="570.0" y="28" fill="var(--ink-3)" font-size="10" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">schematic</text>
+</svg>

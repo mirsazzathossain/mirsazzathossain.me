@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 312" role="img" aria-label="Scoring every candidate first-error position for one four-step solution whose step 3 is wrong. For each candidate j the solution is cut after step j, a plus mark is written after each earlier step and a minus mark after step j; for no error every step gets a plus. The LLM's probability of each mark is shown under it, and the score is the sum of their logs. Candidate j equals 3 gets the highest score, minus 0.43, while the others score between minus 2.3 and minus 2.7." font-family="var(--font-sans)">
+<defs><marker id="a-ink" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--ink-3)"/></marker></defs>
+<text x="360" y="22" fill="var(--ink-2)" font-size="11.5" font-weight="600" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">A solution with 4 steps where step 3 is really wrong. Every candidate j is written out and scored by the LLM.</text>
+<text x="560" y="46" fill="var(--ink-3)" font-size="11" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">score S(j)</text>
+<text x="62" y="76" fill="var(--ink)" font-size="11.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">j = 1</text>
+<rect x="118" y="58" width="30" height="24" rx="5" fill="var(--ink-3)" fill-opacity="0.05" stroke="var(--ink-3)" stroke-width="1.2"/>
+<text x="133.0" y="75" fill="var(--ink-3)" font-size="11.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">x</text>
+<rect x="154" y="58" width="40" height="24" rx="5" fill="var(--ink-3)" fill-opacity="0.05" stroke="var(--ink-3)" stroke-width="1.2"/>
+<text x="174.0" y="75" fill="var(--ink-3)" font-size="11.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">y1</text>
+<rect x="200" y="58" width="26" height="24" rx="5" fill="var(--rose)" fill-opacity="0.16" stroke="var(--rose)" stroke-width="1.2"/>
+<text x="213.0" y="75" fill="var(--rose)" font-size="13" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">−</text>
+<text x="213.0" y="94" fill="var(--rose)" font-size="9.5" font-weight="600" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">0.1</text>
+<text x="508" y="75" fill="var(--ink)" font-size="12" font-weight="700" text-anchor="end" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">−2.30</text>
+<rect x="520" y="63" width="27.9" height="14" rx="3" fill="var(--ink-3)" fill-opacity="0.25"/>
+<text x="62" y="122" fill="var(--ink)" font-size="11.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">j = 2</text>
+<rect x="118" y="104" width="30" height="24" rx="5" fill="var(--ink-3)" fill-opacity="0.05" stroke="var(--ink-3)" stroke-width="1.2"/>
+<text x="133.0" y="121" fill="var(--ink-3)" font-size="11.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">x</text>
+<rect x="154" y="104" width="40" height="24" rx="5" fill="var(--ink-3)" fill-opacity="0.05" stroke="var(--ink-3)" stroke-width="1.2"/>
+<text x="174.0" y="121" fill="var(--ink-3)" font-size="11.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">y1</text>
+<rect x="200" y="104" width="26" height="24" rx="5" fill="var(--green)" fill-opacity="0.16" stroke="var(--green)" stroke-width="1.2"/>
+<text x="213.0" y="121" fill="var(--green)" font-size="13" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">+</text>
+<text x="213.0" y="140" fill="var(--green)" font-size="9.5" font-weight="600" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">0.9</text>
+<rect x="232" y="104" width="40" height="24" rx="5" fill="var(--ink-3)" fill-opacity="0.05" stroke="var(--ink-3)" stroke-width="1.2"/>
+<text x="252.0" y="121" fill="var(--ink-3)" font-size="11.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">y2</text>
+<rect x="278" y="104" width="26" height="24" rx="5" fill="var(--rose)" fill-opacity="0.16" stroke="var(--rose)" stroke-width="1.2"/>
+<text x="291.0" y="121" fill="var(--rose)" font-size="13" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">−</text>
+<text x="291.0" y="140" fill="var(--rose)" font-size="9.5" font-weight="600" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">0.1</text>
+<text x="508" y="121" fill="var(--ink)" font-size="12" font-weight="700" text-anchor="end" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">−2.41</text>
+<rect x="520" y="109" width="23.7" height="14" rx="3" fill="var(--ink-3)" fill-opacity="0.25"/>
+<rect x="14" y="144" width="692" height="44" rx="8" fill="var(--green)" fill-opacity="0.07" stroke="var(--green)" stroke-width="1.2"/>
+<text x="62" y="168" fill="var(--green)" font-size="11.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">j = 3</text>
+<rect x="118" y="150" width="30" height="24" rx="5" fill="var(--ink-3)" fill-opacity="0.05" stroke="var(--ink-3)" stroke-width="1.2"/>
+<text x="133.0" y="167" fill="var(--ink-3)" font-size="11.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">x</text>
+<rect x="154" y="150" width="40" height="24" rx="5" fill="var(--ink-3)" fill-opacity="0.05" stroke="var(--ink-3)" stroke-width="1.2"/>
+<text x="174.0" y="167" fill="var(--ink-3)" font-size="11.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">y1</text>
+<rect x="200" y="150" width="26" height="24" rx="5" fill="var(--green)" fill-opacity="0.16" stroke="var(--green)" stroke-width="1.2"/>
+<text x="213.0" y="167" fill="var(--green)" font-size="13" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">+</text>
+<text x="213.0" y="186" fill="var(--green)" font-size="9.5" font-weight="600" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">0.9</text>
+<rect x="232" y="150" width="40" height="24" rx="5" fill="var(--ink-3)" fill-opacity="0.05" stroke="var(--ink-3)" stroke-width="1.2"/>
+<text x="252.0" y="167" fill="var(--ink-3)" font-size="11.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">y2</text>
+<rect x="278" y="150" width="26" height="24" rx="5" fill="var(--green)" fill-opacity="0.16" stroke="var(--green)" stroke-width="1.2"/>
+<text x="291.0" y="167" fill="var(--green)" font-size="13" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">+</text>
+<text x="291.0" y="186" fill="var(--green)" font-size="9.5" font-weight="600" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">0.9</text>
+<rect x="310" y="150" width="40" height="24" rx="5" fill="var(--ink-3)" fill-opacity="0.05" stroke="var(--ink-3)" stroke-width="1.2"/>
+<text x="330.0" y="167" fill="var(--ink-3)" font-size="11.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">y3</text>
+<rect x="356" y="150" width="26" height="24" rx="5" fill="var(--rose)" fill-opacity="0.16" stroke="var(--rose)" stroke-width="1.2"/>
+<text x="369.0" y="167" fill="var(--rose)" font-size="13" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">−</text>
+<text x="369.0" y="186" fill="var(--rose)" font-size="9.5" font-weight="600" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">0.8</text>
+<text x="508" y="167" fill="var(--green)" font-size="12" font-weight="700" text-anchor="end" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">−0.43</text>
+<rect x="520" y="155" width="102.6" height="14" rx="3" fill="var(--green)" fill-opacity="0.55"/>
+<text x="650" y="167" fill="var(--green)" font-size="11" font-weight="700" text-anchor="start" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">highest</text>
+<text x="62" y="214" fill="var(--ink)" font-size="11.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">j = 4</text>
+<rect x="118" y="196" width="30" height="24" rx="5" fill="var(--ink-3)" fill-opacity="0.05" stroke="var(--ink-3)" stroke-width="1.2"/>
+<text x="133.0" y="213" fill="var(--ink-3)" font-size="11.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">x</text>
+<rect x="154" y="196" width="40" height="24" rx="5" fill="var(--ink-3)" fill-opacity="0.05" stroke="var(--ink-3)" stroke-width="1.2"/>
+<text x="174.0" y="213" fill="var(--ink-3)" font-size="11.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">y1</text>
+<rect x="200" y="196" width="26" height="24" rx="5" fill="var(--green)" fill-opacity="0.16" stroke="var(--green)" stroke-width="1.2"/>
+<text x="213.0" y="213" fill="var(--green)" font-size="13" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">+</text>
+<text x="213.0" y="232" fill="var(--green)" font-size="9.5" font-weight="600" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">0.9</text>
+<rect x="232" y="196" width="40" height="24" rx="5" fill="var(--ink-3)" fill-opacity="0.05" stroke="var(--ink-3)" stroke-width="1.2"/>
+<text x="252.0" y="213" fill="var(--ink-3)" font-size="11.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">y2</text>
+<rect x="278" y="196" width="26" height="24" rx="5" fill="var(--green)" fill-opacity="0.16" stroke="var(--green)" stroke-width="1.2"/>
+<text x="291.0" y="213" fill="var(--green)" font-size="13" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">+</text>
+<text x="291.0" y="232" fill="var(--green)" font-size="9.5" font-weight="600" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">0.9</text>
+<rect x="310" y="196" width="40" height="24" rx="5" fill="var(--ink-3)" fill-opacity="0.05" stroke="var(--ink-3)" stroke-width="1.2"/>
+<text x="330.0" y="213" fill="var(--ink-3)" font-size="11.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">y3</text>
+<rect x="356" y="196" width="26" height="24" rx="5" fill="var(--green)" fill-opacity="0.16" stroke="var(--green)" stroke-width="1.2"/>
+<text x="369.0" y="213" fill="var(--green)" font-size="13" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">+</text>
+<text x="369.0" y="232" fill="var(--green)" font-size="9.5" font-weight="600" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">0.2</text>
+<rect x="388" y="196" width="40" height="24" rx="5" fill="var(--ink-3)" fill-opacity="0.05" stroke="var(--ink-3)" stroke-width="1.2"/>
+<text x="408.0" y="213" fill="var(--ink-3)" font-size="11.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">y4</text>
+<rect x="434" y="196" width="26" height="24" rx="5" fill="var(--rose)" fill-opacity="0.16" stroke="var(--rose)" stroke-width="1.2"/>
+<text x="447.0" y="213" fill="var(--rose)" font-size="13" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">−</text>
+<text x="447.0" y="232" fill="var(--rose)" font-size="9.5" font-weight="600" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">0.4</text>
+<text x="508" y="213" fill="var(--ink)" font-size="12" font-weight="700" text-anchor="end" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">−2.74</text>
+<rect x="520" y="201" width="10.5" height="14" rx="3" fill="var(--ink-3)" fill-opacity="0.25"/>
+<text x="62" y="260" fill="var(--ink)" font-size="11.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">no error (j=5)</text>
+<rect x="118" y="242" width="30" height="24" rx="5" fill="var(--ink-3)" fill-opacity="0.05" stroke="var(--ink-3)" stroke-width="1.2"/>
+<text x="133.0" y="259" fill="var(--ink-3)" font-size="11.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">x</text>
+<rect x="154" y="242" width="40" height="24" rx="5" fill="var(--ink-3)" fill-opacity="0.05" stroke="var(--ink-3)" stroke-width="1.2"/>
+<text x="174.0" y="259" fill="var(--ink-3)" font-size="11.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">y1</text>
+<rect x="200" y="242" width="26" height="24" rx="5" fill="var(--green)" fill-opacity="0.16" stroke="var(--green)" stroke-width="1.2"/>
+<text x="213.0" y="259" fill="var(--green)" font-size="13" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">+</text>
+<text x="213.0" y="278" fill="var(--green)" font-size="9.5" font-weight="600" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">0.9</text>
+<rect x="232" y="242" width="40" height="24" rx="5" fill="var(--ink-3)" fill-opacity="0.05" stroke="var(--ink-3)" stroke-width="1.2"/>
+<text x="252.0" y="259" fill="var(--ink-3)" font-size="11.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">y2</text>
+<rect x="278" y="242" width="26" height="24" rx="5" fill="var(--green)" fill-opacity="0.16" stroke="var(--green)" stroke-width="1.2"/>
+<text x="291.0" y="259" fill="var(--green)" font-size="13" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">+</text>
+<text x="291.0" y="278" fill="var(--green)" font-size="9.5" font-weight="600" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">0.9</text>
+<rect x="310" y="242" width="40" height="24" rx="5" fill="var(--ink-3)" fill-opacity="0.05" stroke="var(--ink-3)" stroke-width="1.2"/>
+<text x="330.0" y="259" fill="var(--ink-3)" font-size="11.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">y3</text>
+<rect x="356" y="242" width="26" height="24" rx="5" fill="var(--green)" fill-opacity="0.16" stroke="var(--green)" stroke-width="1.2"/>
+<text x="369.0" y="259" fill="var(--green)" font-size="13" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">+</text>
+<text x="369.0" y="278" fill="var(--green)" font-size="9.5" font-weight="600" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">0.2</text>
+<rect x="388" y="242" width="40" height="24" rx="5" fill="var(--ink-3)" fill-opacity="0.05" stroke="var(--ink-3)" stroke-width="1.2"/>
+<text x="408.0" y="259" fill="var(--ink-3)" font-size="11.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">y4</text>
+<rect x="434" y="242" width="26" height="24" rx="5" fill="var(--green)" fill-opacity="0.16" stroke="var(--green)" stroke-width="1.2"/>
+<text x="447.0" y="259" fill="var(--green)" font-size="13" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">+</text>
+<text x="447.0" y="278" fill="var(--green)" font-size="9.5" font-weight="600" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">0.6</text>
+<text x="508" y="259" fill="var(--ink)" font-size="12" font-weight="700" text-anchor="end" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">−2.33</text>
+<rect x="520" y="247" width="26.8" height="14" rx="3" fill="var(--ink-3)" fill-opacity="0.25"/>
+<text x="360" y="300" fill="var(--ink-3)" font-size="10" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">small numbers: the LLM's probability of the mark written there, e.g. S(3) = log 0.9 + log 0.9 + log 0.8 (numbers made up for illustration)</text>
+</svg>

@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 250" role="img" aria-label="RewardAgent. A router reads the instruction and the response and chooses which checks to run. A base reward model gives a human preference score, a factuality agent finds differences between responses, searches for evidence and judges them, and an instruction-following agent turns hard constraints into Python checks and runs them. A judger adds everything into the final reward." font-family="var(--font-sans)">
+<defs><marker id="a-ink" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--ink-3)"/></marker></defs>
+<rect x="20" y="95" width="120" height="56" rx="8" fill="var(--ink-3)" fill-opacity="0.06" stroke="var(--ink-3)" stroke-width="1.8"/>
+<text x="80" y="117" fill="var(--ink)" font-size="11" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">instruction +</text>
+<text x="80" y="134" fill="var(--ink)" font-size="11" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">response</text>
+<line x1="140" y1="123" x2="165" y2="123" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<rect x="170" y="95" width="95" height="56" rx="8" fill="var(--link)" fill-opacity="0.12" stroke="var(--link)" stroke-width="1.8"/>
+<text x="217" y="117" fill="var(--link)" font-size="12" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">router</text>
+<text x="217" y="135" fill="var(--ink-3)" font-size="9.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">which checks?</text>
+<line x1="265" y1="123" x2="300" y2="54" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<rect x="305" y="26" width="250" height="56" rx="8" fill="var(--link)" fill-opacity="0.1" stroke="var(--link)" stroke-width="1.8"/>
+<text x="430" y="50" fill="var(--link)" font-size="11.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">base reward model</text>
+<text x="430" y="68" fill="var(--ink-3)" font-size="9.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">human preference score</text>
+<line x1="555" y1="54" x2="590" y2="123" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<line x1="265" y1="123" x2="300" y2="132" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<rect x="305" y="104" width="250" height="56" rx="8" fill="var(--green)" fill-opacity="0.1" stroke="var(--green)" stroke-width="1.8"/>
+<text x="430" y="128" fill="var(--green)" font-size="11.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">factuality agent</text>
+<text x="430" y="146" fill="var(--ink-3)" font-size="9.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">differences → search → evidence → judge</text>
+<line x1="555" y1="132" x2="590" y2="123" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<line x1="265" y1="123" x2="300" y2="210" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<rect x="305" y="182" width="250" height="56" rx="8" fill="var(--amber)" fill-opacity="0.1" stroke="var(--amber)" stroke-width="1.8"/>
+<text x="430" y="206" fill="var(--amber)" font-size="11.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">instruction agent</text>
+<text x="430" y="224" fill="var(--ink-3)" font-size="9.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">constraints → Python checks → run (0/1)</text>
+<line x1="555" y1="210" x2="590" y2="123" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<rect x="595" y="85" width="115" height="76" rx="8" fill="var(--ink-3)" fill-opacity="0.06" stroke="var(--ink-3)" stroke-width="1.8"/>
+<text x="652" y="108" fill="var(--ink)" font-size="12" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">judger</text>
+<text x="652" y="128" fill="var(--ink)" font-size="10.5" font-weight="600" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">λ·RM + Σ wᵢ·aᵢ</text>
+<text x="652" y="146" fill="var(--ink-3)" font-size="9.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">final reward</text>
+</svg>

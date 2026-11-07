@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 246" role="img" aria-label="A discriminative PRM reads the problem and the steps and outputs a number from a classification head, without writing any text. A generative PRM first writes a check of the step, here noticing that the perimeter should be 2 times w plus 2w and running code to confirm, and then gives a verdict, scored as the probability of the token Yes." font-family="var(--font-sans)">
+<defs><marker id="a-ink" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--ink-3)"/></marker></defs>
+<text x="20" y="24" fill="var(--link)" font-size="13" font-weight="700" text-anchor="start" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">Discriminative PRM</text>
+<rect x="20" y="36" width="170" height="48" rx="8" fill="var(--ink-3)" fill-opacity="0.06" stroke="var(--ink-3)" stroke-width="1.8"/>
+<text x="105" y="57" fill="var(--ink)" font-size="11" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">problem + steps 1 to t</text>
+<text x="105" y="74" fill="var(--ink-3)" font-size="10" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">(text in)</text>
+<line x1="190" y1="60" x2="240" y2="60" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<rect x="245" y="36" width="200" height="48" rx="8" fill="var(--link)" fill-opacity="0.12" stroke="var(--link)" stroke-width="1.8"/>
+<text x="345" y="57" fill="var(--link)" font-size="11" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">LLM + classification head</text>
+<text x="345" y="74" fill="var(--ink-3)" font-size="10" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">no text is written</text>
+<line x1="445" y1="60" x2="495" y2="60" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<rect x="500" y="40" width="90" height="40" rx="8" fill="var(--link)" fill-opacity="0.14" stroke="var(--link)" stroke-width="1.8"/>
+<text x="545" y="65" fill="var(--link)" font-size="13" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">0.87</text>
+<text x="20" y="124" fill="var(--green)" font-size="13" font-weight="700" text-anchor="start" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">Generative PRM</text>
+<rect x="20" y="136" width="170" height="70" rx="8" fill="var(--ink-3)" fill-opacity="0.06" stroke="var(--ink-3)" stroke-width="1.8"/>
+<text x="105" y="167" fill="var(--ink)" font-size="11" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">problem + steps 1 to t</text>
+<text x="105" y="184" fill="var(--ink-3)" font-size="10" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">(text in)</text>
+<line x1="190" y1="171" x2="240" y2="171" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<rect x="245" y="136" width="270" height="70" rx="8" fill="var(--green)" fill-opacity="0.1" stroke="var(--green)" stroke-width="1.8"/>
+<text x="258" y="156" fill="var(--ink)" font-size="10.5" font-weight="400" text-anchor="start" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">Step 3 says the perimeter is 3w,</text>
+<text x="258" y="172" fill="var(--ink)" font-size="10.5" font-weight="400" text-anchor="start" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">but a perimeter is 2(w + 2w) = 6w.</text>
+<text x="258" y="190" fill="var(--green)" font-size="10.5" font-weight="600" text-anchor="start" font-family="var(--font-mono)" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">print(2 * (12 + 24))  →  72 ≠ 36</text>
+<line x1="515" y1="171" x2="560" y2="171" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<rect x="565" y="146" width="140" height="50" rx="8" fill="var(--green)" fill-opacity="0.14" stroke="var(--green)" stroke-width="1.8"/>
+<text x="635" y="167" fill="var(--green)" font-size="12" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">P("Yes") = 0.04</text>
+<text x="635" y="185" fill="var(--ink-3)" font-size="10" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">step 3 is wrong</text>
+<text x="380" y="232" fill="var(--ink-3)" font-size="11" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">a written check, optionally with code that is run, comes before the verdict</text>
+</svg>

@@ -1,0 +1,567 @@
+---
+title: "Reward Models for Reasoning: ORMs and PRMs"
+tags:
+  - title: Process Reward Model
+  - title: PRM
+  - title: Outcome Reward Model
+  - title: ORM
+  - title: Reward Model
+  - title: Verifier
+  - title: Generative Verifier
+  - title: Test-Time Scaling
+  - title: GRPO
+  - title: Reinforcement Learning
+  - title: LLM
+categories:
+  - title: Machine Learning
+  - title: Reinforcement Learning
+  - title: Large Language Models
+author:
+  name: Mir Sazzat Hossain
+  designation: Research Assistant
+  url: https://mirsazzathossain.me
+  avatar:
+    url: user.png
+    alt: Mir Sazzat Hossain
+description: "How outcome and process reward models judge reasoning: scoring the final answer or every step, where their step labels come from, why GRPO already contains one, how verifiers that write and run checks work, and how to train them with few or no labels."
+seoDescription: "ORMs and PRMs: outcome vs process reward models, Monte Carlo step labels, advantage as PRM, GRPO's hidden PRM, GenPRM, ThinkPRM, verification compute, unsupervised PRMs."
+covers:
+  - url: content/reward-models-for-reasoning-orm-prm/cover.jpg
+    alt: "Reward models cover: a step-by-step solution with a score next to every step, one of them flagged as wrong"
+status: published
+publishedAt: 2026-10-30
+---
+
+import OrmVsPrm from "@/assets/articles/reward-models-for-reasoning-orm-prm/orm-vs-prm.svg";
+import Coverage from "@/assets/articles/reward-models-for-reasoning-orm-prm/coverage.svg";
+import OutcomeToProcess from "@/assets/articles/reward-models-for-reasoning-orm-prm/outcome-to-process.svg";
+import Compute from "@/assets/articles/reward-models-for-reasoning-orm-prm/compute.svg";
+import Echo from "@/assets/articles/reward-models-for-reasoning-orm-prm/echo.svg";
+import UprmTrain from "@/assets/articles/reward-models-for-reasoning-orm-prm/uprm-train.svg";
+import RewardAgent from "@/assets/articles/reward-models-for-reasoning-orm-prm/rewardagent.svg";
+import McEstimate from "@/assets/articles/reward-models-for-reasoning-orm-prm/mc-estimate.svg";
+import GrpoPrefixTree from "@/assets/articles/reward-models-for-reasoning-orm-prm/grpo-prefix-tree.svg";
+import DiscVsGen from "@/assets/articles/reward-models-for-reasoning-orm-prm/disc-vs-gen.svg";
+import GenPrmExample from "@/assets/articles/reward-models-for-reasoning-orm-prm/genprm-example.svg";
+import GenPrm from "@/assets/articles/reward-models-for-reasoning-orm-prm/genprm.svg";
+import ThinkPrmExample from "@/assets/articles/reward-models-for-reasoning-orm-prm/thinkprm-example.svg";
+import ThinkPrm from "@/assets/articles/reward-models-for-reasoning-orm-prm/thinkprm.svg";
+import Counterfactual from "@/assets/articles/reward-models-for-reasoning-orm-prm/counterfactual.svg";
+import UprmMarks from "@/assets/articles/reward-models-for-reasoning-orm-prm/uprm-marks.svg";
+
+<img
+  src="/images/content/reward-models-for-reasoning-orm-prm/cover.jpg"
+  alt="Reward models cover: a step-by-step solution with a score next to every step, one of them flagged as wrong"
+  sizes="100vw"
+  width="100%"
+  height="auto"
+  placeholder="blur"
+  blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="
+/>
+
+## Introduction
+
+When a language model solves a math problem, it writes a **chain of thought**: a sequence of steps that ends in an answer. To train such a model, or to pick the best of several of its solutions, we need a way to judge the solution. The simplest judge only checks the final answer. That is easy, but it says nothing about which step went wrong, and it gives full credit to a solution that reached the right answer through a wrong step.
+
+A **process reward model (PRM)** judges every step instead. It reads the solution one step at a time and gives each step a score: was this step correct? The idea was made popular by OpenAI's "Let's Verify Step by Step" [[1]](#ref-1), which trained a PRM on about $800{,}000$ step labels written by people, a dataset called **PRM800K**, and showed that it picks correct solutions better than a judge that only sees the final answer.
+
+That paper left several questions open. Step labels written by people are expensive, so where else can they come from? Is judging each step really better in principle, or only in practice? Can a PRM reason about a step before judging it? And can a PRM be trained with no labels at all? In this post, we go through nine recent papers that answer these questions. We first set up the two kinds of reward model and how they are used, then look at where step labels come from, what theory and GRPO tell us about PRMs, how verifiers that write and run checks work, how to spend compute on verification, and finally how to train PRMs with fewer and fewer labels.
+
+## Outcome and Process Reward Models
+
+A problem $x$ is solved by a solution $y$ made of $T$ steps, $y = (y_1, \dots, y_T)$, where each step is usually a line or a paragraph of the chain of thought. A **reward model** gives the solution a score. There are two kinds, and they differ in what they score ([Figure 1](#fig-orm-vs-prm)).
+
+<figure id="fig-orm-vs-prm">
+  <OrmVsPrm />
+  <figcaption>**Figure 1.** An outcome reward model (ORM) gives the whole solution one score. A process reward model (PRM) gives every step its own score, so it shows where the solution went wrong: here at step 3, which uses the wrong formula for the perimeter.</figcaption>
+</figure>
+
+An **outcome reward model (ORM)** reads the whole solution and outputs one number $r(x, y) \in [0, 1]$, the probability that the solution is correct. To train it, we sample many solutions, label each one $z = 1$ if its final answer matches the reference answer and $z = 0$ otherwise, and minimize the **binary cross-entropy** loss:
+
+$$
+\mathcal{L}_{\text{ORM}} = -\mathbb{E}_{(x, y, z)} \Big[ z \log r(x, y) + (1 - z) \log \big( 1 - r(x, y) \big) \Big] \tag{1} \label{orm-loss}
+$$
+
+The labels are free, since checking a final answer is cheap. But every step of a solution shares the same label, so the ORM has to work out on its own which steps were responsible.
+
+A **process reward model** outputs a score $r_t$ for every step $t$, the probability that step $y_t$ is correct given the problem and the steps before it. With a label $z_t \in \{0, 1\}$ for every step, it is trained with the same loss, applied step by step:
+
+$$
+\mathcal{L}_{\text{PRM}} = -\mathbb{E} \left[ \sum_{t=1}^{T} \Big( z_t \log r_t + (1 - z_t) \log ( 1 - r_t ) \Big) \right] \tag{2} \label{prm-loss}
+$$
+
+To score a whole solution with a PRM, the step scores have to be combined into one number. A natural choice, used in "Let's Verify Step by Step" [[1]](#ref-1), is the probability that every step is correct, which is the product of the step scores:
+
+$$
+r(x, y) = \prod_{t=1}^{T} r_t \tag{3} \label{prm-aggregate}
+$$
+
+In [Eq. (3)](#eq-prm-aggregate), a single wrong step makes its factor small, and with it the whole product. Another common choice is the minimum step score, which follows the same logic: a solution is only as good as its weakest step.
+
+### How Reward Models Are Used
+
+Reward models are used in two places. The first is **test-time scaling**: spending more compute when answering a question. The model writes $N$ solutions, and the reward model picks the one with the highest score. This is **Best-of-N**. The simplest alternative needs no reward model at all: take the final answer that appears most often among the $N$ solutions. This is **majority voting**, also called **self-consistency** [[2]](#ref-2). A PRM can also guide a **search**: since it scores partial solutions, a **beam search** can keep only the most promising prefixes after each step and extend those.
+
+The second place is **training**, as the reward in reinforcement learning, as in [RLHF](/articles/reinforcement-learning-from-human-feedback-rlhf) or [GRPO](/articles/group-relative-policy-optimization-grpo). Here a PRM promises finer **credit assignment**: instead of rewarding or punishing every token of a response equally, it can point to the step that made the difference. But a learned PRM can also be fooled, and the policy can learn to write steps that look correct to the PRM without being correct. This is the familiar problem of **reward hacking**.
+
+## Where Step Labels Come From
+
+The hardest part of building a PRM is getting the step labels $z_t$ in [Eq. (2)](#eq-prm-loss). People can write them, as in PRM800K, but that is slow and expensive, especially for hard problems. The most common automatic alternative is **Monte Carlo estimation**, introduced by Math-Shepherd [[3]](#ref-3). The idea is to judge a step by what happens after it ([Figure 2](#fig-mc-estimate)).
+
+<figure id="fig-mc-estimate">
+  <McEstimate />
+  <figcaption>**Figure 2.** Monte Carlo estimation of a step. From the prefix that ends at the step, the policy writes $K$ completions, and the fraction that reaches the correct answer is the step's estimate.</figcaption>
+</figure>
+
+Take the solution up to step $t$, call this prefix $s_t$, and let the model complete it $K$ times. If the step is good, many of the completions should still reach the correct answer $q^*$. If the step is wrong, few or none will. The estimate is the fraction of completions whose answer $q_j$ is correct:
+
+$$
+\text{MC}(s_t) = \frac{1}{K} \sum_{j=1}^{K} \mathbb{1}\big( q_j = q^* \big) \tag{4} \label{mc}
+$$
+
+where $\mathbb{1}(\cdot)$ is $1$ when the condition holds and $0$ otherwise. A hard label can then be made by calling a step correct if $\text{MC}(s_t) > 0$, or a soft label can use the fraction directly. This needs only the final answer, no human judgment, but it is expensive: every step of every solution needs $K$ extra completions. And it measures something slightly different from correctness. It measures whether the step still allows the model to reach the right answer, which a wrong step sometimes does by luck, and which a correct step on a hard problem sometimes does not.
+
+Several of the papers below come back to this estimate. The first one asks whether we need step labels at all.
+
+## Do We Need to Verify Step by Step?
+
+Process supervision seems more informative than outcome supervision, since it tells the learner where the mistake is. The common belief has been that learning from outcomes alone is fundamentally harder. Jia, Rakhlin, and Xie [[4]](#ref-4) test this belief with theory, and find that it is not true in the way people thought. This section first explains where the belief comes from, then the algorithm the paper uses to show it is wrong, and then a result about which quantity makes a good PRM.
+
+### Why Outcome Supervision Looked Harder
+
+The theory uses the language of reinforcement learning. The LLM that writes solutions is the **policy** $\pi$. A solution is a **trajectory** $\tau = (s_1, a_1, \dots, s_H, a_H)$ of $H$ steps, where the state $s_h$ is the problem and the steps written so far, and the action $a_h$ is the next step. **Process supervision** gives a reward $r_h$ for every step. **Outcome supervision** gives only the total reward $R$ of the whole trajectory, for example $1$ if the final answer is correct and $0$ otherwise.
+
+To learn a reward model, we first need data. The LLM writes many solutions, and they are scored. The LLM as it was when it wrote them is called the **data policy** $\pi_{\text{off}}$. Then the reward model is used to improve the LLM, and the improved LLM is a new policy $\pi$, which writes somewhat different solutions. The reward model has only seen the solutions of $\pi_{\text{off}}$, so on a solution of $\pi$ that looks like nothing in the data, it can only guess, and a wrong guess is exactly what the policy learns to exploit. So the question is how far the new policy's solutions can move away from the data before the reward model stops being trustworthy. This is the question of **coverage**.
+
+Here the two kinds of supervision seem to differ. Suppose the data contains one solution with the steps $a \to b \to c$ and another with the steps $a' \to b' \to c'$, and the new policy writes $a \to b' \to c$. A model that learned a reward for every step has seen all three of these steps and can score the new solution. A model that only learned rewards for whole solutions has never seen this combination. With many steps, the number of combinations explodes, so the new policy almost always writes a combination that is not in the data, even when every one of its steps is familiar ([Figure 3](#fig-coverage)).
+
+<figure id="fig-coverage">
+  <Coverage />
+  <figcaption>**Figure 3.** Why outcome supervision seemed to need more data. Every step of the new solution appears somewhere in the data, but the whole combination does not.</figcaption>
+</figure>
+
+
+The two kinds of coverage have names. Coverage of whole solutions is measured by the **trajectory concentrability**, the largest ratio between how often the new policy and the data policy produce the same trajectory:
+
+$$
+C_{\text{traj}}(\pi, \pi_{\text{off}}) = \sup_{\tau} \frac{d^\pi(\tau)}{d^{\pi_{\text{off}}}(\tau)} \tag{5} \label{c-traj}
+$$
+
+where $d^\pi(\tau)$ is the probability that $\pi$ produces $\tau$. The $\sup$, short for **supremum**, means the largest value: compute the ratio for every possible trajectory and keep the biggest one. It is the same as a maximum, written in a way that also works when the values only approach a largest value without reaching it. Coverage of single steps is measured by the **state-action concentrability**, the same ratio for a single step:
+
+$$
+C_{\text{sa}}(\pi, \pi_{\text{off}}) = \max_{h} \sup_{s_h, a_h} \frac{d^\pi(s_h, a_h)}{d^{\pi_{\text{off}}}(s_h, a_h)} \tag{6} \label{c-sa}
+$$
+
+where $d^\pi(s_h, a_h)$ is the probability that $\pi$ reaches the state $s_h$ and takes the action $a_h$ there, and the $\max$ and $\sup$ again keep the largest ratio, over every step $h$ and every state and action. A large ratio means the new policy does something the data rarely shows. The probability of a whole trajectory is a product of the probabilities of its $H$ steps, so small differences at every step multiply. If the new policy chooses some step $5$ times more often than the data policy at each of $3$ steps, the single-step ratio is $5$, but the trajectory ratio is $5^3 = 125$, and with $10$ steps it is about $10$ million. So [Eq. (5)](#eq-c-traj) is always at least as large as [Eq. (6)](#eq-c-sa), and the gap can grow exponentially with $H$.
+
+This was the belief: process supervision needs only step coverage, outcome supervision needs trajectory coverage, and therefore outcome supervision needs far more data.
+
+### From Final Scores to Step Scores
+
+The paper shows that outcome data also needs only step coverage, and it does so with a simple algorithm that turns a dataset of final scores into a dataset of step scores, the **Offline Outcome-to-Process Transformation** [[4]](#ref-4).
+
+The data has no step labels, but each total score $R$ is the sum of the unknown step rewards of its trajectory. So the algorithm looks for a per-step reward model $\hat{r}$ whose step rewards add up to the observed total for every trajectory, by **least squares**:
+
+$$
+\hat{r} = \arg\min_{r \in \mathcal{R}} \sum_{(\tau, R) \in D_O^1} \left( \sum_{h=1}^{H} r(s_h, a_h) - R \right)^2 \tag{7} \label{least-squares}
+$$
+
+where $\mathcal{R}$ is the set of reward models considered and $D_O^1$ is part of the outcome dataset. A single trajectory does not say which of its steps earned the score. But many trajectories share steps, and the only way to match all of their totals at once is to give each step its proper share. Comparing two trajectories that differ in one step, for example, shows how much that step is worth.
+
+The reward model learned with [Eq. (7)](#eq-least-squares) is then used to label each step of a **different** part of the data, $D_O^2$, with $r_h = \hat{r}(s_h, a_h)$. Fitting on one half and labeling the other, called **sample splitting**, keeps the labels honest: a model fitted to some trajectories looks more accurate on those same trajectories than it really is. The result is a dataset with a reward on every step, and any algorithm built for process supervision can be run on it ([Figure 4](#fig-outcome-to-process)):
+
+<div className="algorithm">
+
+<span className="algorithm-label"><b>Algorithm 1</b> Offline Outcome-to-Process Transformation</span>
+
+$$
+\begin{array}{rl}
+{\scriptsize 1:} & \text{split the outcome dataset } D_O \text{ into two halves } D_O^1 \text{ and } D_O^2 \\
+{\scriptsize 2:} & \text{fit the per-step reward model } \hat{r} \text{ on } D_O^1 \text{ with Eq. (7)} \\
+{\scriptsize 3:} & \textbf{for } \text{each trajectory in } D_O^2 \textbf{ do} \\
+{\scriptsize 4:} & \quad \text{label every step with } r_h = \hat{r}(s_h, a_h) \\
+{\scriptsize 5:} & \text{run any offline RL algorithm on the labeled } D_O^2 \text{ and output its policy}
+\end{array}
+$$
+
+</div>
+
+<figure id="fig-outcome-to-process">
+  <OutcomeToProcess />
+  <figcaption>**Figure 4.** The Offline Outcome-to-Process Transformation. Step rewards are fitted on one half of the outcome data so that they add up to each total score, and then used to label every step of the other half.</figcaption>
+</figure>
+
+
+The paper proves how accurate the learned step rewards are. For any policy $\pi$, the total reward measured with $\hat{r}$, $J_{\hat{r}}(\pi)$, is close to the true total reward $J(\pi)$:
+
+$$
+\big| J_{\hat{r}}(\pi) - J(\pi) \big| \lesssim H^{3/2} \sqrt{\frac{C_{\text{sa}}(\pi, \pi_{\text{off}}) \cdot \log(|\mathcal{R}| / \delta)}{|D_O|}} \tag{8} \label{outcome-bound}
+$$
+
+with probability at least $1 - \delta$, where $|D_O|$ is the number of trajectories. The error shrinks as the dataset grows, and the coverage term in [Eq. (8)](#eq-outcome-bound) is the step-level $C_{\text{sa}}$ of [Eq. (6)](#eq-c-sa), not the trajectory-level $C_{\text{traj}}$. The price of having only final scores is the factor $H^{3/2}$, which grows with the length of the solution, but only polynomially, not exponentially. The key tool behind this bound is a new **Change of Trajectory Measure Lemma**, which shows that an error measured on whole trajectories under the data policy can be carried over to a new policy at the cost of the step-level coverage.
+
+So **outcome supervision is not statistically harder than process supervision**, up to polynomial factors in the length of the solution. If PRMs work better than ORMs in practice, the reason is likely the algorithms we use, not a basic limit on what can be learned from outcomes.
+
+### The Advantage Function Is an Optimal PRM
+
+The second result concerns a popular way to turn outcomes into step rewards: roll out from each step, as in [Eq. (4)](#eq-mc), and use the result as the step's reward. Which quantity should the PRM learn? Recall from the [PPO post](/articles/proximal-policy-optimization-ppo#what-better-than-expected-means) that, for a policy $\mu$, the **action value** $Q^\mu(s, a)$ is the expected reward after taking action $a$ in state $s$, the **state value** $V^\mu(s)$ is the expected reward from $s$ on average, and the **advantage** is their difference:
+
+$$
+A^\mu(s, a) = Q^\mu(s, a) - V^\mu(s) \tag{9} \label{advantage}
+$$
+
+The paper proves that the advantage of **any** policy $\mu$ is an optimal PRM [[4]](#ref-4). The reason is the **performance difference lemma**, which says that the difference between the total rewards $J$ of two policies is the advantage of one, summed along the trajectories of the other:
+
+$$
+J(\pi) - J(\mu) = \mathbb{E}_{\tau \sim \pi} \left[ \sum_{h=1}^{H} A^\mu(s_h, a_h) \right] \tag{10} \label{pdl}
+$$
+
+The right side is exactly the total reward that $\pi$ collects when the advantage $A^\mu$ is used as the step reward. The left side is the true total reward of $\pi$ minus a constant, $J(\mu)$, which does not depend on $\pi$. So maximizing the advantage-based reward is the same as maximizing the true reward, and both have the same best policy. If the learned PRM $\hat{r}$ is close to $A^\mu$, with squared error at most $\varepsilon_{\text{stat}}$, and the policy optimization is solved up to an error $\varepsilon_{\text{alg}}$, the policy $\hat{\pi}$ it finds is close to the best:
+
+$$
+\max_\pi J(\pi) - J(\hat{\pi}) \le 2H \sqrt{C_{\text{sa}}(\nu) \cdot \varepsilon_{\text{stat}}} + \varepsilon_{\text{alg}} \tag{11} \label{advantage-bound}
+$$
+
+where $C_{\text{sa}}(\nu)$ is the state-action concentrability of [Eq. (6)](#eq-c-sa), measured against the distribution $\nu$ on which the PRM was trained. Like the main result, the bound in [Eq. (11)](#eq-advantage-bound) depends only on step-level coverage.
+
+The action value $Q^\mu$, on the other hand, can fail as a PRM: the paper builds an example where the best policy under $Q^\mu$ as the reward is not the truly best policy [[4]](#ref-4). [Eq. (9)](#eq-advantage) shows why. Summing $Q^\mu = A^\mu + V^\mu$ along a trajectory gives the advantage sum of [Eq. (10)](#eq-pdl) plus an extra term:
+
+$$
+\mathbb{E}_{\tau \sim \pi} \left[ \sum_{h=1}^{H} Q^\mu(s_h, a_h) \right] = J(\pi) - J(\mu) + \mathbb{E}_{\tau \sim \pi} \left[ \sum_{h=1}^{H} V^\mu(s_h) \right]
+$$
+
+The extra term rewards a policy simply for passing through states that $\mu$ considers promising, whether or not that leads to a good outcome. The Monte Carlo estimate of [Eq. (4)](#eq-mc) estimates the value of a prefix, not an advantage. One way to read this result is that a step should be judged by how much it changes that estimate, rather than by the estimate itself.
+
+## GRPO Is Secretly a PRM
+
+If outcome rewards are not fundamentally weaker, maybe the algorithms we already use extract step-level information from them without being asked. Sullivan and Koller [[5]](#ref-5) show that this is true of GRPO. This section first shows how GRPO hides a PRM, then the flaw this reveals, and then the fix, **λ-GRPO**.
+
+### Shared Prefixes Are Process Steps
+
+Recall from the [GRPO post](/articles/group-relative-policy-optimization-grpo#eq-group-advantage) that GRPO samples a group $G$ of responses $y^{(1)}, \dots, y^{(|G|)}$ to the same prompt, and gives each response the advantage of its outcome reward $r^{(i)}$, normalized within the group:
+
+$$
+a_i = \frac{r^{(i)} - r_{\text{mean}}(G)}{r_{\text{std}}(G)} \tag{12} \label{grpo-advantage}
+$$
+
+Every token of response $i$ gets this same advantage. Now notice that the responses in a group often begin the same way. Several of them may share their first few tokens, and some of those may share even more. Each such shared prefix can be seen as a **process step**, and the set of responses that share it is a **process set** $\lambda$ ([Figure 5](#fig-grpo-prefix-tree)).
+
+<figure id="fig-grpo-prefix-tree">
+  <GrpoPrefixTree />
+  <figcaption>**Figure 5.** GRPO's hidden PRM, using the example from the paper [[5]](#ref-5). Responses that share a prefix form a process step, and the step's reward is the mean outcome reward of the responses that share it, a Monte Carlo estimate of the prefix.</figcaption>
+</figure>
+
+For each process set $\lambda$, define its reward as the mean outcome reward of the responses in it:
+
+$$
+r_{\text{mean}}(\lambda) = \frac{1}{|\lambda|} \sum_{y^{(i)} \in \lambda} r^{(i)} \tag{13} \label{step-reward}
+$$
+
+[Eq. (13)](#eq-step-reward) is exactly the Monte Carlo estimate of [Eq. (4)](#eq-mc) for the shared prefix: the responses in $\lambda$ are several completions of that prefix, and the reward is the fraction, or the mean, of their outcomes. Every token $t$ of response $i$ gets the reward $R_{i,t} = r_{\text{mean}}(\lambda)$ of the process set its position belongs to, and a token-level advantage, normalized in the same way as [Eq. (12)](#eq-grpo-advantage):
+
+$$
+A_{i,t} = \frac{R_{i,t} - r_{\text{mean}}(G)}{r_{\text{std}}(G)} \tag{14} \label{step-advantage}
+$$
+
+Training with the step-level advantages of [Eq. (14)](#eq-step-advantage) is a PRM-aware objective, $\mathcal{L}_{\text{PRM}}$. The paper proves that it is exactly equal to the ordinary GRPO objective with outcome rewards, $\mathcal{L}_{\text{GRPO}}$, for every group [[5]](#ref-5):
+
+$$
+\mathcal{L}_{\text{GRPO}}(G) = \mathcal{L}_{\text{PRM}}(G) \tag{15} \label{equivalence}
+$$
+
+The proof of [Eq. (15)](#eq-equivalence) assumes the token-level loss of [DAPO](/articles/decoupled-clip-dynamic-sampling-policy-optimization-dapo#token-level-loss-weighting-every-token-equally) and one update per batch, so that the probability ratio is $1$ and the clipping can be ignored. The reason it works is that at a token position shared by several responses, the tokens are identical, so their gradients are identical too, and adding up their outcome advantages $a_i$ gives the same result as giving each of them the mean, $A_{i,t}$. The authors also checked that shared prefixes are common in practice: in their training runs, $99.8\%$ of the groups had at least one shared prefix, and the overlap grew as training converged. So GRPO with an outcome reward is, in practice, already training with a Monte Carlo PRM.
+
+### The Hidden Flaw
+
+Looking at GRPO this way reveals a problem. Rewrite the loss at a token position $t$ as a sum over the process sets at that position. All $|\lambda|$ responses in a set contribute the same term, so the set's term is multiplied by its size:
+
+$$
+\mathcal{L}_{\text{GRPO}}(G) = \frac{1}{\sum_{i} \text{len}(y^{(i)})} \sum_{t} \sum_{\lambda \in X_t} |\lambda| \cdot \Big( \hat{P}_t(\lambda) \, \hat{A}(\lambda) - \hat{D}_t(\lambda) \Big) \tag{16} \label{set-weighted}
+$$
+
+where $X_t$ is the collection of process sets at position $t$, and $\hat{P}_t(\lambda)$, $\hat{A}(\lambda)$, and $\hat{D}_t(\lambda)$ are the probability ratio, the advantage, and the KL penalty shared by the responses in $\lambda$. A popular prefix therefore gets its update multiplied by the number of responses that share it. If its advantage is positive, it is pushed up many times over, and the model explores other openings less. If its advantage is negative, it is pushed down many times over, even when one of the responses that start with it was the best in the group.
+
+The example in [Figure 5](#fig-grpo-prefix-tree) shows this. Response $y_3$ has the highest reward, $1$. But its prefix JKL is shared with $y_4$ and $y_5$, which both got $0$, so the step reward of JKL is $0.33$, below the group mean of $0.42$. The advantage of JKL is negative, about $-0.22$, and [Eq. (16)](#eq-set-weighted) multiplies this push-down by $3$. GRPO makes the best response less likely.
+
+### The Fix: λ-GRPO
+
+The fix is to divide each token's loss by the size of its process set, $|\lambda(i, t)|$, which cancels the factor in [Eq. (16)](#eq-set-weighted) so that every process set counts once [[5]](#ref-5):
+
+$$
+\mathcal{L}_{\lambda\text{-GRPO}}(G) = \frac{1}{\sum_{i} \text{len}(y^{(i)})} \sum_{i} \sum_{t} \frac{1}{|\lambda(i, t)|} \Big( P_{i,t} \, a_i - D_{i,t} \Big) \tag{17} \label{lambda-grpo}
+$$
+
+Computing [Eq. (17)](#eq-lambda-grpo) needs the process sets, and finding them only needs a comparison of the token sequences in each group, which costs almost nothing. In the paper's experiments, λ-GRPO reached higher accuracy than GRPO on downstream reasoning tasks and reached its peak about twice as fast. The lesson is that we may not always need an explicit PRM: an outcome reward combined with a group of responses already carries step-level information, as long as the algorithm weighs it correctly.
+
+## Verifiers That Write Before They Judge
+
+The PRMs so far are **discriminative**: an LLM reads the solution, and a small classification head on top of it outputs a number. They never write anything. A **generative** verifier instead uses the LLM as a language model. It writes out a check of the step, and then gives a verdict as a word, such as "Yes" or "No" ([Figure 6](#fig-disc-vs-gen)).
+
+<figure id="fig-disc-vs-gen">
+  <DiscVsGen />
+  <figcaption>**Figure 6.** A discriminative PRM outputs a score directly from a classification head. A generative PRM writes a check of the step first, here with a line of code that is run, and its score is the probability it gives to the verdict "Yes".</figcaption>
+</figure>
+
+The simplest generative PRM predicts the verdict directly. For a step with state $s_t$, the problem and the previous steps, and action $a_t$, the step itself, the reward is the probability of the token "Yes":
+
+$$
+\hat{r}_t = r_\psi(\text{Yes} \mid s_t, a_t) \tag{18} \label{direct-gen}
+$$
+
+where $r_\psi$ is the verifier model with parameters $\psi$. Compared with [Eq. (18)](#eq-direct-gen), writing a check first has three benefits. It lets the verifier reason about the step, as a person would. It makes the verdict readable, since we can see why a step was rejected. And it gives a new way to spend compute: the verifier can write several checks and average them. This section covers two papers that build such verifiers, GenPRM and ThinkPRM.
+
+### GenPRM: Checking Steps with Code
+
+GenPRM [[6]](#ref-6) judges the steps of a solution one at a time, and for each step it writes out a check before it gives a verdict. [Figure 7](#fig-genprm-example) shows the whole text for step 3 of the rectangle example from [Figure 1](#fig-orm-vs-prm). The input is the problem and the steps written so far. In the notation of the paper, the state $s_t$ is the problem together with the steps before step $t$, and the action $a_t$ is step $t$ itself, the step being judged.
+
+<figure id="fig-genprm-example">
+  <GenPrmExample />
+  <figcaption>**Figure 7.** The text GenPRM reads and writes when it judges step 3 of the rectangle example, in a simplified format. The reasoning and the code are written by GenPRM, the code output is produced by running the code, and the reward is the probability GenPRM gives to "Yes" at the end.</figcaption>
+</figure>
+
+GenPRM then writes a **rationale** $v_t$ in two parts. The first is a chain of thought, between `<analyze>` tags, that says in words what the step claims and whether it holds. In the example, it notices that step 3 counts the width and the length only once, while a rectangle has two of each. The second part is a short Python program, between `<verify>` tags, that tests the claim with numbers. Here it computes both formulas for $w = 5$.
+
+The program is not run by the model. It is run by a Python interpreter, and its output is pasted back into the text as the **feedback** $f_t$, in the form `[Code output: ...]`. In the example, the output is `15 30`: the formula of step 3 gives $15$, while the correct perimeter is $30$. GenPRM reads this output, finishes its check, and gives the verdict. The reward of step $t$ is the probability that the verdict is "Yes", given everything before it ([Figure 8](#fig-genprm), top):
+
+$$
+\hat{r}_t = r_\psi(\text{Yes} \mid s_t, a_t, v_{1:t-1}, f_{1:t-1}, v_t, f_t) \tag{19} \label{genprm}
+$$
+
+where $v_{1:t-1}$ and $f_{1:t-1}$ are the rationales and feedback that GenPRM wrote for the earlier steps. It checks the steps in order, so its own earlier checks stay in its context while it judges the next one. In the example, the verdict is "No", and the reward of [Eq. (19)](#eq-genprm) is $0.04$. A check written only in words could easily accept $3w$ by mistake, but the code output makes the mistake impossible to miss. This is what running code adds: it catches arithmetic and algebra errors that are easy to overlook in words.
+
+To spend more compute on verification, GenPRM writes $N$ independent rationales for each step and averages their verdicts:
+
+$$
+\hat{r}_t = \frac{1}{N} \sum_{i=1}^{N} r_\psi\big( \text{Yes} \mid s_t, a_t, v^i_{1:t-1}, f^i_{1:t-1}, v^i_t, f^i_t \big) \tag{20} \label{genprm-avg}
+$$
+
+<figure id="fig-genprm">
+  <GenPrm />
+  <figcaption>**Figure 8.** GenPRM. Top: to judge a step, it writes $N$ rationales, each with reasoning and code that is run, and averages their probabilities of "Yes". Bottom: to label a step for training, it compares the Monte Carlo estimate after the step with the estimate before it, and calls the step wrong if the ratio falls below $\epsilon = 0.8$.</figcaption>
+</figure>
+
+The step labels for training come from the Monte Carlo estimate of [Eq. (4)](#eq-mc), with two changes. First, the number of completions $K$ depends on the problem: $128$ for hard problems, where even good prefixes rarely succeed, and $32$ for easy ones. Second, the authors noticed that many wrong steps still had a positive estimate, so a step is judged by its **progress** rather than by its estimate alone ([Figure 8](#fig-genprm), bottom). Since the next state $s_{t+1}$ is just $s_t$ followed by $a_t$, the **Relative Progress Estimation (RPE)** compares the estimate after the step with the estimate before it [[6]](#ref-6):
+
+$$
+P_t = \frac{\text{MC}(s_t, a_t)}{\text{MC}(s_t)} \tag{21} \label{rpe}
+$$
+
+In [Eq. (21)](#eq-rpe), a ratio above $1$ means the step made the correct answer easier to reach, and a ratio well below $1$ means it made it harder. A step is labeled correct if its progress is at least a threshold $\epsilon$:
+
+$$
+\hat{r}_t = \begin{cases} 1 & \text{if } P_t \ge \epsilon \\ 0 & \text{otherwise} \end{cases} \tag{22} \label{rpe-label}
+$$
+
+The paper uses $\epsilon = 0.8$ in [Eq. (22)](#eq-rpe-label), which allows a step to make the answer slightly harder to reach without being called wrong. This is in the same spirit as the theory above: it judges a step by how much it changes the estimate, not by the estimate of the state it leads to. The rationales themselves were written by a larger reasoning model, QwQ-32B, and a solution was kept only if the labels from RPE and the labels from that model agreed on every step. About half of the data was discarded this way, leaving $23{,}000$ examples. With this training and $N$ rationales per step, a GenPRM of $1.5$ billion parameters outperformed GPT-4o at finding errors.
+
+### ThinkPRM: Long Verification with Few Labels
+
+Reasoning models such as DeepSeek-R1 already write long chains of thought. Could they be used as PRMs directly, by simply asking them to check each step? Khalifa et al. [[7]](#ref-7) tried this, which is called **LLM-as-a-judge**, and found it unreliable. The verdicts changed with small changes to the wording of the prompt, and many outputs had no usable verdict at all: the model started solving the problem instead of checking it, **overthought** until it ran out of tokens, or got stuck in loops repeating the same checks.
+
+Their solution, **ThinkPRM**, keeps the long chain of thought but teaches the model a fixed way of writing it. [Figure 9](#fig-thinkprm-example) shows the text for the rectangle example. The input is the problem and the whole solution. ThinkPRM writes a **verification chain** inside `<think>` tags, going through the steps in order. For each step, it quotes the step, writes a critique of it, and ends the critique with a label in a box: `\boxed{correct}` or `\boxed{incorrect}`. These boxed labels are the step-level judgments. Once it finds an incorrect step, it stops, since the steps after a wrong step are built on a wrong result anyway. In the example, steps 1 and 2 are labeled correct, and the critique of step 3 notices the missing factor of $2$ and labels it incorrect.
+
+<figure id="fig-thinkprm-example">
+  <ThinkPrmExample />
+  <figcaption>**Figure 9.** The text ThinkPRM reads and writes for the rectangle example, slightly shortened. The verification chain critiques each step and ends each critique with a boxed label, stopping at the first incorrect step. The question at the end is added by us, and the score comes from the probabilities of "yes" and "no".</figcaption>
+</figure>
+
+To turn the chain into a single score for the solution, the question "Is the solution correct?" is appended after the chain, and the model's next token is read. The score is the probability of "yes", renormalized between the two possible answers [[7]](#ref-7):
+
+$$
+r(x, y) = \frac{P(\text{yes})}{P(\text{yes}) + P(\text{no})} \tag{23} \label{thinkprm-score}
+$$
+
+Renormalizing by [Eq. (23)](#eq-thinkprm-score) ignores whatever probability the model puts on other tokens, so the score is always between $0$ and $1$. In the example, the chain has already found a wrong step, so "no" is far more likely, and the score is about $0.03$.
+
+The model learns this format from a small set of examples, collected as shown in [Figure 10](#fig-thinkprm), top. The authors gave solutions from PRM800K to QwQ-32B-Preview, a reasoning model, and asked it to verify them in this format. They kept a chain only if it passed three filters. It had to contain a boxed label for every step, so that it could be read. Its labels had to match the human step labels of PRM800K on every step, so that its judgments were right. And it had to be at most $4{,}096$ tokens long, to rule out overthinking. Only about $20\%$ of the sampled chains passed, and the authors stopped at $1{,}000$ chains, covering $8{,}000$ step labels, about $1\%$ of the labels in PRM800K. Note that the filters check only the labels, never the critiques themselves, so no one has to write or check the verification text. A reasoning model was then **fine-tuned** on these chains with the ordinary language-modeling loss, which took a few hours on a single GPU.
+
+<figure id="fig-thinkprm">
+  <ThinkPrm />
+  <figcaption>**Figure 10.** ThinkPRM. Top: training chains are written by a reasoning model and kept only if their step labels are complete, agree with the human labels, and stay within a length budget. Bottom: the two ways to spend more compute on verification.</figcaption>
+</figure>
+
+The fine-tuned verifier was more accurate than discriminative PRMs trained on all of PRM800K, about $100$ times more labels, and it also worked on science questions and code, although it was trained only on math.
+
+ThinkPRM can also spend more compute on verification, in two ways ([Figure 10](#fig-thinkprm), bottom). **Parallel scaling** writes $K$ independent verification chains for the same solution and averages their scores from [Eq. (23)](#eq-thinkprm-score), in the same way that GenPRM averages its rationales in [Eq. (20)](#eq-genprm-avg). **Sequential scaling** makes the model check its own check: after the first chain, a phrase such as "Let's verify again" is appended, and the model continues thinking, often catching a mistake in its first verification. Both helped, with parallel scaling slightly better in some settings.
+
+## When to Solve and When to Verify
+
+Generative verifiers give a new way to spend compute at test time, but compute spent on verification is not spent on solving. With a fixed budget, is it better to generate more solutions and take a majority vote, or fewer solutions and verify them carefully? Singhi et al. [[8]](#ref-8) answer this by counting the cost of both.
+
+Suppose a model generates $S$ solutions and verifies each one $V$ times with a **generative reward model (GenRM)**, the same kind of verifier as above. Generating $T$ tokens with a model of $P$ parameters costs about $2PT$ operations, so if a solution has $T_S$ tokens and a verification has $T_V = \lambda T_S$ tokens, the total cost is $2P(T_S S + T_V S V)$. Dropping the constant $2 P T_S$, the cost of a strategy is:
+
+$$
+C(S, V) = S \, (1 + \lambda V) \tag{24} \label{compute}
+$$
+
+Self-consistency is the special case $V = 0$, with cost $C = S$. Earlier work had compared the two strategies at the same number of solutions, which made verification look efficient, since it matched majority voting with fewer solutions. But at the same total cost of [Eq. (24)](#eq-compute), the picture changes. Self-consistency was better at lower budgets. The generative verifier first caught up only at about $8$ times the compute, and gaining $3.8\%$ over self-consistency took $128$ times more compute ([Figure 11](#fig-compute)).
+
+<figure id="fig-compute">
+  <Compute />
+  <figcaption>**Figure 11.** Left: how the same budget can be spent on more solutions or on verifying fewer of them. Right: a schematic of the paper's finding that self-consistency wins at low budgets and the generative verifier only pays off at large ones.</figcaption>
+</figure>
+
+
+When verification does pay off, the budget still has to be split. Too few solutions, and none of them may be correct. Too few verifications, and the correct one may not be recognized. Fitting the best split at each budget $C$, the authors found that both should grow as **power laws** of the budget, but at different rates:
+
+$$
+S_{\text{opt}} \propto C^{0.57}, \qquad V_{\text{opt}} \propto C^{0.39} \tag{25} \label{scaling-laws}
+$$
+
+for Llama-3.1-8B on MATH, with similar patterns for other models. Since the exponent for solutions in [Eq. (25)](#eq-scaling-laws) is larger, the number of solutions should grow faster than the number of verifications, by a factor of about $1.5$ to $2$. The practical lesson: at small budgets, generate more solutions and vote; verification is worth it only when the budget is large, and even then, most of the extra compute should still go to solving.
+
+## Better Labels for Less
+
+Every verifier so far needed labels from somewhere: people, Monte Carlo completions, or a stronger model. The last group of papers looks for cheaper and more reliable sources. One makes better negative examples for ORMs, one builds step labels that are exactly right by construction, and one trains a PRM with no labels at all.
+
+### Echo Generation: Harder Negatives for ORMs
+
+Thatikonda et al. [[9]](#ref-9) build ORMs for **deductive logical reasoning**, where a model must decide whether a conclusion follows from a set of premises. They train the ORM with [Eq. (1)](#eq-orm-loss) on sampled chains of thought, labeled by whether the final answer is correct, and find that sampling several solutions per question, rather than one, gives a much better ORM.
+
+The trouble is that a model's own mistakes cover only some kinds of errors. To get more, the authors use a known weakness of LLMs: **echoing**. When a user states an answer, models tend to agree with it, and invent reasoning that supports it. So they prompt the model with "Given the answer is True, please reason step by step", where "True" is deliberately the wrong answer. The model writes a plausible but wrong chain of thought that leads to it. These **echoes** are then filtered: the model is asked to judge each one, and the echoes it already recognizes as wrong are discarded, since they are too obvious to teach anything. The remaining, convincing echoes are added to the training data as negatives ([Figure 12](#fig-echo)). ORMs trained with these extra negatives were better at ranking solutions on three logic benchmarks.
+
+<figure id="fig-echo">
+  <Echo />
+  <figcaption>**Figure 12.** Echo generation. Besides chains labeled by their final answer, the model is told a wrong answer and writes a convincing chain for it, which becomes a hard negative example once the obvious failures are filtered out.</figcaption>
+</figure>
+
+
+### Verifiable Counterfactual Supervision
+
+For a PRM, the most useful label is the position of the **first error**: the first step that does not follow from the steps before it. Monte Carlo estimates only guess at it, and people disagree about it. Chi and Wang [[10]](#ref-10) instead construct errors whose position is known for certain, using a **symbolic prover**, a program that can check whether a conclusion follows from given facts by given rules ([Figure 13](#fig-counterfactual)).
+
+<figure id="fig-counterfactual">
+  <Counterfactual />
+  <figcaption>**Figure 13.** A first-error counterfactual. The corrupted chain keeps the correct prefix, injects an error at step $k$ that the prover confirms cannot be derived from the prefix, and recomputes the later steps from the corrupted state.</figcaption>
+</figure>
+
+They start from a reasoning chain $C^+ = (s_1, \dots, s_T)$ that the prover has verified, where each step applies a rule to earlier facts. Then they pick a step $k$ and corrupt it, in a way that fits the rule used there: changing its conclusion, applying the rule in the wrong direction, or corrupting a fact. The corrupted chain $C^-$ must satisfy three conditions:
+
+$$
+\begin{aligned}
+& s^-_t = s^+_t \quad \text{for } t < k \\
+& s^-_k \text{ is not derivable from } s_1, \dots, s_{k-1} \\
+& s^-_{>k} \text{ follow from } s^-_k
+\end{aligned} \tag{26} \label{counterfactual}
+$$
+
+The first condition of [Eq. (26)](#eq-counterfactual) keeps the correct prefix. The second, checked by the prover, guarantees that step $k$ really is the first error: if the corrupted conclusion can still be derived from the prefix, the example is thrown away. The third makes the rest of the chain consistent with the error, by recomputing every later step from the corrupted state, so that the chain looks like a real reasoning chain that went wrong, not one that breaks and then continues as if nothing happened. Both chains are then translated into natural language with the same wording for the same facts, so that they differ only in the reasoning. A PRM trained on $20{,}000$ such pairs picked better solutions among eight candidates on logical reasoning benchmarks, and showed some transfer to math.
+
+### Unsupervised PRMs
+
+Every method so far needs either step labels or a way to check the final answer. Gadetsky et al. [[11]](#ref-11) remove both. Their **unsupervised PRM (uPRM)** learns from the solutions alone. The training signal comes from an LLM that is kept **frozen**, and the PRM being trained is a copy of the same LLM with **LoRA** adapters and a small head that gives each step a probability of being correct. In the paper both are Qwen2.5-14B-Instruct, and the solutions come from PRM800K with their labels removed.
+
+A PRM can be read as a guess of where a solution first goes wrong. Write a solution as $\tau = (x, y_1, \dots, y_T)$, a problem $x$ followed by $T$ steps, and let $r_\theta(c_t = 1 \mid \tau_{\le t})$ be the probability the PRM gives to step $t$ being correct. The first error is at step $j$ when all the steps before $j$ are correct and step $j$ is wrong, so
+
+$$
+\log p_\theta(j \mid \tau) = \mathbb{1}[j \le T] \cdot \log r_\theta(c_j = 0 \mid \tau_{\le j}) + \sum_{t < j} \log r_\theta(c_t = 1 \mid \tau_{\le t}) \tag{27} \label{first-error}
+$$
+
+The sum is the part where the earlier steps are correct, and the first term is the part where step $j$ is wrong. The value $j = T + 1$ means there is no error, and then $\mathbb{1}[j \le T] = 0$ removes the first term.
+
+<div className="example">
+
+<span className="example-label">Example: where is the first error?</span>
+
+Suppose the PRM gives the first three steps the probabilities $0.9$, $0.9$ and $0.2$ of being correct. The first error is at step $2$ if step $1$ is correct and step $2$ is wrong, which has probability $0.9 \times 0.1 = 0.09$. It is at step $3$ if steps $1$ and $2$ are correct and step $3$ is wrong, which has probability $0.9 \times 0.9 \times 0.8 \approx 0.65$. So the PRM thinks the first error is most likely at step $3$.
+
+</div>
+
+A supervised PRM is trained to give the labeled first-error position a high probability in [Eq. (27)](#eq-first-error). uPRM has no labels, so it asks the frozen LLM how plausible each position is. For a candidate $j$, it writes the solution up to step $j$ with a mark after each step: "+" after the steps before $j$ and "−" after step $j$. For $j = T + 1$, every step gets a "+":
+
+$$
+s(\tau, j) = [\, x, \; y_1, +, \; \dots, \; y_{j-1}, +, \; y_j, - \,] \tag{28} \label{marked}
+$$
+
+The LLM reads this sequence, and at each mark it gives its next-token probabilities of "+" and "−", renormalized so that the two add up to $1$. Let $p^+_t$ be its probability of a "+" after step $t$ and $p^-_j$ its probability of a "−" after step $j$. The score of the candidate has the same form as [Eq. (27)](#eq-first-error):
+
+$$
+S(j; s) = \mathbb{1}[j \le T] \cdot \log p^-_j + \sum_{t < j} \log p^+_t \tag{29} \label{uprm-score}
+$$
+
+A candidate that calls a correct step wrong gets a small $p^-$, and a candidate that calls a wrong step correct gets a small $p^+$. Only the true position avoids both, so it gets the highest score ([Figure 14](#fig-uprm-marks)).
+
+<figure id="fig-uprm-marks">
+  <UprmMarks />
+  <figcaption>**Figure 14.** Scoring every candidate first-error position for one solution whose step 3 is wrong. The marks follow from the candidate $j$: "+" after the steps before $j$, "−" after step $j$. The LLM's probability of each mark is shown under it, and the score of [Eq. (29)](#eq-uprm-score) is the sum of their logs.</figcaption>
+</figure>
+
+Picking the $j$ with the highest score is the **LLM-as-a-judge** baseline. One solution at a time gives a noisy judgment, so uPRM scores a batch of $N$ solutions together. Their marked sequences are concatenated, and while the LLM reads solution $n$, the earlier solutions and their marks act as examples in its context, which is **in-context learning**. The joint score is the average of [Eq. (29)](#eq-uprm-score) over the batch:
+
+$$
+S(j_{1:N}; s_{1:N}) = \frac{1}{N} \sum_{n=1}^{N} \left( \mathbb{1}[j_n \le T_n] \cdot \log p^-_{n, j_n} + \sum_{t < j_n} \log p^+_{n,t} \right) \tag{30} \label{joint-score}
+$$
+
+The joint score depends on all $N$ candidates at once, and there are too many combinations to try them all. This is where the PRM comes in. It is trained with **reinforcement learning** to propose the candidates ([Figure 15](#fig-uprm-train)). For each solution in the batch, it samples a position $j_n$ from its own distribution in [Eq. (27)](#eq-first-error), the marks are written from these positions, and the frozen LLM computes the joint score of [Eq. (30)](#eq-joint-score), which is the reward. The PRM maximizes the expected reward with an **entropy** bonus:
+
+$$
+\max_\theta \; \mathbb{E} \left[ \mathbb{E}_{j_n \sim p_\theta(\cdot \mid \tau_n)} \big[ S(j_{1:N}) \big] + \frac{\gamma}{N} \sum_{n=1}^{N} H\big( p_\theta(\cdot \mid \tau_n) \big) \right] \tag{31} \label{uprm-objective}
+$$
+
+where $H$ is the entropy of the PRM's distribution over $j$ and $\gamma$ sets its weight. The entropy bonus keeps the PRM from putting all of its probability on one position too early. The gradient is a **REINFORCE** estimate with a baseline: a sampled position that scores above the average for its solution becomes more likely, and one that scores below becomes less likely. One more detail keeps the training honest. If every position in the batch is "step 1", or every one is "no error", the examples all agree and the LLM tends to copy the pattern, which gives a high score whatever the real errors are. The paper subtracts a penalty when more than $75\%$ of the batch falls on these two positions.
+
+<div className="algorithm">
+
+<span className="algorithm-label"><b>Algorithm 2</b> Training an Unsupervised PRM</span>
+
+$$
+\begin{array}{rl}
+{\scriptsize 1:} & \textbf{repeat} \\
+{\scriptsize 2:} & \quad \text{take } N \text{ solutions } \tau_1, \dots, \tau_N \text{ without labels} \\
+{\scriptsize 3:} & \quad \text{sample } j_n \sim p_\theta(\cdot \mid \tau_n) \text{ from the PRM with Eq. (27)} \\
+{\scriptsize 4:} & \quad \text{mark each solution with Eq. (28), then concatenate} \\
+{\scriptsize 5:} & \quad \text{score the marked batch with the frozen LLM, Eq. (30)} \\
+{\scriptsize 6:} & \quad \text{update the PRM to maximize Eq. (31)} \\
+{\scriptsize 7:} & \textbf{until } \text{the PRM stops improving}
+\end{array}
+$$
+
+</div>
+
+<figure id="fig-uprm-train">
+  <UprmTrain />
+  <figcaption>**Figure 15.** Training an unsupervised PRM. The PRM samples a first-error position for each solution, the marks are written from these positions, the frozen LLM scores the marked batch, and the score is the reward for the PRM. No step labels or final answers are used.</figcaption>
+</figure>
+
+The batch and the marks are used only during training. Once trained, the PRM reads each solution alone and gives a probability for every step, like any other PRM. On ProcessBench, a benchmark for finding the first error, uPRM was up to $15\%$ more accurate than the LLM-as-a-judge baseline, and as a verifier it was competitive with PRMs trained on human step labels. When used as a reward in reinforcement learning, it was also hacked less often than a supervised PRM.
+
+
+## Beyond Steps: Agentic Reward Models
+
+The verifiers in this post check math and logic, where correctness is clear. For general instructions, reward models are usually trained on human preferences, as in [RLHF](/articles/reinforcement-learning-from-human-feedback-rlhf), and such a reward model can prefer a response that sounds good but states a wrong fact or ignores an instruction. Peng et al. [[12]](#ref-12) apply the lesson of verifiers to this setting with **agentic reward modeling**: combine a preference reward model with checks that can actually be verified. The reward of a response $y$ to an instruction $x$ is:
+
+$$
+r(x, y) = \lambda \, r_{\text{RM}}(x, y) + \sum_{i \in A_x} w_i \, a_i(x, y) \tag{32} \label{agentic}
+$$
+
+where $r_{\text{RM}}$ is the base reward model, each $a_i$ is a **verification agent** that checks one aspect of correctness, $w_i$ and $\lambda$ are weights, and $A_x$ is the set of agents chosen for this instruction. Their system, **RewardAgent**, has three parts ([Figure 16](#fig-rewardagent)). A **router**, an LLM, reads the instruction and decides which agents are needed. The **verification agents** do the checking: a **factuality** agent finds the facts on which two responses differ, generates search queries, collects evidence from a search engine or from the model's own knowledge, and judges which response is right; an **instruction-following** agent extracts hard constraints from the instruction, such as "within 100 words", writes Python code to check each one, and runs it. A **judger** adds everything up with [Eq. (32)](#eq-agentic), with all weights set to $1$. RewardAgent judges whole responses, so it is an outcome reward model, but it shares the main idea of the generative verifiers: a reward is more reliable when part of it is checked rather than guessed.
+
+<figure id="fig-rewardagent">
+  <RewardAgent />
+  <figcaption>**Figure 16.** RewardAgent. A router picks the checks, verification agents check facts and hard constraints with tools, and a judger combines their scores with the preference reward model.</figcaption>
+</figure>
+
+
+## Limitations and Open Questions
+
+PRMs remain harder to build than ORMs. Step labels from people are expensive, Monte Carlo labels cost many extra completions and measure whether a step still allows success rather than whether it is correct, and labels from a stronger model inherit that model's mistakes. Generative verifiers are more accurate and readable, but they cost much more compute per step, and at small budgets that compute is better spent on more solutions. Learned PRMs can also be hacked when used as rewards in reinforcement learning, which is one reason most reasoning models are still trained with outcome rewards. And most of this work is on math and logic, where steps and answers can be checked. For open-ended tasks, where the steps of a good answer are less clear, both the labels and the verifiers are still open problems.
+
+> Process reward models judge a solution where it goes wrong rather than only where it ends. The papers here show that the line between outcome and process supervision is thinner than it seemed: outcome rewards are not fundamentally weaker, GRPO already learns from steps, and a PRM can learn to check its own judgments with fewer and fewer labels.
+
+## References
+
+<ol>
+  <li id="ref-1">Lightman, H., Kosaraju, V., Burda, Y., et al. (2024). <a href="https://arxiv.org/abs/2305.20050">Let's Verify Step by Step</a>. <em>ICLR</em>.</li>
+  <li id="ref-2">Wang, X., Wei, J., Schuurmans, D., et al. (2023). <a href="https://arxiv.org/abs/2203.11171">Self-Consistency Improves Chain of Thought Reasoning in Language Models</a>. <em>ICLR</em>.</li>
+  <li id="ref-3">Wang, P., Li, L., Shao, Z., et al. (2024). <a href="https://arxiv.org/abs/2312.08935">Math-Shepherd: Verify and Reinforce LLMs Step-by-step without Human Annotations</a>. <em>ACL</em>.</li>
+  <li id="ref-4">Jia, Z., Rakhlin, A., & Xie, T. (2025). <a href="https://arxiv.org/abs/2502.10581">Do We Need to Verify Step by Step? Rethinking Process Supervision from a Theoretical Perspective</a>. <em>arXiv:2502.10581</em>.</li>
+  <li id="ref-5">Sullivan, M., & Koller, A. (2026). <a href="https://arxiv.org/abs/2509.21154">GRPO is Secretly a Process Reward Model</a>. <em>ICML</em>.</li>
+  <li id="ref-6">Zhao, J., Liu, R., Zhang, K., et al. (2025). <a href="https://arxiv.org/abs/2504.00891">GenPRM: Scaling Test-Time Compute of Process Reward Models via Generative Reasoning</a>. <em>arXiv:2504.00891</em>.</li>
+  <li id="ref-7">Khalifa, M., Agarwal, R., Logeswaran, L., Kim, J., Peng, H., Lee, M., Lee, H., & Wang, L. (2025). <a href="https://arxiv.org/abs/2504.16828">Process Reward Models That Think</a>. <em>arXiv:2504.16828</em>.</li>
+  <li id="ref-8">Singhi, N., Bansal, H., Hosseini, A., et al. (2025). <a href="https://arxiv.org/abs/2504.01005">When To Solve, When To Verify: Compute-Optimal Problem Solving and Generative Verification for LLM Reasoning</a>. <em>COLM</em>.</li>
+  <li id="ref-9">Thatikonda, R. K., Buntine, W., & Shareghi, E. (2025). <a href="https://arxiv.org/abs/2508.19903">Logical Reasoning with Outcome Reward Models for Test-Time Scaling</a>. <em>arXiv:2508.19903</em>.</li>
+  <li id="ref-10">Chi, Y., & Wang, Y. (2026). <a href="https://arxiv.org/abs/2605.02395">Verifiable Counterfactual Supervision for Process Reward Models</a>. <em>arXiv:2605.02395</em>.</li>
+  <li id="ref-11">Gadetsky, A., Kodryan, M., Panigrahi, S. S., Guo, H., & Brbic, M. (2026). <a href="https://arxiv.org/abs/2605.10158">Unsupervised Process Reward Models</a>. <em>arXiv:2605.10158</em>.</li>
+  <li id="ref-12">Peng, H., Qi, Y., Wang, X., Yao, Z., Xu, B., Hou, L., & Li, J. (2025). <a href="https://arxiv.org/abs/2502.19328">Agentic Reward Modeling: Integrating Human Preferences with Verifiable Correctness Signals for Reliable Reward Systems</a>. <em>arXiv:2502.19328</em>.</li>
+</ol>

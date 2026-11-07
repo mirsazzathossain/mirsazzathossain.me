@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 192" role="img" aria-label="Echo generation. Normal data: the model reasons step by step eight times per question, and each chain is labeled by its final answer. Echo data: the model is told the wrong answer, writes a plausible but wrong chain to support it, and judges the chain itself; obvious failures are dropped and convincing ones are kept as negative examples. Both go into the ORM's training data." font-family="var(--font-sans)">
+<defs><marker id="a-ink" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--ink-3)"/></marker></defs>
+<text x="20" y="22" fill="var(--link)" font-size="12" font-weight="700" text-anchor="start" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">Normal data</text>
+<rect x="20" y="32" width="130" height="46" rx="8" fill="var(--ink-3)" fill-opacity="0.06" stroke="var(--ink-3)" stroke-width="1.8"/>
+<text x="85" y="52" fill="var(--ink)" font-size="10.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">premises + question</text>
+<text x="85" y="68" fill="var(--ink-3)" font-size="9.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">is the conclusion True?</text>
+<line x1="150" y1="55" x2="180" y2="55" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<rect x="185" y="32" width="170" height="46" rx="8" fill="var(--link)" fill-opacity="0.1" stroke="var(--link)" stroke-width="1.8"/>
+<text x="270" y="52" fill="var(--link)" font-size="10.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">"reason step by step"</text>
+<text x="270" y="68" fill="var(--ink-3)" font-size="9.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">8 sampled chains</text>
+<line x1="355" y1="55" x2="385" y2="55" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<rect x="390" y="32" width="150" height="46" rx="8" fill="var(--link)" fill-opacity="0.1" stroke="var(--link)" stroke-width="1.8"/>
+<text x="465" y="52" fill="var(--link)" font-size="10.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">label by final answer</text>
+<text x="465" y="68" fill="var(--ink-3)" font-size="9.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">✓ positive, ✗ negative</text>
+<line x1="540" y1="55" x2="600" y2="100" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<text x="20" y="122" fill="var(--rose)" font-size="12" font-weight="700" text-anchor="start" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">Echo data</text>
+<rect x="20" y="132" width="130" height="46" rx="8" fill="var(--ink-3)" fill-opacity="0.06" stroke="var(--ink-3)" stroke-width="1.8"/>
+<text x="85" y="152" fill="var(--ink)" font-size="10.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">premises + question</text>
+<text x="85" y="168" fill="var(--ink-3)" font-size="9.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">(true answer: False)</text>
+<line x1="150" y1="155" x2="180" y2="155" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<rect x="185" y="132" width="170" height="46" rx="8" fill="var(--rose)" fill-opacity="0.1" stroke="var(--rose)" stroke-width="1.8"/>
+<text x="270" y="152" fill="var(--rose)" font-size="10.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">"Given the answer is True"</text>
+<text x="270" y="168" fill="var(--ink-3)" font-size="9.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">plausible but wrong chain</text>
+<line x1="355" y1="155" x2="385" y2="155" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<rect x="390" y="132" width="150" height="46" rx="8" fill="var(--amber)" fill-opacity="0.1" stroke="var(--amber)" stroke-width="1.8"/>
+<text x="465" y="150" fill="var(--amber)" font-size="10.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">self-judge the chain</text>
+<text x="465" y="166" fill="var(--ink-3)" font-size="9.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">keep only convincing ones</text>
+<line x1="540" y1="155" x2="600" y2="120" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<rect x="605" y="86" width="105" height="48" rx="8" fill="var(--green)" fill-opacity="0.14" stroke="var(--green)" stroke-width="1.8"/>
+<text x="657" y="106" fill="var(--green)" font-size="11" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">ORM training</text>
+<text x="657" y="123" fill="var(--green)" font-size="11" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">data</text>
+</svg>
