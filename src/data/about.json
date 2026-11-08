@@ -7,14 +7,14 @@
     "url": "https://www.pentabd.com/"
   },
   "researchInterests": [
+    "LLM Agents",
+    "LLM Post-Training",
     "Preference Optimization",
-    "LLM Scaling",
-    "Test-Time Adaptation",
-    "Formal Verification",
+    "Adversarial Policy Optimization",
     "Self-Distillation",
-    "Adversarial Policy Optimization"
+    "Formal Verification"
   ],
-  "description": "A highly motivated and aspiring researcher with a strong background in deep learning, with recent work centered on multimodal learning. Over the past few years, I have actively contributed to the field, publishing research articles in top-tier venues such as ACL and WACV. My primary research interests now lie in preference optimization and reinforcement learning for large language models. I have also worked on vision-language models, domain adaptation, and federated learning, and continue to explore these areas with strong interest.\n\nCurrently, I am working as an AI Engineer at Penta Global Limited. Before that, I spent four and a half years as a Research Assistant at the Center for Computational & Data Sciences (CCDS) at Independent University, Bangladesh. My recent work explores multimodal alignment and efficient adaptation, and I am increasingly focused on LLM scaling, test-time adaptation, self-distillation, adversarial policy optimization, and formal verification. I am actively seeking Ph.D. opportunities in Computer Science for Fall 2027, with an emphasis on preference optimization and reinforcement learning for large language models.",
+  "description": "I am working as an AI Engineer at Penta Global Limited, and was previously a research assistant at the Center for Computational & Data Sciences (CCDS), Independent University, Bangladesh. My research is in natural language processing, with a focus on LLM agents, LLM post-training, and the evaluation of language and vision-language models. Currently, I am working on reinforcement learning, adversarial policy optimization, and on-policy self-distillation for LLMs, especially in settings without labeled data. My work has been published at ACL, WACV and AACL.\n\nAt Penta, I work on LLM agents for Autodesk Revit, specifically an agentic system that interacts with Revit to build 3D BIM models from 2D drawing files, and a chat assistant inside Revit. During my four and a half years at CCDS, I worked on Bangla NLP and medical benchmarks for language and vision-language models. I also mentored undergraduate thesis students, taught lab sessions at IUB, and served as an instructor at a national workshop on computational biology. I am looking for PhD positions in Computer Science starting Fall 2027.",
   "academicLinks": [
     {
       "name": "google-scholar",
