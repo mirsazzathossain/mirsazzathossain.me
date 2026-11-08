@@ -1,0 +1,58 @@
+---
+title: "Reading Paywalled Papers Through a Remote Server"
+description: "How to access papers through a server that has journal access, by routing Chrome through an SSH tunnel to it."
+language: bash
+logo:
+  url: logos/bash.png
+  alt: Bash Logo
+---
+
+## Connect to the VPN
+
+If the server (`server-address`) can't be reached from outside its network, connect to its VPN first. Otherwise, skip this step.
+
+## Open a SOCKS Tunnel to the Server
+
+To route browser traffic through the server, open a SOCKS tunnel to it:
+
+```bash
+ssh -D 1080 -N -C username@server-address
+```
+
+- `-D 1080` → Opens a local SOCKS proxy on port `1080`.
+- `-N` → Do not execute remote commands, only open the tunnel.
+- `-C` → Compresses traffic, which helps on slow connections.
+
+<mark>
+  Note: Keep this terminal open while you browse. Closing it closes the
+  tunnel.
+</mark>
+
+## Create a Proxy Profile in ZeroOmega
+
+In the ZeroOmega extension for Chrome, create a new profile, for example `Tunnel`, of type **Proxy**:
+
+- Protocol → `SOCKS5`
+- Server → `127.0.0.1`
+- Port → `1080`
+
+## Send Only Publisher Sites Through the Tunnel
+
+Create an **Auto Switch** profile that sends publisher sites through `Tunnel` and everything else direct:
+
+```text
+*.ieee.org
+*.acm.org
+*.sciencedirect.com
+*.springer.com
+*.wiley.com
+*.nature.com
+```
+
+Then switch ZeroOmega to the Auto Switch profile.
+
+## Check That It Works
+
+Open a paper page. It should show that you have access, often with the subscriber's name in the page header.
+
+Now, you can read papers through the server's journal access, while the rest of your browsing stays direct!

@@ -1,0 +1,54 @@
+---
+title: "Compressing a PDF Under a Size Limit"
+description: "How to shrink a PDF with Ghostscript, useful when a conference portal rejects files over a size limit."
+language: bash
+logo:
+  url: logos/bash.png
+  alt: Bash Logo
+---
+
+## Install Ghostscript
+
+```bash
+# Ubuntu / Debian
+sudo apt install ghostscript
+
+# macOS
+brew install ghostscript
+```
+
+## Compress the PDF
+
+To compress `paper.pdf` into `paper-small.pdf`, run:
+
+```bash
+gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.5 -dPDFSETTINGS=/ebook \
+   -dEmbedAllFonts=true -dNOPAUSE -dQUIET -dBATCH \
+   -sOutputFile=paper-small.pdf paper.pdf
+```
+
+- `-sDEVICE=pdfwrite` → Writes a new PDF.
+- `-dPDFSETTINGS=/ebook` → Downsamples images to about 150 dpi.
+- `-dEmbedAllFonts=true` → Keeps all fonts embedded, which most portals require.
+- `-dNOPAUSE -dQUIET -dBATCH` → Runs without prompts and exits when done.
+
+## Check the Size
+
+```bash
+ls -lh paper.pdf paper-small.pdf
+```
+
+## Pick a Stronger or Lighter Setting
+
+If the file is still too big, or the figures look bad, change `-dPDFSETTINGS`:
+
+- `/screen` → About 72 dpi. Smallest file, blurry figures.
+- `/ebook` → About 150 dpi. Good default for submissions.
+- `/printer` → About 300 dpi. Larger file, sharp figures.
+
+<mark>
+  Note: Open the compressed PDF and zoom into the figures before uploading. Plots
+  saved as raster images suffer most.
+</mark>
+
+This setup gets most papers under the portal's limit in one command!

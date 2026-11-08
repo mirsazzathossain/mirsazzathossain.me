@@ -1,0 +1,89 @@
+---
+title: "Adding an SSH Key to GitHub"
+description: "How to create an SSH key on a new machine and connect it to GitHub, so you can push and pull without a password."
+language: bash
+logo:
+  url: logos/bash.png
+  alt: Bash Logo
+---
+
+## Generate a Key
+
+To create a new SSH key on your machine, run:
+
+```bash
+ssh-keygen -t ed25519 -C "your_email@example.com"
+```
+
+- `-t ed25519` → Uses the Ed25519 key type.
+- `-C` → Adds a comment, usually your email, to identify the key.
+
+<mark>
+  Note: Press Enter to accept the default location (`~/.ssh/id_ed25519`). Add a
+  passphrase if you want one.
+</mark>
+
+## Start the SSH Agent and Add the Key
+
+```bash
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_ed25519
+```
+
+## Copy the Public Key
+
+```bash
+cat ~/.ssh/id_ed25519.pub
+```
+
+Copy the whole line, starting with `ssh-ed25519`.
+
+## Add It to GitHub
+
+Go to **GitHub → Settings → SSH and GPG keys → New SSH key**. Paste the key and give it a name you'll recognize, such as the machine name.
+
+## Test the Connection
+
+```bash
+ssh -T git@github.com
+```
+
+You should see a message greeting you by your GitHub username.
+
+## Use SSH for Your Repos
+
+To clone a repo over SSH, use:
+
+```bash
+git clone git@github.com:username/repo.git
+```
+
+For a repo you already cloned with HTTPS, switch it:
+
+```bash
+git remote set-url origin git@github.com:username/repo.git
+```
+
+## Optional: Separate Keys for Two GitHub Accounts
+
+Create a second key, for example `~/.ssh/id_ed25519_work`, and add it to the other account. Then add the following to `~/.ssh/config`:
+
+```ini
+Host github.com
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/id_ed25519
+
+Host github-work
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/id_ed25519_work
+```
+
+Now, clone work repos with the alias:
+
+```bash
+git clone git@github-work:org/repo.git
+```
+
+This setup lets you push and pull from GitHub without typing a password!

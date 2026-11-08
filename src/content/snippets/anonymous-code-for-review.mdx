@@ -1,0 +1,55 @@
+---
+title: "Making an Anonymous Version of Your Code for Review"
+description: "How to share code with reviewers without revealing who you are, using anonymous.4open.science or a stripped copy of the repo."
+language: bash
+logo:
+  url: logos/bash.png
+  alt: Bash Logo
+---
+
+## Option 1: Use Anonymous GitHub
+
+Go to [anonymous.4open.science](https://anonymous.4open.science) and sign in with GitHub. Then:
+
+- Paste the URL of your GitHub repo and choose the branch.
+- List the terms to hide → your names, usernames, lab and university.
+- Set an expiry date → after the review period ends.
+
+It gives you an anonymous link that mirrors the repo, with those terms replaced. Put that link in the paper.
+
+<mark>
+  Note: The tool only replaces the terms you list. Check the anonymous link
+  yourself before submitting.
+</mark>
+
+## Option 2: Make a Stripped Copy
+
+To share the code without its git history, export the current files into a new folder:
+
+```bash
+git archive --format=tar HEAD | (mkdir -p ../repo-anon && tar -x -C ../repo-anon)
+cd ../repo-anon
+```
+
+- `git archive HEAD` → Exports the files at the latest commit, without `.git`.
+- `tar -x -C ../repo-anon` → Unpacks them into a new folder.
+
+## Search for Anything That Identifies You
+
+```bash
+grep -rniE "your-name|your-username|your-lab|your-university" .
+```
+
+Remove or replace every match, including in `README`, `LICENSE`, comments, paths, config files and notebook outputs.
+
+## Upload the Stripped Copy
+
+Create a new repo or zip from the stripped folder, under an account or host that doesn't show your name.
+
+<mark>
+  Note: Also check the metadata. Notebook outputs, absolute paths like
+  `/home/your-name/` and Weights & Biases or Hugging Face links can all reveal
+  who you are.
+</mark>
+
+This setup lets reviewers run your code while keeping the submission anonymous!

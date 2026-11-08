@@ -1,0 +1,51 @@
+---
+title: "Getting BibTeX from a DOI"
+description: "How to fetch a BibTeX entry for any paper straight from its DOI, using curl."
+language: bash
+logo:
+  url: logos/bash.png
+  alt: Bash Logo
+---
+
+## Fetch the BibTeX Entry
+
+To get the BibTeX entry for a paper, ask `doi.org` for BibTeX instead of the web page:
+
+```bash
+curl -LH "Accept: application/x-bibtex" https://doi.org/<doi>
+```
+
+- `-L` → Follows redirects to the publisher's metadata service.
+- `-H "Accept: application/x-bibtex"` → Asks for BibTeX instead of HTML.
+- `<doi>` → The paper's DOI, for example `10.1038/nature14539`.
+
+## Append It to Your Bibliography
+
+```bash
+curl -sLH "Accept: application/x-bibtex" https://doi.org/<doi> >> references.bib
+echo >> references.bib
+```
+
+## Add a Shortcut
+
+Add the following to `~/.bashrc` or `~/.zshrc`:
+
+```bash
+doi2bib() {
+  curl -sLH "Accept: application/x-bibtex" "https://doi.org/$1"
+  echo
+}
+```
+
+Now, simply run:
+
+```bash
+doi2bib 10.1038/nature14539 >> references.bib
+```
+
+<mark>
+  Note: The entry comes from the publisher's metadata. Check the citation key
+  and title capitalization before using it in a paper.
+</mark>
+
+This setup gives you clean BibTeX without copying it from publisher pages!

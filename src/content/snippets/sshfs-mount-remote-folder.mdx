@@ -1,0 +1,57 @@
+---
+title: "Mounting a Remote Folder Locally with sshfs"
+description: "How to mount a folder from a remote server on your machine with sshfs, so you can edit server files in your local editor."
+language: bash
+logo:
+  url: logos/bash.png
+  alt: Bash Logo
+---
+
+## Install sshfs
+
+```bash
+# Ubuntu / Debian
+sudo apt install sshfs
+
+# macOS (install macFUSE first)
+brew install gromgit/fuse/sshfs-mac
+```
+
+## Create a Local Mount Point
+
+```bash
+mkdir -p ~/remote
+```
+
+## Mount the Remote Folder
+
+To mount a folder from the server (`remote-server`) on your machine, run:
+
+```bash
+sshfs user@remote-server:/home/user/project ~/remote -o reconnect,ServerAliveInterval=15
+```
+
+- `user@remote-server:/home/user/project` → The remote folder to mount.
+- `~/remote` → The local folder where it appears.
+- `-o reconnect` → Reconnects automatically if the connection drops.
+- `-o ServerAliveInterval=15` → Keeps the connection alive when idle.
+
+Now, open `~/remote` in your local editor and edit the server files as if they were on your machine.
+
+<mark>
+  Note: Every file read goes over the network, so searching or indexing large
+  folders (datasets, `node_modules`, checkpoints) will be slow. Open only the
+  folder you need.
+</mark>
+
+## Unmount the Folder
+
+```bash
+# Linux
+fusermount -u ~/remote
+
+# macOS
+umount ~/remote
+```
+
+This setup lets you work on server files with your own editor and settings!
