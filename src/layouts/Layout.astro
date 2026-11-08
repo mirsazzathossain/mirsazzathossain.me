@@ -8,6 +8,8 @@ import "@/styles/globals.css";
 
 interface Props {
   title?: string;
+  /** Full <title>, used as is instead of "{title} - {name}". */
+  fullTitle?: string;
   description?: string;
   name?: string;
   canonicalPath?: string;
@@ -24,6 +26,7 @@ interface Props {
 
 const {
   title,
+  fullTitle,
   name = "Mir Sazzat Hossain",
   description = `${name} is an AI Engineer at Penta Global Limited and a researcher working on LLM agents, LLM post-training, preference and adversarial policy optimization, self-distillation, and formal verification.`,
   canonicalPath,
@@ -41,7 +44,7 @@ const {
 const origin = (Astro.site?.href ?? Astro.url.origin).replace(/\/$/, "");
 const canonical = new URL(canonicalPath ?? Astro.url.pathname, origin).href;
 const ogImageUrl = new URL(ogImage, origin).href;
-const pageTitle = title ? `${title} - ${name}` : `${name} | Personal Website`;
+const pageTitle = fullTitle ?? (title ? `${title} - ${name}` : `${name} | Personal Website`);
 ---
 
 <!doctype html>
