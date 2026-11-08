@@ -101,20 +101,40 @@ def fetch_busy_ranges(service, calendar_ids: list[str], monday: datetime, sunday
     return ranges
 
 
-def slot_is_busy(day_offset: int, hour: int, monday: datetime, busy: list) -> bool:
+def slot_segments(day_offset: int, hour: int, monday: datetime, busy: list) -> list[list[int]]:
+    """Busy minute ranges [start, end] (0–60) inside one hour slot, merged."""
     slot_start = monday + timedelta(days=day_offset, hours=hour)
     slot_end   = slot_start + timedelta(hours=1)
-    return any(s < slot_end and e > slot_start for s, e in busy)
-
-
-def build_grid(monday: datetime, busy: list) -> list[str]:
-    return [
-        "".join(
-            "b" if slot_is_busy(d, h, monday, busy) else "f"
-            for d in range(7)
+    parts = sorted(
+        (
+            int((max(s, slot_start) - slot_start).total_seconds() // 60),
+            int((min(e, slot_end) - slot_start).total_seconds() // 60),
         )
-        for h in HOURS
-    ]
+        for s, e in busy
+        if s < slot_end and e > slot_start
+    )
+    merged: list[list[int]] = []
+    for start, end in parts:
+        if merged and start <= merged[-1][1]:
+            merged[-1][1] = max(merged[-1][1], end)
+        else:
+            merged.append([start, end])
+    return merged
+
+
+def build_segments(monday: datetime, busy: list) -> list[list[list[list[int]]]]:
+    return [[slot_segments(d, h, monday, busy) for d in range(7)] for h in HOURS]
+
+
+def build_grid(segments: list) -> list[str]:
+    """f = free, b = whole hour busy, p = partly busy (see segments)."""
+    def code(segs: list[list[int]]) -> str:
+        if not segs:
+            return "f"
+        if segs == [[0, 60]]:
+            return "b"
+        return "p"
+    return ["".join(code(segs) for segs in row) for row in segments]
 
 
 def format_range_label(monday: datetime, sunday_ex: datetime) -> str:
@@ -157,7 +177,8 @@ def main():
 
     print(f"Found {len(busy)} busy block(s)")
 
-    grid  = build_grid(monday, busy)
+    segments = build_segments(monday, busy)
+    grid     = build_grid(segments)
     dates = [(monday + timedelta(days=i)).strftime("%b %-d") for i in range(7)]
 
     output = {
@@ -167,6 +188,7 @@ def main():
         "dates": dates,
         "hours": HOUR_LABELS,
         "grid": grid,
+        "segments": segments,
     }
 
     current = None

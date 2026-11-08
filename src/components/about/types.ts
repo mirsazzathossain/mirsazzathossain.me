@@ -86,7 +86,10 @@ export type Availability = {
   days: string[];
   dates: string[];
   hours: string[];
+  /** One string per hour row; per day: f = free, b = whole hour busy, p = partly busy. */
   grid: string[];
+  /** [row][day] → busy minute ranges [start, end] (0–60) inside that hour. */
+  segments?: number[][][][];
 };
 
 export type TimelineYear = {
