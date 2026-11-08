@@ -8,8 +8,8 @@
     "type": "Full-time",
     "date": "Sep 2026 - Present",
     "category": "industry",
-    "description": "Building AI features for Autodesk Revit, including a conversational assistant for BIM models and a PDF-to-Revit workflow that generates Revit family files from design PDFs.",
-    "skills": ["Conversational AI", "LLM Agents", "BIM Automation"]
+    "description": "Building an agentic system that works inside Autodesk Revit to create full 3D architectural and structural BIM models from 2D drawings.",
+    "skills": ["LLM Agents", "Tool Use", "MCP"]
   },
   {
     "title": "AI Engineer",
@@ -20,8 +20,8 @@
     "type": "Part-time",
     "date": "Aug 2025 - Aug 2026",
     "category": "industry",
-    "description": "Integrated conversational AI into Autodesk Revit. Developed machine learning pipelines for automated BIM model generation from 2D floor plans.",
-    "skills": ["Conversational AI", "ML Pipelines", "NLP"]
+    "description": "Built a chat assistant inside Autodesk Revit that answers questions about BIM models and helps users work with them through conversation.",
+    "skills": ["Conversational AI", "LLMs", "RAG"]
   },
   {
     "title": "Post-baccalaureate Research Assistant",
@@ -32,8 +32,8 @@
     "type": "Full-time",
     "date": "Feb 2022 - Aug 2026",
     "category": "research",
-    "description": "Conducted research in multimodal learning, domain adaptation, and vision-language models. Published research articles in top-tier venues such as ACL and WACV. Conducted tutorial classes at IUB and mentored undergraduate thesis projects.",
-    "skills": ["Multimodal Learning", "Domain Adaptation", "Vision-Language Models", "Mentorship"]
+    "description": "Worked on Bangla NLP and medical benchmarks for language and vision-language models, and on test-time adaptation. Mentored undergraduate thesis students and ran tutorial classes at IUB.",
+    "skills": ["Bangla NLP", "Vision-Language Models", "Test-Time Adaptation", "Mentorship"]
   },
   {
     "title": "Post-baccalaureate Teaching Assistant",
