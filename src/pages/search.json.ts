@@ -6,7 +6,7 @@ import courses from "@/data/courses.json";
 import { mergePublicationOverrides } from "@/utils/publications";
 import type { Publication } from "@/utils/publications";
 
-type Project = { title: string; description: string };
+type Project = { slug: string; title: string; description: string; tags: string[] };
 type Course = {
   title: string;
   tagline?: string;
@@ -46,8 +46,8 @@ export async function GET() {
       kind: "Project",
       title: p.title,
       sub: p.description,
-      href: "/projects",
-      keywords: `${p.title} ${p.description}`.toLowerCase(),
+      href: `/projects#${p.slug}`,
+      keywords: `${p.title} ${p.tags.join(" ")} ${p.description}`.toLowerCase(),
     });
   });
 

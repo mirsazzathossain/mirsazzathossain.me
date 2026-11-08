@@ -54,21 +54,14 @@ declare type ResourcePageData = {
 };
 
 declare type Project = {
+  slug: string;
   title: string;
+  status: "Ongoing" | "Under review" | "In preparation";
+  note?: string;
+  figure?: string;
+  theme: "rl" | "interp" | "medical";
+  tags: string[];
   description: string;
-  type?: string;
-  glyph?: string;
-  stars?: number;
-  tags?: string[];
-  language?: string;
-  link: {
-    href: string;
-    label: string;
-  };
-  logo?: {
-    src: string;
-    alt: string;
-  };
 };
 
 declare type CourseNotebook = {

@@ -1,214 +1,85 @@
 [
   {
-    "title": "RGC",
-    "type": "Research",
-    "glyph": "🔭",
-    "tags": ["python", "ml"],
-    "stars": 3,
-    "language": "Python",
-    "languageColor": "#3572A5",
-    "description": "A Python package for processing and classifying radio galaxy images. The acronym also pays tribute to Radha Govinda Chandra, a pioneering variable star observer.",
-    "link": {
-      "href": "https://github.com/mirsazzathossain/radio-galaxy-classifier",
-      "label": "radio-galaxy-classifier"
-    },
-    "logo": {
-      "src": "project-logos/radio-galaxy-classifier.png",
-      "alt": "Radio Galaxy Classifier"
-    }
+    "slug": "merging-policies-self-distillation",
+    "title": "Merging policies with on-policy self-distillation",
+    "status": "Ongoing",
+    "theme": "rl",
+    "tags": ["On-Policy Distillation", "Model Merging", "RL"],
+    "description": "A common way to give one LLM many skills is to train separate policies for each domain with reinforcement learning and then combine them. Merging their weights is cheap but loses quality when the policies conflict. Recent work instead distills all experts into one student on the student’s own outputs, but assumes each prompt’s domain is known and that every expert is reliable. This project studies policy merging through on-policy self-distillation when these assumptions fail: prompts that mix several domains, and experts trained without labeled data whose behavior may be wrong. We study how the student can choose which expert to learn from at each token using only signals from the experts themselves, and compare against weight merging and existing multi-teacher distillation.",
+    "figure": "The student picks which expert to learn from at each token."
   },
   {
-    "title": "Personal Website",
-    "type": "Hobby",
-    "glyph": "🌐",
-    "tags": ["typescript", "astro", "tailwind"],
-    "stars": 289,
-    "language": "TypeScript",
-    "languageColor": "#3178C6",
-    "description": "Personal academic website built with Astro, React islands, MDX, and Tailwind CSS.",
-    "link": {
-      "href": "https://github.com/mirsazzathossain/mirsazzathossain.me",
-      "label": "mirsazzathossain.me"
-    },
-    "logo": {
-      "src": "project-logos/mirsazzathossain-me.png",
-      "alt": "mirsazzathossain.me"
-    }
+    "slug": "adversarial-policy-optimization-medical-vlms",
+    "title": "Adversarial policy optimization for medical VLMs",
+    "status": "Ongoing",
+    "theme": "rl",
+    "tags": ["Adversarial RL", "Perception Tokens", "Medical VLMs"],
+    "description": "Vision-language models trained with reinforcement learning often improve their reasoning text while still misreading the image. Most adversarial training methods for these models work on the text side, perturbing the prompt or the generated tokens. This project moves the adversary to the perception tokens, the image tokens through which the model sees its input. During policy optimization, an adversary perturbs the perception tokens that the model’s answer depends on most, and the policy is trained to give answers that stay correct under these perturbations. This targets the failure that matters most in medicine: a correct-sounding answer built on a misread image, such as a missed lesion or the wrong scan region. We evaluate on medical VQA benchmarks, measuring accuracy, robustness to perturbations of perception tokens, and whether the model’s answers stay grounded in the right image regions.",
+    "figure": "The adversary perturbs the perception tokens the answer depends on."
   },
   {
-    "title": "Restaurant USTGCN",
-    "type": "Research",
-    "glyph": "🍔",
-    "tags": ["python", "graph-ml"],
-    "stars": 0,
-    "language": "Python",
-    "languageColor": "#3572A5",
-    "description": "Real-time food order prediction using Unified Spatio-Temporal Graph Convolutional Network (USTGCN).",
-    "link": {
-      "href": "https://github.com/mirsazzathossain/ROP-USTGCN",
-      "label": "ROP-USTGCN"
-    },
-    "logo": {
-      "src": "project-logos/burger.png",
-      "alt": "Burger"
-    }
+    "slug": "test-time-rl-search-agents",
+    "title": "Test-time RL for search agents",
+    "status": "Ongoing",
+    "theme": "rl",
+    "tags": ["Test-Time RL", "LLM Agents", "Retrieval"],
+    "description": "LLM search agents answer complex questions by searching, reading and reasoning over several steps. Training them with reinforcement learning usually needs gold answers to reward correct outputs, and gold answers are rarely available for new questions or domains. Test-time reinforcement learning (TTRL) removes this need for single-step reasoning by rewarding the answer most sampled outputs agree on. For search agents, however, majority voting works poorly: short answers can agree for the wrong reasons, and agreement says nothing about whether the agent found the right evidence. This project studies label-free rewards built from the agent’s own trajectory, scoring how well the evidence it retrieved supports the question, using only the base model and no external judge. We test these rewards offline on multi-hop QA benchmarks before any training run, then train search agents with them and compare against majority-vote rewards and rewards that use gold answers.",
+    "figure": "Reward comes from the retrieved evidence, not a majority vote."
   },
   {
-    "title": "Astro Labeller",
-    "type": "Research",
-    "glyph": "🛰️",
-    "tags": ["django", "python"],
-    "stars": 1,
-    "language": "Python",
-    "languageColor": "#3572A5",
-    "description": "A Django-based web application for collaborative labelling of astronomical images into different categories.",
-    "link": {
-      "href": "https://github.com/mirsazzathossain/astro-labeller",
-      "label": "astro-labeller"
-    },
-    "logo": {
-      "src": "project-logos/astro-labeller.png",
-      "alt": "Astro Labeller"
-    }
+    "slug": "continual-test-time-rl",
+    "title": "Continual test-time RL",
+    "status": "Ongoing",
+    "theme": "rl",
+    "tags": ["Test-Time RL", "Continual Learning", "Multilingual"],
+    "description": "Test-time RL trains a model on unlabeled questions by treating its own majority vote as the reward. Prior work studies this on a single dataset, where the reward is known to sharpen the model’s existing beliefs and to collapse after enough steps. In real use, however, the questions arrive as a stream that changes over time. This project asks what happens to the self-generated reward when the stream switches language, script or domain. We build a benchmark of streams that move between English, Bangla and romanized Bangla (Banglish), and between math and science subjects, with each shard matched for difficulty so that a language switch is not simply a difficulty switch. Every switch is compared with a control that trains for the same number of steps without switching. We measure whether pseudo-labels become less accurate after a switch, whether collapse arrives earlier, whether this damage builds up over several switches, and whether modular memory methods prevent it.",
+    "figure": "Pseudo-label accuracy as the stream switches language."
   },
   {
-    "title": "Spotify Playing Now",
-    "type": "Hobby",
-    "glyph": "🎵",
-    "tags": ["javascript"],
-    "stars": 2,
-    "language": "JavaScript",
-    "languageColor": "#f1e05a",
-    "description": "A card for showing your currently playing Spotify song on your GitHub profile README or other markdown files.",
-    "link": {
-      "href": "https://github.com/mirsazzathossain/spotify-playing-now",
-      "label": "spotify-playing-now"
-    }
+    "slug": "attention-faithfulness-code-llms",
+    "title": "Faithfulness of attention in code LLMs",
+    "status": "Under review",
+    "theme": "interp",
+    "tags": ["Interpretability", "Code LLMs", "Security"],
+    "description": "LLMs are increasingly used to check code for security flaws and to name the line responsible. The answer alone, however, does not show what the model relied on. Attention maps are a common way to inspect this, and several line-level vulnerability localization methods read their predictions directly from attention. This project tests whether that reading is justified. Using vulnerable functions paired with their patched versions, with the flawed line labelled, we compare where a code model’s attention points with the line it predicts and with the true flaw. Because per-line attention adds up over tokens, we compare against controls based on line length. We also test whether the model’s verdict and confidence separate vulnerable code from its patch, and whether removing the lines attention highlights changes the verdict more than removing other lines.",
+    "note": "ARR October 2026",
+    "figure": "Where attention points vs. the labelled flawed line."
   },
   {
-    "title": "Food Judge",
-    "type": "Course",
-    "glyph": "🍽️",
-    "tags": ["django", "web"],
-    "stars": 0,
-    "language": "Python",
-    "languageColor": "#3572A5",
-    "description": "A social media platform for food lovers to discover restaurants, share experiences, and connect with others.",
-    "link": {
-      "href": "https://github.com/mirsazzathossain/food-judge",
-      "label": "food-judge"
-    },
-    "logo": {
-      "src": "project-logos/food-judge.png",
-      "alt": "Food Judge"
-    }
+    "slug": "clinical-error-detection-prescriptions",
+    "title": "Clinical error detection in prescriptions",
+    "status": "Under review",
+    "theme": "medical",
+    "tags": ["Medical NLP", "VLMs", "Evaluation"],
+    "description": "Patients increasingly use AI assistants to check their medical documents, including prescriptions. Prescription errors, such as wrong drug names, unsafe doses or incorrect schedules, can directly harm patients, especially where many prescriptions are written by practitioners without formal training. Existing work on prescriptions mostly focuses on extracting their content, and assumes that content is correct. This project tests whether current LLMs can instead find clinically harmful errors in real handwritten and typed prescriptions. We study whether failures come from reading the document or from reasoning about its medical content, and whether models can point to the specific medicine that is wrong.",
+    "figure": "Find the harmful line, not just read the prescription.",
+    "note": "Committed to EACL 2027"
   },
   {
-    "title": "SPMS",
-    "type": "Course",
-    "glyph": "🎓",
-    "tags": ["django", "education"],
-    "stars": 0,
-    "language": "Python",
-    "languageColor": "#3572A5",
-    "description": "A Django-based web application for monitoring student performance based on attendance, grades, and other metrics.",
-    "link": {
-      "href": "https://github.com/mirsazzathossain/spms-django",
-      "label": "spms-django"
-    },
-    "logo": {
-      "src": "project-logos/spms.png",
-      "alt": "SPMS"
-    }
+    "slug": "bangla-medical-qa",
+    "title": "Bangla medical question answering",
+    "status": "Ongoing",
+    "theme": "medical",
+    "tags": ["Medical QA", "Bangla", "Multimodal"],
+    "description": "Most medical AI benchmarks use exam-style multiple-choice questions, which differ greatly from how patients actually ask for help. In Bangladesh, people describe symptoms informally, often mixing Bangla, English and romanized Bangla, and often share images such as X-rays or test reports alongside their questions. This project builds an open-ended, multimodal medical question answering benchmark based on how patients ask questions in practice. We evaluate proprietary and open-source LLMs on it, studying where they give safe and useful answers, where they fail, and how their performance changes across languages and with images.",
+    "figure": "Informal, code-mixed patient questions with images."
   },
   {
-    "title": "HAMS",
-    "type": "Course",
-    "glyph": "🏥",
-    "tags": ["laravel", "php"],
-    "stars": 0,
-    "language": "PHP",
-    "languageColor": "#777BB4",
-    "description": "A web application for managing patient records, scheduling doctor appointments, and hospital resources.",
-    "link": {
-      "href": "https://github.com/mirsazzathossain/hams-laravel",
-      "label": "hams-laravel"
-    },
-    "logo": {
-      "src": "project-logos/hams.png",
-      "alt": "HAMS"
-    }
+    "slug": "bangla-dialectal-medical-asr",
+    "title": "Bangla dialectal medical speech recognition",
+    "status": "In preparation",
+    "theme": "medical",
+    "tags": ["Speech", "Bangla", "Medical"],
+    "description": "Speech interfaces could make healthcare more accessible, but speech recognition systems are mostly built for standard language. In Bangladesh, many patients speak regional dialects of Bangla that differ greatly from standard Bangla, and an ASR error in a medical conversation, such as a misheard drug name, symptom or number, can matter far more than errors elsewhere. Word error rate treats all mistakes equally and cannot capture this. This project builds a benchmark of doctor and patient conversations across Bangla dialects, created with LLM-generated dialogues and text-to-speech. We evaluate current ASR models on it, measuring both standard error rates and clinically significant errors, to show which dialects and which kinds of medical information current systems get wrong.",
+    "figure": "A misheard drug name counts more than a filler word."
   },
   {
-    "title": "Pizza Roma",
-    "type": "Course",
-    "glyph": "🍕",
-    "tags": ["django", "web"],
-    "stars": 0,
-    "language": "Python",
-    "languageColor": "#3572A5",
-    "description": "A website built in Django for a local pizza shop to showcase its menu and take orders online.",
-    "link": {
-      "href": "https://github.com/mirsazzathossain/pizzaroma-django",
-      "label": "pizzaroma-django"
-    },
-    "logo": {
-      "src": "project-logos/pizza-roma.png",
-      "alt": "Pizza Roma"
-    }
-  },
-  {
-    "title": "Bookshop Inventory",
-    "type": "Course",
-    "glyph": "📚",
-    "tags": ["django", "inventory"],
-    "stars": 0,
-    "language": "Python",
-    "languageColor": "#3572A5",
-    "description": "A Django web application for managing local bookstore inventory and processing online orders.",
-    "link": {
-      "href": "https://github.com/mirsazzathossain/bookshop-django",
-      "label": "bookshop-django"
-    },
-    "logo": {
-      "src": "project-logos/bookstore.png",
-      "alt": "Bookshop"
-    }
-  },
-  {
-    "title": "Online Marketplace",
-    "type": "Course",
-    "glyph": "🛒",
-    "tags": ["javascript", "vanilla"],
-    "stars": 0,
-    "language": "JavaScript",
-    "languageColor": "#f1e05a",
-    "description": "An e-commerce marketplace with a shopping cart built using vanilla JavaScript.",
-    "link": {
-      "href": "https://github.com/mirsazzathossain/online-marketplace",
-      "label": "online-marketplace"
-    },
-    "logo": {
-      "src": "project-logos/online-marketplace.png",
-      "alt": "Online Marketplace"
-    }
-  },
-  {
-    "title": "CSMS",
-    "type": "Course",
-    "glyph": "🚗",
-    "tags": ["php", "web"],
-    "stars": 0,
-    "language": "PHP",
-    "languageColor": "#777BB4",
-    "description": "A web application for managing a car showroom, including inventory, appointments, and related resources.",
-    "link": {
-      "href": "https://github.com/mirsazzathossain/CSMS",
-      "label": "CSMS"
-    },
-    "logo": {
-      "src": "project-logos/CSMS.png",
-      "alt": "CSMS"
-    }
+    "slug": "prescription-understanding-verification",
+    "title": "Prescription understanding with verification",
+    "status": "In preparation",
+    "theme": "medical",
+    "tags": ["LLM Agents", "Medical", "Bangla"],
+    "description": "Handwritten prescriptions are hard to read, and in Bangladesh some contain unregistered or fake drug names. Reading a prescription correctly is therefore only half of the task: an assistant must also check whether what it read is real and safe. This project builds an agent pipeline that first reads a prescription into structured fields, including drug names, strengths, doses, schedules and instructions, and then checks each drug against Bangladeshi drug sources through search. We evaluate both stages separately, measuring extraction accuracy, how often the agent catches drugs that do not exist or do not match their listed strength, and how often reading errors cause the verification step to fail.",
+    "figure": "Read each field, then verify every drug through search."
   }
 ]
