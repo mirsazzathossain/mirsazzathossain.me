@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 390" role="img" aria-label="Discover and Prove on aime_1983_p1: log base x of w is 24, log base y of w is 40, log base xyz of w is 12, find log base z of w. The discovery module solves it in natural language, getting 60, checks its own solution and finds no errors. The Hard Mode Lean statement has both the answer and the proof as sorry; it is rewritten into an Easy Mode statement with the answer 60, and Goedel-Prover-V2 writes the Lean proof." font-family="var(--font-sans)">
+<defs><marker id="a-ink" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--ink-3)"/></marker></defs>
+<text x="14" y="22" fill="var(--amber)" font-size="13.5" font-weight="700" text-anchor="start" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">Discovery module (reasoning LLM, natural language)</text>
+<rect x="10" y="34" width="200" height="112" rx="8" fill="var(--ink-3)" fill-opacity="0.1" stroke="var(--ink-3)" stroke-width="1.8"/>
+<text x="110.0" y="68.5" fill="var(--ink-3)" font-size="12.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">problem (aime_1983_p1)</text>
+<text x="110.0" y="87.5" fill="var(--ink-2)" font-size="12.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">log_x w = 24, log_y w = 40,</text>
+<text x="110.0" y="104.5" fill="var(--ink-2)" font-size="12.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">log_xyz w = 12.</text>
+<text x="110.0" y="121.5" fill="var(--ink-2)" font-size="12.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">Find log_z w.</text>
+<line x1="210" y1="90" x2="226" y2="90" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<rect x="230" y="34" width="150" height="112" rx="8" fill="var(--amber)" fill-opacity="0.1" stroke="var(--amber)" stroke-width="1.8"/>
+<text x="305.0" y="68.5" fill="var(--amber)" font-size="13" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">1. solve</text>
+<text x="305.0" y="87.5" fill="var(--ink-2)" font-size="12.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">with L = log_z w:</text>
+<text x="305.0" y="104.5" fill="var(--ink-2)" font-size="12.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">1/24 + 1/40 + 1/L</text>
+<text x="305.0" y="121.5" fill="var(--ink-2)" font-size="12.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">= 1/12, so L = 60</text>
+<line x1="380" y1="90" x2="396" y2="90" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<rect x="400" y="34" width="150" height="112" rx="8" fill="var(--amber)" fill-opacity="0.1" stroke="var(--amber)" stroke-width="1.8"/>
+<text x="475.0" y="77.0" fill="var(--amber)" font-size="13" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">2. self-verify</text>
+<text x="475.0" y="96.0" fill="var(--ink-2)" font-size="12.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">error report:</text>
+<text x="475.0" y="113.0" fill="var(--ink-2)" font-size="12.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">no errors found</text>
+<line x1="550" y1="90" x2="566" y2="90" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<rect x="570" y="34" width="140" height="112" rx="8" fill="var(--green)" fill-opacity="0.1" stroke="var(--green)" stroke-width="1.8"/>
+<text x="640.0" y="68.5" fill="var(--green)" font-size="13" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">answer: 60</text>
+<text x="640.0" y="87.5" fill="var(--ink-2)" font-size="12.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">(3. correct and</text>
+<text x="640.0" y="104.5" fill="var(--ink-2)" font-size="12.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">verify again if the</text>
+<text x="640.0" y="121.5" fill="var(--ink-2)" font-size="12.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">report finds errors)</text>
+<text x="14" y="178" fill="var(--link)" font-size="13.5" font-weight="700" text-anchor="start" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">Proving module</text>
+<rect x="10" y="190" width="345" height="114" rx="8" fill="var(--rose)" fill-opacity="0.05" stroke="var(--rose)" stroke-width="1.8"/>
+<text x="22" y="209" fill="var(--rose)" font-size="13" font-weight="700" text-anchor="start" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">Hard Mode statement</text>
+<rect x="16" y="221" width="333" height="17" rx="4" fill="var(--rose)" fill-opacity="0.13"/>
+<text x="22" y="234" fill="var(--rose)" font-size="11.5" font-weight="500" text-anchor="start" font-family="var(--font-mono)" style="font-variant-ligatures:none;font-feature-settings:normal" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">abbrev ans : ℝ := sorry</text>
+<text x="22" y="253" fill="var(--ink)" font-size="11.5" font-weight="400" text-anchor="start" font-family="var(--font-mono)" style="font-variant-ligatures:none;font-feature-settings:normal" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">theorem aime_1983_p1 … :</text>
+<text x="22" y="272" fill="var(--ink)" font-size="11.5" font-weight="400" text-anchor="start" font-family="var(--font-mono)" style="font-variant-ligatures:none;font-feature-settings:normal" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">  Real.log w / Real.log z = ans</text>
+<text x="22" y="291" fill="var(--ink)" font-size="11.5" font-weight="400" text-anchor="start" font-family="var(--font-mono)" style="font-variant-ligatures:none;font-feature-settings:normal" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">  := sorry</text>
+<rect x="365" y="190" width="345" height="114" rx="8" fill="var(--green)" fill-opacity="0.05" stroke="var(--green)" stroke-width="1.8"/>
+<text x="377" y="209" fill="var(--green)" font-size="13" font-weight="700" text-anchor="start" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">4. rewritten: Easy Mode</text>
+<rect x="371" y="221" width="333" height="17" rx="4" fill="var(--green)" fill-opacity="0.13"/>
+<text x="377" y="234" fill="var(--green)" font-size="11.5" font-weight="500" text-anchor="start" font-family="var(--font-mono)" style="font-variant-ligatures:none;font-feature-settings:normal" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">abbrev ans : ℝ := 60</text>
+<text x="377" y="253" fill="var(--ink)" font-size="11.5" font-weight="400" text-anchor="start" font-family="var(--font-mono)" style="font-variant-ligatures:none;font-feature-settings:normal" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">theorem aime_1983_p1 … :</text>
+<text x="377" y="272" fill="var(--ink)" font-size="11.5" font-weight="400" text-anchor="start" font-family="var(--font-mono)" style="font-variant-ligatures:none;font-feature-settings:normal" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">  Real.log w / Real.log z = ans</text>
+<text x="377" y="291" fill="var(--ink)" font-size="11.5" font-weight="400" text-anchor="start" font-family="var(--font-mono)" style="font-variant-ligatures:none;font-feature-settings:normal" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">  := sorry</text>
+<line x1="355" y1="247.0" x2="363" y2="247.0" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<line x1="537" y1="306" x2="537" y2="328" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<rect x="365" y="330" width="345" height="46" rx="8" fill="var(--link)" fill-opacity="0.1" stroke="var(--link)" stroke-width="1.8"/>
+<text x="537.5" y="357.0" fill="var(--link)" font-size="13" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">5. Goedel-Prover-V2 writes the Lean proof</text>
+<text x="180" y="348" fill="var(--ink-3)" font-size="12.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">Two sorry placeholders become one:</text>
+<text x="180" y="366" fill="var(--ink-3)" font-size="12.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">the answer is found before it is proved.</text>
+</svg>

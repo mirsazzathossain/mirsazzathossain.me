@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 312" role="img" aria-label="LeanAgent. Once, over all 23 repositories, every theorem gets complexity e to the S, where S is its number of proof steps, and theorems are split into easy, medium and hard by percentiles; repositories are sorted with the most easy theorems first. Then, for each repository in this order, LeanAgent builds a dataset of theorems, proofs and premises, trains the retriever for one epoch, proves sorry theorems with best-first search for up to 10 minutes each, and stores new proofs in a dynamic database used in later rounds." font-family="var(--font-sans)">
+<defs><marker id="a-ink" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--ink-3)"/></marker></defs>
+<text x="14" y="22" fill="var(--link)" font-size="13.5" font-weight="700" text-anchor="start" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">Once, over all repositories</text>
+<rect x="10" y="34" width="150" height="96" rx="8" fill="var(--ink-3)" fill-opacity="0.1" stroke="var(--ink-3)" stroke-width="1.8"/>
+<text x="85.0" y="60.5" fill="var(--ink-3)" font-size="14" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">repositories</text>
+<text x="85.0" y="79.5" fill="var(--ink-2)" font-size="12.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">PFR, SciLean,</text>
+<text x="85.0" y="96.5" fill="var(--ink-2)" font-size="12.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">Mathematics in Lean,</text>
+<text x="85.0" y="113.5" fill="var(--ink-2)" font-size="12.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">… (23 in total)</text>
+<line x1="160" y1="82" x2="184" y2="82" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<rect x="188" y="34" width="250" height="96" rx="8" fill="var(--link)" fill-opacity="0.08" stroke="var(--link)" stroke-width="1.8"/>
+<text x="313" y="54" fill="var(--link)" font-size="13" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">complexity of a theorem: eˢ</text>
+<text x="313" y="70" fill="var(--ink-2)" font-size="12" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">S = number of proof steps</text>
+<rect x="210" y="112" width="16" height="10" fill="var(--link)" fill-opacity="0.35"/>
+<rect x="230" y="98" width="16" height="24" fill="var(--link)" fill-opacity="0.35"/>
+<rect x="250" y="88" width="16" height="34" fill="var(--link)" fill-opacity="0.35"/>
+<rect x="270" y="92" width="16" height="30" fill="var(--link)" fill-opacity="0.35"/>
+<rect x="290" y="102" width="16" height="20" fill="var(--link)" fill-opacity="0.35"/>
+<rect x="310" y="108" width="16" height="14" fill="var(--link)" fill-opacity="0.35"/>
+<rect x="330" y="113" width="16" height="9" fill="var(--link)" fill-opacity="0.35"/>
+<rect x="350" y="116" width="16" height="6" fill="var(--link)" fill-opacity="0.35"/>
+<rect x="370" y="118" width="16" height="4" fill="var(--link)" fill-opacity="0.35"/>
+<rect x="390" y="119" width="16" height="3" fill="var(--link)" fill-opacity="0.35"/>
+<line x1="270" y1="80" x2="270" y2="124" stroke="var(--amber)" stroke-width="2.2" stroke-dasharray="6 5"/>
+<line x1="350" y1="80" x2="350" y2="124" stroke="var(--amber)" stroke-width="2.2" stroke-dasharray="6 5"/>
+<text x="240" y="90" fill="var(--green)" font-size="11.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">easy</text>
+<text x="310" y="90" fill="var(--amber)" font-size="11.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">medium</text>
+<text x="395" y="90" fill="var(--rose)" font-size="11.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">hard</text>
+<line x1="438" y1="82" x2="462" y2="82" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<rect x="466" y="34" width="244" height="96" rx="8" fill="var(--link)" fill-opacity="0.1" stroke="var(--link)" stroke-width="1.8"/>
+<text x="588.0" y="60.5" fill="var(--link)" font-size="14" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">curriculum</text>
+<text x="588.0" y="79.5" fill="var(--ink-2)" font-size="12.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">sort repositories by their</text>
+<text x="588.0" y="96.5" fill="var(--ink-2)" font-size="12.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">number of easy theorems:</text>
+<text x="588.0" y="113.5" fill="var(--ink-2)" font-size="12.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">most easy theorems first</text>
+<text x="14" y="160" fill="var(--amber)" font-size="13.5" font-weight="700" text-anchor="start" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">For each repository, in curriculum order</text>
+<rect x="10" y="172" width="160" height="84" rx="8" fill="var(--ink-3)" fill-opacity="0.1" stroke="var(--ink-3)" stroke-width="1.8"/>
+<text x="90.0" y="201.0" fill="var(--ink-3)" font-size="14" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">dataset</text>
+<text x="90.0" y="220.0" fill="var(--ink-2)" font-size="12.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">theorems, proofs</text>
+<text x="90.0" y="237.0" fill="var(--ink-2)" font-size="12.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">and premises</text>
+<line x1="170" y1="214" x2="198" y2="214" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<rect x="190" y="172" width="160" height="84" rx="8" fill="var(--link)" fill-opacity="0.1" stroke="var(--link)" stroke-width="1.8"/>
+<text x="270.0" y="201.0" fill="var(--link)" font-size="14" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">progressive training</text>
+<text x="270.0" y="220.0" fill="var(--ink-2)" font-size="12.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">retriever, one epoch</text>
+<text x="270.0" y="237.0" fill="var(--ink-2)" font-size="12.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">(keep old knowledge)</text>
+<line x1="350" y1="214" x2="378" y2="214" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<rect x="370" y="172" width="160" height="84" rx="8" fill="var(--amber)" fill-opacity="0.1" stroke="var(--amber)" stroke-width="1.8"/>
+<text x="450.0" y="201.0" fill="var(--amber)" font-size="14" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">prove sorry theorems</text>
+<text x="450.0" y="220.0" fill="var(--ink-2)" font-size="12.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">best-first search,</text>
+<text x="450.0" y="237.0" fill="var(--ink-2)" font-size="12.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">10 minutes each</text>
+<line x1="530" y1="214" x2="558" y2="214" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<rect x="550" y="172" width="160" height="84" rx="8" fill="var(--green)" fill-opacity="0.1" stroke="var(--green)" stroke-width="1.8"/>
+<text x="630.0" y="201.0" fill="var(--green)" font-size="14" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">dynamic database</text>
+<text x="630.0" y="220.0" fill="var(--ink-2)" font-size="12.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">store the new proofs</text>
+<text x="630.0" y="237.0" fill="var(--ink-2)" font-size="12.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">for later rounds</text>
+<path d="M630,256 L630,284 L90,284 L90,258" fill="none" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)" stroke-dasharray="6 5"/>
+<text x="360" y="300" fill="var(--ink-3)" font-size="12" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">next repository: new premises and proofs become available</text>
+</svg>

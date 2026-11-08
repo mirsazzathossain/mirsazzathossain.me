@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 368" role="img" aria-label="PROMISE. Top: the current goal is matched against every intermediate goal of solved lemmas; the top 30 by structural score are reranked and the top 8 become tactic templates. Middle: an example from the paper. not_empty_lc has structural score 0.43 but goal similarity 0.15 and constant overlap 0.18, so its reranked score is 0.31 and it falls from rank 3 to 14. get_ipc_buffer_words has structural score 0.34 but goal similarity 0.82, so its reranked score is 0.48 and it rises from rank 8 to 3. Bottom: beam search over Isabelle proof states keeps the best states at each depth until a proof is found." font-family="var(--font-sans)">
+<defs><marker id="a-ink" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--ink-3)"/></marker></defs>
+<rect x="10" y="10" width="128" height="72" rx="8" fill="var(--link)" fill-opacity="0.1" stroke="var(--link)" stroke-width="1.8"/>
+<text x="74.0" y="41.5" fill="var(--link)" font-size="14" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">current goal</text>
+<text x="74.0" y="60.5" fill="var(--ink-2)" font-size="12.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">at this proof state</text>
+<line x1="138" y1="46" x2="144" y2="46" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<rect x="146" y="10" width="170" height="72" rx="8" fill="var(--ink-3)" fill-opacity="0.1" stroke="var(--ink-3)" stroke-width="1.8"/>
+<text x="231.0" y="33.0" fill="var(--ink-3)" font-size="14" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">goal database</text>
+<text x="231.0" y="52.0" fill="var(--ink-2)" font-size="12.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">every intermediate goal</text>
+<text x="231.0" y="69.0" fill="var(--ink-2)" font-size="12.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">of every solved lemma</text>
+<line x1="316" y1="46" x2="322" y2="46" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<rect x="324" y="10" width="140" height="72" rx="8" fill="var(--amber)" fill-opacity="0.1" stroke="var(--amber)" stroke-width="1.8"/>
+<text x="394.0" y="41.5" fill="var(--amber)" font-size="14" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">top 30</text>
+<text x="394.0" y="60.5" fill="var(--ink-2)" font-size="12.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">by s_struct, Eq. (12)</text>
+<line x1="464" y1="46" x2="470" y2="46" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<rect x="472" y="10" width="128" height="72" rx="8" fill="var(--amber)" fill-opacity="0.1" stroke="var(--amber)" stroke-width="1.8"/>
+<text x="536.0" y="41.5" fill="var(--amber)" font-size="14" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">top 8</text>
+<text x="536.0" y="60.5" fill="var(--ink-2)" font-size="12.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">by s_rerank, Eq. (13)</text>
+<line x1="600" y1="46" x2="606" y2="46" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<rect x="608" y="10" width="102" height="72" rx="8" fill="var(--green)" fill-opacity="0.1" stroke="var(--green)" stroke-width="1.8"/>
+<text x="659.0" y="41.5" fill="var(--green)" font-size="14" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">few-shot</text>
+<text x="659.0" y="60.5" fill="var(--ink-2)" font-size="12.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">tactic templates</text>
+<text x="14" y="112" fill="var(--ink)" font-size="13" font-weight="700" text-anchor="start" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">Example from the paper: reranking changes which lemmas become examples</text>
+<text x="14" y="136" fill="var(--ink-3)" font-size="12.5" font-weight="700" text-anchor="start" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">candidate lemma</text>
+<text x="300" y="136" fill="var(--ink-3)" font-size="12.5" font-weight="700" text-anchor="start" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">s_struct</text>
+<text x="380" y="136" fill="var(--ink-3)" font-size="12.5" font-weight="700" text-anchor="start" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">s_goal</text>
+<text x="460" y="136" fill="var(--ink-3)" font-size="12.5" font-weight="700" text-anchor="start" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">s_const</text>
+<text x="540" y="136" fill="var(--ink-3)" font-size="12.5" font-weight="700" text-anchor="start" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">s_rerank</text>
+<text x="620" y="136" fill="var(--ink-3)" font-size="12.5" font-weight="700" text-anchor="start" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">rank</text>
+<rect x="10" y="146" width="700" height="26" rx="5" fill="var(--rose)" fill-opacity="0.07" stroke="var(--rose)" stroke-width="1.2"/>
+<text x="14" y="164" fill="var(--ink)" font-size="12" font-weight="400" text-anchor="start" font-family="var(--font-mono)" style="font-variant-ligatures:none;font-feature-settings:normal" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">not_empty_lc</text>
+<text x="300" y="164" fill="var(--ink)" font-size="12" font-weight="400" text-anchor="start" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">0.43</text>
+<text x="380" y="164" fill="var(--ink)" font-size="12" font-weight="400" text-anchor="start" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">0.15</text>
+<text x="460" y="164" fill="var(--ink)" font-size="12" font-weight="400" text-anchor="start" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">0.18</text>
+<text x="540" y="164" fill="var(--rose)" font-size="12" font-weight="700" text-anchor="start" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">0.31</text>
+<text x="620" y="164" fill="var(--rose)" font-size="12" font-weight="700" text-anchor="start" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">3 → 14 ✗</text>
+<rect x="10" y="178" width="700" height="26" rx="5" fill="var(--green)" fill-opacity="0.07" stroke="var(--green)" stroke-width="1.2"/>
+<text x="14" y="196" fill="var(--ink)" font-size="12" font-weight="400" text-anchor="start" font-family="var(--font-mono)" style="font-variant-ligatures:none;font-feature-settings:normal" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">get_ipc_buffer_words</text>
+<text x="300" y="196" fill="var(--ink)" font-size="12" font-weight="400" text-anchor="start" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">0.34</text>
+<text x="380" y="196" fill="var(--ink)" font-size="12" font-weight="400" text-anchor="start" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">0.82</text>
+<text x="460" y="196" fill="var(--ink)" font-size="12" font-weight="400" text-anchor="start" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">0.09</text>
+<text x="540" y="196" fill="var(--green)" font-size="12" font-weight="700" text-anchor="start" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">0.48</text>
+<text x="620" y="196" fill="var(--green)" font-size="12" font-weight="700" text-anchor="start" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">8 → 3 ✓</text>
+<text x="360" y="232" fill="var(--ink-3)" font-size="12.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">s_rerank = 0.55 · s_struct + 0.35 · s_goal + 0.10 · s_const</text>
+<text x="14" y="264" fill="var(--ink)" font-size="13" font-weight="700" text-anchor="start" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">Beam search over Isabelle proof states</text>
+<rect x="10" y="280" width="110" height="50" rx="8" fill="var(--link)" fill-opacity="0.1" stroke="var(--link)" stroke-width="1.8"/>
+<text x="65.0" y="300.5" fill="var(--link)" font-size="12.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">root</text>
+<text x="65.0" y="319.5" fill="var(--ink-2)" font-size="12.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">initial goal</text>
+<rect x="170" y="272" width="110" height="20" rx="4" fill="var(--link)" fill-opacity="0.12" stroke="var(--link)" stroke-width="1.2"/>
+<text x="225" y="287" fill="var(--ink)" font-size="11" font-weight="500" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">depth 1, node 1</text>
+<rect x="170" y="296" width="110" height="20" rx="4" fill="var(--link)" fill-opacity="0.12" stroke="var(--link)" stroke-width="1.2"/>
+<text x="225" y="311" fill="var(--ink)" font-size="11" font-weight="500" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">depth 1, node 2</text>
+<rect x="170" y="320" width="110" height="20" rx="4" fill="var(--ink-3)" fill-opacity="0.05" stroke="var(--ink-3)" stroke-width="1.2"/>
+<text x="225" y="335" fill="var(--ink-3)" font-size="11" font-weight="500" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">dropped</text>
+<line x1="122" y1="305" x2="166" y2="305" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<rect x="330" y="272" width="110" height="20" rx="4" fill="var(--link)" fill-opacity="0.12" stroke="var(--link)" stroke-width="1.2"/>
+<text x="385" y="287" fill="var(--ink)" font-size="11" font-weight="500" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">depth 2, node 1</text>
+<rect x="330" y="296" width="110" height="20" rx="4" fill="var(--link)" fill-opacity="0.12" stroke="var(--link)" stroke-width="1.2"/>
+<text x="385" y="311" fill="var(--ink)" font-size="11" font-weight="500" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">depth 2, node 2</text>
+<rect x="330" y="320" width="110" height="20" rx="4" fill="var(--ink-3)" fill-opacity="0.05" stroke="var(--ink-3)" stroke-width="1.2"/>
+<text x="385" y="335" fill="var(--ink-3)" font-size="11" font-weight="500" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">dropped</text>
+<line x1="282" y1="305" x2="326" y2="305" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<rect x="490" y="272" width="110" height="20" rx="4" fill="var(--link)" fill-opacity="0.12" stroke="var(--link)" stroke-width="1.2"/>
+<text x="545" y="287" fill="var(--ink)" font-size="11" font-weight="500" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">depth 3, node 1</text>
+<rect x="490" y="296" width="110" height="20" rx="4" fill="var(--link)" fill-opacity="0.12" stroke="var(--link)" stroke-width="1.2"/>
+<text x="545" y="311" fill="var(--ink)" font-size="11" font-weight="500" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">depth 3, node 2</text>
+<rect x="490" y="320" width="110" height="20" rx="4" fill="var(--ink-3)" fill-opacity="0.05" stroke="var(--ink-3)" stroke-width="1.2"/>
+<text x="545" y="335" fill="var(--ink-3)" font-size="11" font-weight="500" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">dropped</text>
+<line x1="442" y1="305" x2="486" y2="305" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<rect x="620" y="282" width="90" height="46" rx="8" fill="var(--green)" fill-opacity="0.1" stroke="var(--green)" stroke-width="1.8"/>
+<text x="665.0" y="309.0" fill="var(--green)" font-size="13" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">Q.E.D. ✓</text>
+<line x1="602" y1="305" x2="618" y2="305" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<text x="360" y="356" fill="var(--ink-3)" font-size="12" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">at each depth: generate with the examples, run in Isabelle, keep the best B states that make progress</text>
+</svg>

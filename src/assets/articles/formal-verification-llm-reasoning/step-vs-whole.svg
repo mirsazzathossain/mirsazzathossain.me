@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 340" role="img" aria-label="Two ways to prove with an LLM. Left: tactic-by-tactic search. From the goal, the model proposes tactics; exact foo gives an error, simp leaves the same goal, and induction n gives two goals; rfl then leaves one goal and simp with ih leaves no goals. Right: whole-proof generation. The LLM writes the entire five-line proof and Lean either accepts it or reports an error at some line." font-family="var(--font-sans)">
+<defs><marker id="a-ink" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--ink-3)"/></marker></defs>
+<text x="175" y="22" fill="var(--ink)" font-size="14" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">tactic-by-tactic search</text>
+<text x="545" y="22" fill="var(--ink)" font-size="14" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">whole-proof generation</text>
+<line x1="360" y1="8" x2="360" y2="330" stroke="var(--ink-3)" stroke-width="2.2" stroke-dasharray="6 5"/>
+<rect x="115" y="38" width="120" height="40" rx="8" fill="var(--link)" fill-opacity="0.1" stroke="var(--link)" stroke-width="1.8"/>
+<text x="175.0" y="62.0" fill="var(--link)" font-size="12.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">⊢ 0 + n = n</text>
+<line x1="175" y1="78" x2="60" y2="130" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<rect x="10" y="132" width="100" height="38" rx="8" fill="var(--rose)" fill-opacity="0.1" stroke="var(--rose)" stroke-width="1.8"/>
+<text x="60.0" y="155.0" fill="var(--rose)" font-size="12.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">error ✗</text>
+<line x1="175" y1="78" x2="180" y2="130" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<rect x="130" y="132" width="100" height="38" rx="8" fill="var(--link)" fill-opacity="0.1" stroke="var(--link)" stroke-width="1.8"/>
+<text x="180.0" y="155.0" fill="var(--link)" font-size="12.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">2 goals</text>
+<line x1="175" y1="78" x2="300" y2="130" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<rect x="250" y="132" width="100" height="38" rx="8" fill="var(--ink-3)" fill-opacity="0.1" stroke="var(--ink-3)" stroke-width="1.8"/>
+<text x="300.0" y="155.0" fill="var(--ink-3)" font-size="12.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">same goal</text>
+<text x="56" y="112" fill="var(--amber)" font-size="11.5" font-weight="700" text-anchor="middle" font-family="var(--font-mono)" style="font-variant-ligatures:none;font-feature-settings:normal" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">exact foo</text>
+<text x="176" y="112" fill="var(--amber)" font-size="11.5" font-weight="700" text-anchor="middle" font-family="var(--font-mono)" style="font-variant-ligatures:none;font-feature-settings:normal" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">induction n</text>
+<text x="296" y="112" fill="var(--amber)" font-size="11.5" font-weight="700" text-anchor="middle" font-family="var(--font-mono)" style="font-variant-ligatures:none;font-feature-settings:normal" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">simp</text>
+<line x1="180" y1="170" x2="180" y2="212" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<text x="190" y="196" fill="var(--amber)" font-size="11.5" font-weight="700" text-anchor="start" font-family="var(--font-mono)" style="font-variant-ligatures:none;font-feature-settings:normal" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">rfl</text>
+<rect x="130" y="214" width="100" height="38" rx="8" fill="var(--link)" fill-opacity="0.1" stroke="var(--link)" stroke-width="1.8"/>
+<text x="180.0" y="237.0" fill="var(--link)" font-size="12.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">1 goal</text>
+<line x1="180" y1="252" x2="180" y2="290" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<text x="190" y="276" fill="var(--amber)" font-size="11.5" font-weight="700" text-anchor="start" font-family="var(--font-mono)" style="font-variant-ligatures:none;font-feature-settings:normal" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">simp [ih]</text>
+<rect x="120" y="292" width="120" height="38" rx="8" fill="var(--green)" fill-opacity="0.1" stroke="var(--green)" stroke-width="1.8"/>
+<text x="180.0" y="315.0" fill="var(--green)" font-size="12.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">no goals ✓</text>
+<text x="70" y="240" fill="var(--ink-3)" font-size="11.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">Lean runs</text>
+<text x="70" y="256" fill="var(--ink-3)" font-size="11.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">every tactic</text>
+<rect x="380" y="40" width="330" height="133" rx="8" fill="var(--link)" fill-opacity="0.05" stroke="var(--link)" stroke-width="1.8"/>
+<text x="392" y="59" fill="var(--link)" font-size="13" font-weight="700" text-anchor="start" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">the LLM writes all of it</text>
+<text x="392" y="84" fill="var(--ink)" font-size="12" font-weight="400" text-anchor="start" font-family="var(--font-mono)" style="font-variant-ligatures:none;font-feature-settings:normal" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">theorem t (n : Nat) :</text>
+<text x="392" y="103" fill="var(--ink)" font-size="12" font-weight="400" text-anchor="start" font-family="var(--font-mono)" style="font-variant-ligatures:none;font-feature-settings:normal" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">    0 + n = n := by</text>
+<text x="392" y="122" fill="var(--ink)" font-size="12" font-weight="400" text-anchor="start" font-family="var(--font-mono)" style="font-variant-ligatures:none;font-feature-settings:normal" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">  induction n with</text>
+<text x="392" y="141" fill="var(--ink)" font-size="12" font-weight="400" text-anchor="start" font-family="var(--font-mono)" style="font-variant-ligatures:none;font-feature-settings:normal" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">  | zero =&gt; rfl</text>
+<text x="392" y="160" fill="var(--ink)" font-size="12" font-weight="400" text-anchor="start" font-family="var(--font-mono)" style="font-variant-ligatures:none;font-feature-settings:normal" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">  | succ n ih =&gt; simp [ih]</text>
+<line x1="545" y1="173" x2="545" y2="201" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<rect x="430" y="203" width="230" height="40" rx="8" fill="var(--amber)" fill-opacity="0.1" stroke="var(--amber)" stroke-width="1.8"/>
+<text x="545.0" y="227.0" fill="var(--amber)" font-size="12.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">Lean checks the whole proof</text>
+<line x1="500" y1="243" x2="470" y2="273" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<line x1="590" y1="243" x2="620" y2="273" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<text x="460" y="289" fill="var(--green)" font-size="12.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">accepted ✓</text>
+<text x="630" y="289" fill="var(--rose)" font-size="12.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">error at line k ✗</text>
+</svg>

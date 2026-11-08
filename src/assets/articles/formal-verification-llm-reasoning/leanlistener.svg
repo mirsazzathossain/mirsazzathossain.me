@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 312" role="img" aria-label="LeanListener's step reward. From a state with 3 goals left, tactics are sampled and run in Lean. exact h gives an error and reward 0. intro x leaves 3 goals, reward softplus of 0, 0.69. constructor leaves 2 goals, softplus of 1, 1.31. simp leaves 1 goal, softplus of 2, 2.13. The rewards are normalized within the group into advantages of about minus 1.32, minus 0.44, plus 0.35 and plus 1.40, which GRPO uses." font-family="var(--font-sans)">
+<defs><marker id="a-ink" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--ink-3)"/></marker></defs>
+<text x="150" y="22" fill="var(--ink-3)" font-size="13" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">8 tactics sampled</text>
+<text x="400" y="22" fill="var(--ink-3)" font-size="13" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">Lean feedback</text>
+<text x="550" y="22" fill="var(--ink-3)" font-size="13" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">reward</text>
+<text x="660" y="22" fill="var(--ink-3)" font-size="13" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">advantage</text>
+<rect x="10" y="122" width="120" height="70" rx="8" fill="var(--link)" fill-opacity="0.1" stroke="var(--link)" stroke-width="1.8"/>
+<text x="70.0" y="152.5" fill="var(--link)" font-size="13.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">state sₜ</text>
+<text x="70.0" y="171.5" fill="var(--ink-2)" font-size="12.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">3 goals left</text>
+<path d="M130,157 C152,157 152,60 172,60" fill="none" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<rect x="174" y="40" width="130" height="40" rx="8" fill="var(--amber)" fill-opacity="0.1" stroke="var(--amber)" stroke-width="1.8"/>
+<text x="239" y="65" fill="var(--amber)" font-size="12" font-weight="700" text-anchor="middle" font-family="var(--font-mono)" style="font-variant-ligatures:none;font-feature-settings:normal" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">exact h</text>
+<line x1="304" y1="60" x2="328" y2="60" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<text x="400" y="65" fill="var(--rose)" font-size="12.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">error</text>
+<text x="550" y="65" fill="var(--rose)" font-size="12.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">0</text>
+<text x="660" y="65" fill="var(--rose)" font-size="13" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">−1.32</text>
+<path d="M130,157 C152,157 152,118 172,118" fill="none" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<rect x="174" y="98" width="130" height="40" rx="8" fill="var(--amber)" fill-opacity="0.1" stroke="var(--amber)" stroke-width="1.8"/>
+<text x="239" y="123" fill="var(--amber)" font-size="12" font-weight="700" text-anchor="middle" font-family="var(--font-mono)" style="font-variant-ligatures:none;font-feature-settings:normal" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">intro x</text>
+<line x1="304" y1="118" x2="328" y2="118" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<text x="400" y="123" fill="var(--ink-3)" font-size="12.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">3 → 3 goals</text>
+<text x="550" y="117" fill="var(--ink-3)" font-size="12" font-weight="600" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">softplus(0)</text>
+<text x="550" y="133" fill="var(--ink-3)" font-size="12" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">= 0.69</text>
+<text x="660" y="123" fill="var(--rose)" font-size="13" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">−0.43</text>
+<path d="M130,157 C152,157 152,176 172,176" fill="none" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<rect x="174" y="156" width="130" height="40" rx="8" fill="var(--amber)" fill-opacity="0.1" stroke="var(--amber)" stroke-width="1.8"/>
+<text x="239" y="181" fill="var(--amber)" font-size="12" font-weight="700" text-anchor="middle" font-family="var(--font-mono)" style="font-variant-ligatures:none;font-feature-settings:normal" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">constructor</text>
+<line x1="304" y1="176" x2="328" y2="176" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<text x="400" y="181" fill="var(--link)" font-size="12.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">3 → 2 goals</text>
+<text x="550" y="175" fill="var(--link)" font-size="12" font-weight="600" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">softplus(1)</text>
+<text x="550" y="191" fill="var(--link)" font-size="12" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">= 1.31</text>
+<text x="660" y="181" fill="var(--green)" font-size="13" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">+0.36</text>
+<path d="M130,157 C152,157 152,234 172,234" fill="none" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<rect x="174" y="214" width="130" height="40" rx="8" fill="var(--amber)" fill-opacity="0.1" stroke="var(--amber)" stroke-width="1.8"/>
+<text x="239" y="239" fill="var(--amber)" font-size="12" font-weight="700" text-anchor="middle" font-family="var(--font-mono)" style="font-variant-ligatures:none;font-feature-settings:normal" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">simp</text>
+<line x1="304" y1="234" x2="328" y2="234" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<text x="400" y="239" fill="var(--green)" font-size="12.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">3 → 1 goal</text>
+<text x="550" y="233" fill="var(--green)" font-size="12" font-weight="600" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">softplus(2)</text>
+<text x="550" y="249" fill="var(--green)" font-size="12" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">= 2.13</text>
+<text x="660" y="239" fill="var(--green)" font-size="13" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">+1.40</text>
+<text x="360" y="282" fill="var(--ink-3)" font-size="12.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">Reward from one look-ahead step (β = 1); advantage = (r − mean) / std within the group, used by GRPO.</text>
+<text x="360" y="300" fill="var(--ink-3)" font-size="12" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">Showing 4 of the 8 tactics.</text>
+</svg>

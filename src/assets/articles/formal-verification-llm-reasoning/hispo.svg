@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 210" role="img" aria-label="HisPO's two-level mask over a group of four responses of fourteen tokens. Response 3 is masked entirely because the geometric mean of its train-inference ratios is too far from one. In responses 1, 2 and 4 a few single tokens are masked because their own ratio is too far from one. All other tokens keep their gradient." font-family="var(--font-sans)">
+<defs><marker id="a-ink" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--ink-3)"/></marker></defs>
+<text x="70" y="22" fill="var(--ink-3)" font-size="12.5" font-weight="600" text-anchor="start" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">tokens of each response →</text>
+<text x="56" y="52" fill="var(--ink)" font-size="13" font-weight="700" text-anchor="end" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">y₁</text>
+<rect x="66" y="34" width="24" height="24" rx="4" fill="var(--link)" fill-opacity="0.35" stroke="var(--link)" stroke-width="1"/>
+<rect x="96" y="34" width="24" height="24" rx="4" fill="var(--link)" fill-opacity="0.35" stroke="var(--link)" stroke-width="1"/>
+<rect x="126" y="34" width="24" height="24" rx="4" fill="var(--link)" fill-opacity="0.35" stroke="var(--link)" stroke-width="1"/>
+<rect x="156" y="34" width="24" height="24" rx="4" fill="var(--link)" fill-opacity="0.35" stroke="var(--link)" stroke-width="1"/>
+<rect x="186" y="34" width="24" height="24" rx="4" fill="var(--link)" fill-opacity="0.35" stroke="var(--link)" stroke-width="1"/>
+<rect x="216" y="34" width="24" height="24" rx="4" fill="var(--amber)" fill-opacity="0.12" stroke="var(--amber)" stroke-width="1"/>
+<line x1="221" y1="39" x2="235" y2="53" stroke="var(--amber)" stroke-width="2.2"/>
+<rect x="246" y="34" width="24" height="24" rx="4" fill="var(--link)" fill-opacity="0.35" stroke="var(--link)" stroke-width="1"/>
+<rect x="276" y="34" width="24" height="24" rx="4" fill="var(--link)" fill-opacity="0.35" stroke="var(--link)" stroke-width="1"/>
+<rect x="306" y="34" width="24" height="24" rx="4" fill="var(--link)" fill-opacity="0.35" stroke="var(--link)" stroke-width="1"/>
+<rect x="336" y="34" width="24" height="24" rx="4" fill="var(--link)" fill-opacity="0.35" stroke="var(--link)" stroke-width="1"/>
+<rect x="366" y="34" width="24" height="24" rx="4" fill="var(--link)" fill-opacity="0.35" stroke="var(--link)" stroke-width="1"/>
+<rect x="396" y="34" width="24" height="24" rx="4" fill="var(--link)" fill-opacity="0.35" stroke="var(--link)" stroke-width="1"/>
+<rect x="426" y="34" width="24" height="24" rx="4" fill="var(--link)" fill-opacity="0.35" stroke="var(--link)" stroke-width="1"/>
+<rect x="456" y="34" width="24" height="24" rx="4" fill="var(--link)" fill-opacity="0.35" stroke="var(--link)" stroke-width="1"/>
+<text x="56" y="86" fill="var(--ink)" font-size="13" font-weight="700" text-anchor="end" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">y₂</text>
+<rect x="66" y="68" width="24" height="24" rx="4" fill="var(--link)" fill-opacity="0.35" stroke="var(--link)" stroke-width="1"/>
+<rect x="96" y="68" width="24" height="24" rx="4" fill="var(--link)" fill-opacity="0.35" stroke="var(--link)" stroke-width="1"/>
+<rect x="126" y="68" width="24" height="24" rx="4" fill="var(--link)" fill-opacity="0.35" stroke="var(--link)" stroke-width="1"/>
+<rect x="156" y="68" width="24" height="24" rx="4" fill="var(--link)" fill-opacity="0.35" stroke="var(--link)" stroke-width="1"/>
+<rect x="186" y="68" width="24" height="24" rx="4" fill="var(--link)" fill-opacity="0.35" stroke="var(--link)" stroke-width="1"/>
+<rect x="216" y="68" width="24" height="24" rx="4" fill="var(--link)" fill-opacity="0.35" stroke="var(--link)" stroke-width="1"/>
+<rect x="246" y="68" width="24" height="24" rx="4" fill="var(--link)" fill-opacity="0.35" stroke="var(--link)" stroke-width="1"/>
+<rect x="276" y="68" width="24" height="24" rx="4" fill="var(--link)" fill-opacity="0.35" stroke="var(--link)" stroke-width="1"/>
+<rect x="306" y="68" width="24" height="24" rx="4" fill="var(--link)" fill-opacity="0.35" stroke="var(--link)" stroke-width="1"/>
+<rect x="336" y="68" width="24" height="24" rx="4" fill="var(--link)" fill-opacity="0.35" stroke="var(--link)" stroke-width="1"/>
+<rect x="366" y="68" width="24" height="24" rx="4" fill="var(--amber)" fill-opacity="0.12" stroke="var(--amber)" stroke-width="1"/>
+<line x1="371" y1="73" x2="385" y2="87" stroke="var(--amber)" stroke-width="2.2"/>
+<rect x="396" y="68" width="24" height="24" rx="4" fill="var(--link)" fill-opacity="0.35" stroke="var(--link)" stroke-width="1"/>
+<rect x="426" y="68" width="24" height="24" rx="4" fill="var(--link)" fill-opacity="0.35" stroke="var(--link)" stroke-width="1"/>
+<rect x="456" y="68" width="24" height="24" rx="4" fill="var(--link)" fill-opacity="0.35" stroke="var(--link)" stroke-width="1"/>
+<text x="56" y="120" fill="var(--ink)" font-size="13" font-weight="700" text-anchor="end" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">y₃</text>
+<rect x="66" y="102" width="24" height="24" rx="4" fill="var(--rose)" fill-opacity="0.12" stroke="var(--rose)" stroke-width="1"/>
+<line x1="71" y1="107" x2="85" y2="121" stroke="var(--rose)" stroke-width="2.2"/>
+<rect x="96" y="102" width="24" height="24" rx="4" fill="var(--rose)" fill-opacity="0.12" stroke="var(--rose)" stroke-width="1"/>
+<line x1="101" y1="107" x2="115" y2="121" stroke="var(--rose)" stroke-width="2.2"/>
+<rect x="126" y="102" width="24" height="24" rx="4" fill="var(--rose)" fill-opacity="0.12" stroke="var(--rose)" stroke-width="1"/>
+<line x1="131" y1="107" x2="145" y2="121" stroke="var(--rose)" stroke-width="2.2"/>
+<rect x="156" y="102" width="24" height="24" rx="4" fill="var(--rose)" fill-opacity="0.12" stroke="var(--rose)" stroke-width="1"/>
+<line x1="161" y1="107" x2="175" y2="121" stroke="var(--rose)" stroke-width="2.2"/>
+<rect x="186" y="102" width="24" height="24" rx="4" fill="var(--rose)" fill-opacity="0.12" stroke="var(--rose)" stroke-width="1"/>
+<line x1="191" y1="107" x2="205" y2="121" stroke="var(--rose)" stroke-width="2.2"/>
+<rect x="216" y="102" width="24" height="24" rx="4" fill="var(--rose)" fill-opacity="0.12" stroke="var(--rose)" stroke-width="1"/>
+<line x1="221" y1="107" x2="235" y2="121" stroke="var(--rose)" stroke-width="2.2"/>
+<rect x="246" y="102" width="24" height="24" rx="4" fill="var(--rose)" fill-opacity="0.12" stroke="var(--rose)" stroke-width="1"/>
+<line x1="251" y1="107" x2="265" y2="121" stroke="var(--rose)" stroke-width="2.2"/>
+<rect x="276" y="102" width="24" height="24" rx="4" fill="var(--rose)" fill-opacity="0.12" stroke="var(--rose)" stroke-width="1"/>
+<line x1="281" y1="107" x2="295" y2="121" stroke="var(--rose)" stroke-width="2.2"/>
+<rect x="306" y="102" width="24" height="24" rx="4" fill="var(--rose)" fill-opacity="0.12" stroke="var(--rose)" stroke-width="1"/>
+<line x1="311" y1="107" x2="325" y2="121" stroke="var(--rose)" stroke-width="2.2"/>
+<rect x="336" y="102" width="24" height="24" rx="4" fill="var(--rose)" fill-opacity="0.12" stroke="var(--rose)" stroke-width="1"/>
+<line x1="341" y1="107" x2="355" y2="121" stroke="var(--rose)" stroke-width="2.2"/>
+<rect x="366" y="102" width="24" height="24" rx="4" fill="var(--rose)" fill-opacity="0.12" stroke="var(--rose)" stroke-width="1"/>
+<line x1="371" y1="107" x2="385" y2="121" stroke="var(--rose)" stroke-width="2.2"/>
+<rect x="396" y="102" width="24" height="24" rx="4" fill="var(--rose)" fill-opacity="0.12" stroke="var(--rose)" stroke-width="1"/>
+<line x1="401" y1="107" x2="415" y2="121" stroke="var(--rose)" stroke-width="2.2"/>
+<rect x="426" y="102" width="24" height="24" rx="4" fill="var(--rose)" fill-opacity="0.12" stroke="var(--rose)" stroke-width="1"/>
+<line x1="431" y1="107" x2="445" y2="121" stroke="var(--rose)" stroke-width="2.2"/>
+<rect x="456" y="102" width="24" height="24" rx="4" fill="var(--rose)" fill-opacity="0.12" stroke="var(--rose)" stroke-width="1"/>
+<line x1="461" y1="107" x2="475" y2="121" stroke="var(--rose)" stroke-width="2.2"/>
+<text x="56" y="154" fill="var(--ink)" font-size="13" font-weight="700" text-anchor="end" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">y₄</text>
+<rect x="66" y="136" width="24" height="24" rx="4" fill="var(--link)" fill-opacity="0.35" stroke="var(--link)" stroke-width="1"/>
+<rect x="96" y="136" width="24" height="24" rx="4" fill="var(--link)" fill-opacity="0.35" stroke="var(--link)" stroke-width="1"/>
+<rect x="126" y="136" width="24" height="24" rx="4" fill="var(--amber)" fill-opacity="0.12" stroke="var(--amber)" stroke-width="1"/>
+<line x1="131" y1="141" x2="145" y2="155" stroke="var(--amber)" stroke-width="2.2"/>
+<rect x="156" y="136" width="24" height="24" rx="4" fill="var(--link)" fill-opacity="0.35" stroke="var(--link)" stroke-width="1"/>
+<rect x="186" y="136" width="24" height="24" rx="4" fill="var(--link)" fill-opacity="0.35" stroke="var(--link)" stroke-width="1"/>
+<rect x="216" y="136" width="24" height="24" rx="4" fill="var(--link)" fill-opacity="0.35" stroke="var(--link)" stroke-width="1"/>
+<rect x="246" y="136" width="24" height="24" rx="4" fill="var(--link)" fill-opacity="0.35" stroke="var(--link)" stroke-width="1"/>
+<rect x="276" y="136" width="24" height="24" rx="4" fill="var(--link)" fill-opacity="0.35" stroke="var(--link)" stroke-width="1"/>
+<rect x="306" y="136" width="24" height="24" rx="4" fill="var(--link)" fill-opacity="0.35" stroke="var(--link)" stroke-width="1"/>
+<rect x="336" y="136" width="24" height="24" rx="4" fill="var(--amber)" fill-opacity="0.12" stroke="var(--amber)" stroke-width="1"/>
+<line x1="341" y1="141" x2="355" y2="155" stroke="var(--amber)" stroke-width="2.2"/>
+<rect x="366" y="136" width="24" height="24" rx="4" fill="var(--link)" fill-opacity="0.35" stroke="var(--link)" stroke-width="1"/>
+<rect x="396" y="136" width="24" height="24" rx="4" fill="var(--link)" fill-opacity="0.35" stroke="var(--link)" stroke-width="1"/>
+<rect x="426" y="136" width="24" height="24" rx="4" fill="var(--link)" fill-opacity="0.35" stroke="var(--link)" stroke-width="1"/>
+<rect x="456" y="136" width="24" height="24" rx="4" fill="var(--link)" fill-opacity="0.35" stroke="var(--link)" stroke-width="1"/>
+<rect x="500" y="36" width="18" height="18" rx="3" fill="var(--link)" fill-opacity="0.35" stroke="var(--link)" stroke-width="1"/>
+<text x="528" y="49" fill="var(--ink)" font-size="12.5" font-weight="700" text-anchor="start" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">gradient kept</text>
+<text x="528" y="66" fill="var(--ink-2)" font-size="12" font-weight="400" text-anchor="start" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">both ratios close to 1</text>
+<rect x="500" y="80" width="18" height="18" rx="3" fill="var(--amber)" fill-opacity="0.12" stroke="var(--amber)" stroke-width="1"/>
+<text x="528" y="93" fill="var(--ink)" font-size="12.5" font-weight="700" text-anchor="start" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">token masked</text>
+<text x="528" y="110" fill="var(--ink-2)" font-size="12" font-weight="400" text-anchor="start" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">|r_dis − 1| ≥ δ_tok</text>
+<rect x="500" y="124" width="18" height="18" rx="3" fill="var(--rose)" fill-opacity="0.12" stroke="var(--rose)" stroke-width="1"/>
+<text x="528" y="137" fill="var(--ink)" font-size="12.5" font-weight="700" text-anchor="start" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">response masked</text>
+<text x="528" y="154" fill="var(--ink-2)" font-size="12" font-weight="400" text-anchor="start" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">geometric mean off by ≥ δ_seq</text>
+<text x="360" y="196" fill="var(--ink-3)" font-size="12.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">r_dis compares the training engine with the inference engine for the same old policy (Eq. 17).</text>
+</svg>

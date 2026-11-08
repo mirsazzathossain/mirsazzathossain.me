@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 398" role="img" aria-label="LongCat-Flash-Prover's three skills and tools. The auto-formalizer turns an informal problem into a Lean statement, checked by a syntax tool and a semantic-consistency tool. The sketcher writes helper lemmas and a main proof, checked by syntax and legality tools. The prover writes a whole proof or proves each lemma; the syntax tool returns PASS, SORRY or FAIL and the legality tool checks that no new axioms were added and the theorem is unchanged. A prover turn: write a proof, call the syntax tool, get an error at line 7, revise, call the tools again, PASS. An example of a hacked proof that declares its own axiom is rejected by the legality tool." font-family="var(--font-sans)">
+<defs><marker id="a-ink" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--ink-3)"/></marker></defs>
+<rect x="10" y="10" width="224" height="74" rx="8" fill="var(--link)" fill-opacity="0.1" stroke="var(--link)" stroke-width="1.8"/>
+<text x="122.0" y="34.0" fill="var(--link)" font-size="14" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">auto-formalizer</text>
+<text x="122.0" y="53.0" fill="var(--ink-2)" font-size="12.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">informal problem</text>
+<text x="122.0" y="70.0" fill="var(--ink-2)" font-size="12.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">→ Lean statement</text>
+<rect x="10" y="96" width="224" height="48" rx="8" fill="var(--amber)" fill-opacity="0.08" stroke="var(--amber)" stroke-width="1.8"/>
+<text x="122" y="115" fill="var(--amber)" font-size="12.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">syntax tool</text>
+<text x="122" y="133" fill="var(--ink-2)" font-size="12" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">compiles with := by sorry?</text>
+<rect x="10" y="152" width="224" height="48" rx="8" fill="var(--amber)" fill-opacity="0.08" stroke="var(--amber)" stroke-width="1.8"/>
+<text x="122" y="171" fill="var(--amber)" font-size="12.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">consistency tool</text>
+<text x="122" y="189" fill="var(--ink-2)" font-size="12" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">same meaning as the problem?</text>
+<line x1="234" y1="47" x2="246" y2="47" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<rect x="248" y="10" width="224" height="74" rx="8" fill="var(--link)" fill-opacity="0.1" stroke="var(--link)" stroke-width="1.8"/>
+<text x="360.0" y="34.0" fill="var(--link)" font-size="14" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">sketcher</text>
+<text x="360.0" y="53.0" fill="var(--ink-2)" font-size="12.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">statement → helper</text>
+<text x="360.0" y="70.0" fill="var(--ink-2)" font-size="12.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">lemmas + main proof</text>
+<rect x="248" y="96" width="224" height="48" rx="8" fill="var(--amber)" fill-opacity="0.08" stroke="var(--amber)" stroke-width="1.8"/>
+<text x="360" y="115" fill="var(--amber)" font-size="12.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">syntax tool</text>
+<text x="360" y="133" fill="var(--ink-2)" font-size="12" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">compiles, only sorry left?</text>
+<rect x="248" y="152" width="224" height="48" rx="8" fill="var(--amber)" fill-opacity="0.08" stroke="var(--amber)" stroke-width="1.8"/>
+<text x="360" y="171" fill="var(--amber)" font-size="12.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">legality tool</text>
+<text x="360" y="189" fill="var(--ink-2)" font-size="12" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">theorem unchanged?</text>
+<line x1="472" y1="47" x2="484" y2="47" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<rect x="486" y="10" width="224" height="74" rx="8" fill="var(--link)" fill-opacity="0.1" stroke="var(--link)" stroke-width="1.8"/>
+<text x="598.0" y="34.0" fill="var(--link)" font-size="14" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">prover</text>
+<text x="598.0" y="53.0" fill="var(--ink-2)" font-size="12.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">whole proof, or a</text>
+<text x="598.0" y="70.0" fill="var(--ink-2)" font-size="12.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">proof of each lemma</text>
+<rect x="486" y="96" width="224" height="48" rx="8" fill="var(--amber)" fill-opacity="0.08" stroke="var(--amber)" stroke-width="1.8"/>
+<text x="598" y="115" fill="var(--amber)" font-size="12.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">syntax tool</text>
+<text x="598" y="133" fill="var(--ink-2)" font-size="12" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">PASS, SORRY or FAIL</text>
+<rect x="486" y="152" width="224" height="48" rx="8" fill="var(--amber)" fill-opacity="0.08" stroke="var(--amber)" stroke-width="1.8"/>
+<text x="598" y="171" fill="var(--amber)" font-size="12.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">legality tool</text>
+<text x="598" y="189" fill="var(--ink-2)" font-size="12" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">no new axioms, same theorem</text>
+<text x="14" y="240" fill="var(--ink)" font-size="13" font-weight="700" text-anchor="start" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">Tool-integrated reasoning: a turn of the prover</text>
+<rect x="10" y="254" width="103.2" height="34" rx="6" fill="var(--link)" fill-opacity="0.1" stroke="var(--link)" stroke-width="1.8"/>
+<text x="61.6" y="276" fill="var(--link)" font-size="12.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">write proof</text>
+<line x1="113.2" y1="271" x2="127.2" y2="271" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<rect x="129.2" y="254" width="139.2" height="34" rx="6" fill="var(--amber)" fill-opacity="0.1" stroke="var(--amber)" stroke-width="1.8"/>
+<text x="198.79999999999998" y="276" fill="var(--amber)" font-size="12.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">call syntax tool</text>
+<line x1="268.4" y1="271" x2="282.4" y2="271" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<rect x="284.4" y="254" width="146.4" height="34" rx="6" fill="var(--rose)" fill-opacity="0.1" stroke="var(--rose)" stroke-width="1.8"/>
+<text x="357.59999999999997" y="276" fill="var(--rose)" font-size="12.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">“error at line 7”</text>
+<line x1="430.79999999999995" y1="271" x2="444.79999999999995" y2="271" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<rect x="446.79999999999995" y="254" width="67.2" height="34" rx="6" fill="var(--link)" fill-opacity="0.1" stroke="var(--link)" stroke-width="1.8"/>
+<text x="480.4" y="276" fill="var(--link)" font-size="12.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">revise</text>
+<line x1="514.0" y1="271" x2="528.0" y2="271" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<rect x="530.0" y="254" width="96.0" height="34" rx="6" fill="var(--amber)" fill-opacity="0.1" stroke="var(--amber)" stroke-width="1.8"/>
+<text x="578.0" y="276" fill="var(--amber)" font-size="12.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">call tools</text>
+<line x1="626.0" y1="271" x2="640.0" y2="271" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<rect x="642.0" y="254" width="67.2" height="34" rx="6" fill="var(--green)" fill-opacity="0.1" stroke="var(--green)" stroke-width="1.8"/>
+<text x="675.6" y="276" fill="var(--green)" font-size="12.5" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">PASS ✓</text>
+<text x="14" y="322" fill="var(--ink)" font-size="13" font-weight="700" text-anchor="start" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">A hacked proof the legality tool rejects:</text>
+<rect x="10" y="332" width="700" height="54" rx="8" fill="var(--ink-3)" fill-opacity="0.05" stroke="var(--ink-3)" stroke-width="1.8"/>
+<rect x="16" y="341" width="688" height="17" rx="4" fill="var(--rose)" fill-opacity="0.13"/>
+<text x="22" y="354" fill="var(--rose)" font-size="12" font-weight="500" text-anchor="start" font-family="var(--font-mono)" style="font-variant-ligatures:none;font-feature-settings:normal" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">axiom helper : ∀ n : ℕ, n ^ 2 ≠ 2   -- model-made axiom</text>
+<text x="700" y="354" fill="var(--rose)" font-size="12" font-weight="700" text-anchor="end" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">✗</text>
+<text x="22" y="373" fill="var(--ink)" font-size="12" font-weight="400" text-anchor="start" font-family="var(--font-mono)" style="font-variant-ligatures:none;font-feature-settings:normal" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">theorem t : ¬ ∃ n : ℕ, n ^ 2 = 2 := by simpa using helper</text>
+</svg>

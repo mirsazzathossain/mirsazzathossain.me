@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 292" role="img" aria-label="A Lean proof as a sequence of proof states. The goal zero plus n equals n is split by the tactic induction n into a zero case and a successor case with an induction hypothesis ih. The tactic rfl closes the first case and simp with ih closes the second, leaving no goals." font-family="var(--font-sans)">
+<defs><marker id="a-ink" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--ink-3)"/></marker></defs>
+<rect x="10" y="92" width="180" height="76" rx="8" fill="var(--link)" fill-opacity="0.1" stroke="var(--link)" stroke-width="1.8"/>
+<text x="100.0" y="125.5" fill="var(--link)" font-size="14" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">goal</text>
+<text x="100.0" y="144.5" fill="var(--ink)" font-size="12" font-weight="400" text-anchor="middle" font-family="var(--font-mono)" style="font-variant-ligatures:none;font-feature-settings:normal" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">⊢ 0 + n = n</text>
+<path d="M190,130 C235,130 240,58 286,58" fill="none" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<path d="M190,130 C235,130 240,200 286,200" fill="none" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<text x="236" y="124" fill="var(--amber)" font-size="13" font-weight="700" text-anchor="middle" font-family="var(--font-mono)" style="font-variant-ligatures:none;font-feature-settings:normal" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">induction n</text>
+<rect x="290" y="24" width="230" height="68" rx="8" fill="var(--link)" fill-opacity="0.1" stroke="var(--link)" stroke-width="1.8"/>
+<text x="405.0" y="53.5" fill="var(--link)" font-size="14" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">case zero</text>
+<text x="405.0" y="72.5" fill="var(--ink)" font-size="12" font-weight="400" text-anchor="middle" font-family="var(--font-mono)" style="font-variant-ligatures:none;font-feature-settings:normal" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">⊢ 0 + 0 = 0</text>
+<rect x="290" y="154" width="230" height="92" rx="8" fill="var(--link)" fill-opacity="0.1" stroke="var(--link)" stroke-width="1.8"/>
+<text x="405.0" y="187.0" fill="var(--link)" font-size="14" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">case succ</text>
+<text x="405.0" y="206.0" fill="var(--ink)" font-size="12" font-weight="400" text-anchor="middle" font-family="var(--font-mono)" style="font-variant-ligatures:none;font-feature-settings:normal" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">ih : 0 + n = n</text>
+<text x="405.0" y="223.0" fill="var(--ink)" font-size="12" font-weight="400" text-anchor="middle" font-family="var(--font-mono)" style="font-variant-ligatures:none;font-feature-settings:normal" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">⊢ 0 + (n+1) = n+1</text>
+<line x1="520" y1="58" x2="594" y2="58" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<text x="557" y="48" fill="var(--amber)" font-size="13" font-weight="700" text-anchor="middle" font-family="var(--font-mono)" style="font-variant-ligatures:none;font-feature-settings:normal" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">rfl</text>
+<line x1="520" y1="200" x2="594" y2="200" stroke="var(--ink-3)" stroke-width="2.2" marker-end="url(#a-ink)"/>
+<text x="557" y="190" fill="var(--amber)" font-size="13" font-weight="700" text-anchor="middle" font-family="var(--font-mono)" style="font-variant-ligatures:none;font-feature-settings:normal" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">simp [ih]</text>
+<rect x="598" y="32" width="112" height="52" rx="8" fill="var(--green)" fill-opacity="0.1" stroke="var(--green)" stroke-width="1.8"/>
+<text x="654.0" y="62.0" fill="var(--green)" font-size="14" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">no goals ✓</text>
+<rect x="598" y="174" width="112" height="52" rx="8" fill="var(--green)" fill-opacity="0.1" stroke="var(--green)" stroke-width="1.8"/>
+<text x="654.0" y="204.0" fill="var(--green)" font-size="14" font-weight="700" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">no goals ✓</text>
+<text x="360" y="278" fill="var(--ink-3)" font-size="12.5" font-weight="400" text-anchor="middle" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">Each arrow is a tactic. Lean computes the new goals, or reports an error if the tactic does not apply.</text>
+</svg>
