@@ -8,7 +8,7 @@
     "type": "Full-time",
     "date": "Sep 2026 - Present",
     "category": "industry",
-    "description": "Building an agentic system that works inside Autodesk Revit to create full 3D architectural and structural BIM models from 2D drawings.",
+    "description": "Building an agentic system that controls Autodesk Revit through MCP to create full 3D architectural and structural BIM models from 2D drawings.",
     "skills": ["LLM Agents", "Tool Use", "MCP"]
   },
   {
