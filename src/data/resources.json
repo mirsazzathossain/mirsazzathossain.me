@@ -32,7 +32,7 @@
   {
     "title": "LMFlow",
     "url": "https://github.com/OptimalScale/LMFlow",
-    "description": "Toolkit for fine-tuning and aligning large models. I implemented CW-PO in it.",
+    "description": "Toolkit for fine-tuning and aligning large models.",
     "category": "RL and Post-Training"
   },
   {
