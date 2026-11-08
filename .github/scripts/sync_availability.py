@@ -63,10 +63,12 @@ def resolve_credentials() -> tuple[str, list[str]]:
         or os.environ.get("PUBLIC_GOOGLE_CALENDAR_IDS")
         or ""
     )
+    # Secrets are often pasted straight from .env, quotes included.
+    raw_ids = raw_ids.strip().strip('"').strip("'")
 
     # Parse "id:color,id:color" → just the ids, skip public holiday calendars
     calendar_ids = [
-        part.split(":")[0]
+        part.split(":")[0].strip().strip('"').strip("'")
         for part in raw_ids.split(",")
         if part.strip() and "holiday" not in part.lower()
     ]
@@ -94,7 +96,14 @@ def fetch_busy_ranges(service, calendar_ids: list[str], monday: datetime, sunday
 
     ranges: list[tuple[datetime, datetime]] = []
     for cid in calendar_ids:
-        for block in result.get("calendars", {}).get(cid, {}).get("busy", []):
+        cal = result.get("calendars", {}).get(cid, {})
+        if cal.get("errors"):
+            reasons = ", ".join(e.get("reason", "?") for e in cal["errors"])
+            raise RuntimeError(
+                f"calendar {cid!r} could not be read ({reasons}). Check the id and that "
+                "its free/busy is public."
+            )
+        for block in cal.get("busy", []):
             start = datetime.fromisoformat(block["start"]).astimezone(TZ)
             end   = datetime.fromisoformat(block["end"]).astimezone(TZ)
             ranges.append((start, end))
