@@ -1,4 +1,5 @@
 ---
+import { readSiteJson } from "@/utils/json-data";
 import ArticleShareRow from "@/components/articles/ArticleShareRow";
 import Comments from "@/components/articles/Comments";
 import Layout from "@/layouts/Layout.astro";
@@ -57,6 +58,16 @@ const published = entry.data.publishedAt
       day: "numeric",
     })
   : "";
+
+const about = await readSiteJson("about.json");
+const interests: string[] = about.researchInterests ?? [];
+const interestText =
+  interests.length > 1
+    ? `${interests.slice(0, -1).join(", ")}, and ${interests[interests.length - 1]}`
+    : (interests[0] ?? "");
+const authorBio = `${about.designation} at ${about.company.name}.${
+  interestText ? ` Working on ${interestText.toLowerCase().replace(/\bllm\b/g, "LLM")}.` : ""
+}`;
 
 const primaryCategory = entry.data.categories[0]?.title ?? "Post";
 const toc = Array.from(entry.body.matchAll(/^(#{2,3})\s+(.+)$/gm)).map(([, depth, text]) => {
@@ -260,10 +271,7 @@ const jsonLd = {
       />
       <div>
         <p class="m-0 font-serif text-[16px] leading-tight text-ink">{entry.data.author.name}</p>
-        <p class="m-0 mt-0.5 text-[13px] leading-[1.55] text-ink-2">
-          Junior Research Scientist at CCDS, IUB. Working on computer vision, domain adaptation, and
-          the occasional radio-galaxy problem.
-        </p>
+        <p class="m-0 mt-0.5 text-[13px] leading-[1.55] text-ink-2">{authorBio}</p>
       </div>
     </div>
 
