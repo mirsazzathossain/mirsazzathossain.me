@@ -17,18 +17,21 @@ import stats from "@/data/scholar_stats.json";
 
 const publications = mergePublicationOverrides(
   base as Publication[],
-  overrides as Partial<Publication>[]
+  overrides as Partial<Publication>[],
 );
 
 const sorted = sortPublicationsByDate(publications);
 
 const present = new Set(sorted.map(getPublicationType));
 const filters: PublicationFilter[] = PUBLICATION_FILTERS.filter(
-  (f) => f === "All" || present.has(f)
+  (f) => f === "All" || present.has(f),
 );
 
 const latestIds = new Set(
-  sorted.slice(0, 3).map((p) => p.id).filter(Boolean)
+  sorted
+    .slice(0, 3)
+    .map((p) => p.id)
+    .filter(Boolean),
 );
 
 const groups = new Map<string, Publication[]>();
@@ -37,18 +40,14 @@ for (const pub of sorted) {
   if (!groups.has(year)) groups.set(year, []);
   groups.get(year)!.push(pub);
 }
-const groupEntries = [...groups.entries()].sort(
-  ([a], [b]) => Number(b) - Number(a)
-);
+const groupEntries = [...groups.entries()].sort(([a], [b]) => Number(b) - Number(a));
 
 const statsData = stats as ScholarStats;
 const citesPerYear = statsData.cites_per_year ?? {};
-const citeEntries = (
-  Object.entries(citesPerYear)
-    .map(([yr, c]) => [yr, Number(c)] as [string, number])
-    .filter(([, c]) => Number.isFinite(c))
-    .sort(([a], [b]) => Number(a) - Number(b))
-);
+const citeEntries = Object.entries(citesPerYear)
+  .map(([yr, c]) => [yr, Number(c)] as [string, number])
+  .filter(([, c]) => Number.isFinite(c))
+  .sort(([a], [b]) => Number(a) - Number(b));
 
 const paperYearCounts: [string, number][] = [...groups.entries()]
   .map(([yr, pubs]) => [yr, pubs.length])
@@ -78,7 +77,7 @@ function buildSearchText(pub: Publication): string {
 
 <Layout
   title="Publications"
-  description="Peer-reviewed papers, workshop contributions, and preprints by Mir Sazzat Hossain across computer vision, domain adaptation, and astrophysical machine learning."
+  description="Peer-reviewed papers, workshop papers, and preprints by Mir Sazzat Hossain, mostly in NLP and vision-language models."
   canonicalPath="/publications"
 >
   <div>
@@ -90,8 +89,8 @@ function buildSearchText(pub: Publication): string {
         Publications
       </h1>
       <p class="mt-3 mb-0 text-[15px] text-ink-2 max-w-[60ch]">
-        Peer-reviewed papers, workshop contributions, and preprints across
-        computer vision, domain adaptation, and astrophysical machine learning.
+        Peer-reviewed papers, workshop papers, and preprints, mostly in NLP and vision-language
+        models.
       </p>
     </header>
 
@@ -105,7 +104,9 @@ function buildSearchText(pub: Publication): string {
         ].map(({ value, label }) => (
           <div>
             <span class="block font-serif text-[28px] leading-none text-ink">{value}</span>
-            <span class="block text-[10.5px] font-mono tracking-[0.08em] uppercase text-ink-3 mt-1">{label}</span>
+            <span class="block text-[10.5px] font-mono tracking-[0.08em] uppercase text-ink-3 mt-1">
+              {label}
+            </span>
           </div>
         ))}
       </div>
@@ -134,9 +135,11 @@ function buildSearchText(pub: Publication): string {
           <button
             type="button"
             data-type-btn={filter}
-            class={filter === "All"
-              ? "font-mono text-[11px] py-[3px] px-[9px] rounded border border-ink bg-ink text-bg cursor-pointer transition-colors"
-              : "font-mono text-[11px] py-[3px] px-[9px] rounded border border-rule bg-bg text-ink-2 cursor-pointer transition-colors hover:border-ink-3"}
+            class={
+              filter === "All"
+                ? "font-mono text-[11px] py-[3px] px-[9px] rounded border border-ink bg-ink text-bg cursor-pointer transition-colors"
+                : "font-mono text-[11px] py-[3px] px-[9px] rounded border border-rule bg-bg text-ink-2 cursor-pointer transition-colors hover:border-ink-3"
+            }
           >
             {filter}
           </button>
@@ -144,7 +147,16 @@ function buildSearchText(pub: Publication): string {
       </div>
 
       <label class="inline-flex items-center gap-[7px] py-1.5 px-3 border border-rule rounded-full bg-bg min-w-full sm:min-w-[260px] lg:min-w-[320px] text-ink-3">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="h-[13px] w-[13px] shrink-0">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          class="h-[13px] w-[13px] shrink-0"
+        >
           <circle cx="11" cy="11" r="8" />
           <line x1="21" y1="21" x2="16.65" y2="16.65" />
         </svg>
@@ -162,7 +174,9 @@ function buildSearchText(pub: Publication): string {
       {groupEntries.map(([year, pubs]) => (
         <section data-year-group={year} class="mb-10">
           <div class="flex items-baseline justify-between pb-2 border-b border-rule mb-4 gap-3 flex-wrap">
-            <h2 class="font-mono text-[11px] tracking-[0.16em] uppercase text-ink-3 font-semibold m-0">{year}</h2>
+            <h2 class="font-mono text-[11px] tracking-[0.16em] uppercase text-ink-3 font-semibold m-0">
+              {year}
+            </h2>
             <span class="font-mono text-[11.5px] text-ink-3" data-year-count={year}>
               {pubs.length} {pubs.length === 1 ? "paper" : "papers"}
             </span>
@@ -183,21 +197,56 @@ function buildSearchText(pub: Publication): string {
       ))}
     </div>
 
-    <div id="pub-empty" hidden class="border border-dashed border-rule rounded-[10px] bg-bg-2 p-8 text-center font-serif text-[15px] text-ink-3">
+    <div
+      id="pub-empty"
+      hidden
+      class="border border-dashed border-rule rounded-[10px] bg-bg-2 p-8 text-center font-serif text-[15px] text-ink-3"
+    >
       No papers match your filters.
     </div>
 
-    <nav id="pub-pagination" hidden aria-label="Publications pagination" class="mt-2 flex items-center justify-between gap-3 border-t border-rule pt-4">
-      <button id="pub-prev" type="button" class="inline-flex items-center gap-1 rounded border border-rule bg-bg px-3 py-1.5 font-mono text-[11.5px] text-ink-2 transition-colors hover:border-link/35 hover:bg-accent-soft hover:text-link disabled:pointer-events-none disabled:opacity-40">
-        <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" class="stroke-current" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px">
+    <nav
+      id="pub-pagination"
+      hidden
+      aria-label="Publications pagination"
+      class="mt-2 flex items-center justify-between gap-3 border-t border-rule pt-4"
+    >
+      <button
+        id="pub-prev"
+        type="button"
+        class="inline-flex items-center gap-1 rounded border border-rule bg-bg px-3 py-1.5 font-mono text-[11.5px] text-ink-2 transition-colors hover:border-link/35 hover:bg-accent-soft hover:text-link disabled:pointer-events-none disabled:opacity-40"
+      >
+        <svg
+          viewBox="0 0 16 16"
+          fill="none"
+          aria-hidden="true"
+          class="stroke-current"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          style="width:14px;height:14px"
+        >
           <path d="M7.25 11.25 3.75 8m0 0 3.5-3.25M3.75 8h8.5" />
         </svg>
         <span>Previous</span>
       </button>
       <div id="pub-page-btns" class="flex items-center gap-1"></div>
-      <button id="pub-next" type="button" class="inline-flex items-center gap-1 rounded border border-rule bg-bg px-3 py-1.5 font-mono text-[11.5px] text-ink-2 transition-colors hover:border-link/35 hover:bg-accent-soft hover:text-link disabled:pointer-events-none disabled:opacity-40">
+      <button
+        id="pub-next"
+        type="button"
+        class="inline-flex items-center gap-1 rounded border border-rule bg-bg px-3 py-1.5 font-mono text-[11.5px] text-ink-2 transition-colors hover:border-link/35 hover:bg-accent-soft hover:text-link disabled:pointer-events-none disabled:opacity-40"
+      >
         <span>Next</span>
-        <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" class="stroke-current" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px">
+        <svg
+          viewBox="0 0 16 16"
+          fill="none"
+          aria-hidden="true"
+          class="stroke-current"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          style="width:14px;height:14px"
+        >
           <path d="M8.75 4.75 12.25 8m0 0-3.5 3.25M12.25 8h-8.5" />
         </svg>
       </button>
@@ -213,13 +262,11 @@ function buildSearchText(pub: Publication): string {
 
   function getVisible() {
     const needle = currentQuery.trim().toLowerCase();
-    return Array.from(document.querySelectorAll<HTMLElement>("[data-pub]")).filter(
-      (el) => {
-        const typeMatch = currentFilter === "All" || el.dataset.type === currentFilter;
-        const searchMatch = !needle || el.dataset.search!.includes(needle);
-        return typeMatch && searchMatch;
-      }
-    );
+    return Array.from(document.querySelectorAll<HTMLElement>("[data-pub]")).filter((el) => {
+      const typeMatch = currentFilter === "All" || el.dataset.type === currentFilter;
+      const searchMatch = !needle || el.dataset.search!.includes(needle);
+      return typeMatch && searchMatch;
+    });
   }
 
   function update() {
@@ -227,9 +274,7 @@ function buildSearchText(pub: Publication): string {
     const totalPages = Math.max(1, Math.ceil(visible.length / PER_PAGE));
     if (currentPage > totalPages) currentPage = totalPages;
 
-    const pageSet = new Set(
-      visible.slice((currentPage - 1) * PER_PAGE, currentPage * PER_PAGE)
-    );
+    const pageSet = new Set(visible.slice((currentPage - 1) * PER_PAGE, currentPage * PER_PAGE));
 
     document.querySelectorAll<HTMLElement>("[data-pub]").forEach((el) => {
       el.hidden = !pageSet.has(el);
@@ -250,8 +295,7 @@ function buildSearchText(pub: Publication): string {
     const paginationEl = document.getElementById("pub-pagination") as HTMLElement;
     paginationEl.hidden = visible.length <= PER_PAGE;
     if (!paginationEl.hidden) {
-      (document.getElementById("pub-prev") as HTMLButtonElement).disabled =
-        currentPage === 1;
+      (document.getElementById("pub-prev") as HTMLButtonElement).disabled = currentPage === 1;
       (document.getElementById("pub-next") as HTMLButtonElement).disabled =
         currentPage === totalPages;
 
@@ -263,7 +307,7 @@ function buildSearchText(pub: Publication): string {
               n === currentPage
                 ? "h-8 min-w-8 rounded border border-ink bg-ink px-2 font-mono text-[11.5px] text-bg"
                 : "h-8 min-w-8 rounded border border-rule bg-bg px-2 font-mono text-[11.5px] text-ink-2 transition-colors hover:border-link/35 hover:bg-accent-soft hover:text-link"
-            }"${n === currentPage ? ' aria-current="page"' : ""}>${n}</button>`
+            }"${n === currentPage ? ' aria-current="page"' : ""}>${n}</button>`,
         )
         .join("");
     }
@@ -290,17 +334,26 @@ function buildSearchText(pub: Publication): string {
   });
 
   document.getElementById("pub-prev")!.addEventListener("click", () => {
-    if (currentPage > 1) { currentPage--; update(); }
+    if (currentPage > 1) {
+      currentPage--;
+      update();
+    }
   });
 
   document.getElementById("pub-next")!.addEventListener("click", () => {
     const totalPages = Math.max(1, Math.ceil(getVisible().length / PER_PAGE));
-    if (currentPage < totalPages) { currentPage++; update(); }
+    if (currentPage < totalPages) {
+      currentPage++;
+      update();
+    }
   });
 
   document.getElementById("pub-page-btns")!.addEventListener("click", (e) => {
     const btn = (e.target as Element).closest<HTMLElement>("[data-page]");
-    if (btn) { currentPage = Number(btn.dataset.page); update(); }
+    if (btn) {
+      currentPage = Number(btn.dataset.page);
+      update();
+    }
   });
 
   update();

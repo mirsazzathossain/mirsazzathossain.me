@@ -18,6 +18,8 @@ export type Publication = {
   type?: string;
   status?: string;
   featured?: boolean;
+  /** Set in overrides to drop a Scholar entry (e.g. a duplicate) from the site. */
+  hidden?: boolean;
   award?: string;
   title?: string;
   authors?: PublicationAuthor[];
@@ -48,11 +50,7 @@ export type Publication = {
   journal?: string;
 };
 
-export type PublicationKind =
-  | "Conference"
-  | "Journal"
-  | "Preprint"
-  | "Workshop";
+export type PublicationKind = "Conference" | "Journal" | "Preprint" | "Workshop";
 export type PublicationFilter = PublicationKind | "All";
 
 export const PUBLICATION_FILTERS: PublicationFilter[] = [
@@ -69,8 +67,7 @@ export function getPublicationType(publication: Publication): PublicationKind {
 
   if (status === "preprint") return "Preprint";
   if (status === "under_review") return "Preprint";
-  const venueText =
-    `${publication.venue ?? ""} ${publication.venue_short ?? ""}`.toLowerCase();
+  const venueText = `${publication.venue ?? ""} ${publication.venue_short ?? ""}`.toLowerCase();
   if (venueText.includes("workshop")) return "Workshop";
   if (venueText.includes("arxiv")) return "Preprint";
   if (type === "workshop") return "Workshop";
@@ -103,11 +100,7 @@ export function getPublicationType(publication: Publication): PublicationKind {
 export function getVenueShort(publication: Publication): string {
   if (publication.venue_short) return publication.venue_short;
 
-  const venue =
-    publication.venue ||
-    publication.booktitle ||
-    publication.journal ||
-    "Preprint";
+  const venue = publication.venue || publication.booktitle || publication.journal || "Preprint";
   const text = venue.toLowerCase();
 
   if (text.includes("icip")) return `ICIP ${publication.year ?? ""}`.trim();
@@ -159,8 +152,7 @@ export function getAuthors(
       ...a,
       name: a.name,
       isHighlighted:
-        (a.name.includes("M.S.") && a.name.includes("Hossain")) ||
-        a.name.includes("Mir Sazzat"),
+        (a.name.includes("M.S.") && a.name.includes("Hossain")) || a.name.includes("Mir Sazzat"),
     }));
   }
   return [];
@@ -169,12 +161,10 @@ export function getAuthors(
 export function buildBibtex(publication: Publication): string {
   if (publication.bibtex) return publication.bibtex;
 
-  const kind =
-    publication.type === "inproceedings" ? "inproceedings" : "article";
+  const kind = publication.type === "inproceedings" ? "inproceedings" : "article";
   const id = publication.id || `hossain${publication.year}`;
   const venueField = kind === "inproceedings" ? "booktitle" : "journal";
-  const venue =
-    publication.venue || publication.booktitle || publication.journal || "";
+  const venue = publication.venue || publication.booktitle || publication.journal || "";
   const authorStr = publication.authors?.map((a) => a.name).join(" and ") ?? "";
 
   return `@${kind}{${id},
@@ -198,19 +188,24 @@ export function getPublicationKeywords(publication: Publication): string[] {
     .filter(Boolean);
 }
 
-
-export function sortPublicationsByDate(
-  publications: Publication[],
-): Publication[] {
+export function sortPublicationsByDate(publications: Publication[]): Publication[] {
   return [...publications].sort((a, b) => {
     const yearDiff = Number(b.year ?? 0) - Number(a.year ?? 0);
     if (yearDiff !== 0) return yearDiff;
+
+    // Submitted / under-review papers go last within their year.
+    const pendingDiff = Number(isPending(a)) - Number(isPending(b));
+    if (pendingDiff !== 0) return pendingDiff;
 
     const monthDiff = getSortableMonth(b) - getSortableMonth(a);
     if (monthDiff !== 0) return monthDiff;
 
     return String(a.title ?? "").localeCompare(String(b.title ?? ""));
   });
+}
+
+function isPending(publication: Publication): boolean {
+  return ["submitted", "under_review", "in_preparation"].includes(publication.status ?? "");
 }
 
 function getSortableMonth(publication: Publication): number {
@@ -225,9 +220,7 @@ export function mergePublicationOverrides(
 ): Publication[] {
   const publicationIds = new Set(publications.map((publication) => publication.id));
   const overrideMap = new Map(
-    overrides
-      .filter((override) => override.id)
-      .map((override) => [override.id, override]),
+    overrides.filter((override) => override.id).map((override) => [override.id, override]),
   );
   const mergedPublications = publications.map((pub) => {
     const override = overrideMap.get(pub.id);
@@ -235,11 +228,10 @@ export function mergePublicationOverrides(
   });
 
   const localPublications = overrides.filter(
-    (override): override is Publication =>
-      Boolean(override.id) && !publicationIds.has(override.id),
+    (override): override is Publication => Boolean(override.id) && !publicationIds.has(override.id),
   );
 
-  return [...mergedPublications, ...localPublications];
+  return [...mergedPublications, ...localPublications].filter((publication) => !publication.hidden);
 }
 
 // Legacy support — kept only for the Astro page that still passes booktitle/journal
