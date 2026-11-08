@@ -1,12 +1,24 @@
 [
   {
-    "title": "ML Engineer",
+    "title": "AI Engineer",
+    "company": "Penta Global Limited",
+    "companyURL": "https://www.pentabd.com/",
+    "companyLogo": "/images/logos/penta-global.png",
+    "location": "Dhaka, Bangladesh",
+    "type": "Full-time",
+    "date": "Sep 2026 - Present",
+    "category": "industry",
+    "description": "Building AI features for Autodesk Revit, including a conversational assistant for BIM models and a PDF-to-Revit workflow that generates Revit family files from design PDFs.",
+    "skills": ["Conversational AI", "LLM Agents", "BIM Automation"]
+  },
+  {
+    "title": "AI Engineer",
     "company": "Penta Global Limited",
     "companyURL": "https://www.pentabd.com/",
     "companyLogo": "/images/logos/penta-global.png",
     "location": "Dhaka, Bangladesh",
     "type": "Part-time",
-    "date": "Aug 2025 - Present",
+    "date": "Aug 2025 - Aug 2026",
     "category": "industry",
     "description": "Integrated conversational AI into Autodesk Revit. Developed machine learning pipelines for automated BIM model generation from 2D floor plans.",
     "skills": ["Conversational AI", "ML Pipelines", "NLP"]
@@ -18,15 +30,10 @@
     "companyLogo": "/images/logos/ccds.png",
     "location": "Plot 16, Aftabuddin Ahmed Road, Block B, Bashnudhara RA, Dhaka 1229, Bangladesh.",
     "type": "Full-time",
-    "date": "Feb 2022 - Present",
+    "date": "Feb 2022 - Aug 2026",
     "category": "research",
-    "description": "Conducting research in multimodal learning, domain adaptation, and vision-language models. Published research articles in top-tier venues such as ACL and WACV. Conduct tutorial classes at IUB and mentor undergraduate thesis projects.",
-    "skills": [
-      "Multimodal Learning",
-      "Domain Adaptation",
-      "Vision-Language Models",
-      "Mentorship"
-    ]
+    "description": "Conducted research in multimodal learning, domain adaptation, and vision-language models. Published research articles in top-tier venues such as ACL and WACV. Conducted tutorial classes at IUB and mentored undergraduate thesis projects.",
+    "skills": ["Multimodal Learning", "Domain Adaptation", "Vision-Language Models", "Mentorship"]
   },
   {
     "title": "Post-baccalaureate Teaching Assistant",
@@ -50,11 +57,6 @@
     "date": "Oct 2019 - Apr 2021",
     "category": "teaching",
     "description": "Worked part-time at the Math Tutorial Center, supporting students with math difficulties. Provided one-on-one tutoring and helped manage the center to ensure effective support.",
-    "skills": [
-      "Linear Algebra",
-      "Statistics",
-      "Differential Equations",
-      "Vector Calculus"
-    ]
+    "skills": ["Linear Algebra", "Statistics", "Differential Equations", "Vector Calculus"]
   }
 ]

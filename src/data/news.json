@@ -3,6 +3,10 @@
     "year": 2026,
     "items": [
       {
+        "kind": "career",
+        "text": "Joined Penta Global Limited as a full-time AI Engineer."
+      },
+      {
         "kind": "paper",
         "text": "Medical VQA paper accepted at ACL Findings 2026."
       }

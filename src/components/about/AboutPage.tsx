@@ -24,26 +24,34 @@ export default function AboutPage({
   return (
     <div>
       <header className="mb-8 max-w-[720px]">
-        <p className="font-mono text-[11px] tracking-[0.14em] uppercase text-ink-3 mb-[6px] m-0">
+        <p className="text-ink-3 m-0 mb-[6px] font-mono text-[11px] tracking-[0.14em] uppercase">
           About
         </p>
-        <h1 className="m-0 font-serif text-[clamp(28px,4.5vw,42px)] font-semibold leading-[1.05] tracking-[-0.02em] text-ink">
+        <h1 className="text-ink m-0 font-serif text-[clamp(28px,4.5vw,42px)] leading-[1.05] font-semibold tracking-[-0.02em]">
           {about.name}
         </h1>
-        <p className="mt-3 text-ink-2 text-[15px] max-w-[60ch] m-0">
+        <p className="text-ink-2 m-0 mt-3 max-w-[60ch] text-[15px]">
           {about.designation} at{" "}
+          {about.company.department && (
+            <>
+              <a
+                href={about.company.department.url}
+                className="text-link hover:text-link-hover decoration-link/35 hover:decoration-link-hover underline decoration-[1px] underline-offset-[3px]"
+                target="_blank"
+                rel="noreferrer"
+              >
+                {about.company.department.name}
+              </a>
+              ,{" "}
+            </>
+          )}
           <a
             href={about.company.url}
-            className="text-link hover:text-link-hover underline underline-offset-[3px] decoration-[1px] decoration-link/35 hover:decoration-link-hover"
-            target="_blank"
-            rel="noreferrer"
-          >
-            {about.company.department?.name}
-          </a>
-          ,{" "}
-          <a
-            href={about.company.url}
-            className="text-ink-2 hover:text-link hover:no-underline"
+            className={
+              about.company.department
+                ? "text-ink-2 hover:text-link hover:no-underline"
+                : "text-link hover:text-link-hover decoration-link/35 hover:decoration-link-hover underline decoration-[1px] underline-offset-[3px]"
+            }
             target="_blank"
             rel="noreferrer"
           >
@@ -53,7 +61,7 @@ export default function AboutPage({
         </p>
       </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-[240px_1fr] gap-[44px]">
+      <div className="grid grid-cols-1 gap-[44px] md:grid-cols-[240px_1fr]">
         <AboutSidebar about={about} email={email} />
 
         <div>
@@ -61,7 +69,7 @@ export default function AboutPage({
           {bioParagraphs.map((paragraph) => (
             <p
               key={paragraph}
-              className="font-serif text-[16px] leading-[1.65] text-ink max-w-[65ch] m-0 mb-[1em]"
+              className="text-ink m-0 mb-[1em] max-w-[65ch] font-serif text-[16px] leading-[1.65]"
             >
               {paragraph}
             </p>
@@ -71,11 +79,7 @@ export default function AboutPage({
           <EducationList educations={educations} />
 
           <AboutSectionTitle>Industry</AboutSectionTitle>
-          <ExperienceList
-            experiences={experiences}
-            category="industry"
-            showType
-          />
+          <ExperienceList experiences={experiences} category="industry" showType />
 
           <AboutSectionTitle>Research</AboutSectionTitle>
           <ExperienceList experiences={experiences} category="research" />
@@ -96,17 +100,16 @@ export default function AboutPage({
           <PressList press={press} />
 
           <AboutSectionTitle>Reach Out</AboutSectionTitle>
-          <p className="font-serif text-[16px] leading-[1.62] text-ink max-w-[65ch] m-0 mb-4">
+          <p className="text-ink m-0 mb-4 max-w-[65ch] font-serif text-[16px] leading-[1.62]">
             Best ways to get in touch are{" "}
             <a
               href={`mailto:${email}`}
-              className="text-link hover:text-link-hover underline underline-offset-[3px] decoration-[1px] decoration-link/35"
+              className="text-link hover:text-link-hover decoration-link/35 underline decoration-[1px] underline-offset-[3px]"
             >
               email
             </a>{" "}
-            for anything substantive, or DMs on the socials for casual things.
-            Currently available for short calls in the windows shaded green —
-            most weeks look roughly like this:
+            for anything substantive, or DMs on the socials for casual things. Currently available
+            for short calls in the windows shaded green — most weeks look roughly like this:
           </p>
           <AvailabilityCard availability={availability} email={email} />
 

@@ -24,13 +24,23 @@
   ],
   "work": [
     {
-      "title": "AI/ML Engineer (Part-time)",
+      "title": "AI Engineer",
       "org": "Penta Global Limited",
-      "date": "Aug 2025 – Present",
+      "date": "Sep 2026 – Present",
+      "location": "Dhaka, Bangladesh",
+      "bullets": [
+        "Building AI features for Autodesk Revit, including a conversational assistant that works with and modifies 3D Building Information Modeling (BIM) models through natural-language chat.",
+        "Developing a PDF-to-Revit workflow that generates downloadable Revit family files from design PDFs."
+      ]
+    },
+    {
+      "title": "AI Engineer (Part-time)",
+      "org": "Penta Global Limited",
+      "date": "Aug 2025 – Aug 2026",
       "location": "Dhaka, Bangladesh",
       "bullets": [
         "Developed a conversational AI plugin for Autodesk Revit that connects natural-language chat with custom Revit tools for interacting with and modifying 3D Building Information Modeling (BIM) models.",
-        "Working on a PDF-to-Revit workflow for generating downloadable Revit family files from design PDFs."
+        "Started a PDF-to-Revit workflow for generating downloadable Revit family files from design PDFs."
       ]
     }
   ],
@@ -38,10 +48,10 @@
     {
       "title": "Post-baccalaureate Research Assistant",
       "org": "Center for Computational & Data Sciences, Independent University, Bangladesh",
-      "date": "Feb 2022 – Present",
+      "date": "Feb 2022 – Aug 2026",
       "location": "Dhaka, Bangladesh",
       "bullets": [
-        "**Research Interests:** Vision–language models, domain adaptation, federated learning, and medical imaging. Working on and co-supervising undergraduate theses and center-led projects in these areas.",
+        "**Research Interests:** Vision–language models, domain adaptation, federated learning, and medical imaging. Worked on and co-supervised undergraduate theses and center-led projects in these areas.",
         "**Teaching Support:** Introduction to Programming, Data Structures, AI, ML, and Image Processing.",
         "**Publications:** Q1 Journals ×3, ACL (A*), WACV (A), ICIP ×3 (B), AACL (B), IJCNN (B), and multiple workshop papers, including one in AAAI."
       ]
@@ -50,7 +60,16 @@
   "publications": [
     {
       "type": "C",
-      "authors": ["Rafid Ahmed", "Intesar Tahmid", "Mir Sazzat Hossain", "Tasnimul Hossain Tomal", "Md Mahir Jawad", "Anam Borhan Uddin", "Md Fahim", "Md Farhad Alam Bhuiyan"],
+      "authors": [
+        "Rafid Ahmed",
+        "Intesar Tahmid",
+        "Mir Sazzat Hossain",
+        "Tasnimul Hossain Tomal",
+        "Md Mahir Jawad",
+        "Anam Borhan Uddin",
+        "Md Fahim",
+        "Md Farhad Alam Bhuiyan"
+      ],
       "title": "Evaluating Large Vision Language Models on Bangla Medical Visual Question Answering",
       "venue": "In *Findings of the Association for Computational Linguistics: ACL 2026*, pages 37362–37378, San Diego, California, United States. Association for Computational Linguistics.",
       "rank": "CORE Rank: A*",
@@ -58,7 +77,14 @@
     },
     {
       "type": "C",
-      "authors": ["Md Fahim", "Md Farhan Ishmam", "Mir Sazzat Hossain", "Md. Ashraful Amin", "Amin Ahsan Ali", "A K M Mahbubur Rahman"],
+      "authors": [
+        "Md Fahim",
+        "Md Farhan Ishmam",
+        "Mir Sazzat Hossain",
+        "Md. Ashraful Amin",
+        "Amin Ahsan Ali",
+        "A K M Mahbubur Rahman"
+      ],
       "title": "R-MMA: Enhancing Vision-Language Models with Recurrent Adapters for Few-Shot and Cross-Domain Generalization",
       "venue": "in *Proceedings of the IEEE/CVF Winter Conference on Applications of Computer Vision (WACV)*, 2026, pp. 6496-6506.",
       "rank": "CORE Rank: A",
@@ -69,7 +95,12 @@
     },
     {
       "type": "C",
-      "authors": ["Mir Sazzat Hossain", "AKM Mahbubur Rahman", "Md. Ashraful Amin", "Amin Ahsan Ali"],
+      "authors": [
+        "Mir Sazzat Hossain",
+        "AKM Mahbubur Rahman",
+        "Md. Ashraful Amin",
+        "Amin Ahsan Ali"
+      ],
       "title": "Lightweight Recurrent Neural Network for Image Super-Resolution",
       "venue": "2024 IEEE International Conference on Image Processing (ICIP), Abu Dhabi, United Arab Emirates, 2024, pp. 1567–1573, DOI: 10.1109/ICIP51287.2024.10647844.",
       "rank": "CORE Rank: B",
@@ -77,7 +108,15 @@
     },
     {
       "type": "C",
-      "authors": ["Rakibul Hasan Rajib", "Md Akil Raihan Iftee", "Mir Sazzat Hossain", "A K M Mahbubur Rahman", "Sajib Mistry", "Md. Ashraful Amin", "Amin Ahsan Ali"],
+      "authors": [
+        "Rakibul Hasan Rajib",
+        "Md Akil Raihan Iftee",
+        "Mir Sazzat Hossain",
+        "A K M Mahbubur Rahman",
+        "Sajib Mistry",
+        "Md. Ashraful Amin",
+        "Amin Ahsan Ali"
+      ],
       "title": "FedCTTA: A Collaborative Approach to Continual Test-Time Adaptation in Federated Learning",
       "venue": "2025 International Joint Conference on Neural Networks (IJCNN), Rome, Italy, 2025, pp. 1-8, DOI: 10.1109/IJCNN64981.2025.11228519.",
       "rank": "CORE Rank: B",
@@ -85,7 +124,17 @@
     },
     {
       "type": "C",
-      "authors": ["Mir Sazzat Hossain", "Ovi Paul", "Md Akil Raihan Iftee", "Rakibul Hasan Rajib", "Abu Bakar Siddik Nayem", "Anis Sarker", "Md. Ashraful Amin", "Amin Ahsan Ali", "A K M Mahbubur Rahman"],
+      "authors": [
+        "Mir Sazzat Hossain",
+        "Ovi Paul",
+        "Md Akil Raihan Iftee",
+        "Rakibul Hasan Rajib",
+        "Abu Bakar Siddik Nayem",
+        "Anis Sarker",
+        "Md. Ashraful Amin",
+        "Amin Ahsan Ali",
+        "A K M Mahbubur Rahman"
+      ],
       "title": "BD Open LULC Map: High-Resolution Land Use Land Cover Mapping & Benchmarking for Urban Development in Dhaka, Bangladesh",
       "venue": "2025 IEEE International Conference on Image Processing (ICIP), Anchorage, Alaska, USA, 2025, pp. 2808–2813, DOI: 10.1109/ICIP55913.2025.11084396.",
       "rank": "CORE Rank: B",
@@ -93,7 +142,18 @@
     },
     {
       "type": "C",
-      "authors": ["Newaz Ben Alam", "Akm Moshiur Rahman Mazumder", "Mir Sazzat Hossain", "Mysha Samiha", "Md Alvi Noor Hossain", "Md Fahim", "Amin Ahsan Ali", "Ashraful Islam", "M Ashraful Amin", "Akmmahbubur Rahman"],
+      "authors": [
+        "Newaz Ben Alam",
+        "Akm Moshiur Rahman Mazumder",
+        "Mir Sazzat Hossain",
+        "Mysha Samiha",
+        "Md Alvi Noor Hossain",
+        "Md Fahim",
+        "Amin Ahsan Ali",
+        "Ashraful Islam",
+        "M Ashraful Amin",
+        "Akmmahbubur Rahman"
+      ],
       "title": "CMBan: Cartoon-Driven Meme Contextual Classification Dataset for Bangla.",
       "venue": "In *Proceedings of the 14th International Joint Conference on Natural Language Processing and the 4th Conference of the Asia-Pacific Chapter of the Association for Computational Linguistics*, pages 2178–2194, Mumbai, India.",
       "rank": "CORE Rank: B",
@@ -101,7 +161,19 @@
     },
     {
       "type": "C",
-      "authors": ["Mir Sazzat Hossain", "K M B Asad", "Payaswini Saikia", "Adrita Khan", "Md Akil Raihan Iftee", "Rakibul Hasan Rajib", "A K M Mahbubur Rahman", "Arshad Momen", "Jewel Kumar Ghosh", "Amin Ahsan Ali", "Md. Ashraful Amin"],
+      "authors": [
+        "Mir Sazzat Hossain",
+        "K M B Asad",
+        "Payaswini Saikia",
+        "Adrita Khan",
+        "Md Akil Raihan Iftee",
+        "Rakibul Hasan Rajib",
+        "A K M Mahbubur Rahman",
+        "Arshad Momen",
+        "Jewel Kumar Ghosh",
+        "Amin Ahsan Ali",
+        "Md. Ashraful Amin"
+      ],
       "title": "RGC-Bent: A Novel Dataset for Bent Radio Galaxy Classification",
       "venue": "2025 IEEE International Conference on Image Processing (ICIP), Anchorage, Alaska, USA, 2025, pp. 2868–2873, DOI: 10.1109/ICIP55913.2025.11084387.",
       "rank": "CORE Rank: B",
@@ -112,7 +184,18 @@
     },
     {
       "type": "J",
-      "authors": ["Mir Sazzat Hossain", "Md Shahadat Hossain Shahal", "K M B Asad", "Payaswini Saikia", "Adrita Khan", "Fatema Akter", "Amin Ahsan Ali", "Md. Ashraful Amin", "Arshad Momen", "A K M Mahbubur Rahman"],
+      "authors": [
+        "Mir Sazzat Hossain",
+        "Md Shahadat Hossain Shahal",
+        "K M B Asad",
+        "Payaswini Saikia",
+        "Adrita Khan",
+        "Fatema Akter",
+        "Amin Ahsan Ali",
+        "Md. Ashraful Amin",
+        "Arshad Momen",
+        "A K M Mahbubur Rahman"
+      ],
       "title": "RGC: A Radio AGN Classifier Based on Deep Learning: I. A Semi-Supervised Model for the VLA Images of Bent Radio AGNs",
       "venue": "accepted to *Astronomy & Astrophysics (A&A)*.",
       "rank": "Q1 Journal",
@@ -120,7 +203,14 @@
     },
     {
       "type": "J",
-      "authors": ["Fahim Mahafuz Ruhad", "Md Fahim", "Mir Sazzat Hossain", "Md Fahad Monir", "Md. Ashraful Amin", "Ashraful Islam"],
+      "authors": [
+        "Fahim Mahafuz Ruhad",
+        "Md Fahim",
+        "Mir Sazzat Hossain",
+        "Md Fahad Monir",
+        "Md. Ashraful Amin",
+        "Ashraful Islam"
+      ],
       "title": "Beyond Classification: Benchmarking Object Detection Models for Efficient Tomato Leaf Disease Identification on a Real-World Dataset",
       "venue": "in *Elsevier Smart Agricultural Technology*, vol. 12, pp. 101336, 2025, DOI: 10.1016/j.atech.2025.101336.",
       "rank": "Q1 Journal",
@@ -136,14 +226,29 @@
     },
     {
       "type": "W",
-      "authors": ["Rafid Ahmed", "Intesar Tahmid", "Mir Sazzat Hossain", "Tasnimul Hossain Tomal", "Md Fahim", "Md Farhad Alam"],
+      "authors": [
+        "Rafid Ahmed",
+        "Intesar Tahmid",
+        "Mir Sazzat Hossain",
+        "Tasnimul Hossain Tomal",
+        "Md Fahim",
+        "Md Farhad Alam"
+      ],
       "title": "How Good LLMs Are at Answering Bangla Medical Visual Questions? Dataset and Benchmarking",
       "venue": "*Proceedings of The Second AAAI Bridge Program on AI for Medicine and Healthcare*, PMLR 317:1-14, 2026.",
       "links": [{ "label": "Paper", "href": "/publications/2P1L_qKh6hAC" }]
     },
     {
       "type": "W",
-      "authors": ["Md Mahir Jawad", "Rafid Ahmed", "Ishita Sur Apan", "Tasnimul Hossain Tomal", "Fabiha Haider", "Mir Sazzat Hossain", "Md Farhad Alam Bhuiyan"],
+      "authors": [
+        "Md Mahir Jawad",
+        "Rafid Ahmed",
+        "Ishita Sur Apan",
+        "Tasnimul Hossain Tomal",
+        "Fabiha Haider",
+        "Mir Sazzat Hossain",
+        "Md Farhad Alam Bhuiyan"
+      ],
       "title": "Benchmarking Large Language Models on Bangla Dialect Translation and Dialectal Sentiment Analysis",
       "venue": "In *Proceedings of the Second Workshop on Bangla Language Processing (BLP-2025)*, pages 322–337, Mumbai, India. Association for Computational Linguistics.",
       "rank": "Best Long Paper Award",
@@ -154,14 +259,29 @@
     },
     {
       "type": "W",
-      "authors": ["Tasnimul Hossain Tomal", "Anam Borhan Uddin", "Intesar Tahmid", "Mir Sazzat Hossain", "Md Fahim", "Md Farhad Alam Bhuiyan"],
+      "authors": [
+        "Tasnimul Hossain Tomal",
+        "Anam Borhan Uddin",
+        "Intesar Tahmid",
+        "Mir Sazzat Hossain",
+        "Md Fahim",
+        "Md Farhad Alam Bhuiyan"
+      ],
       "title": "LP-FT-LoRA: A Three-Stage PEFT Framework for Efficient Domain Adaptation in Bangla NLP Tasks",
       "venue": "In *Proceedings of the Second Workshop on Bangla Language Processing (BLP-2025)*, pages 212–222, Mumbai, India. Association for Computational Linguistics.",
       "links": [{ "label": "Paper", "href": "/publications/YFjsv_pBGBYC" }]
     },
     {
       "type": "W",
-      "authors": ["Mir Sazzat Hossain", "Sugandha Roy", "K M B Asad", "Arshad Momen", "Amin Ahsan Ali", "Md. Ashraful Amin", "AKM Mahbubur Rahman"],
+      "authors": [
+        "Mir Sazzat Hossain",
+        "Sugandha Roy",
+        "K M B Asad",
+        "Arshad Momen",
+        "Amin Ahsan Ali",
+        "Md. Ashraful Amin",
+        "AKM Mahbubur Rahman"
+      ],
       "title": "Morphological Classification of Radio Galaxies Using Semi-Supervised Group Equivariant CNNs",
       "venue": "in *Procedia Computer Science*, vol. 222, pp. 601–612, 2023, ISSN: 1877-0509, DOI: 10.1016/j.procs.2023.08.198.",
       "links": [{ "label": "Paper", "href": "/publications/IWHjjKOFINEC" }]
@@ -170,63 +290,133 @@
   "underReview": [
     {
       "type": "C",
-      "authors": ["Mir Sazzat Hossain", "Tasnimul Hossain Tomal", "Anam Borhan Uddin", "Md Fahim", "Md. Zakir Hossan", "Md Farhad Alam Bhuiyan"],
+      "authors": [
+        "Mir Sazzat Hossain",
+        "Tasnimul Hossain Tomal",
+        "Anam Borhan Uddin",
+        "Md Fahim",
+        "Md. Zakir Hossan",
+        "Md Farhad Alam Bhuiyan"
+      ],
       "title": "MOMA: Mixture of Multimodal Adapters for Vision Language Models",
       "venue": "submitted to the *2026 Conference on Empirical Methods in Natural Language Processing (EMNLP 2026)*.",
       "rank": "CORE Rank: A*"
     },
     {
       "type": "C",
-      "authors": ["Md Mahir Jawad", "Galib Mahmud Jim", "Rafid Ahmed", "Mir Sazzat Hossain", "Md Fahim", "Md Farhad Alam Bhuiyan"],
+      "authors": [
+        "Md Mahir Jawad",
+        "Galib Mahmud Jim",
+        "Rafid Ahmed",
+        "Mir Sazzat Hossain",
+        "Md Fahim",
+        "Md Farhad Alam Bhuiyan"
+      ],
       "title": "5-DIALECTS-BN: Unmasking the Impact of Transliteration on Bangla Dialectal LLMs",
       "venue": "submitted to the *2026 Conference on Empirical Methods in Natural Language Processing (EMNLP 2026)*.",
       "rank": "CORE Rank: A*"
     },
     {
       "type": "C",
-      "authors": ["Rafid Ahmed", "Md. Faiyaz Abdullah Sayeedi", "Fariha Anjum Shifa", "Mir Sazzat Hossain", "Faria Iffat Reshma", "Mahbub E Sobhani", "Md Fahim", "Md Farhad Alam Bhuiyan"],
+      "authors": [
+        "Rafid Ahmed",
+        "Md. Faiyaz Abdullah Sayeedi",
+        "Fariha Anjum Shifa",
+        "Mir Sazzat Hossain",
+        "Faria Iffat Reshma",
+        "Mahbub E Sobhani",
+        "Md Fahim",
+        "Md Farhad Alam Bhuiyan"
+      ],
       "title": "BANGLATMEDQA: A Multimodal Benchmark for Open Ended Bangla Medical Question Answering",
       "venue": "submitted to the *2026 Conference on Empirical Methods in Natural Language Processing (EMNLP 2026)*.",
       "rank": "CORE Rank: A*"
     },
     {
       "type": "C",
-      "authors": ["Rafid Ahmed", "Mir Sazzat Hossain", "Intesar Tahmid", "Md Fahim", "Md Farhad Alam Bhuiyan"],
+      "authors": [
+        "Rafid Ahmed",
+        "Mir Sazzat Hossain",
+        "Intesar Tahmid",
+        "Md Fahim",
+        "Md Farhad Alam Bhuiyan"
+      ],
       "title": "Pretrained VLM Projectors are Efficient Adapters for Vision Transformers",
       "venue": "submitted to the *Winter Conference on Applications of Computer Vision (WACV 2027)*.",
       "rank": "CORE Rank: A"
     },
     {
       "type": "C",
-      "authors": ["Tasnimul Hossain Tomal", "Mir Sazzat Hossain", "Rafid Ahmed", "Md Fahim", "Md Farhad Alam Bhuiyan"],
+      "authors": [
+        "Tasnimul Hossain Tomal",
+        "Mir Sazzat Hossain",
+        "Rafid Ahmed",
+        "Md Fahim",
+        "Md Farhad Alam Bhuiyan"
+      ],
       "title": "CEKALA: CKA-Guided Layer Selection for Efficient Vision–Language Adaptation",
       "venue": "submitted to the *Winter Conference on Applications of Computer Vision (WACV 2027)*.",
       "rank": "CORE Rank: A"
     },
     {
       "type": "C",
-      "authors": ["Md Akil Raihan Iftee", "Mir Sazzat Hossain", "Rakibul Hasan Rajib", "A K M Mahbubur Rahman", "Tariq Iqbal", "Md Mofijul Islam", "Md. Ashraful Amin", "Amin Ahsan Ali"],
+      "authors": [
+        "Md Akil Raihan Iftee",
+        "Mir Sazzat Hossain",
+        "Rakibul Hasan Rajib",
+        "A K M Mahbubur Rahman",
+        "Tariq Iqbal",
+        "Md Mofijul Islam",
+        "Md. Ashraful Amin",
+        "Amin Ahsan Ali"
+      ],
       "title": "SloMo-Fast: Slow-Momentum and Fast-Adaptive Teachers for Source-Free Continual Test-Time Adaptation",
       "venue": "submitted to the *Winter Conference on Applications of Computer Vision (WACV 2027)*.",
       "rank": "CORE Rank: A"
     },
     {
       "type": "J",
-      "authors": ["Md Akil Raihan Iftee", "Syed Md. Ahnaf Hasan", "Mir Sazzat Hossain", "Rakibul Hasan Rajib", "Amin Ahsan Ali", "AKM Mahbubur Rahman", "Sajib Mistry", "Monowar Bhuyan"],
+      "authors": [
+        "Md Akil Raihan Iftee",
+        "Syed Md. Ahnaf Hasan",
+        "Mir Sazzat Hossain",
+        "Rakibul Hasan Rajib",
+        "Amin Ahsan Ali",
+        "AKM Mahbubur Rahman",
+        "Sajib Mistry",
+        "Monowar Bhuyan"
+      ],
       "title": "pFedBBN: Personalized Federated Test-Time Adaptation with Balanced Batch Normalization for Class-Imbalanced Data",
       "venue": "submitted to *IEEE Transactions on Artificial Intelligence*.",
       "rank": "Q1 Journal"
     },
     {
       "type": "J",
-      "authors": ["Ezharuddin Jubaer", "Sumaiya Karim Katha", "Mir Sazzat Hossain", "Fahim Shahriar", "Amin Ahsan Ali", "AKM Mahbubur Rahman"],
+      "authors": [
+        "Ezharuddin Jubaer",
+        "Sumaiya Karim Katha",
+        "Mir Sazzat Hossain",
+        "Fahim Shahriar",
+        "Amin Ahsan Ali",
+        "AKM Mahbubur Rahman"
+      ],
       "title": "TRoPE-TUL: Trajectory-User Linking via Spatio-Temporal Rotary Position Embedding",
       "venue": "submitted to *Pattern Recognition*.",
       "rank": "Q1 Journal"
     },
     {
       "type": "J",
-      "authors": ["Md Raqibul Islam", "Adrita Khan", "Mir Sazzat Hossain", "Choudhury Ben Yamin Siddiqui", "Md. Zakir Hossan", "Tanjib Khan", "M. Arshad Momen", "Amin Ahsan Ali", "AKM Mahbubur Rahman"],
+      "authors": [
+        "Md Raqibul Islam",
+        "Adrita Khan",
+        "Mir Sazzat Hossain",
+        "Choudhury Ben Yamin Siddiqui",
+        "Md. Zakir Hossan",
+        "Tanjib Khan",
+        "M. Arshad Momen",
+        "Amin Ahsan Ali",
+        "AKM Mahbubur Rahman"
+      ],
       "title": "KIGNet: Physics-Motivated Multi-Graph Representation Learning for Explainable Jet Tagging",
       "venue": "submitted to the *American Physical Society (APS) Journals*.",
       "rank": "Q1 Journal"
@@ -275,7 +465,9 @@
       "bullets": [
         "Created a Python package for preprocessing radio signals received from radio telescopes to produce clean, noise-free images and classify them using established machine learning models."
       ],
-      "links": [{ "label": "Github", "href": "https://github.com/mirsazzathossain/radio-galaxy-classifier" }]
+      "links": [
+        { "label": "Github", "href": "https://github.com/mirsazzathossain/radio-galaxy-classifier" }
+      ]
     }
   ],
   "awards": [
@@ -312,9 +504,15 @@
   ],
   "skills": [
     { "category": "Languages", "items": "Python, C++, C, JavaScript" },
-    { "category": "Libraries", "items": "PyTorch, PyTorch-Lightning, LLaMA-Factory, Hugging Face, Flower, Scikit-learn" },
+    {
+      "category": "Libraries",
+      "items": "PyTorch, PyTorch-Lightning, LLaMA-Factory, Hugging Face, Flower, Scikit-learn"
+    },
     { "category": "Web Frameworks", "items": "NextJs, React, Django, Laravel" },
-    { "category": "Miscellaneous", "items": "Git, Docker, Apptainer, HTCondor, Slurm, MATLAB, LaTeX" }
+    {
+      "category": "Miscellaneous",
+      "items": "Git, Docker, Apptainer, HTCondor, Slurm, MATLAB, LaTeX"
+    }
   ],
   "references": [
     {

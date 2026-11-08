@@ -37,9 +37,11 @@ export default function ProfileSidebar({ about }: { about: About }) {
         >
           {about.company.department?.name || about.company.name}
         </a>
-        <a href={about.company.url} className="text-ink-3 hover:text-link-hover py-1">
-          {about.company.name}
-        </a>
+        {about.company.department && (
+          <a href={about.company.url} className="text-ink-3 hover:text-link-hover py-1">
+            {about.company.name}
+          </a>
+        )}
       </p>
 
       {about.availability && (
