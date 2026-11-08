@@ -48,21 +48,21 @@
   {
     "slug": "clinical-error-detection-prescriptions",
     "title": "Clinical error detection in prescriptions",
-    "status": "Under review",
+    "status": "Ongoing",
     "theme": "medical",
     "tags": ["Medical NLP", "VLMs", "Evaluation"],
     "description": "Patients increasingly use AI assistants to check their medical documents, including prescriptions. Prescription errors, such as wrong drug names, unsafe doses or incorrect schedules, can directly harm patients, especially where many prescriptions are written by practitioners without formal training. Existing work on prescriptions mostly focuses on extracting their content, and assumes that content is correct. This project tests whether current LLMs can instead find clinically harmful errors in real handwritten and typed prescriptions. We study whether failures come from reading the document or from reasoning about its medical content, and whether models can point to the specific medicine that is wrong.",
-    "figure": "Find the harmful line, not just read the prescription.",
-    "note": "Committed to EACL 2027"
+    "figure": "Find the harmful line, not just read the prescription."
   },
   {
     "slug": "bangla-medical-qa",
     "title": "Bangla medical question answering",
-    "status": "Ongoing",
+    "status": "Under review",
     "theme": "medical",
     "tags": ["Medical QA", "Bangla", "Multimodal"],
     "description": "Most medical AI benchmarks use exam-style multiple-choice questions, which differ greatly from how patients actually ask for help. In Bangladesh, people describe symptoms informally, often mixing Bangla, English and romanized Bangla, and often share images such as X-rays or test reports alongside their questions. This project builds an open-ended, multimodal medical question answering benchmark based on how patients ask questions in practice. We evaluate proprietary and open-source LLMs on it, studying where they give safe and useful answers, where they fail, and how their performance changes across languages and with images.",
-    "figure": "Informal, code-mixed patient questions with images."
+    "figure": "Informal, code-mixed patient questions with images.",
+    "note": "Committed to EACL 2027"
   },
   {
     "slug": "bangla-dialectal-medical-asr",
