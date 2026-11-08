@@ -48,11 +48,12 @@
   {
     "slug": "clinical-error-detection-prescriptions",
     "title": "Clinical error detection in prescriptions",
-    "status": "Ongoing",
+    "status": "Under review",
     "theme": "medical",
     "tags": ["Medical NLP", "VLMs", "Evaluation"],
     "description": "Patients increasingly use AI assistants to check their medical documents, including prescriptions. Prescription errors, such as wrong drug names, unsafe doses or incorrect schedules, can directly harm patients, especially where many prescriptions are written by practitioners without formal training. Existing work on prescriptions mostly focuses on extracting their content, and assumes that content is correct. This project tests whether current LLMs can instead find clinically harmful errors in real handwritten and typed prescriptions. We study whether failures come from reading the document or from reasoning about its medical content, and whether models can point to the specific medicine that is wrong.",
-    "figure": "Find the harmful line, not just read the prescription."
+    "figure": "Find the harmful line, not just read the prescription.",
+    "note": "ARR October 2026"
   },
   {
     "slug": "bangla-medical-qa",
