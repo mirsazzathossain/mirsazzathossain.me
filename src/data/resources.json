@@ -1,26 +1,158 @@
 [
   {
-    "title": "Handling Class Imbalance via Class Weights",
-    "url": "https://blog.paperspace.com/class-imbalance-in-image-datasets/",
-    "description": "This article explains how to handle overfitting due to class imbalance in image datasets",
-    "category": "Computer Vision"
+    "title": "verl",
+    "url": "https://github.com/volcengine/verl",
+    "description": "Scalable RL training library for LLMs, with PPO, GRPO and many recent variants.",
+    "category": "RL and Post-Training"
   },
   {
-    "title": "Notes on AI",
-    "url": "https://parasdahal.com/notes/",
-    "description": "A collection of notes on AI, Deep Learning, and Machine Learning",
-    "category": "Machine Learning"
+    "title": "TRL",
+    "url": "https://github.com/huggingface/trl",
+    "description": "Hugging Face library for SFT, reward modeling, DPO, GRPO and other post-training methods.",
+    "category": "RL and Post-Training"
   },
   {
-    "title": "ViT Implementation in PyTorch",
-    "url": "https://github.com/lucidrains/vit-pytorch",
-    "description": "Implementation of SOTA Vision Transformer models using PyTorch",
-    "category": "Computer Vision"
+    "title": "OpenRLHF",
+    "url": "https://github.com/OpenRLHF/OpenRLHF",
+    "description": "Ray and vLLM based framework for RLHF and RL training at scale.",
+    "category": "RL and Post-Training"
+  },
+  {
+    "title": "LLaMA-Factory",
+    "url": "https://github.com/hiyouga/LLaMA-Factory",
+    "description": "Unified fine-tuning for hundreds of LLMs and VLMs, from SFT to preference optimization.",
+    "category": "RL and Post-Training"
+  },
+  {
+    "title": "EasyR1",
+    "url": "https://github.com/hiyouga/EasyR1",
+    "description": "Efficient RL training for vision-language models, built on verl.",
+    "category": "RL and Post-Training"
+  },
+  {
+    "title": "LMFlow",
+    "url": "https://github.com/OptimalScale/LMFlow",
+    "description": "Toolkit for fine-tuning and aligning large models. I implemented CW-PO in it.",
+    "category": "RL and Post-Training"
+  },
+  {
+    "title": "Unsloth",
+    "url": "https://github.com/unslothai/unsloth",
+    "description": "Fast, memory-efficient LoRA fine-tuning and RL on a single GPU.",
+    "category": "RL and Post-Training"
+  },
+  {
+    "title": "vLLM",
+    "url": "https://github.com/vllm-project/vllm",
+    "description": "High-throughput LLM inference and serving engine with PagedAttention.",
+    "category": "Inference and Serving"
+  },
+  {
+    "title": "SGLang",
+    "url": "https://github.com/sgl-project/sglang",
+    "description": "Fast serving framework for LLMs and VLMs, widely used for RL rollouts.",
+    "category": "Inference and Serving"
+  },
+  {
+    "title": "TTRL",
+    "url": "https://github.com/PRIME-RL/TTRL",
+    "description": "Test-time reinforcement learning on unlabeled data, using majority vote as the reward.",
+    "category": "Test-Time RL and Label-Free Rewards"
+  },
+  {
+    "title": "OPSD",
+    "url": "https://github.com/siyan-zhao/OPSD",
+    "description": "On-policy self-distillation for LLMs.",
+    "category": "Test-Time RL and Label-Free Rewards"
+  },
+  {
+    "title": "Search-R1",
+    "url": "https://github.com/PeterGriffinJin/Search-R1",
+    "description": "Training LLMs to reason and call search engines with reinforcement learning.",
+    "category": "Agents and Retrieval"
+  },
+  {
+    "title": "FlashRAG",
+    "url": "https://github.com/RUC-NLPIR/FlashRAG",
+    "description": "Python toolkit for reproducing and building retrieval-augmented generation pipelines.",
+    "category": "Agents and Retrieval"
+  },
+  {
+    "title": "Model Context Protocol",
+    "url": "https://modelcontextprotocol.io",
+    "description": "Docs for MCP, the open protocol for connecting LLM agents to tools and data.",
+    "category": "Agents and Retrieval"
+  },
+  {
+    "title": "mergekit",
+    "url": "https://github.com/arcee-ai/mergekit",
+    "description": "Tools for merging pretrained and fine-tuned language models.",
+    "category": "Distillation and Merging"
+  },
+  {
+    "title": "On-Policy Distillation",
+    "url": "https://thinkingmachines.ai/blog/on-policy-distillation/",
+    "description": "Thinking Machines on training a student on its own samples with dense teacher feedback.",
+    "category": "Distillation and Merging"
+  },
+  {
+    "title": "lm-evaluation-harness",
+    "url": "https://github.com/EleutherAI/lm-evaluation-harness",
+    "description": "EleutherAI's standard framework for few-shot evaluation of language models.",
+    "category": "Evaluation"
+  },
+  {
+    "title": "lmms-eval",
+    "url": "https://github.com/EvolvingLMMs-Lab/lmms-eval",
+    "description": "Evaluation suite for large multimodal models across image, video and audio tasks.",
+    "category": "Evaluation"
+  },
+  {
+    "title": "VLMEvalKit",
+    "url": "https://github.com/open-compass/VLMEvalKit",
+    "description": "Open-source toolkit for evaluating vision-language models on many benchmarks.",
+    "category": "Evaluation"
+  },
+  {
+    "title": "TransformerLens",
+    "url": "https://github.com/TransformerLensOrg/TransformerLens",
+    "description": "Library for mechanistic interpretability of GPT-style language models.",
+    "category": "Interpretability"
+  },
+  {
+    "title": "nnsight",
+    "url": "https://nnsight.net",
+    "description": "Interpret and intervene on the internals of PyTorch models, including large remote ones.",
+    "category": "Interpretability"
+  },
+  {
+    "title": "Lil'Log",
+    "url": "https://lilianweng.github.io",
+    "description": "Lilian Weng's blog with long, careful surveys of RL, LLM agents, alignment and more.",
+    "category": "Reading"
+  },
+  {
+    "title": "RLHF Book",
+    "url": "https://rlhfbook.com",
+    "description": "Nathan Lambert's book on reinforcement learning from human feedback and post-training.",
+    "category": "Reading"
+  },
+  {
+    "title": "Spinning Up in Deep RL",
+    "url": "https://spinningup.openai.com",
+    "description": "OpenAI's educational introduction to deep reinforcement learning.",
+    "category": "Reading"
   },
   {
     "title": "The Annotated Transformer",
     "url": "https://nlp.seas.harvard.edu/annotated-transformer/",
-    "description": "A detailed explanation of the Transformer model",
-    "category": "Natural Language Processing"
+    "description": "A line-by-line implementation of the Transformer paper.",
+    "category": "Reading"
+  },
+  {
+    "title": "BanglaBERT",
+    "url": "https://github.com/csebuetnlp/banglabert",
+    "description": "Pretrained Bangla language model and benchmark from BUET CSE NLP.",
+    "category": "Bangla NLP"
   }
 ]
