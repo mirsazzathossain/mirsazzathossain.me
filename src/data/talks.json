@@ -1,11 +1,11 @@
 [
   {
-    "title": "CMBAN: Cartoon-Driven Meme Contextual Classification Dataset for Bangla",
-    "venue": "IJCNLP-AACL 2025",
-    "location": "Mumbai, India",
-    "date": "2025-12",
-    "type": "oral",
-    "slidesUrl": "/files/ijcnlp-aacl-2025-attendance-certificate.pdf"
+    "title": "R-MMA: Enhancing Vision-Language Models with Recurrent Adapters for Few-Shot and Cross-Domain Generalization",
+    "venue": "WACV 2026",
+    "location": "Arizona, USA",
+    "date": "2026-03",
+    "type": "poster",
+    "slidesUrl": "/files/rmma-poster.pdf"
   },
   {
     "title": "AlphaFold 3: Protein Structure Prediction Advances",
@@ -16,12 +16,12 @@
     "posterUrl": "/files/alphaFold-3-brac-poster.pdf"
   },
   {
-    "title": "R-MMA: Enhancing Vision-Language Models with Recurrent Adapters for Few-Shot and Cross-Domain Generalization",
-    "venue": "WACV 2026",
-    "location": "Arizona, USA",
-    "date": "2026-03",
-    "type": "poster",
-    "slidesUrl": "/files/rmma-poster.pdf"
+    "title": "CMBAN: Cartoon-Driven Meme Contextual Classification Dataset for Bangla",
+    "venue": "IJCNLP-AACL 2025",
+    "location": "Mumbai, India",
+    "date": "2025-12",
+    "type": "oral",
+    "slidesUrl": "/files/ijcnlp-aacl-2025-attendance-certificate.pdf"
   },
   {
     "title": "BD Open LULC Map: High-resolution land use land cover mapping & benchmarking for urban development in Dhaka, Bangladesh",

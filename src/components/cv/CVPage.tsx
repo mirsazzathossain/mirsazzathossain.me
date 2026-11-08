@@ -153,6 +153,15 @@ export default function CVPage({ cv }: { cv: CVData }) {
           ))}
         </S>
 
+        {/* Research Experience */}
+        <S title="Research Experience">
+          {cv.research.map((r) => (
+            <Entry key={r.title} title={r.title} date={r.date} sub={r.org} loc={r.location}>
+              <Bullets items={r.bullets} />
+            </Entry>
+          ))}
+        </S>
+
         {/* Work Experience */}
         {cv.work && cv.work.length > 0 && (
           <S title="Work Experience">
@@ -163,15 +172,6 @@ export default function CVPage({ cv }: { cv: CVData }) {
             ))}
           </S>
         )}
-
-        {/* Research Experience */}
-        <S title="Research Experience">
-          {cv.research.map((r) => (
-            <Entry key={r.title} title={r.title} date={r.date} sub={r.org} loc={r.location}>
-              <Bullets items={r.bullets} />
-            </Entry>
-          ))}
-        </S>
 
         {/* Publications */}
         <S title="Publications">

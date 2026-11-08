@@ -78,11 +78,11 @@ export default function AboutPage({
           <AboutSectionTitle>Education</AboutSectionTitle>
           <EducationList educations={educations} />
 
-          <AboutSectionTitle>Industry</AboutSectionTitle>
-          <ExperienceList experiences={experiences} category="industry" showType />
-
           <AboutSectionTitle>Research</AboutSectionTitle>
           <ExperienceList experiences={experiences} category="research" />
+
+          <AboutSectionTitle>Industry</AboutSectionTitle>
+          <ExperienceList experiences={experiences} category="industry" showType />
 
           <AboutSectionTitle>Teaching</AboutSectionTitle>
           <ExperienceList experiences={experiences} category="teaching" />

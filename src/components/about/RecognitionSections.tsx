@@ -4,11 +4,11 @@ import type { Award, Service, Talk } from "./types";
 
 export function AwardsList({ awards }: { awards: Award[] }) {
   return (
-    <ul className="list-none p-0 m-0">
+    <ul className="m-0 list-none p-0">
       {awards.map((award) => (
         <li
           key={`${award.title}-${award.time}`}
-          className="grid grid-cols-[22px_1fr_auto] items-baseline gap-2.5 border-b border-dashed border-rule py-[7px] text-[13px] last:border-b-0"
+          className="border-rule grid grid-cols-[22px_1fr_auto] items-baseline gap-2.5 border-b border-dashed py-[7px] text-[13px] last:border-b-0"
         >
           <span className="text-[13px]">{award.icon}</span>
           {award.credentialUrl ? (
@@ -17,17 +17,15 @@ export function AwardsList({ awards }: { awards: Award[] }) {
               target="_blank"
               rel="noreferrer"
               title={award.credentialLabel || "View credential"}
-              className="inline-flex items-baseline gap-[5px] text-ink hover:text-link transition-colors group/award"
+              className="text-ink hover:text-link group/award inline-flex items-baseline gap-[5px] transition-colors"
             >
               <span>{award.title}</span>
-              <ExternalLinkIcon className="w-2.5 h-2.5 shrink-0 opacity-40 group-hover/award:opacity-100 transition-opacity self-center" />
+              <ExternalLinkIcon className="h-2.5 w-2.5 shrink-0 self-center opacity-40 transition-opacity group-hover/award:opacity-100" />
             </a>
           ) : (
             <span className="text-ink">{award.title}</span>
           )}
-          <span className="font-mono text-[11.5px] text-ink-3 whitespace-nowrap">
-            {award.time}
-          </span>
+          <span className="text-ink-3 font-mono text-[11.5px] whitespace-nowrap">{award.time}</span>
         </li>
       ))}
     </ul>
@@ -36,70 +34,71 @@ export function AwardsList({ awards }: { awards: Award[] }) {
 
 export function TalksList({ talks }: { talks: Talk[] }) {
   return (
-    <ul className="list-none p-0 m-0 mb-2">
-      {talks.map((talk) => {
-        const url = talk.slidesUrl || talk.videoUrl || talk.posterUrl;
+    <ul className="m-0 mb-2 list-none p-0">
+      {[...talks]
+        .sort((a, b) => b.date.localeCompare(a.date))
+        .map((talk) => {
+          const url = talk.slidesUrl || talk.videoUrl || talk.posterUrl;
 
-        return (
-          <li
-            key={`${talk.title}-${talk.date}`}
-            className={`relative group -mx-2 grid grid-cols-[64px_1fr_auto] items-start gap-[14px] rounded-[6px] border-b border-dashed border-rule px-2 py-[11px] transition-colors last:border-b-0${
-              url ? " cursor-pointer hover:bg-bg-2" : ""
-            }`}
-          >
-            <span
-              className={`font-mono text-[9.5px] tracking-[0.1em] uppercase px-2 py-[3px] rounded-[3px] text-center font-semibold mt-[2px] justify-self-start ${getTalkTypeClass(
-                talk.type,
-              )}`}
+          return (
+            <li
+              key={`${talk.title}-${talk.date}`}
+              className={`group border-rule relative -mx-2 grid grid-cols-[64px_1fr_auto] items-start gap-[14px] rounded-[6px] border-b border-dashed px-2 py-[11px] transition-colors last:border-b-0${
+                url ? "hover:bg-bg-2 cursor-pointer" : ""
+              }`}
             >
-              {talk.type}
-            </span>
-            <div className="min-w-0">
-              {url ? (
-                <a
-                  href={url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-baseline gap-[6px] font-serif text-[14.5px] leading-[1.4] text-ink group-hover:text-link transition-colors m-0 mb-0.5"
-                >
-                  <span className="inline">
-                    {talk.title}{" "}
-                    <ExternalLinkIcon className="w-3 h-3 inline-block shrink-0 opacity-40 group-hover:opacity-100 transition-opacity" />
-                  </span>
-                </a>
-              ) : (
-                <p className="font-serif text-[14.5px] leading-[1.4] text-ink m-0 mb-0.5">
-                  {talk.title}
+              <span
+                className={`mt-[2px] justify-self-start rounded-[3px] px-2 py-[3px] text-center font-mono text-[9.5px] font-semibold tracking-[0.1em] uppercase ${getTalkTypeClass(
+                  talk.type,
+                )}`}
+              >
+                {talk.type}
+              </span>
+              <div className="min-w-0">
+                {url ? (
+                  <a
+                    href={url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-ink group-hover:text-link m-0 mb-0.5 inline-flex items-baseline gap-[6px] font-serif text-[14.5px] leading-[1.4] transition-colors"
+                  >
+                    <span className="inline">
+                      {talk.title}{" "}
+                      <ExternalLinkIcon className="inline-block h-3 w-3 shrink-0 opacity-40 transition-opacity group-hover:opacity-100" />
+                    </span>
+                  </a>
+                ) : (
+                  <p className="text-ink m-0 mb-0.5 font-serif text-[14.5px] leading-[1.4]">
+                    {talk.title}
+                  </p>
+                )}
+                <p className="text-ink-3 m-0 font-serif text-[12px] italic">
+                  {talk.venue} · <span className="not-italic">{talk.location}</span>
                 </p>
-              )}
-              <p className="font-serif text-[12px] text-ink-3 m-0 italic">
-                {talk.venue} ·{" "}
-                <span className="not-italic">{talk.location}</span>
-              </p>
-            </div>
-            <span className="font-mono text-[11px] text-ink-3 whitespace-nowrap mt-[3px]">
-              {talk.date}
-            </span>
-          </li>
-        );
-      })}
+              </div>
+              <span className="text-ink-3 mt-[3px] font-mono text-[11px] whitespace-nowrap">
+                {talk.date}
+              </span>
+            </li>
+          );
+        })}
     </ul>
   );
 }
 
 export function ServiceGrid({ service }: { service: Service[] }) {
   return (
-    <div className="mb-2 grid gap-2 [grid-template-columns:repeat(auto-fill,minmax(180px,1fr))]">
+    <div className="mb-2 grid [grid-template-columns:repeat(auto-fill,minmax(180px,1fr))] gap-2">
       {service.map((item) => (
         <div
           key={`${item.venue}-${item.year}-${item.role}`}
-          className="flex flex-col gap-0.5 p-3 px-[14px] border border-rule rounded-lg bg-bg"
+          className="border-rule bg-bg flex flex-col gap-0.5 rounded-lg border p-3 px-[14px]"
         >
-          <span className="font-mono text-[10px] tracking-[0.1em] uppercase text-ink-3 font-semibold">
+          <span className="text-ink-3 font-mono text-[10px] font-semibold tracking-[0.1em] uppercase">
             {item.role}
           </span>
-          <span className="font-serif text-[15px] text-ink">{item.venue}</span>
-          <span className="font-mono text-[11px] text-ink-3">{item.year}</span>
+          <span className="text-ink font-serif text-[15px]">{item.venue}</span>
+          <span className="text-ink-3 font-mono text-[11px]">{item.year}</span>
         </div>
       ))}
     </div>

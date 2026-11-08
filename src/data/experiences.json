@@ -45,7 +45,7 @@
     "date": "May 2021 - Jan 2022",
     "category": "teaching",
     "description": "Worked as a Teaching Assistant under Dr. AKM Mahbubur Rahman for a lab course on Numerical Methods. Redesigned all lab materials from MATLAB to Python. Assisted students with their queries during lab sessions.",
-    "skills": ["Numerical Methods", "Numpy", "Teaching"]
+    "skills": ["Numerical Methods", "NumPy", "Teaching"]
   },
   {
     "title": "Undergraduate Teaching Assistant",
