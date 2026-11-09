@@ -6,7 +6,7 @@
     "companyLogo": "/images/logos/penta-global.png",
     "location": "Dhaka, Bangladesh",
     "type": "Full-time",
-    "date": "Sep 2026 - Present",
+    "date": "Aug 2026 - Present",
     "category": "industry",
     "description": "Building an agentic system that controls Autodesk Revit through MCP to create full 3D architectural and structural BIM models from 2D drawings.",
     "skills": ["LLM Agents", "Tool Use", "MCP"]
@@ -18,7 +18,7 @@
     "companyLogo": "/images/logos/penta-global.png",
     "location": "Dhaka, Bangladesh",
     "type": "Part-time",
-    "date": "Aug 2025 - Aug 2026",
+    "date": "Aug 2025 - Jul 2026",
     "category": "industry",
     "description": "Built a chat assistant inside Autodesk Revit that answers questions about BIM models and helps users work with them through conversation.",
     "skills": ["Conversational AI", "LLMs", "RAG"]
@@ -30,7 +30,7 @@
     "companyLogo": "/images/logos/ccds.png",
     "location": "Plot 16, Aftabuddin Ahmed Road, Block B, Bashnudhara RA, Dhaka 1229, Bangladesh.",
     "type": "Full-time",
-    "date": "Feb 2022 - Aug 2026",
+    "date": "Feb 2022 - Jul 2026",
     "category": "research",
     "description": "Worked on Bangla NLP and medical benchmarks for language and vision-language models, and on test-time adaptation. Mentored undergraduate thesis students and ran tutorial classes at IUB.",
     "skills": ["Bangla NLP", "Vision-Language Models", "Test-Time Adaptation", "Mentorship"]
