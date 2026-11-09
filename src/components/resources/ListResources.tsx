@@ -16,10 +16,11 @@ export default function ListResources({
   const filteredResources = useMemo(() => {
     const needle = q.toLowerCase();
     if (!needle) return resources;
-    return resources.filter(r => 
-      r.title.toLowerCase().includes(needle) || 
-      r.description.toLowerCase().includes(needle) ||
-      r.category.toLowerCase().includes(needle)
+    return resources.filter(
+      (r) =>
+        r.title.toLowerCase().includes(needle) ||
+        r.description.toLowerCase().includes(needle) ||
+        r.category.toLowerCase().includes(needle),
     );
   }, [q, resources]);
 
@@ -37,7 +38,7 @@ export default function ListResources({
 
   return (
     <>
-      <div className="mb-[24px] pb-4 border-b border-rule">
+      <div className="border-rule mb-[24px] border-b pb-4">
         <SearchField
           value={q}
           onChange={setQ}
@@ -47,16 +48,14 @@ export default function ListResources({
       </div>
 
       {filteredResources.length === 0 && (
-        <div className="text-[14px] text-ink-3 mt-4">
-          {page.emptyText}
-        </div>
+        <div className="text-ink-3 mt-4 text-[14px]">{page.emptyText}</div>
       )}
       {Object.keys(categorizedResources).map((category) => (
         <section key={category} className="mb-[30px]">
-          <h2 className="font-serif text-[18px] pb-1.5 border-b-2 border-ink m-[0_0_14px] inline-block font-semibold text-ink">
+          <h2 className="border-ink text-ink m-[0_0_14px] inline-block border-b-2 pb-1.5 font-serif text-[18px] font-semibold">
             {category}
           </h2>
-          <div className="grid grid-cols-[repeat(auto-fill,minmax(260px,1fr))] gap-3">
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,260px),1fr))] gap-3">
             {categorizedResources[category].map((resource: Resource) => (
               <ResourceCard key={resource.url} resource={resource} />
             ))}

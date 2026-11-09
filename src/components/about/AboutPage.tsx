@@ -69,7 +69,7 @@ export default function AboutPage({
           {bioParagraphs.map((paragraph) => (
             <p
               key={paragraph}
-              className="text-ink m-0 mb-[1em] max-w-[65ch] font-serif text-[16px] leading-[1.65]"
+              className="text-ink m-0 mb-[1em] max-w-[65ch] font-serif text-[15px] leading-[1.65] sm:text-[16px]"
             >
               {paragraph}
             </p>
@@ -100,7 +100,7 @@ export default function AboutPage({
           <PressList press={press} />
 
           <AboutSectionTitle>Reach Out</AboutSectionTitle>
-          <p className="text-ink m-0 mb-4 max-w-[65ch] font-serif text-[16px] leading-[1.62]">
+          <p className="text-ink m-0 mb-4 max-w-[65ch] font-serif text-[15px] leading-[1.62] sm:text-[16px]">
             Best ways to get in touch are{" "}
             <a
               href={`mailto:${email}`}

@@ -142,7 +142,7 @@ const jsonLd = {
           {primaryCategory}
         </span>
       </div>
-      <h1 class="m-0 mb-3.5 font-serif text-[clamp(28px,4.5vw,38px)] font-semibold leading-[1.15] tracking-[-0.02em] text-ink">
+      <h1 class="m-0 mb-3.5 font-serif text-[clamp(24px,5vw,38px)] font-semibold leading-[1.15] tracking-[-0.02em] text-ink">
         {entry.data.title}
       </h1>
       <div class="flex flex-wrap gap-3.5 font-mono text-[12px] text-ink-3">
@@ -233,7 +233,7 @@ const jsonLd = {
       </section>
     )}
 
-    <div class="post-body font-serif text-[17px] leading-[1.7] text-ink">
+    <div class="post-body font-serif text-[16px] leading-[1.65] text-ink sm:text-[17px] sm:leading-[1.7]">
       <Content components={mdxComponents} />
     </div>
 
@@ -379,4 +379,21 @@ const jsonLd = {
     // Give <pre> room for the button
     pre.style.paddingRight = "60px";
   });
+
+  // Inline math that cannot wrap (a long single term) would widen the page on
+  // phones. Let only those formulas scroll sideways inside the text column.
+  const fitInlineMath = () => {
+    const body = document.querySelector(".post-body");
+    if (!body) return;
+    const limit = body.getBoundingClientRect().right + 1;
+    body.querySelectorAll(".katex").forEach((math) => {
+      if (math.closest(".katex-display")) return;
+      math.classList.remove("katex-scroll");
+      if (math.getBoundingClientRect().right > limit) math.classList.add("katex-scroll");
+    });
+  };
+  fitInlineMath();
+  document.fonts?.ready.then(fitInlineMath);
+  window.addEventListener("load", fitInlineMath);
+  window.addEventListener("resize", fitInlineMath);
 </script>

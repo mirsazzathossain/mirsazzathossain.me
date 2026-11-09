@@ -9,7 +9,7 @@ export function HeroBio({ about }: { about: About }) {
   return (
     <div className="mb-8">
       <SectionHeader title="Short Intro" href="/about" action="Full bio" />
-      <p className="text-ink m-0 max-w-[60ch] font-serif text-[17px] leading-[1.55] text-pretty">
+      <p className="text-ink m-0 max-w-[60ch] font-serif text-[15.5px] leading-[1.6] text-pretty sm:text-[17px] sm:leading-[1.55]">
         {shortBio}
       </p>
     </div>

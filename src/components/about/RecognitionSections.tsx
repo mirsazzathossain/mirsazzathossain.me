@@ -43,7 +43,7 @@ export function TalksList({ talks }: { talks: Talk[] }) {
           return (
             <li
               key={`${talk.title}-${talk.date}`}
-              className={`group border-rule relative -mx-2 grid grid-cols-[64px_1fr_auto] items-start gap-[14px] rounded-[6px] border-b border-dashed px-2 py-[11px] transition-colors last:border-b-0${
+              className={`group border-rule relative grid grid-cols-[64px_1fr_auto] items-start gap-[14px] rounded-[6px] border-b border-dashed px-2 py-[11px] transition-colors last:border-b-0${
                 url ? "hover:bg-bg-2 cursor-pointer" : ""
               }`}
             >
@@ -88,7 +88,7 @@ export function TalksList({ talks }: { talks: Talk[] }) {
 
 export function ServiceGrid({ service }: { service: Service[] }) {
   return (
-    <div className="mb-2 grid [grid-template-columns:repeat(auto-fill,minmax(180px,1fr))] gap-2">
+    <div className="mb-2 grid [grid-template-columns:repeat(auto-fill,minmax(min(100%,180px),1fr))] gap-2">
       {service.map((item) => (
         <div
           key={`${item.venue}-${item.year}-${item.role}`}
