@@ -108,7 +108,7 @@
 @supports not selector(::-webkit-scrollbar) {
   * {
     scrollbar-width: thin;
-    scrollbar-color: color-mix(in srgb, var(--link) 60%, transparent) var(--accent-soft);
+    scrollbar-color: var(--link) var(--accent-soft);
   }
 }
 
