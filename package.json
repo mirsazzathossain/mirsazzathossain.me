@@ -39,7 +39,7 @@
     "@giscus/react": "^3.1.0",
     "@tailwindcss/typography": "^0.5.20",
     "@vercel/analytics": "^2.0.1",
-    "@vercel/speed-insights": "^2.0.0",
+    "@vercel/speed-insights": "^2.1.0",
     "astro": "^7.4.5",
     "hast-util-from-html": "^2.0.3",
     "katex": "^0.19.1",
