@@ -77,50 +77,39 @@
   }
 }
 
-/* Page scrollbar in the accent color, matching equation scrollbars */
-html::-webkit-scrollbar {
+/* One scrollbar style site-wide: rounded, in the accent color.
+   Chrome/Safari/Edge use ::-webkit-scrollbar; Firefox uses the standard
+   properties. Never set scrollbar-width/scrollbar-color on elements in
+   Chrome, because that switches off the custom style. */
+::-webkit-scrollbar {
   width: 10px;
+  height: 10px;
 }
 
-html::-webkit-scrollbar-track {
+::-webkit-scrollbar-track {
+  border-radius: 999px;
   background: var(--accent-soft);
 }
 
-html::-webkit-scrollbar-thumb {
+::-webkit-scrollbar-thumb {
   border: 2px solid var(--accent-soft);
   border-radius: 999px;
   background: color-mix(in srgb, var(--link) 60%, transparent);
 }
 
-html::-webkit-scrollbar-thumb:hover {
+::-webkit-scrollbar-thumb:hover {
   background: var(--link);
 }
 
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
 @supports not selector(::-webkit-scrollbar) {
-  html {
+  * {
+    scrollbar-width: thin;
     scrollbar-color: color-mix(in srgb, var(--link) 60%, transparent) var(--accent-soft);
   }
-}
-
-/* Consistent scrollbar for all scrollable pre elements site-wide */
-pre {
-  scrollbar-width: thin;
-  scrollbar-color: var(--ink-4) var(--bg-2);
-}
-
-pre::-webkit-scrollbar {
-  height: 6px;
-  width: 6px;
-  background: var(--bg-2);
-}
-
-pre::-webkit-scrollbar-thumb {
-  background: var(--ink-4);
-  border-radius: 3px;
-}
-
-pre::-webkit-scrollbar-track {
-  background: var(--bg-2);
 }
 
 @utility no-scrollbar {
@@ -133,12 +122,7 @@ pre::-webkit-scrollbar-track {
 
 @utility thin-scrollbar {
   &::-webkit-scrollbar {
-    height: 10px !important;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: var(--color-teal-500);
-    border-radius: 6px;
+    height: 10px;
   }
 }
 
@@ -215,37 +199,6 @@ pre::-webkit-scrollbar-track {
   overflow-x: auto;
   overflow-y: hidden;
   padding-block: 2px 10px;
-}
-
-/* Firefox has no ::-webkit-scrollbar, so it gets the standard properties */
-@supports not selector(::-webkit-scrollbar) {
-  .post-body .katex-display,
-  .post-body .katex.katex-scroll {
-    scrollbar-width: thin;
-    scrollbar-color: color-mix(in srgb, var(--link) 60%, transparent) var(--accent-soft);
-  }
-}
-
-.post-body .katex-display::-webkit-scrollbar,
-.post-body .katex.katex-scroll::-webkit-scrollbar {
-  height: 4px;
-}
-
-.post-body .katex-display::-webkit-scrollbar-track,
-.post-body .katex.katex-scroll::-webkit-scrollbar-track {
-  border-radius: 999px;
-  background: var(--accent-soft);
-}
-
-.post-body .katex-display::-webkit-scrollbar-thumb,
-.post-body .katex.katex-scroll::-webkit-scrollbar-thumb {
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--link) 60%, transparent);
-}
-
-.post-body .katex-display::-webkit-scrollbar-thumb:hover,
-.post-body .katex.katex-scroll::-webkit-scrollbar-thumb:hover {
-  background: var(--link);
 }
 
 /* Numbered equations: the row grows with the formula, so the number sits after
