@@ -291,6 +291,9 @@
         "name": "Deba Priyo Guha"
       },
       {
+        "name": "Mahady Hasan"
+      },
+      {
         "name": "M. O. B. Jihad"
       },
       {
@@ -347,11 +350,13 @@
   },
   {
     "id": "hC7cP41nSMkC",
-    "slug": "slomo-fast-domain-adaptation-2025"
+    "slug": "slomo-fast-domain-adaptation-2025",
+    "type": "preprint"
   },
   {
     "id": "iH-uZ7U-co4C",
-    "slug": "pfed-bbn-2025"
+    "slug": "pfed-bbn-2025",
+    "type": "preprint"
   },
   {
     "id": "HoB7MX3m0LUC",
