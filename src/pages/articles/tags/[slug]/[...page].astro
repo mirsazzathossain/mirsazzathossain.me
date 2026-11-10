@@ -1,7 +1,7 @@
 ---
 import Layout from "@/layouts/Layout.astro";
 import PostsList from "@/components/articles/PostsList";
-import { getSortedPublishedArticles } from "@/utils/articles";
+import { getSortedPublishedArticles, toListArticle } from "@/utils/articles";
 import { slugify } from "@/utils/slugify";
 import type { GetStaticPaths } from "astro";
 
@@ -66,5 +66,5 @@ const description = `${allForTag.length} ${allForTag.length === 1 ? "post" : "po
     </p>
   </header>
 
-  <PostsList client:idle articles={allForTag} initialPage={page.currentPage} />
+  <PostsList client:idle articles={allForTag.map(toListArticle)} initialPage={page.currentPage} />
 </Layout>

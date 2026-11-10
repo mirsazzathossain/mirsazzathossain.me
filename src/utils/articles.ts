@@ -1,8 +1,26 @@
+import readingTime from "@/utils/reading-time";
 import { getCollection, type CollectionEntry } from "astro:content";
 import { slugify } from "./slugify";
 
 export type ArticleEntry = CollectionEntry<"articles">;
 export type SnippetEntry = CollectionEntry<"snippets">;
+
+/** Article entry with a precomputed reading time, so lists can skip the post body. */
+export type ListArticle = ArticleEntry & { readingTimeText?: string };
+
+/**
+ * Only the fields a post list renders or searches. Interactive lists send
+ * their props to the browser, and the full post bodies made those pages huge.
+ */
+export function toListArticle(article: ArticleEntry): ListArticle {
+  const { title, description, publishedAt, tags, categories } = article.data;
+  return {
+    id: article.id,
+    collection: article.collection,
+    data: { title, description, publishedAt, tags, categories },
+    readingTimeText: readingTime(article.body ?? "").text,
+  } as unknown as ListArticle;
+}
 
 export async function getSortedPublishedArticles(): Promise<ArticleEntry[]> {
   const articles = await getCollection("articles", ({ data }) => {
@@ -10,12 +28,8 @@ export async function getSortedPublishedArticles(): Promise<ArticleEntry[]> {
   });
 
   return articles.sort((a, b) => {
-    const da = a.data.publishedAt
-      ? new Date(a.data.publishedAt).getTime()
-      : 0;
-    const db = b.data.publishedAt
-      ? new Date(b.data.publishedAt).getTime()
-      : 0;
+    const da = a.data.publishedAt ? new Date(a.data.publishedAt).getTime() : 0;
+    const db = b.data.publishedAt ? new Date(b.data.publishedAt).getTime() : 0;
     return db - da;
   });
 }
@@ -49,9 +63,7 @@ export function getNextAndPrevArticles(
       return oa - ob;
     });
 
-    const currentArticleIndex = sortedSeriesArticles.findIndex(
-      (a) => a.id === article.id,
-    );
+    const currentArticleIndex = sortedSeriesArticles.findIndex((a) => a.id === article.id);
     if (currentArticleIndex > 0) {
       previousArticle = sortedSeriesArticles[currentArticleIndex - 1];
     }
@@ -84,11 +96,7 @@ export function getRelatedArticles(
   return articles
     .filter((a) => {
       if (a.id === article.id) return false;
-      if (
-        a.data.categories.some((c) =>
-          article.data.categories.some((ac) => ac.title === c.title),
-        )
-      )
+      if (a.data.categories.some((c) => article.data.categories.some((ac) => ac.title === c.title)))
         return true;
       if (
         (a.data.tags ?? []).some((t) =>

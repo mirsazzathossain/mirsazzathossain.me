@@ -1,7 +1,7 @@
 ---
 import Layout from "@/layouts/Layout.astro";
 import PostsList from "@/components/articles/PostsList";
-import { getSortedPublishedArticles } from "@/utils/articles";
+import { getSortedPublishedArticles, toListArticle } from "@/utils/articles";
 import { slugify } from "@/utils/slugify";
 import type { GetStaticPaths } from "astro";
 
@@ -63,5 +63,9 @@ const description = `${allForCategory.length} ${allForCategory.length === 1 ? "p
     <p class="mt-3 mb-0 max-w-[60ch] text-[15px] text-ink-2">Posts and notes in {categoryTitle}.</p>
   </header>
 
-  <PostsList client:idle articles={allForCategory} initialPage={page.currentPage} />
+  <PostsList
+    client:idle
+    articles={allForCategory.map(toListArticle)}
+    initialPage={page.currentPage}
+  />
 </Layout>

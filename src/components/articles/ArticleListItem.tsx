@@ -1,6 +1,6 @@
 import readingTime from "@/utils/reading-time";
 import { slugify } from "@/utils/slugify";
-import type { ArticleEntry } from "@/utils/articles";
+import type { ArticleEntry, ListArticle } from "@/utils/articles";
 
 export function ArticleListItem({
   article,
@@ -13,7 +13,9 @@ export function ArticleListItem({
   showTaxonomy?: boolean;
 } & { [key: `data-${string}`]: string | undefined }) {
   const published = formatPublishedDate(article, dateStyle);
-  const rt = readingTime(article.body ?? "");
+  const rt = (article as ListArticle).readingTimeText
+    ? { text: (article as ListArticle).readingTimeText as string }
+    : readingTime(article.body ?? "");
 
   return (
     <li className="border-rule-2 border-b py-6 first:pt-0 last:border-b-0" {...dataAttrs}>
