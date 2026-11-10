@@ -66,5 +66,5 @@ const description = `${allForTag.length} ${allForTag.length === 1 ? "post" : "po
     </p>
   </header>
 
-  <PostsList client:load articles={allForTag} initialPage={page.currentPage} />
+  <PostsList client:idle articles={allForTag} initialPage={page.currentPage} />
 </Layout>
