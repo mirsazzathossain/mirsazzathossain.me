@@ -25,13 +25,13 @@
   "work": [
     {
       "title": "AI Engineer",
-      "org": "Penta Global Limited",
-      "date": "Aug 2026 – Present",
+      "org": "Penta Global Limited (Part-time Aug 2025 – Jul 2026, Full-time since Aug 2026)",
+      "date": "Aug 2025 – Present",
       "location": "Dhaka, Bangladesh",
       "bullets": [
         "Developing **Plinth**, an agentic AI platform that turns 2D architectural and structural drawing PDFs into complete 3D BIM models in Autodesk Revit.",
         "Designing a **LangGraph**-based multi-agent pipeline where vision-language models read drawings and extract building components, and agents build the full model in Revit through **MCP**.",
-        "Earlier (part-time), built a chat assistant that lets users interact with BIM models in Autodesk Revit."
+        "Built a chat assistant that lets users interact with BIM models in Autodesk Revit (part-time role)."
       ]
     }
   ],
