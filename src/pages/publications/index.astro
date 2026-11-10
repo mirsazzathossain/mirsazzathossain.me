@@ -1,4 +1,5 @@
 ---
+import { SITE, WEBSITE_ID, personRef } from "@/utils/schema";
 import Layout from "@/layouts/Layout.astro";
 import { PublicationItem } from "@/components/publications/PublicationItem";
 import {
@@ -79,6 +80,15 @@ function buildSearchText(pub: Publication): string {
   title="Publications"
   description="Peer-reviewed papers, workshop papers, and preprints by Mir Sazzat Hossain, mostly in NLP and vision-language models."
   canonicalPath="/publications"
+  jsonLd={{
+    "@type": "CollectionPage",
+    "@id": `${SITE}/publications#webpage`,
+    url: `${SITE}/publications`,
+    name: "Publications by Mir Sazzat Hossain",
+    isPartOf: { "@id": WEBSITE_ID },
+    about: personRef,
+    author: personRef,
+  }}
 >
   <div>
     <header class="mb-8 max-w-[720px]">

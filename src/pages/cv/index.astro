@@ -1,5 +1,6 @@
 ---
 import CVPage from "@/components/cv/CVPage";
+import { SITE, WEBSITE_ID, personRef } from "@/utils/schema";
 import Layout from "@/layouts/Layout.astro";
 import { readSiteJson } from "@/utils/json-data";
 
@@ -10,8 +11,23 @@ const cv = await readSiteJson("cv.json");
 <Layout
   title="CV"
   name={about.name}
-  description={`Curriculum Vitae of ${about.name} — ${about.designation} at ${about.company.name}.`}
+  fullTitle={`CV - ${about.name}`}
+  description={`Curriculum vitae of ${about.name}, ${about.designation} at ${about.company.name}: research, publications at ACL, WACV and AACL, teaching, and awards.`}
   canonicalPath="/cv"
+  jsonLd={{
+    "@type": "WebPage",
+    "@id": `${SITE}/cv#webpage`,
+    url: `${SITE}/cv`,
+    name: `CV - ${about.name}`,
+    isPartOf: { "@id": WEBSITE_ID },
+    about: personRef,
+    associatedMedia: {
+      "@type": "MediaObject",
+      contentUrl: `${SITE}/files/mirsazzathossain-cv.pdf`,
+      encodingFormat: "application/pdf",
+      name: `${about.name} CV (PDF)`,
+    },
+  }}
 >
   <CVPage cv={cv} />
 </Layout>

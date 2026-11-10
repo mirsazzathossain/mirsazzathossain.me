@@ -1,4 +1,5 @@
 ---
+import { SITE, WEBSITE_ID, personRef } from "@/utils/schema";
 import Layout from "@/layouts/Layout.astro";
 import ProjectThumb from "@/components/projects/ProjectThumb.astro";
 import { readSiteJson } from "@/utils/json-data";
@@ -42,7 +43,21 @@ const description =
 let index = 0;
 ---
 
-<Layout title="Research Projects" description={description} canonicalPath="/projects">
+<Layout
+  title="Research Projects"
+  description={description}
+  canonicalPath="/projects"
+  breadcrumbName="Projects"
+  jsonLd={{
+    "@type": "CollectionPage",
+    "@id": `${SITE}/projects#webpage`,
+    url: `${SITE}/projects`,
+    name: "Research projects by Mir Sazzat Hossain",
+    isPartOf: { "@id": WEBSITE_ID },
+    about: personRef,
+    author: personRef,
+  }}
+>
   <div>
     <header class="mb-8 max-w-[720px]">
       <p class="m-0 mb-1.5 font-mono text-[11px] tracking-[0.14em] text-ink-3 uppercase">

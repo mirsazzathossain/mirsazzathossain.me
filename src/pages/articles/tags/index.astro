@@ -14,41 +14,35 @@ for (const article of articles) {
 
 <Layout
   title="Post Tags"
-  description="This page contains all the tags of posts available on this website."
+  description="All post tags on the blog of Mir Sazzat Hossain, covering policy optimization methods, LLM training, vision-language models, and math topics."
   canonicalPath="/articles/tags"
 >
   <div class="mt-16 sm:mt-32">
     <div class="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
-      <div
-        class="flex flex-col items-start justify-start divide-y divide-gray-200 dark:divide-gray-700 md:mt-24 md:flex-row md:items-center md:justify-center md:space-x-6 md:divide-y-0"
-      >
+      <div class="flex flex-col items-start justify-start divide-y divide-gray-200 dark:divide-gray-700 md:mt-24 md:flex-row md:items-center md:justify-center md:space-x-6 md:divide-y-0">
         <div class="space-x-2 pb-8 pt-6 md:space-y-5">
-          <h1
-            class="text-3xl font-extrabold leading-9 tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-4xl sm:leading-10 md:border-r-2 md:px-6 md:text-6xl md:leading-14"
-          >
+          <h1 class="text-3xl font-extrabold leading-9 tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-4xl sm:leading-10 md:border-r-2 md:px-6 md:text-6xl md:leading-14">
             Post Tags
           </h1>
         </div>
         <div class="flex max-w-lg flex-wrap">
-          {
-            Object.keys(tags).map((tag) => (
-              <div class="mb-2 mr-5 mt-2">
-                <a
-                  class="mr-3 text-sm font-medium uppercase text-teal-500 hover:text-teal-600 dark:hover:text-teal-400"
-                  href={`/articles/tags/${slugify(tag)}`}
-                >
-                  {tag}
-                </a>
-                <a
-                  class="-ml-2 text-sm font-semibold uppercase text-zinc-500 dark:text-zinc-400"
-                  href={`/articles/tags/${slugify(tag)}`}
-                >
-                  {" "}
-                  ({tags[tag]})
-                </a>
-              </div>
-            ))
-          }
+          {Object.keys(tags).map((tag) => (
+            <div class="mb-2 mr-5 mt-2">
+              <a
+                class="mr-3 text-sm font-medium uppercase text-teal-500 hover:text-teal-600 dark:hover:text-teal-400"
+                href={`/articles/tags/${slugify(tag)}`}
+              >
+                {tag}
+              </a>
+              <a
+                class="-ml-2 text-sm font-semibold uppercase text-zinc-500 dark:text-zinc-400"
+                href={`/articles/tags/${slugify(tag)}`}
+              >
+                {" "}
+                ({tags[tag]})
+              </a>
+            </div>
+          ))}
         </div>
       </div>
     </div>

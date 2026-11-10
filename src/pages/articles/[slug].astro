@@ -1,5 +1,6 @@
 ---
 import { readSiteJson } from "@/utils/json-data";
+import { WEBSITE_ID, personRef } from "@/utils/schema";
 import ArticleShareRow from "@/components/articles/ArticleShareRow";
 import Comments from "@/components/articles/Comments";
 import Layout from "@/layouts/Layout.astro";
@@ -87,7 +88,6 @@ const keywords = [...new Set([...tagTitles, ...entry.data.categories.map((c) => 
 const coverPath = `/images/${entry.data.covers[0]?.url ?? "og-image.png"}`;
 const publishedIso = entry.data.publishedAt?.toISOString();
 const jsonLd = {
-  "@context": "https://schema.org",
   "@type": "BlogPosting",
   headline: entry.data.title,
   description: metaDescription,
@@ -100,17 +100,12 @@ const jsonLd = {
   articleSection: primaryCategory,
   keywords: keywords.join(", "),
   wordCount: entry.body?.split(/\s+/).length,
-  author: {
-    "@type": "Person",
-    name: entry.data.author.name,
-    url: entry.data.author.url,
-    jobTitle: entry.data.author.designation,
-  },
-  publisher: { "@type": "Person", name: entry.data.author.name, url: siteOrigin },
-  ...(series && {
-    isPartOf: { "@type": "CreativeWorkSeries", name: series.title },
-    position: series.order,
-  }),
+  author: { ...personRef, name: entry.data.author.name },
+  publisher: { ...personRef, name: entry.data.author.name },
+  isPartOf: series
+    ? [{ "@type": "CreativeWorkSeries", name: series.title }, { "@id": WEBSITE_ID }]
+    : { "@id": WEBSITE_ID },
+  ...(series && { position: series.order }),
 };
 ---
 
@@ -123,14 +118,13 @@ const jsonLd = {
   ogType="article"
   publishedTime={publishedIso}
   authors={[entry.data.author.name]}
-  keywords={keywords}
   articleSection={primaryCategory}
   articleTags={tagTitles}
   jsonLd={jsonLd}
 >
   <article class="mx-auto max-w-[740px]">
     <a
-      href="/articles/"
+      href="/articles"
       class="mb-[18px] inline-block font-mono text-[12px] text-ink-3 transition-colors hover:text-link hover:no-underline"
     >
       &larr; All posts

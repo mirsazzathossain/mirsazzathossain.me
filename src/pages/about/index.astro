@@ -1,5 +1,6 @@
 ---
 import AboutPage from "@/components/about/AboutPage";
+import { SITE, WEBSITE_ID, personRef } from "@/utils/schema";
 import Layout from "@/layouts/Layout.astro";
 import { readSiteJson } from "@/utils/json-data";
 
@@ -16,8 +17,19 @@ const timeline = await readSiteJson("news.json");
 
 <Layout
   title="About"
+  fullTitle={`About ${about.name} - ${about.designation} & LLM Researcher`}
   name={about.name}
-  description={`About ${about.name} — AI Engineer at Penta Global Limited. Research in LLM agents, LLM post-training, preference and adversarial policy optimization, self-distillation, and formal verification.`}
+  description={`About ${about.name}, ${about.designation} at ${about.company.name}: research on LLM agents, LLM post-training, policy optimization and formal verification.`}
+  canonicalPath="/about"
+  breadcrumbName="About"
+  jsonLd={{
+    "@type": "AboutPage",
+    "@id": `${SITE}/about#webpage`,
+    url: `${SITE}/about`,
+    name: `About ${about.name}`,
+    isPartOf: { "@id": WEBSITE_ID },
+    about: personRef,
+  }}
 >
   <AboutPage
     about={about}

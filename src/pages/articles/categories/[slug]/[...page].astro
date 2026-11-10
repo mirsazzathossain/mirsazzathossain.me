@@ -37,15 +37,22 @@ if (!slug || !allForCategory.length) {
 const categoryTitle =
   allForCategory[0].data.categories.find((category) => slugify(category.title) === slug)?.title ??
   slug;
+
+const pageSuffix = page.currentPage > 1 ? ` (page ${page.currentPage})` : "";
+const sampleTitles = allForCategory
+  .slice(0, 2)
+  .map((article) => article.data.title)
+  .join("; ");
+const description = `${allForCategory.length} ${allForCategory.length === 1 ? "post" : "posts"} by Mir Sazzat Hossain on ${categoryTitle}${pageSuffix}, including ${sampleTitles}.`;
 ---
 
 <Layout
   title={
     page.currentPage > 1
-      ? `${categoryTitle} - Posts (page ${page.currentPage})`
+      ? `Posts in ${categoryTitle} (page ${page.currentPage})`
       : `Posts in ${categoryTitle}`
   }
-  description={`Posts in ${categoryTitle}.`}
+  description={description}
   canonicalPath={page.url.current}
 >
   <header class="mb-8 max-w-[720px]">

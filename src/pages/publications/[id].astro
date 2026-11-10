@@ -5,11 +5,18 @@ import PublicationLayout from "@/components/publications/PublicationLayout.astro
 import { mergePublicationOverrides, type Publication } from "@/utils/publications";
 import base from "@/data/publications.json";
 import overrides from "@/data/publications.override.json";
+import { PERSON_ID, SITE } from "@/utils/schema";
+import {
+  citationMeta,
+  isPendingPublication,
+  publicationDescription,
+  scholarlyArticleNode,
+} from "@/utils/scholar";
 
 export async function getStaticPaths() {
   const publications = mergePublicationOverrides(
     base as Publication[],
-    overrides as Partial<Publication>[]
+    overrides as Partial<Publication>[],
   );
 
   return publications
@@ -26,13 +33,24 @@ const urlSlug = publication.slug || publication.id;
 const allMdx = await getCollection("publications");
 const mdxEntry = allMdx.find((e) => e.id === urlSlug);
 const Content = mdxEntry ? (await render(mdxEntry)).Content : null;
+
+const pageUrl = `${SITE}/publications/${urlSlug}`;
+const description = publicationDescription(publication);
+const pending = isPendingPublication(publication);
+const citationTags = citationMeta(publication, pageUrl);
+const articleNode = scholarlyArticleNode(publication, pageUrl, PERSON_ID, description);
 ---
 
 <Layout
   title={publication.title}
-  description={publication.abstract ?? publication.title}
+  description={description}
   canonicalPath={`/publications/${urlSlug}`}
+  noindex={pending}
+  jsonLd={articleNode ?? undefined}
 >
+  {citationTags.map(([name, content]) => (
+    <meta slot="head" name={name} content={content} />
+  ))}
   {Content ? (
     <PublicationLayout publication={publication} hasMdx={true}>
       <Content />

@@ -35,16 +35,26 @@ if (!slug || !allForTag.length) {
 }
 
 const tagTitle = allForTag[0].data.tags?.find((tag) => slugify(tag.title) === slug)?.title ?? slug;
+
+// Tags with only one or two posts are thin pages: keep them out of search results.
+const thinTag = allForTag.length < 3;
+const pageSuffix = page.currentPage > 1 ? ` (page ${page.currentPage})` : "";
+const sampleTitles = allForTag
+  .slice(0, 2)
+  .map((article) => article.data.title)
+  .join("; ");
+const description = `${allForTag.length} ${allForTag.length === 1 ? "post" : "posts"} by Mir Sazzat Hossain tagged ${tagTitle}${pageSuffix}, including ${sampleTitles}.`;
 ---
 
 <Layout
   title={
     page.currentPage > 1
-      ? `${tagTitle} - Posts (page ${page.currentPage})`
+      ? `Posts tagged with ${tagTitle} (page ${page.currentPage})`
       : `Posts tagged with ${tagTitle}`
   }
-  description={`Posts tagged with ${tagTitle}.`}
+  description={description}
   canonicalPath={page.url.current}
+  noindex={thinTag}
 >
   <header class="mb-8 max-w-[720px]">
     <p class="m-0 mb-1.5 font-mono text-[11px] tracking-[0.14em] uppercase text-ink-3">Tag</p>

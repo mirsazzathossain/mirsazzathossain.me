@@ -1,5 +1,6 @@
 ---
 import mdxComponents from "@/components/mdx/mdx-map";
+import { SITE, WEBSITE_ID, personRef } from "@/utils/schema";
 import Layout from "@/layouts/Layout.astro";
 import { getCollection, getEntry, render } from "astro:content";
 
@@ -19,10 +20,25 @@ const { Content } = await render(entry);
   title={entry.data.title}
   description={entry.data.description}
   canonicalPath={`/snippets/${entry.id}`}
+  jsonLd={{
+    "@type": "TechArticle",
+    "@id": `${SITE}/snippets/${entry.id}#article`,
+    headline: entry.data.title,
+    description: entry.data.description,
+    url: `${SITE}/snippets/${entry.id}`,
+    inLanguage: "en",
+    author: personRef,
+    publisher: personRef,
+    isPartOf: { "@id": WEBSITE_ID },
+  }}
 >
   <article class="mx-auto max-w-[var(--max-narrow)]">
-
-    <a href="/snippets" class="mb-[18px] inline-block font-mono text-[12px] text-ink-3 no-underline transition-colors hover:text-link hover:no-underline">← All snippets</a>
+    <a
+      href="/snippets"
+      class="mb-[18px] inline-block font-mono text-[12px] text-ink-3 no-underline transition-colors hover:text-link hover:no-underline"
+    >
+      ← All snippets
+    </a>
 
     <header class="mb-[26px] flex items-start gap-[18px] border-b border-rule pb-[22px]">
       <div class="min-w-0 flex-1">
@@ -33,18 +49,40 @@ const { Content } = await render(entry);
           {entry.data.description}
         </p>
         <div class="flex flex-wrap gap-1.5">
-          <span class="rounded-full border border-link/25 bg-accent-soft px-3 py-[3px] text-[11.5px] font-medium text-link">{entry.data.language}</span>
+          <span class="rounded-full border border-link/25 bg-accent-soft px-3 py-[3px] text-[11.5px] font-medium text-link">
+            {entry.data.language}
+          </span>
         </div>
       </div>
-      <span aria-hidden="true" class="relative inline-flex h-[50px] w-[50px] shrink-0 items-center justify-center text-ink-2">
+      <span
+        aria-hidden="true"
+        class="relative inline-flex h-[50px] w-[50px] shrink-0 items-center justify-center text-ink-2"
+      >
         {entry.data.logo?.url ? (
-          <img src={`/images/${entry.data.logo.url}`} alt={entry.data.logo.alt} width="36" height="36" class="object-contain" />
+          <img
+            src={`/images/${entry.data.logo.url}`}
+            alt={entry.data.logo.alt}
+            width="36"
+            height="36"
+            class="object-contain"
+          />
         ) : (
           <>
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round">
-              <path d="M5 7.2 12 3l7 4.2v9.6L12 21l-7-4.2Z"/>
+            <svg
+              width="32"
+              height="32"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linejoin="round"
+              stroke-linecap="round"
+            >
+              <path d="M5 7.2 12 3l7 4.2v9.6L12 21l-7-4.2Z" />
             </svg>
-            <span class="absolute inset-0 flex items-center justify-center font-mono text-[11px] font-bold tracking-[-0.04em] text-ink-3">{entry.data.language.slice(0, 3)}</span>
+            <span class="absolute inset-0 flex items-center justify-center font-mono text-[11px] font-bold tracking-[-0.04em] text-ink-3">
+              {entry.data.language.slice(0, 3)}
+            </span>
           </>
         )}
       </span>
@@ -53,6 +91,5 @@ const { Content } = await render(entry);
     <div class="prose dark:prose-invert prose-code:font-mono">
       <Content components={mdxComponents} />
     </div>
-
   </article>
 </Layout>

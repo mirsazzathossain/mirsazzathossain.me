@@ -9,6 +9,7 @@ import Layout from "@/layouts/Layout.astro";
 import { getSortedPublishedArticles } from "@/utils/articles";
 import { readSiteJson } from "@/utils/json-data";
 import { mergePublicationOverrides, type Publication } from "@/utils/publications";
+import { SITE, WEBSITE_ID, personRef } from "@/utils/schema";
 
 const about = await readSiteJson("about.json");
 const news = await readSiteJson("news.json");
@@ -18,72 +19,18 @@ const publications = mergePublicationOverrides(
 );
 const articles = await getSortedPublishedArticles();
 
-const site = (Astro.site?.href ?? Astro.url.origin).replace(/\/$/, "");
 const fullTitle = `${about.name} | ${about.designation} & LLM Researcher`;
-const description = `${about.name} is an ${about.designation} at ${about.company.name} and an NLP researcher working on LLM agents, LLM post-training, preference optimization, self-distillation, and formal verification.`;
-const keywords = [
-  about.name,
-  "Mir Sazzat",
-  "Sazzat Hossain",
-  about.designation,
-  about.company.name,
-  "LLM Researcher",
-  "NLP Researcher",
-  ...about.researchInterests,
-  "Reinforcement Learning for LLMs",
-  "Large Language Models",
-  "Vision-Language Models",
-  "Bangla NLP",
-  "CCDS",
-  "Independent University, Bangladesh",
-  "Dhaka, Bangladesh",
-];
-const sameAs = [...about.academicLinks, ...about.socialLinks]
-  .map((link: { url: string }) => link.url)
-  .filter((url: string) => !url.includes("discord.com"));
-
+const description = `${about.name} is an ${about.designation} at ${about.company.name} and an NLP researcher working on LLM agents, LLM post-training, and formal verification.`;
 const jsonLd = {
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "WebSite",
-      "@id": `${site}/#website`,
-      url: `${site}/`,
-      name: `${about.name} | Personal Website`,
-      inLanguage: "en",
-      publisher: { "@id": `${site}/#person` },
-    },
-    {
-      "@type": "ProfilePage",
-      "@id": `${site}/#profilepage`,
-      url: `${site}/`,
-      name: fullTitle,
-      description,
-      isPartOf: { "@id": `${site}/#website` },
-      mainEntity: { "@id": `${site}/#person` },
-    },
-    {
-      "@type": "Person",
-      "@id": `${site}/#person`,
-      name: about.name,
-      url: `${site}/`,
-      image: `${site}${about.photo}`,
-      jobTitle: about.designation,
-      worksFor: { "@type": "Organization", name: about.company.name, url: about.company.url },
-      alumniOf: {
-        "@type": "CollegeOrUniversity",
-        name: "Independent University, Bangladesh",
-        url: "https://iub.edu.bd/",
-      },
-      address: { "@type": "PostalAddress", addressLocality: "Dhaka", addressCountry: "BD" },
-      knowsAbout: [
-        ...about.researchInterests,
-        "Natural Language Processing",
-        "Large Language Models",
-      ],
-      sameAs,
-    },
-  ],
+  "@type": "ProfilePage",
+  "@id": `${SITE}/#profilepage`,
+  url: `${SITE}/`,
+  name: fullTitle,
+  description,
+  inLanguage: "en",
+  isPartOf: { "@id": WEBSITE_ID },
+  about: personRef,
+  mainEntity: personRef,
 };
 ---
 
@@ -91,7 +38,6 @@ const jsonLd = {
   name={about.name}
   fullTitle={fullTitle}
   description={description}
-  keywords={keywords}
   canonicalPath="/"
   ogImageAlt={`${about.name}, ${about.designation} at ${about.company.name}`}
   jsonLd={jsonLd}
