@@ -27,9 +27,9 @@ type CVData = {
   work?: Experience[];
   research: Experience[];
   publications: Publication[];
-  underReview: Publication[];
+  underReview?: Publication[];
   teaching: Experience[];
-  projects: {
+  projects?: {
     title: string;
     date: string;
     bullets: string[];
@@ -42,7 +42,7 @@ type CVData = {
   references: {
     name: string;
     title: string;
-    dept: string;
+    dept?: string;
     org: string;
     email: string;
     website: string;
@@ -120,7 +120,7 @@ export default function CVPage({ cv }: { cv: CVData }) {
               </a>
             </span>
             <span>
-              <span className="text-ink-2">Github: </span>
+              <span className="text-ink-2">GitHub: </span>
               <a
                 href={header.githubUrl}
                 target="_blank"
@@ -153,15 +153,6 @@ export default function CVPage({ cv }: { cv: CVData }) {
           ))}
         </S>
 
-        {/* Research Experience */}
-        <S title="Research Experience">
-          {cv.research.map((r) => (
-            <Entry key={r.title} title={r.title} date={r.date} sub={r.org} loc={r.location}>
-              <Bullets items={r.bullets} />
-            </Entry>
-          ))}
-        </S>
-
         {/* Work Experience */}
         {cv.work && cv.work.length > 0 && (
           <S title="Work Experience">
@@ -173,6 +164,15 @@ export default function CVPage({ cv }: { cv: CVData }) {
           </S>
         )}
 
+        {/* Research Experience */}
+        <S title="Research Experience">
+          {cv.research.map((r) => (
+            <Entry key={r.title} title={r.title} date={r.date} sub={r.org} loc={r.location}>
+              <Bullets items={r.bullets} />
+            </Entry>
+          ))}
+        </S>
+
         {/* Publications */}
         <S title="Publications">
           {cv.publications.map((p, i) => (
@@ -181,11 +181,13 @@ export default function CVPage({ cv }: { cv: CVData }) {
         </S>
 
         {/* Under-review */}
-        <S title="Under-review Papers">
-          {cv.underReview.map((p, i) => (
-            <Pub key={i} pub={p} me={header.name} />
-          ))}
-        </S>
+        {cv.underReview && cv.underReview.length > 0 && (
+          <S title="Under-review Papers">
+            {cv.underReview.map((p, i) => (
+              <Pub key={i} pub={p} me={header.name} />
+            ))}
+          </S>
+        )}
 
         {/* Teaching */}
         <S title="Teaching Experience">
@@ -203,22 +205,24 @@ export default function CVPage({ cv }: { cv: CVData }) {
         </S>
 
         {/* Projects */}
-        <S title="Selected Projects">
-          {cv.projects.map((p) => (
-            <Entry key={p.title} title={p.title} date={p.date}>
-              <Bullets items={p.bullets} />
-              {p.links && (
-                <div className="mt-1.5 flex gap-2">
-                  {p.links.map((l) => (
-                    <L key={l.label} href={l.href}>
-                      {l.label}
-                    </L>
-                  ))}
-                </div>
-              )}
-            </Entry>
-          ))}
-        </S>
+        {cv.projects && cv.projects.length > 0 && (
+          <S title="Selected Projects">
+            {cv.projects.map((p) => (
+              <Entry key={p.title} title={p.title} date={p.date}>
+                <Bullets items={p.bullets} />
+                {p.links && (
+                  <div className="mt-1.5 flex gap-2">
+                    {p.links.map((l) => (
+                      <L key={l.label} href={l.href}>
+                        {l.label}
+                      </L>
+                    ))}
+                  </div>
+                )}
+              </Entry>
+            ))}
+          </S>
+        )}
 
         {/* Awards */}
         <S title="Awards, Honors &amp; Achievements">
@@ -265,7 +269,7 @@ export default function CVPage({ cv }: { cv: CVData }) {
               >
                 <p className="text-ink m-0 font-serif text-[15px] font-semibold">{r.name}</p>
                 <p className="text-ink-3 m-0 text-[12.5px] italic">{r.title}</p>
-                <p className="m-0">{r.dept}</p>
+                {r.dept && <p className="m-0">{r.dept}</p>}
                 <p className="m-0">{r.org}</p>
                 <p className="m-0">
                   Email:{" "}
