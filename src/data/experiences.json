@@ -20,7 +20,7 @@
     "type": "Part-time",
     "date": "Aug 2025 - Jul 2026",
     "category": "industry",
-    "description": "Built a chat assistant inside Autodesk Revit that answers questions about BIM models and helps users work with them through conversation.",
+    "description": "Built a chat assistant that lets users interact with BIM models in Autodesk Revit through conversation.",
     "skills": ["Conversational AI", "LLMs", "RAG"]
   },
   {
