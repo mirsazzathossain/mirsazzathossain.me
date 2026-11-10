@@ -65,8 +65,28 @@ function islandModulePreload() {
   };
 }
 
+/** Publication pages under review are noindexed, so keep them out of the sitemap too. */
+const pendingPublicationPaths = JSON.parse(
+  readFileSync(new URL("./src/data/publications.override.json", import.meta.url), "utf8"),
+)
+  .filter((p) => ["under_review", "submitted", "in_preparation"].includes(p.status))
+  .flatMap((p) => [p.id, p.slug].filter(Boolean))
+  .map((slug) => `/publications/${slug}`);
+
+/** Publish date per article, for <lastmod> in the sitemap. */
+const articleDates = Object.fromEntries(
+  readdirSync(new URL("./src/content/articles", import.meta.url))
+    .filter((file) => file.endsWith(".mdx"))
+    .map((file) => {
+      const text = readFileSync(new URL(`./src/content/articles/${file}`, import.meta.url), "utf8");
+      const date = /^publishedAt:\s*["']?([^"'\r\n]+)/m.exec(text)?.[1];
+      return [file.replace(/\.mdx$/, ""), date ? new Date(date).toISOString() : undefined];
+    }),
+);
+
 export default defineConfig({
   site: "https://mirsazzathossain.me",
+  trailingSlash: "never",
 
   output: "static",
   adapter: vercel(),
@@ -116,7 +136,20 @@ export default defineConfig({
     }),
     react(),
     sitemap({
-      filter: (page) => !page.includes("/articles/list"),
+      filter: (page) => {
+        const path = new URL(page).pathname.replace(/\/$/, "");
+        return (
+          !path.startsWith("/articles/list") &&
+          !path.startsWith("/articles/tags/") &&
+          !path.startsWith("/404") &&
+          !pendingPublicationPaths.includes(path)
+        );
+      },
+      serialize: (item) => {
+        const slug = /\/articles\/([^/]+)\/?$/.exec(new URL(item.url).pathname)?.[1];
+        const lastmod = slug && articleDates[slug];
+        return lastmod ? { ...item, lastmod } : item;
+      },
     }),
     islandModulePreload(),
   ],

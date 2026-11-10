@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /search.json
 
 Sitemap: https://mirsazzathossain.me/sitemap-index.xml

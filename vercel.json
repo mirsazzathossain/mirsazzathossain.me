@@ -1,17 +1,349 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "astro",
+  "trailingSlash": false,
   "redirects": [
     {
       "source": "/:path*",
-      "has": [{ "type": "host", "value": "www.mirsazzathossain.me" }],
+      "has": [
+        {
+          "type": "host",
+          "value": "www.mirsazzathossain.me"
+        }
+      ],
       "destination": "https://mirsazzathossain.me/:path*",
       "permanent": true
     },
     {
       "source": "/:path*",
-      "has": [{ "type": "header", "key": "x-forwarded-proto", "value": "http" }],
+      "has": [
+        {
+          "type": "header",
+          "key": "x-forwarded-proto",
+          "value": "http"
+        }
+      ],
       "destination": "https://mirsazzathossain.me/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/sitemap.xml",
+      "destination": "/sitemap-index.xml",
+      "permanent": true
+    },
+    {
+      "source": "/server-sitemap.xml",
+      "destination": "/sitemap-index.xml",
+      "permanent": true
+    },
+    {
+      "source": "/articles/list/:path*",
+      "destination": "/articles",
+      "permanent": true
+    },
+    {
+      "source": "/articles/tags/abstract-algebra",
+      "destination": "/articles/group-theory-foundations-equivariant-neural-networks",
+      "permanent": true
+    },
+    {
+      "source": "/articles/tags/bell-shaped-curve",
+      "destination": "/articles/exploring-gaussian-distribution",
+      "permanent": true
+    },
+    {
+      "source": "/articles/tags/equivariant-neural-networks",
+      "destination": "/articles/group-theory-foundations-equivariant-neural-networks",
+      "permanent": true
+    },
+    {
+      "source": "/articles/tags/gaussian-distribution",
+      "destination": "/articles/exploring-gaussian-distribution",
+      "permanent": true
+    },
+    {
+      "source": "/articles/tags/jupyter",
+      "destination": "/articles/dockerizing-jupyter-notebook",
+      "permanent": true
+    },
+    {
+      "source": "/articles/tags/jupyter-lab",
+      "destination": "/articles/dockerizing-jupyter-notebook",
+      "permanent": true
+    },
+    {
+      "source": "/articles/tags/lie-algebras",
+      "destination": "/articles/group-theory-foundations-equivariant-neural-networks",
+      "permanent": true
+    },
+    {
+      "source": "/articles/tags/mean-and-variance",
+      "destination": "/articles/categories/statistics",
+      "permanent": true
+    },
+    {
+      "source": "/articles/tags/normal-distribution",
+      "destination": "/articles/exploring-gaussian-distribution",
+      "permanent": true
+    },
+    {
+      "source": "/articles/tags/poisson-distribution",
+      "destination": "/articles/poisson-distribution",
+      "permanent": true
+    },
+    {
+      "source": "/articles/tags/poisson-noise",
+      "destination": "/articles/poisson-distribution",
+      "permanent": true
+    },
+    {
+      "source": "/articles/tags/predictive-modeling",
+      "destination": "/articles/poisson-distribution",
+      "permanent": true
+    },
+    {
+      "source": "/articles/tags/probability-density-function",
+      "destination": "/articles/categories/statistics",
+      "permanent": true
+    },
+    {
+      "source": "/articles/tags/probability-distribution",
+      "destination": "/articles/exploring-gaussian-distribution",
+      "permanent": true
+    },
+    {
+      "source": "/articles/tags/server",
+      "destination": "/articles/dockerizing-jupyter-notebook",
+      "permanent": true
+    },
+    {
+      "source": "/articles/tags/signal-processing",
+      "destination": "/articles/poisson-distribution",
+      "permanent": true
+    },
+    {
+      "source": "/articles/tags/standard-deviation",
+      "destination": "/articles/categories/statistics",
+      "permanent": true
+    },
+    {
+      "source": "/files/banglamedqa-acl2026.pdf",
+      "destination": "/publications/banglamedqa-acl-findings-2026",
+      "permanent": true
+    },
+    {
+      "source": "/files/banmed-vqa.pdf",
+      "destination": "/publications/llm-bangla-medical-vqa-2026",
+      "permanent": true
+    },
+    {
+      "source": "/files/bd-lulc.pdf",
+      "destination": "/publications/bd-open-lulc-map-2025",
+      "permanent": true
+    },
+    {
+      "source": "/files/bdlensing.pdf",
+      "destination": "/publications/radio-agn-environment-jets-2025",
+      "permanent": true
+    },
+    {
+      "source": "/files/cmban.pdf",
+      "destination": "/publications/cmban-cartoon-meme-2025",
+      "permanent": true
+    },
+    {
+      "source": "/files/deans_list.pdf",
+      "destination": "/files/deans-list.pdf",
+      "permanent": true
+    },
+    {
+      "source": "/files/dialtsa-bn.pdf",
+      "destination": "/publications/bangla-dialect-translation-benchmark-2025",
+      "permanent": true
+    },
+    {
+      "source": "/files/fedctta.pdf",
+      "destination": "/publications/fedctta-2025",
+      "permanent": true
+    },
+    {
+      "source": "/files/fedctta_presentation.pdf",
+      "destination": "/files/fedctta-presentation.pdf",
+      "permanent": true
+    },
+    {
+      "source": "/files/lp-ft-lora.pdf",
+      "destination": "/publications/lp-ft-lora-peft-2025",
+      "permanent": true
+    },
+    {
+      "source": "/files/rmma.pdf",
+      "destination": "/publications/rmma-vision-language-wacv-2026",
+      "permanent": true
+    },
+    {
+      "source": "/files/slomo-fast.pdf",
+      "destination": "/publications/slomo-fast-domain-adaptation-2025",
+      "permanent": true
+    },
+    {
+      "source": "/files/tomato.pdf",
+      "destination": "/publications/tomcat-2025",
+      "permanent": true
+    },
+    {
+      "source": "/publications/-f6ydRqryjwC",
+      "destination": "/publications/radio-agn-environment-jets-2025",
+      "permanent": true
+    },
+    {
+      "source": "/publications/2P1L_qKh6hAC",
+      "destination": "/publications/llm-bangla-medical-vqa-2026",
+      "permanent": true
+    },
+    {
+      "source": "/publications/GnPB-g6toBAC",
+      "destination": "/publications/cmban-cartoon-meme-2025",
+      "permanent": true
+    },
+    {
+      "source": "/publications/HOSSAIN10647844",
+      "destination": "/publications/lightweight-rnn-super-resolution-2024",
+      "permanent": true
+    },
+    {
+      "source": "/publications/HOSSAIN2023512",
+      "destination": "/publications/rgc-radio-agn-classifier-2026",
+      "permanent": true
+    },
+    {
+      "source": "/publications/HOSSAIN2023601",
+      "destination": "/publications/rgc-semi-supervised-2023",
+      "permanent": true
+    },
+    {
+      "source": "/publications/HOSSAIN2025LULC",
+      "destination": "/publications/bd-open-lulc-map-2025",
+      "permanent": true
+    },
+    {
+      "source": "/publications/HOSSAIN2025RGC-BENT",
+      "destination": "/publications/bent-radio-galaxy-dataset-2025",
+      "permanent": true
+    },
+    {
+      "source": "/publications/HoB7MX3m0LUC",
+      "destination": "/publications/banglamedqa-acl-findings-2026",
+      "permanent": true
+    },
+    {
+      "source": "/publications/IWHjjKOFINEC",
+      "destination": "/publications/rgc-semi-supervised-2023",
+      "permanent": true
+    },
+    {
+      "source": "/publications/M05iB0D1s5AC",
+      "destination": "/publications/adhd-ml-prediction-iccit-2025",
+      "permanent": true
+    },
+    {
+      "source": "/publications/O3NaXMp0MMsC",
+      "destination": "/publications/fedctta-2025",
+      "permanent": true
+    },
+    {
+      "source": "/publications/R3hNpaxXUhUC",
+      "destination": "/publications/bd-open-lulc-map-2025",
+      "permanent": true
+    },
+    {
+      "source": "/publications/TQgYirikUcIC",
+      "destination": "/publications/bent-radio-galaxy-dataset-2025",
+      "permanent": true
+    },
+    {
+      "source": "/publications/YFjsv_pBGBYC",
+      "destination": "/publications/lp-ft-lora-peft-2025",
+      "permanent": true
+    },
+    {
+      "source": "/publications/_Qo2XoVZTnwC",
+      "destination": "/publications/rgc-radio-agn-classifier-2026",
+      "permanent": true
+    },
+    {
+      "source": "/publications/adnan2025relation",
+      "destination": "/publications/radio-agn-environment-jets-2025",
+      "permanent": true
+    },
+    {
+      "source": "/publications/cekala-colm-2026",
+      "destination": "/publications",
+      "permanent": true
+    },
+    {
+      "source": "/publications/e5wmG9Sq2KIC",
+      "destination": "/publications/tomcat-2025",
+      "permanent": true
+    },
+    {
+      "source": "/publications/g5m5HwL7SMYC",
+      "destination": "/publications/banglamedqa-acl-findings-2026",
+      "permanent": true
+    },
+    {
+      "source": "/publications/hC7cP41nSMkC",
+      "destination": "/publications/slomo-fast-domain-adaptation-2025",
+      "permanent": true
+    },
+    {
+      "source": "/publications/hMod-77fHWUC",
+      "destination": "/publications/bangla-dialect-translation-benchmark-2025",
+      "permanent": true
+    },
+    {
+      "source": "/publications/iH-uZ7U-co4C",
+      "destination": "/publications/pfed-bbn-2025",
+      "permanent": true
+    },
+    {
+      "source": "/publications/iftee2025slomo",
+      "destination": "/publications/slomo-fast-domain-adaptation-2025",
+      "permanent": true
+    },
+    {
+      "source": "/publications/isC4tDSrTZIC",
+      "destination": "/publications/e-pcn-jet-tagging-2025",
+      "permanent": true
+    },
+    {
+      "source": "/publications/k_IJM867U9cC",
+      "destination": "/publications/rmma-vision-language-wacv-2026",
+      "permanent": true
+    },
+    {
+      "source": "/publications/pqnbT2bcN3wC",
+      "destination": "/publications",
+      "permanent": true
+    },
+    {
+      "source": "/publications/qUcmZB5y_30C",
+      "destination": "/publications/lightweight-rnn-super-resolution-2024",
+      "permanent": true
+    },
+    {
+      "source": "/publications/rajib2025fedctta",
+      "destination": "/publications/fedctta-2025",
+      "permanent": true
+    },
+    {
+      "source": "/publications/u_35RYKgDlwC",
+      "destination": "/publications/rgc-radio-agn-classifier-2026",
+      "permanent": true
+    },
+    {
+      "source": "/publications/zA6iFVUQeVQC",
+      "destination": "/publications/rgc-radio-agn-classifier-2026",
       "permanent": true
     }
   ],
@@ -19,12 +351,30 @@
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "Strict-Transport-Security", "value": "max-age=63072000; includeSubDomains; preload" },
-        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "Cross-Origin-Opener-Policy", "value": "same-origin" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
-        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" }
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=63072000; includeSubDomains; preload"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Cross-Origin-Opener-Policy",
+          "value": "same-origin"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=()"
+        }
       ]
     }
   ]
