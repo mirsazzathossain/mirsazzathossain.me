@@ -34,7 +34,7 @@
   ],
   "grid": [
     "fffffff",
-    "fffffff",
+    "fffbfff",
     "ffbpbff",
     "pfbpfpf",
     "bffffpf",
@@ -59,7 +59,12 @@
       [],
       [],
       [],
-      [],
+      [
+        [
+          0,
+          60
+        ]
+      ],
       [],
       [],
       []
