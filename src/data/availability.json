@@ -35,8 +35,8 @@
   "grid": [
     "fffffff",
     "fffbfff",
-    "ffbpbff",
-    "pfbpfpf",
+    "ffbbbff",
+    "pfbffpf",
     "bffffpf",
     "ffpffff",
     "pppppff",
@@ -80,7 +80,7 @@
       ],
       [
         [
-          30,
+          0,
           60
         ]
       ],
@@ -107,12 +107,7 @@
           60
         ]
       ],
-      [
-        [
-          0,
-          30
-        ]
-      ],
+      [],
       [],
       [
         [
