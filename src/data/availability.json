@@ -36,7 +36,7 @@
     "bffffff",
     "bffffff",
     "bfbbbff",
-    "bfbffpf",
+    "bffffpf",
     "bffffpf",
     "bfpffff",
     "bppppff",
@@ -111,12 +111,7 @@
         ]
       ],
       [],
-      [
-        [
-          0,
-          60
-        ]
-      ],
+      [],
       [],
       [],
       [
