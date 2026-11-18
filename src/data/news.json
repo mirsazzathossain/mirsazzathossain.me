@@ -3,6 +3,10 @@
     "year": 2026,
     "items": [
       {
+        "kind": "paper",
+        "text": "Paper accepted at EACL 2027."
+      },
+      {
         "kind": "career",
         "text": "Joined Penta Global Limited as a full-time AI Engineer."
       },
