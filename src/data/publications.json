@@ -6,8 +6,8 @@
     "authors": [],
     "year": 2023,
     "venue": "",
-    "citation_count": 14,
-    "citation_updated": "2026-11-09"
+    "citation_count": 15,
+    "citation_updated": "2026-11-23"
   },
   {
     "id": "e5wmG9Sq2KIC",
@@ -17,7 +17,7 @@
     "year": 2025,
     "venue": "",
     "citation_count": 11,
-    "citation_updated": "2026-11-09"
+    "citation_updated": "2026-11-23"
   },
   {
     "id": "O3NaXMp0MMsC",
@@ -27,7 +27,7 @@
     "year": 2025,
     "venue": "",
     "citation_count": 10,
-    "citation_updated": "2026-11-09"
+    "citation_updated": "2026-11-23"
   },
   {
     "id": "-f6ydRqryjwC",
@@ -37,7 +37,17 @@
     "year": 2025,
     "venue": "",
     "citation_count": 4,
-    "citation_updated": "2026-11-09"
+    "citation_updated": "2026-11-23"
+  },
+  {
+    "id": "HoB7MX3m0LUC",
+    "type": "article",
+    "title": "Evaluating Large Vision Language Models on Bangla Medical Visual Question Answering",
+    "authors": [],
+    "year": 2026,
+    "venue": "",
+    "citation_count": 3,
+    "citation_updated": "2026-11-23"
   },
   {
     "id": "hMod-77fHWUC",
@@ -47,17 +57,17 @@
     "year": 2025,
     "venue": "",
     "citation_count": 3,
-    "citation_updated": "2026-11-09"
+    "citation_updated": "2026-11-23"
   },
   {
-    "id": "HoB7MX3m0LUC",
+    "id": "iH-uZ7U-co4C",
     "type": "article",
-    "title": "Evaluating Large Vision Language Models on Bangla Medical Visual Question Answering",
+    "title": "pFedBBN: A Personalized Federated Test-Time Adaptation with Balanced Batch Normalization for Class-Imbalanced Data",
     "authors": [],
-    "year": 2026,
+    "year": 2025,
     "venue": "",
-    "citation_count": 2,
-    "citation_updated": "2026-11-09"
+    "citation_count": 3,
+    "citation_updated": "2026-11-23"
   },
   {
     "id": "GnPB-g6toBAC",
@@ -67,17 +77,7 @@
     "year": 2025,
     "venue": "",
     "citation_count": 2,
-    "citation_updated": "2026-11-09"
-  },
-  {
-    "id": "iH-uZ7U-co4C",
-    "type": "article",
-    "title": "pFedBBN: A Personalized Federated Test-Time Adaptation with Balanced Batch Normalization for Class-Imbalanced Data",
-    "authors": [],
-    "year": 2025,
-    "venue": "",
-    "citation_count": 2,
-    "citation_updated": "2026-11-09"
+    "citation_updated": "2026-11-23"
   },
   {
     "id": "TQgYirikUcIC",
@@ -87,7 +87,17 @@
     "year": 2025,
     "venue": "",
     "citation_count": 2,
-    "citation_updated": "2026-11-09"
+    "citation_updated": "2026-11-23"
+  },
+  {
+    "id": "cFHS6HbyZ2cC",
+    "type": "article",
+    "title": "5-Dialects-BN: Unmasking the Impact of Transliteration on Bangla Dialectal LLMs",
+    "authors": [],
+    "year": 2026,
+    "venue": "",
+    "citation_count": 1,
+    "citation_updated": "2026-11-23"
   },
   {
     "id": "2P1L_qKh6hAC",
@@ -97,7 +107,7 @@
     "year": 2026,
     "venue": "",
     "citation_count": 1,
-    "citation_updated": "2026-11-09"
+    "citation_updated": "2026-11-23"
   },
   {
     "id": "k_IJM867U9cC",
@@ -107,7 +117,7 @@
     "year": 2026,
     "venue": "",
     "citation_count": 1,
-    "citation_updated": "2026-11-09"
+    "citation_updated": "2026-11-23"
   },
   {
     "id": "YFjsv_pBGBYC",
@@ -117,7 +127,7 @@
     "year": 2025,
     "venue": "",
     "citation_count": 1,
-    "citation_updated": "2026-11-09"
+    "citation_updated": "2026-11-23"
   },
   {
     "id": "u_35RYKgDlwC",
@@ -127,7 +137,7 @@
     "year": 2025,
     "venue": "",
     "citation_count": 1,
-    "citation_updated": "2026-11-09"
+    "citation_updated": "2026-11-23"
   },
   {
     "id": "R3hNpaxXUhUC",
@@ -137,7 +147,7 @@
     "year": 2025,
     "venue": "",
     "citation_count": 1,
-    "citation_updated": "2026-11-09"
+    "citation_updated": "2026-11-23"
   },
   {
     "id": "qUcmZB5y_30C",
@@ -147,17 +157,17 @@
     "year": 2024,
     "venue": "",
     "citation_count": 1,
-    "citation_updated": "2026-11-09"
+    "citation_updated": "2026-11-23"
   },
   {
-    "id": "cFHS6HbyZ2cC",
+    "id": "bFI3QPDXJZMC",
     "type": "article",
-    "title": "5-Dialects-BN: Unmasking the Impact of Transliteration on Bangla Dialectal LLMs",
+    "title": "VizieR Online Data Catalog: RGC radio AGN classifier. I. FIRST-2060 (Hossain+, 2026)",
     "authors": [],
     "year": 2026,
     "venue": "",
     "citation_count": 0,
-    "citation_updated": "2026-11-09"
+    "citation_updated": "2026-11-23"
   },
   {
     "id": "M05iB0D1s5AC",
@@ -167,7 +177,7 @@
     "year": 2025,
     "venue": "",
     "citation_count": 0,
-    "citation_updated": "2026-11-09"
+    "citation_updated": "2026-11-23"
   },
   {
     "id": "isC4tDSrTZIC",
@@ -177,7 +187,7 @@
     "year": 2025,
     "venue": "",
     "citation_count": 0,
-    "citation_updated": "2026-11-09"
+    "citation_updated": "2026-11-23"
   },
   {
     "id": "hC7cP41nSMkC",
@@ -187,6 +197,6 @@
     "year": 2025,
     "venue": "",
     "citation_count": 0,
-    "citation_updated": "2026-11-09"
+    "citation_updated": "2026-11-23"
   }
 ]
